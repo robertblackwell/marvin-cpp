@@ -73,7 +73,7 @@ ParserContext* getParserContext(http_parser* parser);
 void setHTTPParser(http_parser* c_parser, HTTPParser* cpp_parser);
 
 
-typedef void(*HTTPParserCallBackFunctions)(HTTPParser* parser);
+typedef void(*HTTPParserCallBackFunction)(HTTPParser* parser);
 
 class  HTTPParser
 {
@@ -139,24 +139,25 @@ public:
 	 */
 	HTTPMessage* currentMessage();
 	
-	void setOnHeadersComplete(HTTPMessage& currentMessage);
-	void setOnMesssageComplete(HTTPMessage& currentMessage);
-    void setOnParseError(std::runtime_error& error);
+    
+    /*
+     * Three "call backs" for 
+     *  -   headers complete
+     *  -   message complete
+     *  -   parse error
+     *
+     */
+    void onMessageLambda(std::function<void(HTTPParser*, HTTPMessage*)> cbLambda);
+    std::function<void(HTTPParser*, HTTPMessage*)> onMessageLambdaCB;
+
+    void onHeadersLambda(std::function<void(HTTPParser*, HTTPMessage*)> cbLambda);
+    std::function<void(HTTPParser*, HTTPMessage*)> onHeadersLambdaCB;
+
+    void onParseErrorLambda(std::function<void(HTTPParser*)> cbLambda);
+    std::function<void(HTTPParser*)> onParseErrorLambdaCB;
 
     void setUpParserCallbacks();
     void setUpNextMessage();
     
-//    void newMessageCallBack( HTTPMessage* theMessage );
-//    void headersCompleteCallBack( HTTPMessage* theMessage );
-//    void messageCompleteCallBack( HTTPMessage* theMessage );
-    //
-    // Callback functions provided by parser client for event driven processing
-    //
-    HTTPParserCallBackFunctions* onNewMessageCB;
-    HTTPParserCallBackFunctions* onHeadersCompleteCB;
-    HTTPParserCallBackFunctions* onMessageCompleteCB;
-    HTTPParserCallBackFunctions* onParserErrorCB;
-    
-
 	
 };

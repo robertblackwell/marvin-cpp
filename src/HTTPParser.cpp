@@ -60,6 +60,11 @@ int HTTPParser::appendBytes(void *buffer, unsigned length)
 {
     messageData.append((char*)buffer, length);
     size_t nparsed = http_parser_execute(parser, parserSettings, (char*)buffer, (int)length);
+    
+    if( nparsed != length ){
+        onParseErrorLambdaCB(this);
+    }
+    
     return nparsed;
 }
 
@@ -89,6 +94,23 @@ bool HTTPParser::finishedMessage()
 HTTPMessage* HTTPParser::currentMessage()
 {
     return last_message;
+}
+
+void HTTPParser::onHeadersLambda(std::function<void(HTTPParser*, HTTPMessage*)>  cbLambda)
+{
+    std::cout << "headers call back Lambda set" << std::endl;
+    onHeadersLambdaCB = cbLambda;
+}
+
+void HTTPParser::onMessageLambda(std::function<void(HTTPParser*, HTTPMessage*)>  cbLambda)
+{
+    std::cout << "message call back Lambda set" << std::endl;
+    onMessageLambdaCB = cbLambda;
+}
+
+void HTTPParser::onParseErrorLambda(std::function<void(HTTPParser*)>  cbLambda)
+{
+    onParseErrorLambdaCB = cbLambda;
 }
 
 #pragma mark - private methods
@@ -292,6 +314,9 @@ headers_complete_cb(http_parser* parser)
     p->headersCompleteFlag = true;
     p->last_message = c->message;
 
+    if( p-> onHeadersLambdaCB != NULL )
+        p->onHeadersLambdaCB(p, p->last_message);
+
     return 0;
 }
 
@@ -313,6 +338,8 @@ message_complete_cb(http_parser* parser)
         
     p->last_message = c->message;
     p->messageCompleteFlag = true;
+    if( p-> onMessageLambdaCB != NULL )
+        p->onMessageLambdaCB(p, p->last_message);
 
     /*
      * Now get ready for the next message
