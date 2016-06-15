@@ -68,8 +68,11 @@
 
 class HTTPParser;
 
+
 HTTPParser* getHTTPParser(http_parser* parser);
+
 ParserContext* getParserContext(http_parser* parser);
+
 void setHTTPParser(http_parser* c_parser, HTTPParser* cpp_parser);
 
 

@@ -20,6 +20,7 @@
  */
 ParserContext*  parserContextFromParser(http_parser* parser );
 
+int do_nothing_cb(http_parser* parser);
 
 int message_begin_cb(http_parser* parser);
 int url_data_cb(http_parser* parser, const char* at, size_t length);
@@ -177,6 +178,8 @@ void HTTPParser::setUpParserCallbacks()
     
     settings->on_body = body_data_cb;
     settings->on_message_complete = message_complete_cb;
+    settings->on_chunk_header = do_nothing_cb;
+    settings->on_chunk_complete = do_nothing_cb;
     
 }
 
@@ -187,6 +190,7 @@ HTTPParser* getHTTPParser(http_parser* parser)
 {
     return (HTTPParser*) parser->data;
 }
+
 void setHTTPParser(http_parser* c_parser, HTTPParser* cpp_parser)
 {
     c_parser->data = (void*) cpp_parser;
@@ -206,7 +210,10 @@ ParserContext*  parserContextFromParser(http_parser* parser )
     return t;
 }
 
-
+int do_nothing_cb(http_parser* p)
+{
+    return 0;
+}
 int
 message_begin_cb(http_parser* parser)
 {

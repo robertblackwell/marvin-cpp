@@ -3,9 +3,9 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "src/catch.hpp"
-#include "src/HTTPMessage.hpp"
-#include "src/HTTPParser.hpp"
+#include "catch.hpp"
+#include "HTTPMessage.hpp"
+#include "HTTPParser.hpp"
 
 #include "test_set_1.cpp"
 
