@@ -1,91 +1,363 @@
+#define CATCH_CONFIG_MAIN
 
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-//#include "catch/catch.hpp"
+#include "src/catch.hpp"
 #include "src/HTTPMessage.hpp"
 #include "src/HTTPParser.hpp"
 
-//TEST_CASE("Testing Sample Class") {
-//    HTTPMessage msg1 = HTTPMessage::ConnectOKMessage();
-//    bool x = msg1.hasHeader(HTTPMessage::CONNECTION);
-//    bool y = msg1.hasHeader(HTTPMessage::CONTENT_LENGTH);
-//    
-//    SECTION("Message headers") {
-//        INFO("Using TestStr") // Only appears on a FAIL
-//        //CAPTURE(sc.getStr()); // Displays this variable on a FAIL
-//        
-//        CHECK(x == true);
-//        CHECK(y == false);
-//        msg1.setHeader(HTTPMessage::CONTENT_LENGTH, "37");
-//        
-//        y = msg1.hasHeader(HTTPMessage::CONTENT_LENGTH);
-//        CHECK(y == true);
-//    }
-//}
+#pragma mark simple parsing
+TEST_CASE("Simple GET") {
 
-void test1HeaderValues()
-{
-    std::string teststr = "GET /apath Http/1.1\r\nHost: ahost\r\nConnection: keep-alive\r\nProxy-Connection: keep-alive\r\nContent-Length: 10\r\n\r\n";
-    
-    std::string teststr2 = "HTTP/1.1 200 OK\r\nHost: ahost\r\nConnection: keep-alive\r\nContent-Length: 10\r\n\r\n";
-    std::string teststr3 = "GET /apath HTTP/1.1\r\nHost: ahost\r\nConnection: keep-alive\r\nContent-Length: 10\r\n\r\n";
-}
-
-
-
-void test_parse_get_with_body()
-{
-    std::string str1 = "GET / HTTP/1.1\r\nHost: ahost\r\nContent-Length: 10\r\n\r\n9123456789";
-    
-    const char* buf = str1.c_str();
-    int len = str1.length();
-    
-    HTTPParser parser;
-    parser.appendBytes((void*) buf, len);
-    
-    std::cout << "Parsing ended"  << std::endl;
-    
-    // need some asserts to ensure it works
-}
-
-
-void test_parse_get()
-{
-    std::string str3 = "GET /apath HTTP/1.1\r\n\r\n";
     std::string str1 = "GET / HTTP/1.1\r\nHost: ahost\r\nContent-Length: 0\r\n\r\n";
-
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str1); // Displays this variable on a FAIL
+    
     const char* buf = str1.c_str();
     int len = str1.length();
-
+    
     HTTPParser parser;
-    parser.appendBytes((void*) buf, len);
+    int nparsed = parser.appendBytes((void*) buf, len);
     
-    std::cout << "Parsing ended"  << std::endl;
+    CHECK(nparsed == len);
     
-    // need some asserts to ensure it works
+    CHECK(parser.last_message->methodAsString() == "GET");
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->hasHeader("Content-Length") );
+    CHECK(parser.last_message->getHeader("Content-Length") == "0" );
+    CHECK(parser.last_message->body->length() == 0);
+
 }
 
+TEST_CASE("Simple GET with body") {
+    std::string str1 =
+                    std::string("GET /apath HTTP/1.1\r\nHost: ahost\r\n")
+                    + std::string("Connection: keep-alive\r\nProxy-Connection: keep-alive\r\n")
+                    + std::string("Content-Length: 10\r\n\r\n")
+                    + std::string("9123456789");
+    
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str1); // Displays this variable on a FAIL
+    
+    const char* buf = str1.c_str();
+    int len = str1.length();
+    
+    HTTPParser parser;
+    int nparsed = parser.appendBytes((void*) buf, len);
 
-int main()
-{
-    std::cout << "developing HTTPMessage" << std::endl;
+    CHECK(nparsed == len);
+    CHECK(parser.last_message->methodAsString() == "GET");
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->headers.size() == 4 );
+    CHECK(parser.last_message->hasHeader("Content-Length") );
+    CHECK(parser.last_message->hasHeader("Connection") );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    CHECK(parser.last_message->getHeader("Content-Length") == "10" );
+    CHECK(parser.last_message->body->length() == 10);
+}
+
+TEST_CASE("Simple response") {
     
-    test_parse_get_with_body();
-    return 0;
     
-    HTTPMessage msg1 = HTTPMessage::ConnectOKMessage();
+    std::string str1 =   std::string("HTTP/1.1 201 OK Reason Phrase\r\n") +
+                             std::string("Host: ahost\r\n") +
+                             std::string("Connection: keep-alive\r\n") +
+                             std::string("Proxy-Connection: keep-alive\r\n") +
+                             std::string("Content-Length: 0\r\n") +
+                             std::string("\r\n");
+
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str1); // Displays this variable on a FAIL
     
-    msg1.dumpHeaders(std::cout);
-    bool x = msg1.hasHeader(HTTPMessage::CONNECTION);
-    bool y = msg1.hasHeader(HTTPMessage::CONTENT_LENGTH);
-    msg1.setHeader(HTTPMessage::CONTENT_LENGTH, "37");
+    const char* buf = str1.c_str();
+    int len = str1.length();
     
-    y = msg1.hasHeader(HTTPMessage::CONTENT_LENGTH);
+    HTTPParser parser;
+    int nparsed = parser.appendBytes((void*) buf, len);
     
-    std::string s1 = msg1.headersAsString();
-    std::string ss = msg1.getHeader(HTTPMessage::CONTENT_LENGTH);
-    msg1.removeHeader(HTTPMessage::CONTENT_LENGTH);
-    y = msg1.hasHeader(HTTPMessage::CONTENT_LENGTH);
-    HTTPMessage msg2 = HTTPMessage::ConnectOKMessage();
+    CHECK(nparsed == len);
+
+    CHECK(parser.last_message->firstLineAsString() == "HTTP/1.1 201 OK Reason Phrase");
+    CHECK(parser.last_message->isRequest() == false );
+    CHECK(parser.last_message->status_code == 201 );
+    CHECK(parser.last_message->status == "OK Reason Phrase" );
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->headers.size() == 4 );
+    CHECK(parser.last_message->hasHeader("Content-Length") );
+    CHECK(parser.last_message->hasHeader("Connection") );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Content-Length") );
+    CHECK(parser.last_message->getHeader("Content-Length") == "0" );
+    CHECK(parser.last_message->body->length() == 0);
+    
+}
+
+TEST_CASE("Response with data") {
+    
+    
+    std::string str1 =   std::string("HTTP/1.1 201 OK Reason Phrase\r\n") +
+    std::string("Host: ahost\r\n") +
+    std::string("Connection: keep-alive\r\n") +
+    std::string("Proxy-Connection: keep-alive\r\n") +
+    std::string("Content-Length: 10\r\n\r\n") +
+    std::string("987654321q");
+    
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str1); // Displays this variable on a FAIL
+    
+    const char* buf = str1.c_str();
+    int len = str1.length();
+    
+    HTTPParser parser;
+    int nparsed = parser.appendBytes((void*) buf, len);
+    
+    CHECK(nparsed == len);
+    
+    CHECK(parser.last_message->firstLineAsString() == "HTTP/1.1 201 OK Reason Phrase");
+    CHECK(parser.last_message->isRequest() == false );
+    CHECK(parser.last_message->status_code == 201 );
+    CHECK(parser.last_message->status == "OK Reason Phrase" );
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->headers.size() == 4 );
+    CHECK(parser.last_message->hasHeader("Content-Length") );
+    CHECK(parser.last_message->hasHeader("Connection") );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Content-Length") );
+    CHECK(parser.last_message->getHeader("Content-Length") == "10" );
+    CHECK(parser.last_message->body->length() == 10);
+    CHECK(parser.last_message->bodyAsString() == "987654321q" );
+    
+}
+
+#pragma mark chunked responses
+
+TEST_CASE("CHUNKED data Response ") {
+    
+    char* str[] = {
+        (char*) "HTTP/1.1 201 OK Reason Phrase\r\n",
+        (char*) "Host: ahost\r\n",
+        (char*) "Connection: keep-alive\r\n",
+        (char*) "Proxy-Connection: keep-alive\r\n",
+        (char*) "Transfer-Encoding: chunked\r\n",
+        (char*) "\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0f\r\n1234567890XXXXX\r\n",
+        (char*) "0f\r\n1234567890YYYYY\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0f\r\n1234567890HGHGH\r\n",
+        (char*) "0a\r\n1234567890\r\n",
+        (char*) "0\r\n",
+        NULL
+    };
+
+    
+    
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str); // Displays this variable on a FAIL
+    
+    const char* buf;
+    int len;
+    
+    HTTPParser parser;
+    int nparsed;
+    for(int i = 0; str[i] != NULL  ;i++)
+    {
+        buf = str[i];
+        len = strlen(buf);
+        nparsed = parser.appendBytes((void*) buf, len);
+        
+        CHECK(nparsed == len);
+    }
+    CHECK(parser.last_message->firstLineAsString() == "HTTP/1.1 201 OK Reason Phrase");
+    CHECK(parser.last_message->isRequest() == false );
+    CHECK(parser.last_message->status_code == 201 );
+    CHECK(parser.last_message->status == "OK Reason Phrase" );
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->headers.size() == 4 );
+    CHECK(parser.last_message->hasHeader("Connection") );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Transfer-Encoding") );
+    CHECK(parser.last_message->getHeader("Transfer-Encoding") == "chunked" );
+//    CHECK(parser.last_message->bodyAsString() == "987654321q" );
+    
+}
+
+#pragma mark header set/remove
+
+TEST_CASE("set/remove headers ") {
+    
+    char* str[] = {
+        (char*) "HTTP/1.1 201 OK Reason Phrase\r\n",
+        (char*) "Host: ahost\r\n",
+        (char*) "Connection: keep-alive\r\n",
+        (char*) "Proxy-Connection: keep-alive\r\n",
+        (char*) "\r\n",
+        NULL
+    };
+    
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str); // Displays this variable on a FAIL
+    
+    const char* buf;
+    int len;
+    
+    HTTPParser parser;
+    int nparsed;
+    for(int i = 0; str[i] != NULL  ;i++)
+    {
+        buf = str[i];
+        len = strlen(buf);
+        nparsed = parser.appendBytes((void*) buf, len);
+        
+        CHECK(nparsed == len);
+    }
+    CHECK(parser.last_message->firstLineAsString() == "HTTP/1.1 201 OK Reason Phrase");
+    CHECK(parser.last_message->isRequest() == false );
+    CHECK(parser.last_message->status_code == 201 );
+    CHECK(parser.last_message->status == "OK Reason Phrase" );
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->headers.size() == 3 );
+    CHECK(parser.last_message->hasHeader("Connection") );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    
+    parser.last_message->removeHeader("Proxy-Connection");
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") == false );
+    
+    parser.last_message->setHeader("Connection", "close");
+    CHECK(parser.last_message->getHeader("Connection")=="close" );
+
+    parser.last_message->setHeader("Proxy-Connection","keep-alive");
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") == true );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+
+    
+    //    CHECK(parser.last_message->bodyAsString() == "987654321q" );
+    
+}
+
+#pragma mark test error handling
+
+TEST_CASE("test error handling ") {
+    
+    char* str[] = {
+        (char*) "HTTP/1.1 201 OK Reason Phrase\r\n",
+        (char*) "Host: ahost\r\n",
+        (char*) "Connection: keep-alive\r\n",
+        (char*) "Proxy-Connection: keep-alive\r\n",
+        (char*) "\r\n",
+        NULL
+    };
+    
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str); // Displays this variable on a FAIL
+    
+    const char* buf;
+    int len;
+    
+    HTTPParser parser;
+    int nparsed;
+    for(int i = 0; str[i] != NULL  ;i++)
+    {
+        buf = str[i];
+        len = strlen(buf);
+        nparsed = parser.appendBytes((void*) buf, len);
+        
+        CHECK(nparsed == len);
+    }
+    CHECK(parser.last_message->firstLineAsString() == "HTTP/1.1 201 OK Reason Phrase");
+    CHECK(parser.last_message->isRequest() == false );
+    CHECK(parser.last_message->status_code == 201 );
+    CHECK(parser.last_message->status == "OK Reason Phrase" );
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->headers.size() == 3 );
+    CHECK(parser.last_message->hasHeader("Connection") );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    
+    parser.last_message->removeHeader("Proxy-Connection");
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") == false );
+    
+    parser.last_message->setHeader("Connection", "close");
+    CHECK(parser.last_message->getHeader("Connection")=="close" );
+    
+    parser.last_message->setHeader("Proxy-Connection","keep-alive");
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") == true );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    
+    
+    //    CHECK(parser.last_message->bodyAsString() == "987654321q" );
+    
+}
+
+#pragma mark test callbacks
+
+TEST_CASE("test test call backs ") {
+    
+    char* str[] = {
+        (char*) "HTTP/1.1 201 OK Reason Phrase\r\n",
+        (char*) "Host: ahost\r\n",
+        (char*) "Connection: keep-alive\r\n",
+        (char*) "Proxy-Connection: keep-alive\r\n",
+        (char*) "\r\n",
+        NULL
+    };
+    
+    INFO("Using TestStr") // Only appears on a FAIL
+    CAPTURE(str); // Displays this variable on a FAIL
+    
+    const char* buf;
+    int len;
+    
+    HTTPParser parser;
+    int nparsed;
+    for(int i = 0; str[i] != NULL  ;i++)
+    {
+        buf = str[i];
+        len = strlen(buf);
+        nparsed = parser.appendBytes((void*) buf, len);
+        
+        CHECK(nparsed == len);
+    }
+    CHECK(parser.last_message->firstLineAsString() == "HTTP/1.1 201 OK Reason Phrase");
+    CHECK(parser.last_message->isRequest() == false );
+    CHECK(parser.last_message->status_code == 201 );
+    CHECK(parser.last_message->status == "OK Reason Phrase" );
+    CHECK(parser.last_message->hasHeader("Host") );
+    CHECK(parser.last_message->headers.size() == 3 );
+    CHECK(parser.last_message->hasHeader("Connection") );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    
+    parser.last_message->removeHeader("Proxy-Connection");
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") == false );
+    
+    parser.last_message->setHeader("Connection", "close");
+    CHECK(parser.last_message->getHeader("Connection")=="close" );
+    
+    parser.last_message->setHeader("Proxy-Connection","keep-alive");
+    CHECK(parser.last_message->hasHeader("Proxy-Connection") == true );
+    CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
+    
+    
+    //    CHECK(parser.last_message->bodyAsString() == "987654321q" );
+    
 }

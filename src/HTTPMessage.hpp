@@ -119,6 +119,7 @@ public:
     /**
      * Various serialization methods
      */
+    std::string     firstLineAsString();
     std::string 	bodyAsString();
     std::string     messageAsString();
 	BufferPtr       serialize();

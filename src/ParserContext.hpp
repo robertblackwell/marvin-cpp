@@ -36,6 +36,8 @@ public:
 	////////////////////////////////////////////////////////////////////
 
 	void*             objc_parser; //There are reasons this cannot be more strongly typed
+    ParserContext();
+    ~ParserContext();
 };
 
 /*
@@ -46,10 +48,10 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
 /*
  * Casts a point to a ParserContext*
  */
-ParserContext*  PointerToParserContext(void* pointer);
+//ParserContext*  PointerToParserContext(void* pointer);
 
 /*
  * reverses the process and casts a ParserRef to void*
  */
-void*   ParserContextRefToPointer(ParserContext* ref);
+//void*   ParserContextRefToPointer(ParserContext* ref);
 

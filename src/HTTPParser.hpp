@@ -66,9 +66,14 @@
  *
  */
 
-class HTTParser;
+class HTTPParser;
 
-typedef void(*HTTPParserCallBackFunctions)(HTTParser* parser);
+HTTPParser* getHTTPParser(http_parser* parser);
+ParserContext* getParserContext(http_parser* parser);
+void setHTTPParser(http_parser* c_parser, HTTPParser* cpp_parser);
+
+
+typedef void(*HTTPParserCallBackFunctions)(HTTPParser* parser);
 
 class  HTTPParser
 {
@@ -85,15 +90,10 @@ public:
 	void*                   context_pointer;
 	http_parser_settings*   parserSettings;
 
-    ParserContext*          contextRef;
     ParserContext           parserContext;
 	
-//	HTTPMessage*            message;
 	HTTPMessage*            last_message;
 	
-	//
-	// delegate callbacks
-	//
 	void*					onFinishedHeaders;
 	void*					onFinishedMessage;
 	void*					onError;

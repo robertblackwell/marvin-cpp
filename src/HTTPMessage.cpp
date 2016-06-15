@@ -108,7 +108,6 @@ HTTPMessage HTTPMessage::ConnectFailedMessage()
 
 HTTPMessage::HTTPMessage()
 {
-    printf("HTTPMessage constructore");
     std::shared_ptr<Buffer> tmp(new Buffer);
     body = tmp;
 //    body = std::make_shared<Buffer>(new Buffer());
@@ -192,10 +191,29 @@ BufferPtr HTTPMessage::serialize()
 //    return result;
     return nullptr;
 }
+std::string HTTPMessage::firstLineAsString()
+{
+    std::stringstream sstr;
 
+    std::string tmp = "";
+    if( isRequest() )
+    {
+        sstr << methodAsString() << " HTTP/" << http_major << "." << http_minor;
+    }
+    else
+    {
+        sstr << "HTTP/" << http_major << "." << http_minor << " " << status_code << " " << status;
+    }
+    return sstr.str();
+    
+}
 std::string HTTPMessage::bodyAsString()
 {
-    return nullptr;
-    //return [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
+    return ( *(body));
 }
-
+std::string HTTPMessage::messageAsString()
+{
+    std::string tmp = (firstLineAsString()) + "\r\n" + (headersAsString() + "\r\n\r\n" + *(body));
+    std::cout << "\n|" << tmp << "|\n" << std::endl;
+    return tmp;
+}

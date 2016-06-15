@@ -20,6 +20,7 @@
  */
 ParserContext*  parserContextFromParser(http_parser* parser );
 
+
 int message_begin_cb(http_parser* parser);
 int url_data_cb(http_parser* parser, const char* at, size_t length);
 int status_data_cb(http_parser* parser, const char* at, size_t length);
@@ -47,7 +48,7 @@ HTTPParser::~HTTPParser()
     free(parserSettings);
     parser = NULL;
     parserSettings = NULL;
-    contextRef = NULL;
+//    contextRef = NULL;
 }
 
 void HTTPParser::setStreamingOption(bool streamingOption)
@@ -65,11 +66,13 @@ int HTTPParser::appendBytes(void *buffer, unsigned length)
 void HTTPParser::appendEOF()
 {
     char* buffer = NULL;
+    size_t nparsed;
     int someLength = 0;
     if( ! messageCompleteFlag )
     {
-        size_t nparsed = http_parser_execute(parser, parserSettings, buffer, someLength);
+        nparsed = http_parser_execute(parser, parserSettings, buffer, someLength);
     }
+    std::cout << "back from parser : " << nparsed << std::endl;
 }
 
 
@@ -96,25 +99,25 @@ void HTTPParser::setUpNextMessage()
     {
         messageCompleteFlag = false;
         headersCompleteFlag = false;
-        contextRef->message = new HTTPMessage();
+        parserContext.message = new HTTPMessage();
         
         messageData = "";
         
-        if(contextRef->url_buf != NULL){
-            sb_free(contextRef->url_buf);
-            contextRef->url_buf = NULL;
+        if(parserContext.url_buf != NULL){
+            sb_free(parserContext.url_buf);
+            parserContext.url_buf = NULL;
         }
-        if( contextRef->status_buf != NULL){
-            sb_free(contextRef->status_buf);
-            contextRef->status_buf = NULL;
+        if( parserContext.status_buf != NULL){
+            sb_free(parserContext.status_buf);
+            parserContext.status_buf = NULL;
         }
-        if(contextRef->name != NULL){
-            sb_free(contextRef->name);
-            contextRef->name = NULL;
+        if(parserContext.name != NULL){
+            sb_free(parserContext.name);
+            parserContext.name = NULL;
         }
-        if(contextRef->value != NULL){
-            sb_free(contextRef->value);
-            contextRef->value = NULL;
+        if(parserContext.value != NULL){
+            sb_free(parserContext.value);
+            parserContext.value = NULL;
         }
     }
 }
@@ -124,13 +127,17 @@ void HTTPParser::setUpParserCallbacks()
     parser = (http_parser*)malloc(sizeof(http_parser));
     
     http_parser_init( parser, HTTP_BOTH );
-    contextRef = new ParserContext();
     
-    contextRef->objc_parser = this;
-    contextRef->message = new HTTPMessage();
+//    contextRef = new ParserContext();
+//    contextRef->objc_parser = this;
+//    contextRef->message = new HTTPMessage();
+//    
+//    context_pointer = ParserContextRefToPointer(contextRef);
+//    parser->data = context_pointer;
     
-    context_pointer = ParserContextRefToPointer(contextRef);
-    parser->data = context_pointer;
+    parserContext = ParserContext(); // initialize
+    
+    setHTTPParser(parser, this);
     
     http_parser_settings* settings = (http_parser_settings*)malloc(sizeof(http_parser_settings));
     parserSettings = settings;
@@ -154,6 +161,22 @@ void HTTPParser::setUpParserCallbacks()
 
 #pragma mark - c-language call back functions implementation
 
+HTTPParser* getHTTPParser(http_parser* parser)
+{
+    return (HTTPParser*) parser->data;
+}
+void setHTTPParser(http_parser* c_parser, HTTPParser* cpp_parser)
+{
+    c_parser->data = (void*) cpp_parser;
+}
+ParserContext* getParserContext(http_parser* parser)
+{
+    HTTPParser* p = getHTTPParser(parser);
+    ParserContext* c = &(p->parserContext);
+    return c;
+}
+
+
 ParserContext*  parserContextFromParser(http_parser* parser )
 {
     ParserContext* t = (ParserContext*)(parser->data);
@@ -165,8 +188,8 @@ ParserContext*  parserContextFromParser(http_parser* parser )
 int
 message_begin_cb(http_parser* parser)
 {
-    ParserContext* context = parserContextFromParser(parser);
-    HTTPParser* p = (HTTPParser*) context->objc_parser;
+    HTTPParser* p =  getHTTPParser(parser);
+    
 
     return 0;
 }
@@ -174,7 +197,7 @@ message_begin_cb(http_parser* parser)
 int
 url_data_cb(http_parser* parser, const char* at, size_t length)
 {
-    ParserContext* context = parserContextFromParser(parser);
+    ParserContext* context = getParserContext(parser);
     
     if( context->url_buf == NULL)
         context->url_buf = sb_create();
@@ -186,7 +209,7 @@ url_data_cb(http_parser* parser, const char* at, size_t length)
 int
 status_data_cb(http_parser* parser, const char* at, size_t length)
 {
-    ParserContext* context = parserContextFromParser(parser);
+    ParserContext* context = getParserContext(parser);
     
     if( context->status_buf == NULL)
         context->status_buf = sb_create();
@@ -197,7 +220,7 @@ status_data_cb(http_parser* parser, const char* at, size_t length)
 int
 header_field_data_cb(http_parser* parser, const char* at, size_t length)
 {
-    ParserContext* c = parserContextFromParser(parser);
+    ParserContext* c = getParserContext(parser);
     
     
     int state = c->header_state;
@@ -223,7 +246,7 @@ header_field_data_cb(http_parser* parser, const char* at, size_t length)
 int
 header_value_data_cb(http_parser* parser, const char* at, size_t length)
 {
-    ParserContext* c = parserContextFromParser(parser);
+    ParserContext* c = getParserContext(parser);
     
     int state = c->header_state;
     
@@ -242,7 +265,8 @@ header_value_data_cb(http_parser* parser, const char* at, size_t length)
 int
 headers_complete_cb(http_parser* parser)
 {
-    ParserContext* c = parserContextFromParser(parser);
+    ParserContext* c = getParserContext(parser);
+    HTTPParser* p = getHTTPParser(parser);
     
     if( c->name != NULL){
         saveNameValuePair(parser, c->name, c->value);
@@ -264,7 +288,6 @@ headers_complete_cb(http_parser* parser)
     
     c->message->method = static_cast<http_method>(parser->method);
 
-    HTTPParser* p = (HTTPParser*) c->objc_parser;
     
     p->headersCompleteFlag = true;
     p->last_message = c->message;
@@ -275,7 +298,7 @@ headers_complete_cb(http_parser* parser)
 int
 body_data_cb(http_parser* parser, const char* at, size_t length)
 {
-    ParserContext* c = parserContextFromParser(parser);
+    ParserContext* c = getParserContext(parser);
     
 //    c->body->appendBytes(at, length);
     (c->message->body)->append(at, length);
@@ -285,12 +308,9 @@ body_data_cb(http_parser* parser, const char* at, size_t length)
 int
 message_complete_cb(http_parser* parser)
 {
-    ParserContext* c = parserContextFromParser(parser);
-    
-//    c->message->body = c->body;
-    
-    HTTPParser* p = (HTTPParser*) (c->objc_parser);
-    
+    ParserContext* c = getParserContext(parser);
+    HTTPParser* p = getHTTPParser(parser);
+        
     p->last_message = c->message;
     p->messageCompleteFlag = true;
 
