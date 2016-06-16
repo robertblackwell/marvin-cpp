@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D46F22941D121909007F8F72 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F22851D1218A5007F8F72 /* main.cpp */; };
+		D40D2E851D131EAF00AA74AF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40D2E811D131E9C00AA74AF /* main.cpp */; };
 		D46F22951D121913007F8F72 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D46F22961D121915007F8F72 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
 		D46F22971D121919007F8F72 /* HTTPMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F22791D12188B007F8F72 /* HTTPMessage.cpp */; };
@@ -28,6 +28,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D40D2E811D131E9C00AA74AF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = test/main.cpp; sourceTree = SOURCE_ROOT; };
+		D40D2E821D131E9C00AA74AF /* test_set_1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_set_1.cpp; path = test/test_set_1.cpp; sourceTree = SOURCE_ROOT; };
 		D46F22731D12188B007F8F72 /* catch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
 		D46F22741D12188B007F8F72 /* http_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = http_parser.c; sourceTree = "<group>"; };
 		D46F22751D12188B007F8F72 /* http_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_parser.h; sourceTree = "<group>"; };
@@ -39,8 +41,6 @@
 		D46F227C1D12188B007F8F72 /* HTTPParser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = HTTPParser.hpp; sourceTree = "<group>"; };
 		D46F227D1D12188B007F8F72 /* ParserContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParserContext.cpp; sourceTree = "<group>"; };
 		D46F227E1D12188B007F8F72 /* ParserContext.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ParserContext.hpp; sourceTree = "<group>"; };
-		D46F22851D1218A5007F8F72 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../test/main.cpp; sourceTree = "<group>"; };
-		D46F22861D1218A5007F8F72 /* test_set_1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_set_1.cpp; path = ../test/test_set_1.cpp; sourceTree = "<group>"; };
 		D46F228D1D1218D2007F8F72 /* unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -83,8 +83,8 @@
 		D46F228E1D1218D2007F8F72 /* unit-test */ = {
 			isa = PBXGroup;
 			children = (
-				D46F22851D1218A5007F8F72 /* main.cpp */,
-				D46F22861D1218A5007F8F72 /* test_set_1.cpp */,
+				D40D2E811D131E9C00AA74AF /* main.cpp */,
+				D40D2E821D131E9C00AA74AF /* test_set_1.cpp */,
 			);
 			path = "unit-test";
 			sourceTree = "<group>";
@@ -171,11 +171,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D46F22941D121909007F8F72 /* main.cpp in Sources */,
 				D46F22951D121913007F8F72 /* http_parser.c in Sources */,
 				D46F22961D121915007F8F72 /* simple_buffer.c in Sources */,
 				D46F22971D121919007F8F72 /* HTTPMessage.cpp in Sources */,
 				D46F229A1D121A7A007F8F72 /* HTTPParser.cpp in Sources */,
+				D40D2E851D131EAF00AA74AF /* main.cpp in Sources */,
 				D46F22991D121920007F8F72 /* ParserContext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -288,6 +288,7 @@
 				D46F22931D1218D2007F8F72 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D4EA1EF01D1217E600D1EABC /* Build configuration list for PBXProject "HTTPMessage" */ = {
 			isa = XCConfigurationList;

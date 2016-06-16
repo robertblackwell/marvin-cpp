@@ -64,7 +64,7 @@ TEST_CASE("test call backs good message ") {
     
     parser.onMessageLambda(
                            [ &messageCBFlag, &mock ]
-                           (HTTPParser* p, HTTPMessage* msg)
+                           (HTTPParser* p, HTTPMessage* msg, bool& breakFlag)
                            {
                                messageCBFlag = true;
                                mock.message_flag  = true;

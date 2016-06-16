@@ -150,8 +150,8 @@ public:
      *  -   parse error
      *
      */
-    void onMessageLambda(std::function<void(HTTPParser*, HTTPMessage*)> cbLambda);
-    std::function<void(HTTPParser*, HTTPMessage*)> onMessageLambdaCB;
+    void onMessageLambda(std::function<void(HTTPParser*, HTTPMessage*, bool&)> cbLambda);
+    std::function<void(HTTPParser*, HTTPMessage*, bool&)> onMessageLambdaCB;
 
     void onHeadersLambda(std::function<void(HTTPParser*, HTTPMessage*)> cbLambda);
     std::function<void(HTTPParser*, HTTPMessage*)> onHeadersLambdaCB;

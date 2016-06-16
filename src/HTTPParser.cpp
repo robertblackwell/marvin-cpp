@@ -103,7 +103,7 @@ void HTTPParser::onHeadersLambda(std::function<void(HTTPParser*, HTTPMessage*)> 
     onHeadersLambdaCB = cbLambda;
 }
 
-void HTTPParser::onMessageLambda(std::function<void(HTTPParser*, HTTPMessage*)>  cbLambda)
+void HTTPParser::onMessageLambda(std::function<void(HTTPParser*, HTTPMessage*, bool&)>  cbLambda)
 {
     std::cout << "message call back Lambda set" << std::endl;
     onMessageLambdaCB = cbLambda;
@@ -342,17 +342,19 @@ message_complete_cb(http_parser* parser)
 {
     ParserContext* c = getParserContext(parser);
     HTTPParser* p = getHTTPParser(parser);
-        
+    bool terminateParser = false;
+    
     p->last_message = c->message;
     p->messageCompleteFlag = true;
-    if( p-> onMessageLambdaCB != NULL )
-        p->onMessageLambdaCB(p, p->last_message);
-
+    if( p-> onMessageLambdaCB != NULL ){
+        p->onMessageLambdaCB(p, p->last_message, terminateParser);
+    }
     /*
      * Now get ready for the next message
      */
     p->setUpNextMessage();
-    
+    if( terminateParser )
+        return 1;
     return 0;
 }
 
