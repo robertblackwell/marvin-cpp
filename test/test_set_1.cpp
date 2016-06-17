@@ -151,6 +151,7 @@ TEST_CASE("CHUNKED data Response ") {
         (char*) "0f\r\n1234567890HGHGH\r\n",
         (char*) "0a\r\n1234567890\r\n",
         (char*) "0\r\n",
+        (char*) "\r\n",
         NULL
     };
 

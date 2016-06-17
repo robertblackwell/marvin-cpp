@@ -13,7 +13,7 @@
 /*
  *  This class parses streams of data into streams of HTTPMessage objects.
  *
- *  The data stream is provided to the parser using one of the appendXXXXX methods. Data can be provided
+ *  The data stream is provided to the parser using the appendBytes method. Data can be provided
  *  "all at once" - that is a complete message in one lump or "piece meal" a sequence of arbitarily sized
  *  buffers.
  *
@@ -21,48 +21,45 @@
  *  of messages. The default is a single message.
  *
  *  Generally the parser can detect the end of a http messages as most messages formats have
- *  message length information in the message itself. However it is possible for a "server"
+ *  message length information in the message itself, or each "chunk" has a chunk length. 
+ *
+ *  However it is possible for a "server"
  *  to signal the end of a message by simple closing the connection. Hence in some cases the parser
- *  will only know that end-of-message has arrived if it is told.  the way to tell the parse that
+ *  will only know that end-of-message has arrived unless it is told.  The way to tell the parse that
  *  the end of data has been hit is to call the method appendEOF.
  *
  *  It is therefore good practice to call appendEOF whenever the code using HTTPPraser is able to detect
  *  an explicit end of data condition. There is no danger in calling appendEOF even when the message
  *  contains length infomation and the parser can self-detect the end of message.
  *
- *  The parser signals progress/outcomes  three "delegate" callbacks .
+ *  A call to parser.appendBytes will only return when:
  *
- *  -   parserDidFinishParsingHeaders(HTTPMessage& aMessage)
- *  -   parserDidFinishParsingMessage(HTTPMessage& aMessage)
- *  -   parserError(NSError anError)
+ *  -   it has processed all the bytes that it was given, or
+ *  -   it encountered a parse error
  *
- *  and also via three property/methods
+ *  - IT DOES NOT RETURN ON COMPLETION OF PARSING A FULL MESSAGE
  *
- *  - (BOOL)        onfinishedHeaders:(HTTPMessage*) amessage;
- *  - (BOOL)        onfinishedHeaders:(HTTPMessage*) amessage;
- *  - (NSError*)    onfinishedWithError;
+ *  In order to get a full parsed message the onMessagecB  .. see below ..must be provided.
  *
- *  The delegate is optional (that is the parser will not crash is a delegate is not assigned),
- *  and in such a situation the three (finished) method can be used to detect state changes.
+ *  This is important in a situation where multiple messages may be available at the input socket.
+ *  Since the parser would move on to the next message without returning.
  *
- *  NOTE : operating without a delegate, relying on the finish methods, will not work correctly
- *  in a message streaming environment as a data for a subsequent message may/will reset the flags
- *  that the finish methods rely on before they can be used. 
+ *  Three callbacks are provided, these are instances of cpp std::function objects, onMessageCB
+ *  is required (manditory) the other two optional.
  *
- *  If message streaming is being used a delegate UST be provided and the finish methods NOT relied on.
+ *  -   onHeadersCB
+ *  -   onMessageCB
+ *  -   onParserErrorCB
  *
- * NOTE: messages parsed by this class AE not ready for re-transmission
- * ====================================================================
+ *  THe onMessageCB interface provides a facility for the call back to terminate the parsers processing. It
+ *  does this via a call backs bool breakFlag parameter. This is provided to support proxying the CONNECT
+ *  request where only one HTTP messages is required (and only one wanted) from the client. This enables the
+ *  call back to terminate parsing of any other data on the socket after the first full message is parsed.
  *
- *  For example the parser "de-chunks" the body of a message but does NOT remove the "Transfer-Encoding: chunked"
- *  from the list of headers nor does it add a Content-Length header.
+ *  When terminated in this way a call to parser.appendBytes may return a value that is less than the number of bytes
+ *  given it. This situation would normally signify a parse error. The application must maintain other state
+ *  information (such as a break flag) to distinguish a forced terminate from a parsing error.
  *
- *  The purpose of the parser is NOT to create a message ready for transmission but to decode a message
- *  so that it can be acted upon by a server or client.
- *
- *  If the message is to be re-transmitted the header would need to be "adjusted" to ensure the 
- *  message conforms to the relevant standard and that the receiver
- *  can correctly interpret the message.
  *
  */
 

@@ -123,5 +123,7 @@ public:
     std::string 	bodyAsString();
     std::string     messageAsString();
 	BufferPtr       serialize();
+    void parseUrlForConnectRequest();
+
 
 };

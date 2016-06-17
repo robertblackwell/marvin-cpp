@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include "HTTPMessage.hpp"
 #include "HTTPParser.hpp"
 
@@ -132,22 +133,26 @@ bool HTTPMessage::isHTTP()
 }
 
 
-void parseUrlForConnectRequest()
+void HTTPMessage::parseUrlForConnectRequest()
 {
-//    if( ! isHTTPS() )
-//    {
-//        @throw [NSException
-//             exceptionWithName:@"HTTPMessage: Cannot get host"
-//             reason:@"Message not CONNECT"
-//             userInfo:nil];
-//    }
-//    if( self.connect_host == nil )
-//    {
-//        NSArray*  bits = [url componentsSeparatedByString:@":"];
-//        self.connect_host = [bits objectAtIndex:0];
-//        NSString* portStr = [bits objectAtIndex:1];
-//        self.connect_port = (unsigned int)[portStr integerValue];
-//    }
+    std::string u = url;
+    int pos = (int)u.find(":", 0);
+    if( pos != std::string::npos )
+    {
+        size_t len = u.length();
+        size_t port_start = pos + 1;
+        size_t port_len = len - port_start ;
+        std::string h = u.substr(0, pos - 1);
+        std::string p = u.substr(port_start, port_len);
+        connect_host = h;
+        connect_port = stoi(p);
+    }
+    else
+    {
+        connect_host = "";
+        connect_port = 0;
+    }
+    
 }
 std::string HTTPMessage::getConnectHost()
 {

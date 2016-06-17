@@ -20,7 +20,8 @@
  */
 ParserContext*  parserContextFromParser(http_parser* parser );
 
-int do_nothing_cb(http_parser* parser);
+int chunk_header_cb(http_parser* parser);
+int chunk_complete_cb(http_parser* parser);
 
 int message_begin_cb(http_parser* parser);
 int url_data_cb(http_parser* parser, const char* at, size_t length);
@@ -40,6 +41,9 @@ HTTPParser::HTTPParser()
     messageCompleteFlag = false;
     headersCompleteFlag = false;
     streamMessagesOption = false;
+//    onParseErrorLambdaCB = NULL;
+//    onHeadersLambdaCB   = NULL;
+//    onMessageLambdaCB = NULL;
     setUpParserCallbacks();
 }
 
@@ -62,11 +66,10 @@ int HTTPParser::appendBytes(void *buffer, unsigned length)
     messageData.append((char*)buffer, length);
     size_t nparsed = http_parser_execute(parser, parserSettings, (char*)buffer, (int)length);
     
-    if( nparsed != length ){
+    if( nparsed != length && (onParseErrorLambdaCB != nullptr) )
         onParseErrorLambdaCB(this);
-    }
     
-    return nparsed;
+    return (int)nparsed;
 }
 
 void HTTPParser::appendEOF()
@@ -178,8 +181,8 @@ void HTTPParser::setUpParserCallbacks()
     
     settings->on_body = body_data_cb;
     settings->on_message_complete = message_complete_cb;
-    settings->on_chunk_header = do_nothing_cb;
-    settings->on_chunk_complete = do_nothing_cb;
+    settings->on_chunk_header = chunk_header_cb;
+    settings->on_chunk_complete = chunk_complete_cb;
     
 }
 
@@ -210,10 +213,16 @@ ParserContext*  parserContextFromParser(http_parser* parser )
     return t;
 }
 
-int do_nothing_cb(http_parser* p)
+int chunk_header_cb(http_parser* p)
 {
     return 0;
 }
+
+int chunk_complete_cb(http_parser* p)
+{
+    return 0;
+}
+
 int
 message_begin_cb(http_parser* parser)
 {
@@ -321,7 +330,7 @@ headers_complete_cb(http_parser* parser)
     p->headersCompleteFlag = true;
     p->last_message = c->message;
 
-    if( p-> onHeadersLambdaCB != NULL )
+    if( p-> onHeadersLambdaCB != nullptr )
         p->onHeadersLambdaCB(p, p->last_message);
 
     return 0;
