@@ -77,9 +77,9 @@
 		D4AF58DE1DE6F6AD001AC0A1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D4BEE9F71DE7BA6E00F61432 /* repeating_timer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = repeating_timer.hpp; sourceTree = "<group>"; };
 		D4BEE9F91DE7BB7500F61432 /* mock_connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mock_connection.hpp; sourceTree = "<group>"; };
-		D4BEE9FB1DE7BC5300F61432 /* mock_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mock_error.hpp; sourceTree = "<group>"; };
+		D4BEE9FB1DE7BC5300F61432 /* error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = error.hpp; sourceTree = "<group>"; };
 		D4BEE9FC1DE7BC5300F61432 /* response_reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = response_reader.hpp; sourceTree = "<group>"; };
-		D4BEE9FD1DE7BCE300F61432 /* mock_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mock_buffer.hpp; sourceTree = "<group>"; };
+		D4BEE9FD1DE7BCE300F61432 /* buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = buffer.hpp; sourceTree = "<group>"; };
 		D4BEEA011DE82FC800F61432 /* Message.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Message.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -159,9 +159,9 @@
 				D4AF58DE1DE6F6AD001AC0A1 /* main.cpp */,
 				D4BEE9F71DE7BA6E00F61432 /* repeating_timer.hpp */,
 				D4BEE9F91DE7BB7500F61432 /* mock_connection.hpp */,
-				D4BEE9FB1DE7BC5300F61432 /* mock_error.hpp */,
+				D4BEE9FB1DE7BC5300F61432 /* error.hpp */,
 				D4BEE9FC1DE7BC5300F61432 /* response_reader.hpp */,
-				D4BEE9FD1DE7BCE300F61432 /* mock_buffer.hpp */,
+				D4BEE9FD1DE7BCE300F61432 /* buffer.hpp */,
 			);
 			path = main1;
 			sourceTree = "<group>";
@@ -498,6 +498,7 @@
 				D458EA361DF6413600E820A9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D46F22911D1218D2007F8F72 /* Build configuration list for PBXNativeTarget "unit-test" */ = {
 			isa = XCConfigurationList;

@@ -125,6 +125,9 @@ public:
 	 * can be obtained via the getCurrentMessage method
 	 */
 	bool isFinishedMessage();
+    
+    bool isError();
+    enum http_errno getErrno();
 
 	/** 
 	 * Returns the the Message currently being parsed. When operating in non streaming mode

@@ -6,13 +6,13 @@
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "HTTPMessage.hpp"
+//#include "HTTPMessage.hpp"
 
-#include "Parser.hpp"
+//#include "Parser.hpp"
 
 #include "repeating_timer.hpp"
-#include "mock_error.hpp"
-#include "mock_buffer.hpp"
+#include "error.hpp"
+#include "buffer.hpp"
 #include "mock_connection.hpp"
 
 #include "response_reader.hpp"
@@ -45,7 +45,7 @@ public:
     MBuffer*                    bodyBuffer;
 
     
-    TestReader(boost::asio::io_service& io) : io_(io), conn_(Connection(io, 6))
+    TestReader(boost::asio::io_service& io) : io_(io), conn_(Connection(io, 7))
     {
 //        Connection c(io, 6);
 //        conn_ = c;
@@ -58,13 +58,9 @@ public:
         delete rdr_;
         delete bodyBuffer;
     }
-    void onChunkData(Error& er, HTTPMessage* msg){
-        std::cout << __FUNCTION__ << std::endl;
-    }
-    void onEnd(Error& er, HTTPMessage* msg){
-        std::cout << __FUNCTION__ << std::endl;
-    }
+    
     void onBodyData(Error& er, std::size_t bytes_transfered){
+        std::cout << "TestReader::" << __FUNCTION__ <<  " entered" <<  std::endl;
         bodyBuffer->setSize(bytes_transfered);
         MBuffer* buf = bodyBuffer;
         std::string tmp((char*)buf->data(), (std::size_t)buf->size());
@@ -82,16 +78,18 @@ public:
             bodyBuffer->empty();
             rdr_->readBodyData(*bodyBuffer, bh);
         }
+        std::cout << "TestReader::" << __FUNCTION__ <<  " exit" <<  std::endl;
     }
     void onBodyEnd(Error& er){
         std::cout << "TestReader::" << __FUNCTION__ <<  std::endl;        
     }
     void onResponse(Error& er, MessageInterface* msg){
-        std::cout << __FUNCTION__ << std::endl;
+        std::cout << "TestReader::" << __FUNCTION__ << std::endl;
         rdr_->dumpHeaders(std::cout);
         bodyBuffer = new MBuffer(20000);
         auto bh = std::bind(&TestReader::onBodyData, this, std::placeholders::_1, std::placeholders::_2);
         rdr_->readBodyData(*bodyBuffer, bh);
+        std::cout << "TestReader::" << __FUNCTION__ << std::endl;
     }
 
     void run(){
@@ -110,6 +108,27 @@ void testRequestReader(int testcase)
     io_service.run();
 }
 
+void TestBuffer(){
+    MBuffer* mb = new MBuffer(1000);
+    char* p = (char*) mb->data();
+    bool x1 = mb->contains(p);
+    bool x2 = mb->contains(p + 1000);
+    bool x3 = mb->contains(p + 1001);
+    bool x4 = mb->contains(p - 1);
+    std::cout << "" << std::endl;
+    FBuffer fb(mb);
+    fb.append((void*)p, 1);
+    fb.append((void*)(p+4), 1);
+    fb.append((void*)(p+5), 1);
+    
+    fb.append((void*)(p+7), 90);
+    fb.append((void*)(p+101), 100);
+    fb.append((void*)p, 1001);
+    std::cout << "" << std::endl;
+
+}
+
 int main(){
+//    TestBuffer();
     testRequestReader(0);
 }

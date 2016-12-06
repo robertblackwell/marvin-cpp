@@ -95,7 +95,17 @@ bool Parser::isFinishedMessage()
     return messageCompleteFlag;
 }
 
-
+bool Parser::isError(){
+    enum http_errno x = (enum http_errno)this->parser->http_errno;
+    char* n = (char*)http_errno_name(x);
+    char* d = (char*)http_errno_description(x);
+    std::cout << "Paser::isError errno: " << this->parser->http_errno <<
+    " nam: " << n << " description: " << d << std::endl;
+    return (this->parser->http_errno != 0);
+};
+enum http_errno Parser::getErrno(){
+    return (enum http_errno) this->parser->http_errno;
+}
 /*
  **************************************************************************************************
  */
@@ -328,6 +338,7 @@ message_complete_cb(http_parser* parser)
     p->messageCompleteFlag = true;
     
     MessageInterface* message = p->currentMessage();
+    p->OnMessageComplete(message);
     /*
      * Now get ready for the next message
      */

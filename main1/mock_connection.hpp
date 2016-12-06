@@ -8,7 +8,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "mock_error.hpp"
+#include "error.hpp"
 
 typedef std::function<void(Error& er, std::size_t bytes_transfered)> AsyncReadCallback;
 
@@ -109,7 +109,17 @@ public:
                 "0a\r\n1234567890\r\n",
                 "0\r\n",
                 "\r\n"
-            }
+            },
+            // 7 error
+            std::vector<std::string> {
+                "HTTP/1.1 200 OK 11Reason Phrase\r\n",
+                "Host: ahost\r\n",
+                "Connection: keep-alive\r\n",
+                "Proxy-Connection: keep-alive\r\n",
+                "Content-length: 10\r\n\r\n",
+                "1234567"
+            },
+
         };
 //        char** test_cases[7] = {str0, str1, str2, str3, str4, str5, str6};
 //        
