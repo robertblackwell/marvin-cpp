@@ -10,7 +10,7 @@
 #include <sstream>
 #include <vector>
 #include "HTTPMessage.hpp"
-#include "HTTPParser.hpp"
+#include "Parser.hpp"
 
 
 #pragma mark - http method stuff

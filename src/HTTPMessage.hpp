@@ -44,23 +44,28 @@ public:
 	// Request specific fields, HTTP Method and destination URL
 	//
 	enum http_method  					method;
+    void setMethod(enum http_method m){ method = m;}
+    
 	std::string							url;
-	
+    void setUrl(std::string u){ url = u;}
 	//
 	// Response specific fields, HTTP status (numeric) and text description
 	//	
 	int									status_code;
 	std::string							status;
-
+    void setStatusCode(int sc){ status_code = sc; }
+    void setStatus(std::string st){ status = st; }
 	//
 	// Common element of both request and response as in http/major.minor
 	//
 	int									http_major;
 	int									http_minor;
-	
+    void setHttpVersMajor(int major){ http_major = major; }
+    void setHttpVersMinor(int minor){ http_minor = minor; }
+    
     /**
      * The message headers (not the first line), they are key value pairs.
-     * Currently no text transformis applied but probably at some point
+     * Currently no text transform is applied but probably at some point
      * will convert everything to camel-case
      */
     static const std::string 			CONTENT_LENGTH;
@@ -115,7 +120,6 @@ public:
 	bool isRequest();
 	bool isHTTPS();
 	bool isHTTP();
-    
     /**
      * Various serialization methods
      */
