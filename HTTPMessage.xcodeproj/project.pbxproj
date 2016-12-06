@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D40D2E851D131EAF00AA74AF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40D2E811D131E9C00AA74AF /* main.cpp */; };
+		D448890C1DF74E57000E9F07 /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
 		D458EA331DF6413600E820A9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D458EA321DF6413600E820A9 /* main.cpp */; };
 		D458EA371DF644B700E820A9 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D458EA391DF6567700E820A9 /* marvin_error.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D458EA381DF6567700E820A9 /* marvin_error.hpp */; };
@@ -59,6 +60,11 @@
 /* Begin PBXFileReference section */
 		D40D2E811D131E9C00AA74AF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = test/main.cpp; sourceTree = SOURCE_ROOT; };
 		D40D2E821D131E9C00AA74AF /* test_set_1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_set_1.cpp; path = test/test_set_1.cpp; sourceTree = SOURCE_ROOT; };
+		D44889071DF74D36000E9F07 /* libboost_log.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_log.a; path = deps/lib/libboost_log.a; sourceTree = "<group>"; };
+		D44889091DF74D86000E9F07 /* libboost_log_setup.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_log_setup.a; path = deps/lib/libboost_log_setup.a; sourceTree = "<group>"; };
+		D448890B1DF74E57000E9F07 /* libboost_log.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_log.dylib; path = deps/lib/libboost_log.dylib; sourceTree = "<group>"; };
+		D448890D1DF750CB000E9F07 /* easylogging++.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "easylogging++.h"; path = "deps/easyloggingpp/src/easylogging++.h"; sourceTree = SOURCE_ROOT; };
+		D448890E1DF751E7000E9F07 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		D458EA301DF6413600E820A9 /* error_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = error_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D458EA321DF6413600E820A9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D458EA381DF6567700E820A9 /* marvin_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marvin_error.hpp; sourceTree = "<group>"; };
@@ -104,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D448890C1DF74E57000E9F07 /* libboost_log.dylib in Frameworks */,
 				D4AF58E31DE6F737001AC0A1 /* libboost_system.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -123,6 +130,7 @@
 		D46F22721D12188B007F8F72 /* external_src */ = {
 			isa = PBXGroup;
 			children = (
+				D448890D1DF750CB000E9F07 /* easylogging++.h */,
 				D46F22731D12188B007F8F72 /* catch.hpp */,
 				D46F22741D12188B007F8F72 /* http_parser.c */,
 				D46F22751D12188B007F8F72 /* http_parser.h */,
@@ -135,6 +143,7 @@
 		D46F22781D12188B007F8F72 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				D448890E1DF751E7000E9F07 /* Logger.h */,
 				D4BEEA011DE82FC800F61432 /* Message.hpp */,
 				D46F22791D12188B007F8F72 /* HTTPMessage.cpp */,
 				D46F227A1D12188B007F8F72 /* HTTPMessage.hpp */,
@@ -169,6 +178,9 @@
 		D4EA1EEC1D1217E600D1EABC = {
 			isa = PBXGroup;
 			children = (
+				D448890B1DF74E57000E9F07 /* libboost_log.dylib */,
+				D44889091DF74D86000E9F07 /* libboost_log_setup.a */,
+				D44889071DF74D36000E9F07 /* libboost_log.a */,
 				D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */,
 				D46F22721D12188B007F8F72 /* external_src */,
 				D46F22781D12188B007F8F72 /* src */,

@@ -26,7 +26,8 @@ namespace Marvin{
     typedef boost::system::error_code ErrorType;
 
     enum class errc {
-        end_of_message = 21
+        end_of_message = 21,
+        end_of_body = 22
     };
 
     class category : public boost::system::error_category
@@ -38,6 +39,9 @@ namespace Marvin{
             switch( e ){
                 case Marvin::errc::end_of_message :
                     return "end of message";
+                    break;
+                case Marvin::errc::end_of_body :
+                    return "end of body";
                     break;
                 default:
                     return "unknow Marvin error";

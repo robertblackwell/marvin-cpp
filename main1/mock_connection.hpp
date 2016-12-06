@@ -10,7 +10,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "error.hpp"
 
-typedef std::function<void(Error& er, std::size_t bytes_transfered)> AsyncReadCallback;
+typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallback;
 
 /**
  * This class simulates an async/non-blocking sockt connection
@@ -164,12 +164,14 @@ public:
             // at this point we have moved len bytes into the buffer mb
             st = new SingleTimer(io_, 1000);
             st->start([this, buf, len, cb](const boost::system::error_code& ec)->bool{
-                auto f = [this, buf, len, cb](Error& er, std::size_t bytes){
+                
+                auto f = [this, buf, len, cb](Marvin::ErrorType& er, std::size_t bytes){
                     std::cout << "Connection::asyncRead::start::lambda" << std::endl;
                     cb(er, bytes);
                     std::cout << "Connection::asyncRead::start::lambda" << std::endl;
                 };
-                auto pf = std::bind(f, Error::ok(), (std::size_t)len);
+                
+                auto pf = std::bind(f, Marvin::make_error_ok(), (std::size_t)len);
                 io_.post(pf);
                 return true;
             });
@@ -178,7 +180,7 @@ public:
         {
             //  we have run out of test data so simulate an end of input - read of length zero
             ((char*)mb.data())[0] = (char)0;
-            auto pf = std::bind(cb, Error::eom(), (std::size_t) 0);
+            auto pf = std::bind(cb, Marvin::make_error_eom(), (std::size_t) 0);
             io_.post(pf);
             return;
         }

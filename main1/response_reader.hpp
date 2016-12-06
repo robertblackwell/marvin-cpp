@@ -12,19 +12,19 @@
 #include "Message.hpp"
 #include "Parser.hpp"
 
-typedef std::function<void(Error& err)>                                 BodyEndCbType;
-typedef std::function<void(Error& err, std::size_t bytes_transfered)>   BodyCbType;
-typedef std::function<void(Error& err, MBuffer& chunk)>                 ChunkCbType;
-typedef std::function<void(Error& err, MessageInterface* msg)>          HeadersCbType;
-typedef std::function<void(Error& err, MessageInterface* msg)>          ResponseCbType;
-
-typedef std::function<void(Error& err, FBufferUniquePtr bPtr)>                AsyncReadBodyCallback;
+//
+// Two call back types required by RequestReader
+//
+// call back when reading headers
+typedef std::function<void(Marvin::ErrorType& err, MessageInterface* msg)>          ResponseCbType;
+// Callback when reading body data
+typedef std::function<void(Marvin::ErrorType& err, FBufferUniquePtr bPtr)>          AsyncReadBodyCallback;
 
 /**
  * Instances of this class read an incoming http(s) response message from a stream
  *
- * @TODO - trying to wworkout how to manage the body
- * @TODO - want the response to message to BE this class so waht to base
+ * @TODO - trying to workout how to manage the body
+ * @TODO - want the response to message to BE this class so what to base
  * ResponseREader on MessageBase
  */
 class ResponseReader : public Parser, public MessageBase
@@ -45,21 +45,21 @@ public:
     {
         delete readBuffer;
     }
-    void OnParseBegin(){
-        std::cout << __FUNCTION__ << std::endl;
-        Parser::OnParseBegin();
-    }
-    void OnParserError(){
-        std::cout << __FUNCTION__ << std::endl;        
-    }
-    void OnHeadersComplete(MessageInterface* msg){
-        std::cout << __FUNCTION__ << std::endl;
-        _headersComplete = true;
-    }
-    void OnMessageComplete(MessageInterface* msg){
-        std::cout << __FUNCTION__ << std::endl;
-        _messageComplete = true;
-    }
+//    void OnParseBegin(){
+//        std::cout << __FUNCTION__ << std::endl;
+//        Parser::OnParseBegin();
+//    }
+//    void OnParserError(){
+//        std::cout << __FUNCTION__ << std::endl;        
+//    }
+//    void OnHeadersComplete(MessageInterface* msg){
+//        std::cout << __FUNCTION__ << std::endl;
+//        _headersComplete = true;
+//    }
+//    void OnMessageComplete(MessageInterface* msg){
+//        std::cout << __FUNCTION__ << std::endl;
+//        _messageComplete = true;
+//    }
     void OnBodyData(void* buf, int len)
     {
         //
@@ -99,10 +99,7 @@ public:
         MessageInterface* m = this;
         return this;
     }
-    void readChunk(ChunkCbType cb)
-    {
-        this->_chunkCb = cb;
-    }
+    
     void readBody(AsyncReadBodyCallback cb)
     {
         _bodyCallback = cb;
@@ -126,12 +123,12 @@ public:
             std::cout << std::hex << (long)_cachedBodyData;
             std::cout << std::endl;
             
-            Error* er = ( isFinishedMessage() )? Error::end_of_message() : Error::success();
+            Marvin::ErrorType er = ( isFinishedMessage() )? Marvin::make_error_eom() : Marvin::make_error_ok();
             void* p = mb.data();
             std::size_t sz = _cachedBodyDataLength;
             memcpy(p, _cachedBodyData, sz);
             mb.setSize(_cachedBodyDataLength);
-            auto pf = std::bind(_bodyCb, *er, mb.size());
+            auto pf = std::bind(_bodyCb, er, mb.size());
             _cachedBodyDataLength = 0; // signals that the cache has been used
             _io.post(pf);
             
@@ -146,13 +143,8 @@ public:
     }
     void readBodyHandler(MBuffer& mb){
     }
-    void onError(std::string err)
-    {
-        Error* er = new Error(err);
-        this->_responseCb(*er, NULL);
-    }
 
-    void handleError(Error er){
+    void handleError(Marvin::ErrorType& er){
         
     }
     void handleParseError(){
@@ -163,7 +155,7 @@ public:
         auto h = std::bind(&ResponseReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
         _conn.asyncRead(*readBuffer, h);
     }
-    void asyncReadHandler(Error er, std::size_t bytes_transfered){
+    void asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_transfered){
         std::cout << "ResponseReader::" << __FUNCTION__ << std::endl;
 //        if( er != Error::success() ){
 //            handleError(er);
@@ -196,9 +188,9 @@ public:
             startRead();
         }else if( isFinishedHeaders() && ! saved_EOH ){
             // headers are finishing with this block of read data
-            Error* er = Error::success();
+            Marvin::ErrorType er = Marvin::make_error_ok();
             MessageInterface* m = currentMessage();
-            auto pf = std::bind(_responseCb, *er, m);
+            auto pf = std::bind(_responseCb, er, m);
             //
             // This buffer finished the headers.
             // See if any body data came in  and if so cache it
@@ -224,7 +216,7 @@ public:
         }else if( ! saved_EOM ){
             // now doing the body OR maybe should not be here
             std::cout << "NOT EOM" << std::endl;
-            Error er = ( isFinishedMessage() )? Error::eom() : Error::ok();
+            Marvin::ErrorType er = ( isFinishedMessage() )? Marvin::make_error_eom() : Marvin::make_error_ok();
             //
             // There is an issue here - need to know when the body cb is finished so can start the next read
             // Another issue - we are passing the chunked data to the call back
@@ -271,11 +263,8 @@ private:
     MBuffer*            _bodyMBuffer;
     FBufferUniquePtr    _bodyFBufferUniquePtr;
     
-    BodyEndCbType           _bodyEndCb;
-    BodyCbType              _bodyCb;
+    AsyncReadCallback       _bodyCb;
     AsyncReadBodyCallback   _bodyCallback;
-    ChunkCbType             _chunkCb;
-    HeadersCbType           _headersCb;
     ResponseCbType          _responseCb;
 };
 

@@ -5,6 +5,8 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include "Logger.h"
+INITIALIZE_EASYLOGGINGPP
 
 //#include "HTTPMessage.hpp"
 
@@ -45,7 +47,7 @@ public:
     MBuffer*                    bodyBuffer;
 
     
-    TestReader(boost::asio::io_service& io) : io_(io), conn_(Connection(io, 7))
+    TestReader(boost::asio::io_service& io) : io_(io), conn_(Connection(io, 6))
     {
 //        Connection c(io, 6);
 //        conn_ = c;
@@ -59,7 +61,7 @@ public:
         delete bodyBuffer;
     }
     
-    void onBodyData(Error& er, std::size_t bytes_transfered){
+    void onBodyData(Marvin::ErrorType er, std::size_t bytes_transfered){
         std::cout << "TestReader::" << __FUNCTION__ <<  " entered" <<  std::endl;
         bodyBuffer->setSize(bytes_transfered);
         MBuffer* buf = bodyBuffer;
@@ -70,7 +72,8 @@ public:
         std::cout << "TestReader::" << __FUNCTION__ <<  "body: " << body <<  std::endl;
 
         auto bh = std::bind(&TestReader::onBodyData, this, std::placeholders::_1, std::placeholders::_2);
-        bool done = Error::end_of_message()->equalTo(er);
+//        bool done = Error::end_of_message()->equalTo(er);
+        bool done = (er == Marvin::make_error_eom());
         
         if( done ){
             std::cout << "Test complete body : " << body << std::endl;
@@ -80,10 +83,10 @@ public:
         }
         std::cout << "TestReader::" << __FUNCTION__ <<  " exit" <<  std::endl;
     }
-    void onBodyEnd(Error& er){
+    void onBodyEnd(Marvin::ErrorType& er){
         std::cout << "TestReader::" << __FUNCTION__ <<  std::endl;        
     }
-    void onResponse(Error& er, MessageInterface* msg){
+    void onResponse(Marvin::ErrorType& er, MessageInterface* msg){
         std::cout << "TestReader::" << __FUNCTION__ << std::endl;
         rdr_->dumpHeaders(std::cout);
         bodyBuffer = new MBuffer(20000);
@@ -129,6 +132,13 @@ void TestBuffer(){
 }
 
 int main(){
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    //defaultConf.set(el::Level::Info, el::ConfigurationType::Enabled, "false");
+    defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
+    defaultConf.set(el::Level::Global, el::ConfigurationType::Format, "%level|%func[%fbase:%line] : %msg");
+    el::Loggers::reconfigureAllLoggers(defaultConf);
+    LOG(INFO) << "This is the first log message" << std::endl;
 //    TestBuffer();
     testRequestReader(0);
 }
