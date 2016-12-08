@@ -19,9 +19,6 @@ public:
     }
 private:
     void doSomething(const boost::system::error_code& ec){
-        
-        std::cout << __FUNCTION__ << std::endl;
-        
         callBack(ec);
     }
     int interval_;
@@ -45,8 +42,6 @@ public:
     }
 private:
     void doSomething(const boost::system::error_code& ec){
-        
-        std::cout << __FUNCTION__ << std::endl;
         
         if( ! callBack(ec) ) return;
         

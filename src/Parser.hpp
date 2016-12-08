@@ -13,6 +13,7 @@
 #include "http_parser.h"
 #include "simple_buffer.h"
 #include "Message.hpp"
+#include "RBLogger.hpp"
 
 #define kHEADER_STATE_NOTHING 10
 #define kHEADER_STATE_FIELD   11
@@ -145,41 +146,14 @@ public:
      *
      */
     
-    virtual void OnParseBegin()
-    {
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    virtual void OnHeadersComplete(MessageInterface* msg)
-    {
-        // This is the virtual method in Parser.hpp
-        headersCompleteFlag = true;
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    virtual void OnMessageComplete(MessageInterface* msg)
-    {
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    virtual void OnParseError()
-    {
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    virtual void OnBodyData(void* buf, int len)
-    {
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    virtual void OnChunkBegin(int chunkLength)
-    {
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    virtual void OnChunkData(void* buf, int len)
-    {
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    virtual void OnChunkEnd()
-    {
-        std::cout << __FUNCTION__ << std::endl;
-    };
-    
+    virtual void OnParseBegin();
+    virtual void OnHeadersComplete(MessageInterface* msg);
+    virtual void OnMessageComplete(MessageInterface* msg);
+    virtual void OnParseError();
+    virtual void OnBodyData(void* buf, int len);
+    virtual void OnChunkBegin(int chunkLength);
+    virtual void OnChunkData(void* buf, int len);
+    virtual void OnChunkEnd();
     
     void setUpParserCallbacks();
     void setUpNextMessage();

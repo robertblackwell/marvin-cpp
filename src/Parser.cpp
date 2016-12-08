@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 Blackwellapps. All rights reserved.
 //
 #include <stdlib.h>
+#include <iostream>
+#include "RBLogger.hpp"
 #import "Parser.hpp"
-//#import "http_parser.h"
-//#import "simple_buffer.h"
-//#import "HTTPMessage.hpp"
+
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 /******************************************************************************/
 #pragma mark - forward decleration of parser c-language call back functions
@@ -81,7 +82,7 @@ void Parser::appendEOF()
     {
         nparsed = http_parser_execute(parser, parserSettings, buffer, someLength);
     }
-    std::cout << "back from parser : " << nparsed << std::endl;
+    LogDebug("back from parser nparsed: ", nparsed);
 }
 
 
@@ -99,10 +100,47 @@ bool Parser::isError(){
     enum http_errno x = (enum http_errno)this->parser->http_errno;
     char* n = (char*)http_errno_name(x);
     char* d = (char*)http_errno_description(x);
-    std::cout << "Paser::isError errno: " << this->parser->http_errno <<
-    " nam: " << n << " description: " << d << std::endl;
+    FLogDebug(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
     return (this->parser->http_errno != 0);
 };
+
+void Parser::OnParseBegin()
+{
+    LogVerbose("");
+};
+void Parser::OnHeadersComplete(MessageInterface* msg)
+{
+    // This is the virtual method in Parser.hpp
+    headersCompleteFlag = true;
+    LogVerbose("");
+};
+void Parser::OnMessageComplete(MessageInterface* msg)
+{
+    LogVerbose("");
+};
+void Parser::OnParseError()
+{
+    LogVerbose("");
+};
+void Parser::OnBodyData(void* buf, int len)
+{
+    LogVerbose("");
+};
+void Parser::OnChunkBegin(int chunkLength)
+{
+    LogVerbose("");
+};
+void Parser::OnChunkData(void* buf, int len)
+{
+    LogVerbose("");
+};
+void Parser::OnChunkEnd()
+{
+    LogVerbose("");
+};
+
+
+
 enum http_errno Parser::getErrno(){
     return (enum http_errno) this->parser->http_errno;
 }

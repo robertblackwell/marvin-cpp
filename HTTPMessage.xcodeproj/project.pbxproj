@@ -11,24 +11,42 @@
 		D448890C1DF74E57000E9F07 /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
 		D458EA331DF6413600E820A9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D458EA321DF6413600E820A9 /* main.cpp */; };
 		D458EA371DF644B700E820A9 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
-		D458EA391DF6567700E820A9 /* marvin_error.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D458EA381DF6567700E820A9 /* marvin_error.hpp */; };
+		D46614201DF854DB00E3FAB0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D466141F1DF854DB00E3FAB0 /* main.cpp */; };
+		D466142B1DF86D4D00E3FAB0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D466142A1DF86D4D00E3FAB0 /* main.cpp */; };
+		D46614341DF8CC7C00E3FAB0 /* RBLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* RBLogger.cpp */; };
+		D46614351DF8CC9600E3FAB0 /* RBLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* RBLogger.cpp */; };
+		D46614381DF8EA1500E3FAB0 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
 		D46F22951D121913007F8F72 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D46F22961D121915007F8F72 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
-		D46F22971D121919007F8F72 /* HTTPMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F22791D12188B007F8F72 /* HTTPMessage.cpp */; };
 		D46F229A1D121A7A007F8F72 /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F227B1D12188B007F8F72 /* Parser.cpp */; };
 		D4AF58D71DE6DD93001AC0A1 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D4AF58DF1DE6F6AD001AC0A1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AF58DE1DE6F6AD001AC0A1 /* main.cpp */; };
 		D4AF58E31DE6F737001AC0A1 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D4AF58E41DE6F8F1001AC0A1 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D4AF58E51DE6F8F1001AC0A1 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
-		D4AF58E61DE6F8F1001AC0A1 /* HTTPMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F22791D12188B007F8F72 /* HTTPMessage.cpp */; };
 		D4AF58E71DE6F8F1001AC0A1 /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F227B1D12188B007F8F72 /* Parser.cpp */; };
-		D4BEE9F81DE7BA6E00F61432 /* repeating_timer.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BEE9F71DE7BA6E00F61432 /* repeating_timer.hpp */; };
-		D4BEE9FA1DE7BB7500F61432 /* mock_connection.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BEE9F91DE7BB7500F61432 /* mock_connection.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		D458EA2E1DF6413600E820A9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		D466141B1DF854DB00E3FAB0 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		D46614261DF86D4D00E3FAB0 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -63,18 +81,23 @@
 		D44889071DF74D36000E9F07 /* libboost_log.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_log.a; path = deps/lib/libboost_log.a; sourceTree = "<group>"; };
 		D44889091DF74D86000E9F07 /* libboost_log_setup.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_log_setup.a; path = deps/lib/libboost_log_setup.a; sourceTree = "<group>"; };
 		D448890B1DF74E57000E9F07 /* libboost_log.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_log.dylib; path = deps/lib/libboost_log.dylib; sourceTree = "<group>"; };
-		D448890D1DF750CB000E9F07 /* easylogging++.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "easylogging++.h"; path = "deps/easyloggingpp/src/easylogging++.h"; sourceTree = SOURCE_ROOT; };
-		D448890E1DF751E7000E9F07 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		D458EA301DF6413600E820A9 /* error_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = error_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D458EA321DF6413600E820A9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		D458EA381DF6567700E820A9 /* marvin_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marvin_error.hpp; sourceTree = "<group>"; };
+		D466141D1DF854DB00E3FAB0 /* nullstream */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nullstream; sourceTree = BUILT_PRODUCTS_DIR; };
+		D466141F1DF854DB00E3FAB0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D46614281DF86D4D00E3FAB0 /* logger */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = logger; sourceTree = BUILT_PRODUCTS_DIR; };
+		D466142A1DF86D4D00E3FAB0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D466142F1DF86D9C00E3FAB0 /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
+		D46614301DF86D9C00E3FAB0 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
+		D46614321DF8C46D00E3FAB0 /* RBLogger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RBLogger.hpp; sourceTree = "<group>"; };
+		D46614331DF8CC7C00E3FAB0 /* RBLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RBLogger.cpp; sourceTree = "<group>"; };
+		D46614361DF8D18A00E3FAB0 /* marvin_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marvin_error.hpp; sourceTree = "<group>"; };
+		D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = deps/lib/libboost_filesystem.a; sourceTree = "<group>"; };
 		D46F22731D12188B007F8F72 /* catch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
 		D46F22741D12188B007F8F72 /* http_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = http_parser.c; sourceTree = "<group>"; };
 		D46F22751D12188B007F8F72 /* http_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_parser.h; sourceTree = "<group>"; };
 		D46F22761D12188B007F8F72 /* simple_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_buffer.c; sourceTree = "<group>"; };
 		D46F22771D12188B007F8F72 /* simple_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simple_buffer.h; sourceTree = "<group>"; };
-		D46F22791D12188B007F8F72 /* HTTPMessage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPMessage.cpp; sourceTree = "<group>"; };
-		D46F227A1D12188B007F8F72 /* HTTPMessage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = HTTPMessage.hpp; sourceTree = "<group>"; };
 		D46F227B1D12188B007F8F72 /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cpp; sourceTree = "<group>"; };
 		D46F227C1D12188B007F8F72 /* Parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Parser.hpp; sourceTree = "<group>"; };
 		D46F228D1D1218D2007F8F72 /* unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +121,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D466141A1DF854DB00E3FAB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D46614251DF86D4D00E3FAB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D46F228A1D1218D2007F8F72 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -110,6 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D46614381DF8EA1500E3FAB0 /* libboost_filesystem.a in Frameworks */,
 				D448890C1DF74E57000E9F07 /* libboost_log.dylib in Frameworks */,
 				D4AF58E31DE6F737001AC0A1 /* libboost_system.a in Frameworks */,
 			);
@@ -122,20 +160,38 @@
 			isa = PBXGroup;
 			children = (
 				D458EA321DF6413600E820A9 /* main.cpp */,
-				D458EA381DF6567700E820A9 /* marvin_error.hpp */,
 			);
 			path = error_test;
+			sourceTree = "<group>";
+		};
+		D466141E1DF854DB00E3FAB0 /* nullstream */ = {
+			isa = PBXGroup;
+			children = (
+				D466141F1DF854DB00E3FAB0 /* main.cpp */,
+			);
+			path = nullstream;
+			sourceTree = "<group>";
+		};
+		D46614291DF86D4D00E3FAB0 /* logger */ = {
+			isa = PBXGroup;
+			children = (
+				D466142A1DF86D4D00E3FAB0 /* main.cpp */,
+				D466142F1DF86D9C00E3FAB0 /* log.h */,
+				D46614301DF86D9C00E3FAB0 /* logger.hpp */,
+			);
+			path = logger;
 			sourceTree = "<group>";
 		};
 		D46F22721D12188B007F8F72 /* external_src */ = {
 			isa = PBXGroup;
 			children = (
-				D448890D1DF750CB000E9F07 /* easylogging++.h */,
 				D46F22731D12188B007F8F72 /* catch.hpp */,
-				D46F22741D12188B007F8F72 /* http_parser.c */,
 				D46F22751D12188B007F8F72 /* http_parser.h */,
-				D46F22761D12188B007F8F72 /* simple_buffer.c */,
+				D46F22741D12188B007F8F72 /* http_parser.c */,
+				D46614321DF8C46D00E3FAB0 /* RBLogger.hpp */,
+				D46614331DF8CC7C00E3FAB0 /* RBLogger.cpp */,
 				D46F22771D12188B007F8F72 /* simple_buffer.h */,
+				D46F22761D12188B007F8F72 /* simple_buffer.c */,
 			);
 			path = external_src;
 			sourceTree = "<group>";
@@ -143,10 +199,8 @@
 		D46F22781D12188B007F8F72 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				D448890E1DF751E7000E9F07 /* Logger.h */,
+				D46614361DF8D18A00E3FAB0 /* marvin_error.hpp */,
 				D4BEEA011DE82FC800F61432 /* Message.hpp */,
-				D46F22791D12188B007F8F72 /* HTTPMessage.cpp */,
-				D46F227A1D12188B007F8F72 /* HTTPMessage.hpp */,
 				D46F227B1D12188B007F8F72 /* Parser.cpp */,
 				D46F227C1D12188B007F8F72 /* Parser.hpp */,
 			);
@@ -162,7 +216,7 @@
 			path = "unit-test";
 			sourceTree = "<group>";
 		};
-		D4AF58DD1DE6F6AD001AC0A1 /* main1 */ = {
+		D4AF58DD1DE6F6AD001AC0A1 /* reader-test */ = {
 			isa = PBXGroup;
 			children = (
 				D4AF58DE1DE6F6AD001AC0A1 /* main.cpp */,
@@ -172,12 +226,14 @@
 				D4BEE9FC1DE7BC5300F61432 /* response_reader.hpp */,
 				D4BEE9FD1DE7BCE300F61432 /* buffer.hpp */,
 			);
+			name = "reader-test";
 			path = main1;
 			sourceTree = "<group>";
 		};
 		D4EA1EEC1D1217E600D1EABC = {
 			isa = PBXGroup;
 			children = (
+				D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */,
 				D448890B1DF74E57000E9F07 /* libboost_log.dylib */,
 				D44889091DF74D86000E9F07 /* libboost_log_setup.a */,
 				D44889071DF74D36000E9F07 /* libboost_log.a */,
@@ -186,8 +242,10 @@
 				D46F22781D12188B007F8F72 /* src */,
 				D4EA1EF71D1217E600D1EABC /* HTTPMessage */,
 				D46F228E1D1218D2007F8F72 /* unit-test */,
-				D4AF58DD1DE6F6AD001AC0A1 /* main1 */,
+				D4AF58DD1DE6F6AD001AC0A1 /* reader-test */,
 				D458EA311DF6413600E820A9 /* error_test */,
+				D466141E1DF854DB00E3FAB0 /* nullstream */,
+				D46614291DF86D4D00E3FAB0 /* logger */,
 				D4EA1EF61D1217E600D1EABC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -198,6 +256,8 @@
 				D46F228D1D1218D2007F8F72 /* unit-test */,
 				D4AF58DC1DE6F6AD001AC0A1 /* main1 */,
 				D458EA301DF6413600E820A9 /* error_test */,
+				D466141D1DF854DB00E3FAB0 /* nullstream */,
+				D46614281DF86D4D00E3FAB0 /* logger */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -227,6 +287,40 @@
 			name = error_test;
 			productName = error_test;
 			productReference = D458EA301DF6413600E820A9 /* error_test */;
+			productType = "com.apple.product-type.tool";
+		};
+		D466141C1DF854DB00E3FAB0 /* nullstream */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D46614231DF854DB00E3FAB0 /* Build configuration list for PBXNativeTarget "nullstream" */;
+			buildPhases = (
+				D46614191DF854DB00E3FAB0 /* Sources */,
+				D466141A1DF854DB00E3FAB0 /* Frameworks */,
+				D466141B1DF854DB00E3FAB0 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = nullstream;
+			productName = nullstream;
+			productReference = D466141D1DF854DB00E3FAB0 /* nullstream */;
+			productType = "com.apple.product-type.tool";
+		};
+		D46614271DF86D4D00E3FAB0 /* logger */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D466142C1DF86D4D00E3FAB0 /* Build configuration list for PBXNativeTarget "logger" */;
+			buildPhases = (
+				D46614241DF86D4D00E3FAB0 /* Sources */,
+				D46614251DF86D4D00E3FAB0 /* Frameworks */,
+				D46614261DF86D4D00E3FAB0 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = logger;
+			productName = logger;
+			productReference = D46614281DF86D4D00E3FAB0 /* logger */;
 			productType = "com.apple.product-type.tool";
 		};
 		D46F228C1D1218D2007F8F72 /* unit-test */ = {
@@ -275,6 +369,12 @@
 					D458EA2F1DF6413600E820A9 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
+					D466141C1DF854DB00E3FAB0 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					D46614271DF86D4D00E3FAB0 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
 					D46F228C1D1218D2007F8F72 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
@@ -298,6 +398,8 @@
 				D46F228C1D1218D2007F8F72 /* unit-test */,
 				D4AF58DB1DE6F6AD001AC0A1 /* main1 */,
 				D458EA2F1DF6413600E820A9 /* error_test */,
+				D466141C1DF854DB00E3FAB0 /* nullstream */,
+				D46614271DF86D4D00E3FAB0 /* logger */,
 			);
 		};
 /* End PBXProject section */
@@ -308,7 +410,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				D458EA331DF6413600E820A9 /* main.cpp in Sources */,
-				D458EA391DF6567700E820A9 /* marvin_error.hpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D46614191DF854DB00E3FAB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D46614201DF854DB00E3FAB0 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D46614241DF86D4D00E3FAB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D466142B1DF86D4D00E3FAB0 /* main.cpp in Sources */,
+				D46614341DF8CC7C00E3FAB0 /* RBLogger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,7 +436,6 @@
 			files = (
 				D46F22951D121913007F8F72 /* http_parser.c in Sources */,
 				D46F22961D121915007F8F72 /* simple_buffer.c in Sources */,
-				D46F22971D121919007F8F72 /* HTTPMessage.cpp in Sources */,
 				D46F229A1D121A7A007F8F72 /* Parser.cpp in Sources */,
 				D40D2E851D131EAF00AA74AF /* main.cpp in Sources */,
 			);
@@ -328,12 +445,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D46614351DF8CC9600E3FAB0 /* RBLogger.cpp in Sources */,
 				D4AF58E41DE6F8F1001AC0A1 /* http_parser.c in Sources */,
 				D4AF58E51DE6F8F1001AC0A1 /* simple_buffer.c in Sources */,
-				D4AF58E61DE6F8F1001AC0A1 /* HTTPMessage.cpp in Sources */,
-				D4BEE9F81DE7BA6E00F61432 /* repeating_timer.hpp in Sources */,
 				D4AF58E71DE6F8F1001AC0A1 /* Parser.cpp in Sources */,
-				D4BEE9FA1DE7BB7500F61432 /* mock_connection.hpp in Sources */,
 				D4AF58DF1DE6F6AD001AC0A1 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,6 +476,34 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
 				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D46614211DF854DB00E3FAB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D46614221DF854DB00E3FAB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D466142D1DF86D4D00E3FAB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D466142E1DF86D4D00E3FAB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -511,6 +654,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D46614231DF854DB00E3FAB0 /* Build configuration list for PBXNativeTarget "nullstream" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D46614211DF854DB00E3FAB0 /* Debug */,
+				D46614221DF854DB00E3FAB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		D466142C1DF86D4D00E3FAB0 /* Build configuration list for PBXNativeTarget "logger" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D466142D1DF86D4D00E3FAB0 /* Debug */,
+				D466142E1DF86D4D00E3FAB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		D46F22911D1218D2007F8F72 /* Build configuration list for PBXNativeTarget "unit-test" */ = {
 			isa = XCConfigurationList;

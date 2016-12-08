@@ -51,16 +51,27 @@ public:
     std::size_t capacity(){
         return capacity_;
     }
+    // returns a pointer to the next available position in the buffer
+    void* nextAvailable(){
+        return (void*) (cPtr + length_);
+    }
     
     MBuffer& empty()
     {
         length_ = 0; cPtr[0] = (char)0;
         return *this;
     }
+    
+    // adds (by copying) data to the end of the buffer
     MBuffer& append(void* data, std::size_t len)
     {
-        memcpy(memPtr, data, len);
-        length_ = len;
+        assert( ( (length_ + len)< capacity_ )  );
+        void* na = nextAvailable();
+        
+        memcpy(na, data, len);
+        length_ = length_ + len;
+        size_ = length_;
+        
         cPtr = (char*) memPtr;
         return *this;
     }
@@ -174,11 +185,23 @@ public:
     
     FBuffer(MBuffer* mbuf)
     {
+        assert((mbuf != nullptr));
         _container = mbuf;
         _fragments.clear();
     };
     
     ~FBuffer(){}
+    
+    // copies these bytes into the FBuffer so that they are continguous with
+    // (that is added to) the last fragement
+    void copyIn(void* bytes, std::size_t len)
+    {
+        assert((this != nullptr));
+        assert((_container != nullptr));
+        void* na = _container->nextAvailable();
+        _container->append(bytes, len);
+        addFragment(na, len);
+    }
     
     //
     // add a new fragment to the FBuffer
@@ -186,15 +209,17 @@ public:
     // the new buffer is "past" (higher address value) than the previously "last" fragment
     // if this fragment is contiguous with the "last" fragment consolidate the two
     //
-    void append(void* bytes, std::size_t len)
+    void addFragment(void* bytes, std::size_t len)
     {
         char* containerPtr = (char*)_container->data();
         char* containerEndPtr = ((char*)_container->data()) + _container->capacity();
         // make sure fragment is inside container
         bool startOK = _container->contains((char*)bytes);
         bool endOK   = _container->contains((char*)bytes + len) ;
-        assert( startOK );
-        assert( endOK );
+        if( ! startOK || !endOK ){
+            assert( startOK );
+            assert( endOK );
+        }
         // check fragments are increasing
         if( _fragments.size() > 0 ){
             Fragment& last = _fragments.back();

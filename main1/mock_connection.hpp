@@ -150,7 +150,7 @@ public:
             len = strlen(buf);
             std::size_t buf_max = mb.capacity();
             if( buf_max < len + 1){
-                std::cout << "Connection:asyncRead error buffer too small";
+                LogError("Connection:asyncRead error buffer too small");
                 throw "Connection:asyncRead error buffer too small";
             }
             void* rawPtr = mb.data();
@@ -158,7 +158,16 @@ public:
             ((char*)rawPtr)[len] = (char)0;
             
             char* b = (char*)rawPtr;
-            std::cout << __FUNCTION__ << "::new buffer: " << b << " len: " << len << std::endl;
+            std::string bb = std::string((char*)rawPtr, len);
+            
+            std::size_t startIndex = bb.find("\r\n");
+            std::string x;
+            if( startIndex != bb.npos ){
+                x = bb.replace(startIndex, std::string("\r\n").length(), "\\r\\n");
+            }else{
+                x = bb;
+            }
+            LogDebug("::new buffer: [", x, "] len:", len);
             index++;
             
             // at this point we have moved len bytes into the buffer mb
@@ -166,9 +175,7 @@ public:
             st->start([this, buf, len, cb](const boost::system::error_code& ec)->bool{
                 
                 auto f = [this, buf, len, cb](Marvin::ErrorType& er, std::size_t bytes){
-                    std::cout << "Connection::asyncRead::start::lambda" << std::endl;
                     cb(er, bytes);
-                    std::cout << "Connection::asyncRead::start::lambda" << std::endl;
                 };
                 
                 auto pf = std::bind(f, Marvin::make_error_ok(), (std::size_t)len);

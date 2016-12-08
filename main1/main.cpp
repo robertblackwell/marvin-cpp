@@ -5,28 +5,26 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "Logger.h"
-INITIALIZE_EASYLOGGINGPP
+#include <functional>
+#include <memory>
 
-//#include "HTTPMessage.hpp"
+#include "RBLogger.hpp"
 
-//#include "Parser.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 
 #include "repeating_timer.hpp"
-#include "error.hpp"
+#include "marvin_error.hpp"
 #include "buffer.hpp"
 #include "mock_connection.hpp"
 
 #include "response_reader.hpp"
-#include <functional>
-#include <memory>
 
 void testRepeatTimer(){
     boost::asio::io_service io_service;
     int n = 6;
     RepeatingTimer rt(io_service, 2000);
     rt.start([&n](const boost::system::error_code& ec)->bool{
-        std::cout << __FUNCTION__ << " repeating call back n: " << n << std::endl;
+        LogDebug(" repeating call back n:", n);
         if( n == 0) return false;
         n--;
         return true;
@@ -41,61 +39,47 @@ class TestReader
     
 public:
     ResponseReader*             rdr_;
-    Connection                 conn_;
+    Connection                  conn_;
     boost::asio::io_service&    io_;
     std::string                 body;
-    MBuffer*                    bodyBuffer;
 
     
     TestReader(boost::asio::io_service& io) : io_(io), conn_(Connection(io, 6))
     {
-//        Connection c(io, 6);
-//        conn_ = c;
         rdr_ = new ResponseReader(conn_, io_);
-        
         body = std::string("");
     }
     ~TestReader()
     {
         delete rdr_;
-        delete bodyBuffer;
     }
-    
-    void onBodyData(Marvin::ErrorType er, std::size_t bytes_transfered){
-        std::cout << "TestReader::" << __FUNCTION__ <<  " entered" <<  std::endl;
-        bodyBuffer->setSize(bytes_transfered);
-        MBuffer* buf = bodyBuffer;
-        std::string tmp((char*)buf->data(), (std::size_t)buf->size());
-        body += tmp;
-
-        std::cout << "TestReader::" << __FUNCTION__ <<  buf <<  std::endl;
-        std::cout << "TestReader::" << __FUNCTION__ <<  "body: " << body <<  std::endl;
-
-        auto bh = std::bind(&TestReader::onBodyData, this, std::placeholders::_1, std::placeholders::_2);
-//        bool done = Error::end_of_message()->equalTo(er);
+    void onBody(Marvin::ErrorType& er, FBuffer& fBuf)
+    {
+        LogDebug(" entry");
+        // are we done - if not hang another read
+        auto bh = std::bind(&TestReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
         bool done = (er == Marvin::make_error_eom());
         
         if( done ){
-            std::cout << "Test complete body : " << body << std::endl;
+            LogDebug("EOB Test complete body :",  body);
         }else{
-            bodyBuffer->empty();
-            rdr_->readBodyData(*bodyBuffer, bh);
+            // do something with fBuf
+            rdr_->readBody(bh);
         }
-        std::cout << "TestReader::" << __FUNCTION__ <<  " exit" <<  std::endl;
-    }
-    void onBodyEnd(Marvin::ErrorType& er){
-        std::cout << "TestReader::" << __FUNCTION__ <<  std::endl;        
+        LogDebug("exit");
+        
     }
     void onResponse(Marvin::ErrorType& er, MessageInterface* msg){
-        std::cout << "TestReader::" << __FUNCTION__ << std::endl;
+        LogDebug("entry");
         rdr_->dumpHeaders(std::cout);
-        bodyBuffer = new MBuffer(20000);
-        auto bh = std::bind(&TestReader::onBodyData, this, std::placeholders::_1, std::placeholders::_2);
-        rdr_->readBodyData(*bodyBuffer, bh);
-        std::cout << "TestReader::" << __FUNCTION__ << std::endl;
+
+        auto bh = std::bind(&TestReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
+        rdr_->readBody(bh);
+        LogDebug("exit");
     }
 
     void run(){
+        LogDebug("getting started");
         auto h = std::bind(&TestReader::onResponse, this, std::placeholders::_1, std::placeholders::_2);
         rdr_->readResponse(h);
 
@@ -109,36 +93,46 @@ void testRequestReader(int testcase)
     auto tr = std::unique_ptr<TestReader>(new TestReader(io_service));
     tr->run();
     io_service.run();
+    std::cout << "testResponseReader" << std::endl;
 }
 
 void TestBuffer(){
     MBuffer* mb = new MBuffer(1000);
+    char* t1 = (char*)"123456789";
+    char* t2 = (char*)"ABCDEF";
+    
+    mb->append((void*) t1, strlen(t1));
+    mb->append((void*) t2, strlen(t2));
+    
+    
     char* p = (char*) mb->data();
     bool x1 = mb->contains(p);
     bool x2 = mb->contains(p + 1000);
     bool x3 = mb->contains(p + 1001);
     bool x4 = mb->contains(p - 1);
     std::cout << "" << std::endl;
-    FBuffer fb(mb);
-    fb.append((void*)p, 1);
-    fb.append((void*)(p+4), 1);
-    fb.append((void*)(p+5), 1);
     
-    fb.append((void*)(p+7), 90);
-    fb.append((void*)(p+101), 100);
-    fb.append((void*)p, 1001);
+    FBuffer fb1(new MBuffer(1000));
+    fb1.copyIn((void*)t1, strlen(t1));
+    fb1.copyIn((void*)t2, strlen(t2));
+    
+    mb = new MBuffer(1000);
+    FBuffer fb(mb);
+    fb.addFragment((void*)p, 1);
+    fb.addFragment((void*)(p+4), 1);
+    fb.addFragment((void*)(p+5), 1);
+    
+    fb.addFragment((void*)(p+7), 90);
+    fb.addFragment((void*)(p+101), 100);
+    fb.addFragment((void*)p, 1001);
+    
+    fb.copyIn((void*)t1, strlen(t1));
+    fb.copyIn((void*)t2, strlen(t2));
     std::cout << "" << std::endl;
 
 }
 
 int main(){
-    el::Configurations defaultConf;
-    defaultConf.setToDefault();
-    //defaultConf.set(el::Level::Info, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Global, el::ConfigurationType::Format, "%level|%func[%fbase:%line] : %msg");
-    el::Loggers::reconfigureAllLoggers(defaultConf);
-    LOG(INFO) << "This is the first log message" << std::endl;
 //    TestBuffer();
     testRequestReader(0);
 }
