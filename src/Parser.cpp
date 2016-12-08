@@ -96,6 +96,11 @@ bool Parser::isFinishedMessage()
     return messageCompleteFlag;
 }
 
+enum http_errno Parser::getErrno()
+{
+    return (enum http_errno) this->parser->http_errno;
+}
+
 bool Parser::isError(){
     enum http_errno x = (enum http_errno)this->parser->http_errno;
     char* n = (char*)http_errno_name(x);
@@ -140,10 +145,6 @@ void Parser::OnChunkEnd()
 };
 
 
-
-enum http_errno Parser::getErrno(){
-    return (enum http_errno) this->parser->http_errno;
-}
 /*
  **************************************************************************************************
  */

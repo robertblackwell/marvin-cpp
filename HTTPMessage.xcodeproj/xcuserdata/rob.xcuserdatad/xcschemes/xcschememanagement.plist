@@ -34,6 +34,16 @@
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
+		<key>streamtest.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>testcase.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
+		</dict>
 		<key>unit-test.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -63,6 +73,16 @@
 			<true/>
 		</dict>
 		<key>D46614271DF86D4D00E3FAB0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D466143C1DF9A6C500E3FAB0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D46614481DF9B70F00E3FAB0</key>
 		<dict>
 			<key>primary</key>
 			<true/>

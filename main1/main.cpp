@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ostream>
 #include <iterator>
 #include <algorithm>
 #include "catch.hpp"
@@ -42,18 +43,22 @@ public:
     Connection                  conn_;
     boost::asio::io_service&    io_;
     std::string                 body;
+    std::ostringstream          bodyStream;
+
 
     
     TestReader(boost::asio::io_service& io) : io_(io), conn_(Connection(io, 6))
     {
         rdr_ = new ResponseReader(conn_, io_);
         body = std::string("");
+        bodyStream.str(body);
     }
     ~TestReader()
     {
         delete rdr_;
     }
-    void onBody(Marvin::ErrorType& er, FBuffer& fBuf)
+
+    void onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
     {
         LogDebug(" entry");
         // are we done - if not hang another read
@@ -61,9 +66,19 @@ public:
         bool done = (er == Marvin::make_error_eom());
         
         if( done ){
-            LogDebug("EOB Test complete body :",  body);
+            delete fBufPtr;
+            body = bodyStream.str();
+            LogDebug("EOB Test complete body :",  bodyStream.str());
+            //
+            // Here should test we have the correct headers and body
+            //
         }else{
             // do something with fBuf
+            //
+            // lets accumulate the FBuffer into a body
+            //
+            bodyStream << *fBufPtr;
+            delete fBufPtr;
             rdr_->readBody(bh);
         }
         LogDebug("exit");

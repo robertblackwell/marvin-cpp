@@ -122,28 +122,41 @@ std::ostream &operator<< (std::ostream &os, MBuffer const &b) {
     return os;
 }
 
-//class Fragment {
-//public:
-//    Fragment(void* ptr, std::size_t size){
-//        _ptr = ptr;
-//        _cPtr = (char*) ptr;
-//        _size = size;
-//    }
-//    void*  endPointer(){
-//        char* e = _cPtr + _size - 1;
-//        return (void*) e;
-//    }
-//private:
-//    void*   _ptr;
-//    
-//    // this is just for debugging so that the text in the buffer can be seen in xcode debugger
-//    char*   _cPtr;
-//    
-//    std::size_t _size;
-//};
+//
+// class represents a single fragment of the buffer. Private to FBuffer
+//
+class Fragment {
+public:
+    Fragment(void* ptr, std::size_t size){
+        _ptr = ptr;
+        _cPtr = (char*) ptr;
+        _size = size;
+    }
+    ~Fragment(){} // owns no allocated memory, so destructor has nothing to do
+    char* start(){
+        return (char*)_ptr;
+    }
+    std::size_t size(){
+        return _size;
+    }
+    // points at the last byte in the fragment
+    void*  endPointer(){
+        char* e = _cPtr + _size - 1;
+        return (void*) e;
+    }
+    void extendBy(std::size_t len){
+        _size = _size + len;
+    }
+private:
+    void*   _ptr;
+    
+    // this is just for debugging so that the text in the buffer can be seen in xcode debugger
+    char*   _cPtr;
+    
+    std::size_t _size;
+};
 
-#define FGFGF
-#ifdef FGFGF
+
 class FBuffer;
 typedef std::unique_ptr<FBuffer> FBufferUniquePtr;
 
@@ -152,37 +165,14 @@ typedef std::unique_ptr<FBuffer> FBufferUniquePtr;
 //
 class FBuffer{
 private:
-    //
-    // class represents a single fragment of the buffer. Private to FBuffer
-    //
-    class Fragment {
-    public:
-        Fragment(void* ptr, std::size_t size){
-            _ptr = ptr;
-            _cPtr = (char*) ptr;
-            _size = size;
-        }
-        ~Fragment(){} // owns no allocated memory, so destructor has nothing to do
-        
-        // points at the last byte in the fragment
-        void*  endPointer(){
-            char* e = _cPtr + _size - 1;
-            return (void*) e;
-        }
-        void extendBy(std::size_t len){
-            _size = _size + len;
-        }
-    private:
-        void*   _ptr;
-        
-        // this is just for debugging so that the text in the buffer can be seen in xcode debugger
-        char*   _cPtr;
-        
-        std::size_t _size;
-    };
 
 public:
-    
+    friend std::ostream &operator<< (std::ostream &os, FBuffer const &b);
+
+    FBuffer(std::size_t capacity){
+        _container = new MBuffer(capacity);
+        _fragments.clear();
+    }
     FBuffer(MBuffer* mbuf)
     {
         assert((mbuf != nullptr));
@@ -190,7 +180,11 @@ public:
         _fragments.clear();
     };
     
-    ~FBuffer(){}
+    ~FBuffer()
+    {
+        delete _container;
+        std::cout << "here" << std::endl;
+    }
     
     // copies these bytes into the FBuffer so that they are continguous with
     // (that is added to) the last fragement
@@ -241,6 +235,23 @@ private:
     MBuffer*                _container; // where all the fragments reside
     std::vector<Fragment>   _fragments; // a list of fragments
 };
-#endif
+std::ostream &operator<< (std::ostream &os, FBuffer const &fb)
+{
+    for(auto const& frag: fb._fragments) {
+        Fragment fg = frag;
+        char* st = fg.start();
+        std::size_t  sz = fg.size();
+        std::string s(fg.start(), fg.size());
+        os << std::string(fg.start(), fg.size());
+    }
+//    if(b.length_ == 0){
+//        os << "Empty ";
+//    }else{
+//        std::string s((char*)b.memPtr);
+//        os << "\r\nMBuffer{ length: " << b.length_ << "content: [" << s << "]}";
+//    }
+    return os;
+}
+
         
 #endif
