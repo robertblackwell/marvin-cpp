@@ -147,12 +147,15 @@ private:
 
 ResponseReader::ResponseReader(Connection& conn, boost::asio::io_service& io): _io(io), _conn(conn)
 {
+    LogDebug("");
     _body_buffer_size   = 10000;
     _header_buffer_size = 10000;
+    _readBodyStarted    = false;
     clearBodyBuffer();
 }
 ResponseReader::~ResponseReader()
 {
+    LogDebug("");
     // how to know what to get rid of
     // delete _readBuffer;
 }
@@ -280,6 +283,7 @@ void ResponseReader::startReadBody()
 }
 
 void ResponseReader::startRead(){
+    LogDebug("");
     auto h = std::bind(&ResponseReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
     _conn.asyncRead(*_readBuffer, h);
 }
@@ -420,6 +424,7 @@ void ResponseReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_t
 }
 void ResponseReader::readResponse(ResponseCbType cb)
 {
+    LogDebug("");
     // this is trashy - when do I dispose/delete the buffer
     // have the size as a variable of constant
     _readBuffer = new MBuffer(10000);

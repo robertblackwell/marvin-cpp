@@ -75,6 +75,21 @@ public:
         }
         return nullptr;
     }
+    std::map<std::string, std::string> getHeaders(){
+        return _headers;
+    }
+    std::string str(){
+        std::ostringstream ss;
+        ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
+        std::map<std::string, std::string>::iterator it = _headers.begin();
+        while(it != _headers.end())
+        {
+            ss << it->first << ": " << it->second << "\r\n";
+            it++;
+        }
+        ss << "\r\n";
+        return ss.str();
+    }
     void
     dumpHeaders(std::ostream& os)
     {

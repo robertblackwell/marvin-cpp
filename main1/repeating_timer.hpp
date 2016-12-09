@@ -11,6 +11,11 @@ public:
     {
         t_ = new boost::asio::deadline_timer(io_);
     }
+    ~SingleTimer()
+    {
+        t_->cancel();
+        delete t_;
+    }
     void start(std::function<void(const boost::system::error_code& ec)> cb){
         callBack = cb;
         t_->expires_from_now(boost::posix_time::milliseconds(interval_));
@@ -33,6 +38,11 @@ public:
     RepeatingTimer(boost::asio::io_service& io, int millSeconds): io_(io), interval_(millSeconds)
     {
         t_ = new boost::asio::deadline_timer(io_);
+    }
+    ~RepeatingTimer()
+    {
+        t_->cancel();
+        delete t_;
     }
     void start(RepeatingTimerCallBack cb){
         callBack = cb;

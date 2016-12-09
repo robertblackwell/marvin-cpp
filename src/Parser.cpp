@@ -9,6 +9,7 @@
 #include <iostream>
 #include "RBLogger.hpp"
 #import "Parser.hpp"
+#include <cassert>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
@@ -45,6 +46,7 @@ Parser::Parser()
     status_buf = NULL;
     name_buf = NULL;
     value_buf = NULL;
+    header_state = kHEADER_STATE_NOTHING;
 
     setUpParserCallbacks();
 }
@@ -230,11 +232,12 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
     (p->headers)[n_str] = v_str;
     MessageInterface* m = p->currentMessage();
     m->setHeader(n_str, v_str);
+    std::cout << "SaveNameValuePair::set " << n_str << " " << v_str << std::endl;
     auto h = p->headers;
-    for (auto iter = h.begin(); iter != h.end(); iter++)
-    {
-        std::cout << "Key: " << iter->first << " : " << iter->second << std::endl;
-    }
+//    for (auto iter = h.begin(); iter != h.end(); iter++)
+//    {
+//        std::cout << "SaveNameValuePair: "<< "Key: " << iter->first << " : " << iter->second << std::endl;
+//    }
     
 }
 
@@ -278,7 +281,7 @@ header_field_data_cb(http_parser* parser, const char* at, size_t length)
 {
     Parser* p = getParser(parser);
     int state = p->header_state;
-
+    printf("Parser::header_field_value %s \n", at);
     if( (state == 0)||(state == kHEADER_STATE_NOTHING) || (state == kHEADER_STATE_VALUE)){
         if( p->name_buf!= NULL){
             saveNameValuePair(parser, p->name_buf, p->value_buf);
@@ -292,6 +295,8 @@ header_field_data_cb(http_parser* parser, const char* at, size_t length)
     } else if( state == kHEADER_STATE_FIELD){
         simple_buffer_t* sb = p->name_buf;
         sb_append(sb, (char*)at, length);
+    }else{
+        assert(false);
     }
     p->header_state = kHEADER_STATE_FIELD;
     return 0;
@@ -309,6 +314,8 @@ header_value_data_cb(http_parser* parser, const char* at, size_t length)
     } else if( state == kHEADER_STATE_VALUE){
         simple_buffer_t* sb = p->value_buf;
         sb_append(sb, (char*)at, length);
+    } else{
+        assert(false);
     }
     p->header_state = kHEADER_STATE_VALUE;
     return 0;

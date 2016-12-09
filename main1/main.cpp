@@ -33,6 +33,17 @@ void testRepeatTimer(){
     io_service.run();
     
 }
+void stringDiff(std::string s1, std::string s2){
+    if( s1.size() != s2.size() )
+        std::cout << "s1.size: " << s1.size() << " s2.size(): " << s2.size() << std::endl;
+    for(int i = 0; i < s1.size(); i++){
+        if( s1.c_str()[i] != s2.c_str()[i] ){
+            std::cout << "differ at position " << i << std::endl;
+            std::cout << "s1: " << s1.c_str()[i] << " s2: " << s2.c_str()[i] << std::endl;
+        }
+    }
+}
+
 //----------------------------------------------------------------
 
 class TestReader
@@ -44,17 +55,27 @@ public:
     boost::asio::io_service&    io_;
     std::string                 body;
     std::ostringstream          bodyStream;
+    Testcases                   tcObjs;
+    Testcase                    tcObj;
+    int                         _tcIndex;
 
 
     
-    TestReader(boost::asio::io_service& io) : io_(io), conn_(Connection(io, 6))
+    TestReader(boost::asio::io_service& io, int tcIndex)
+        : io_(io),
+        _tcIndex(tcIndex),
+        conn_(Connection(io, tcIndex)),
+        tcObjs(Testcases()),
+        tcObj(tcObjs.getCase(tcIndex))
     {
+        LogDebug("");
         rdr_ = new ResponseReader(conn_, io_);
         body = std::string("");
         bodyStream.str(body);
     }
     ~TestReader()
     {
+        LogDebug("");
         delete rdr_;
     }
 
@@ -66,17 +87,32 @@ public:
         bool done = (er == Marvin::make_error_eom());
         
         if( done ){
+            bodyStream << *fBufPtr;
             delete fBufPtr;
+            std::string msgStr = rdr_->MessageBase::str() + bodyStream.str();
             body = bodyStream.str();
-            LogDebug("EOB Test complete body :",  bodyStream.str());
-            //
-            // Here should test we have the correct headers and body
-            //
+            std::string expectedBody = tcObj.result_body();
+            
+            bool vb = tcObj.verifyBody(body);
+            std::map<std::string, std::string> hh = rdr_->MessageBase::getHeaders();
+            bool vh = tcObj.verifyHeaders(hh);
+            if( vb && vh ){
+                LogDebug("Test for test case", _tcIndex ,"succeeded");
+            }else{
+                LogDebug("Test for test case", _tcIndex ," FAILED");
+                if( ! vb )
+                    LogDebug("Body failed ", body, expectedBody );
+                if( ! vh ){
+                    LogDebug("Headers failed");
+
+                }
+            }
         }else{
             // do something with fBuf
             //
             // lets accumulate the FBuffer into a body
             //
+            std::string xx = bodyStream.str();
             bodyStream << *fBufPtr;
             delete fBufPtr;
             rdr_->readBody(bh);
@@ -103,11 +139,11 @@ public:
 
 void testRequestReader(int testcase)
 {
-
     boost::asio::io_service io_service;
-    auto tr = std::unique_ptr<TestReader>(new TestReader(io_service));
+    auto tr = new TestReader(io_service, testcase);
     tr->run();
     io_service.run();
+    delete tr;
     std::cout << "testResponseReader" << std::endl;
 }
 
@@ -149,5 +185,11 @@ void TestBuffer(){
 
 int main(){
 //    TestBuffer();
-    testRequestReader(0);
+    testRequestReader(1);
+//    printf("");
+    testRequestReader(2);
+    testRequestReader(3);
+    testRequestReader(4);
+    testRequestReader(5);
+    testRequestReader(6);
 }
