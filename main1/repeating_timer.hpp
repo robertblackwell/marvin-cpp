@@ -7,25 +7,12 @@ typedef std::function<bool(const boost::system::error_code&)> RepeatingTimerCall
 class SingleTimer
 {
 public:
-    SingleTimer(boost::asio::io_service& io, int millSeconds): io_(io), interval_(millSeconds)
-    {
-        t_ = new boost::asio::deadline_timer(io_);
-    }
-    ~SingleTimer()
-    {
-        t_->cancel();
-        delete t_;
-    }
-    void start(std::function<void(const boost::system::error_code& ec)> cb){
-        callBack = cb;
-        t_->expires_from_now(boost::posix_time::milliseconds(interval_));
-        auto ds = boost::bind(&SingleTimer::doSomething, this, boost::asio::placeholders::error);
-        t_->async_wait(ds);
-    }
+    SingleTimer(boost::asio::io_service& io, int millSeconds);
+    ~SingleTimer();
+    void start(std::function<void(const boost::system::error_code& ec)> cb);
 private:
-    void doSomething(const boost::system::error_code& ec){
-        callBack(ec);
-    }
+    void doSomething(const boost::system::error_code& ec);
+    
     int interval_;
     boost::asio::io_service& io_;
     SingleTimerCallBack callBack;
@@ -35,31 +22,11 @@ private:
 class RepeatingTimer
 {
 public:
-    RepeatingTimer(boost::asio::io_service& io, int millSeconds): io_(io), interval_(millSeconds)
-    {
-        t_ = new boost::asio::deadline_timer(io_);
-    }
-    ~RepeatingTimer()
-    {
-        t_->cancel();
-        delete t_;
-    }
-    void start(RepeatingTimerCallBack cb){
-        callBack = cb;
-        t_->expires_from_now(boost::posix_time::milliseconds(interval_));
-        auto ds = boost::bind(&RepeatingTimer::doSomething, this, boost::asio::placeholders::error);
-        t_->async_wait(ds);        
-    }
+    RepeatingTimer(boost::asio::io_service& io, int millSeconds);
+    ~RepeatingTimer();
+    void start(RepeatingTimerCallBack cb);
 private:
-    void doSomething(const boost::system::error_code& ec){
-        
-        if( ! callBack(ec) ) return;
-        
-        t_->expires_from_now(boost::posix_time::milliseconds(interval_));
-        auto ds = boost::bind(&RepeatingTimer::doSomething, this, boost::asio::placeholders::error);
-        t_->async_wait(ds);
-        
-    }
+    void doSomething(const boost::system::error_code& ec);
     int interval_;
     boost::asio::io_service& io_;
     RepeatingTimerCallBack callBack;

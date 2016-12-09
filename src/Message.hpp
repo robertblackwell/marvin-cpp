@@ -41,70 +41,45 @@ public:
 class MessageBase : public MessageInterface
 {
 public:
-    void setStatusCode(int sc){ _status_code = sc;}
-    void setStatus(std::string st){ _status = st;}
-    int  statusCode() {return _status_code; };
-    std::string status() {return _status;};
+    void setStatusCode(int sc);
+    void setStatus(std::string st);
+    int  statusCode();
+    std::string status();
 
-    void setMethod(enum http_method m){ _method = m;}
-    std::string getMethodAsString(){return std::string("");};
+    void setMethod(enum http_method m);
+    std::string getMethodAsString();
     
-    void setUrl(std::string u){ _url = u;}
-    std::string url(){ return _url; }
+    void setUrl(std::string u);
+    std::string url();
     
-    void setHttpVersMajor(int major){ _http_major = major; }
-    int  httpVersMajor() {return _http_major; }
+    void setHttpVersMajor(int major);
+    int  httpVersMajor();
     
-    void setHttpVersMinor(int minor){ _http_minor = minor; }
-    int  httpVersMinor(){return _http_minor; }
+    void setHttpVersMinor(int minor);
+    int  httpVersMinor();
     
-    void setHeader(std::string key, std::string value){ _headers[key] = value; };
-    bool hasHeader( std::string key){ return ( _headers.find(key) != _headers.end() ); };
-    std::string header(std::string key){ if( hasHeader(key) ){ return _headers[key]; } else { return nullptr;}  }
+    void setHeader(std::string key, std::string value);
+    bool hasHeader( std::string key);
+    std::string header(std::string key);
     
     void
-    removeHeader( std::string key){
-        if( _headers.find(key) != _headers.end()  )
-            _headers.erase(key);
-    }
+    removeHeader( std::string key);
     
     std::string
-    getHeader(std::string key){
-        if( _headers.find(key) != _headers.end() ){
-            return _headers[key];
-        }
-        return nullptr;
-    }
-    std::map<std::string, std::string> getHeaders(){
-        return _headers;
-    }
-    std::string str(){
-        std::ostringstream ss;
-        ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
-        std::map<std::string, std::string>::iterator it = _headers.begin();
-        while(it != _headers.end())
-        {
-            ss << it->first << ": " << it->second << "\r\n";
-            it++;
-        }
-        ss << "\r\n";
-        return ss.str();
-    }
+    getHeader(std::string key);
+
+    std::map<std::string, std::string>
+    getHeaders();
+    
+    std::string
+    str();
     void
-    dumpHeaders(std::ostream& os)
-    {
-        std::map<std::string, std::string>::iterator it = _headers.begin();
-        while(it != _headers.end())
-        {
-            os<<it->first<<" : "<<it->second<<std::endl;
-            it++;
-            }
-            
-    }
+    dumpHeaders(std::ostream& os);
     void
-    setTrailer(std::string key, std::string value){ _trailers[key] = value; };
-    bool hasTrailer( std::string key){ return ( _trailers.find(key) != _trailers.end() ); };
-    std::string trailer(std::string key){if( hasTrailer(key) ){return _trailers[key];} else{ return nullptr;} }
+    setTrailer(std::string key, std::string value);
+    bool
+    hasTrailer( std::string key);
+    std::string trailer(std::string key);
     
 private:
     enum http_method  					_method;

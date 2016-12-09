@@ -7,6 +7,7 @@
 //
 #ifndef MARVIN_ERROR_HPP
 #define MARVIN_ERROR_HPP
+
 #include <iostream>
 #include <boost/system/error_code.hpp>
 #include <boost/asio.hpp>
@@ -33,38 +34,16 @@ namespace Marvin{
     class category : public boost::system::error_category
     {
     public:
-        const char *name() const noexcept { return "Marvin error"; }
-        std::string message(int ev) const {
-            Marvin::errc e = static_cast<Marvin::errc>(ev);
-            switch( e ){
-                case Marvin::errc::end_of_message :
-                    return "end of message";
-                    break;
-                case Marvin::errc::end_of_body :
-                    return "end of body";
-                    break;
-                default:
-                    return "unknow Marvin error";
-                    break;
-            }
-            return "error message ";
-        }
+        const char *name() const noexcept;
+        std::string message(int ev) const;
     };
 
 
-    static Marvin::category cat;
+//    static Marvin::category cat;
     
-    const boost::system::error_category& category(){
-        return cat;
-    }
-    boost::system::error_code make_error_code(Marvin::errc e)
-    {
-        return boost::system::error_code(static_cast<int>(e),cat);
-    }
-    boost::system::error_condition make_error_condition(Marvin::errc e)
-    {
-        return boost::system::error_condition(static_cast<int>(e), cat);
-    }
+    const boost::system::error_category& category();
+    boost::system::error_code make_error_code(Marvin::errc e);
+    boost::system::error_condition make_error_condition(Marvin::errc e);
     
 } // namespace Marvin
 
@@ -77,30 +56,18 @@ namespace system {
 
 namespace Marvin{
     
-    ErrorType make_error_ok(){
-        boost::system::error_code r = boost::system::errc::make_error_code(boost::system::errc::success);
-        return r;
-    }
-    ErrorType make_error_eof(){
-        boost::system::error_code r = boost::asio::error::misc_errors::eof;
-        return r;
-    };
-    ErrorType make_error_eom(){
-        boost::system::error_code r = Marvin::errc::end_of_message;
-        return r;
-    };
-    ErrorType make_error_eob(){
-        boost::system::error_code r = Marvin::errc::end_of_body;
-        return r;
-    };
+    ErrorType make_error_ok();
+    ErrorType make_error_eof();
+    ErrorType make_error_eom();
+    ErrorType make_error_eob();
 } // namespace Marvin
 
 namespace Marvin{
 namespace Error{
-        ErrorType  make_ok() { return Marvin::make_error_ok();}
-        ErrorType  make_eof(){ return Marvin::make_error_eof();};
-        ErrorType  make_eom(){ return Marvin::make_error_eom();};
-        ErrorType  make_eob(){ return Marvin::make_error_eob();};
+    ErrorType  make_ok();
+        ErrorType  make_eof();
+        ErrorType  make_eom();
+        ErrorType  make_eob();
 }} // namespace Marvin::Error
 
 
