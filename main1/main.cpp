@@ -120,7 +120,7 @@ public:
         LogDebug("exit");
         
     }
-    void onResponse(Marvin::ErrorType& er, MessageInterface* msg){
+    void onResponse(Marvin::ErrorType& er){
         LogDebug("entry");
         rdr_->dumpHeaders(std::cout);
 
@@ -131,7 +131,7 @@ public:
 
     void run(){
         LogDebug("getting started");
-        auto h = std::bind(&TestReader::onResponse, this, std::placeholders::_1, std::placeholders::_2);
+        auto h = std::bind(&TestReader::onResponse, this, std::placeholders::_1);
         rdr_->readResponse(h);
 
     }

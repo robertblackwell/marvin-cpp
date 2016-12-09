@@ -17,9 +17,9 @@
 // Two call back types required by ResponseReader
 //
 // call back when reading headers
-typedef std::function<void(Marvin::ErrorType& err, MessageInterface* msg)>          ResponseCbType;
+typedef std::function<void(Marvin::ErrorType& err)>                         ReadResponseCallbackType;
 // Callback when reading body data
-typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>                 AsyncReadBodyCallback;
+typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>       ReadBodyCallbackType;
 /**
  * Instances of this class represent an incoming http(s) response message from a socket/stream.
  * Please note the "incoming" because the ResponseReader is seeking to provide a dynamic interface
@@ -69,7 +69,7 @@ public:
     // the ResponseReader object.
     // This method should only be called ONCE
     //
-    void readResponse(ResponseCbType cb);
+    void readResponse(ReadResponseCallbackType cb);
     
     //
     //  This methods read the body data. Should be called multiple times until the end of message
@@ -84,7 +84,7 @@ public:
     //  The pointer to an FBuffer passes ownership of the buffer to the callback. A new buffer will be
     //  provided on each call to the callback
     //
-    void readBody(AsyncReadBodyCallback cb);
+    void readBody(ReadBodyCallbackType cb);
     
 private:
     //----------------------------------------------------------------------------------------------------
@@ -141,8 +141,8 @@ private:
     MBuffer*        _bodyMBufferPtr;
     FBuffer*        _bodyFBufferPtr;
     
-    AsyncReadBodyCallback   _bodyCallback;
-    ResponseCbType          _responseCb;
+    ReadBodyCallbackType   _bodyCallback;
+    ReadResponseCallbackType          _responseCb;
 };
 
 ResponseReader::ResponseReader(Connection& conn, boost::asio::io_service& io): _io(io), _conn(conn)
@@ -218,7 +218,7 @@ MessageInterface* ResponseReader::currentMessage(){
     return this;
 }
 
-void ResponseReader::readBody(AsyncReadBodyCallback cb)
+void ResponseReader::readBody(ReadBodyCallbackType cb)
 {
     this->_bodyCallback = cb;
     Marvin::ErrorType er = ( isFinishedMessage() )? Marvin::make_error_eom() : Marvin::make_error_ok();
@@ -328,7 +328,7 @@ void ResponseReader::postBodyCallback(Marvin::ErrorType& er)
 void ResponseReader::postResponseCallback(Marvin::ErrorType& er)
 {
     MessageInterface* m = currentMessage();
-    auto pf = std::bind(_responseCb, er, m);
+    auto pf = std::bind(_responseCb, er);
     _io.post(pf);
 }
 
@@ -405,7 +405,7 @@ void ResponseReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_t
         }
         // this should be packaged in a function
         MessageInterface* m = currentMessage();
-        auto pf = std::bind(_responseCb, er, m);
+        auto pf = std::bind(_responseCb, er);
         delete _readBuffer; _readBuffer = nullptr;// finished with headers
         _io.post(pf);
     }else if( ! saved_EOM ){
@@ -422,7 +422,7 @@ void ResponseReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_t
     LogDebug("exit");
     
 }
-void ResponseReader::readResponse(ResponseCbType cb)
+void ResponseReader::readResponse(ReadResponseCallbackType cb)
 {
     LogDebug("");
     // this is trashy - when do I dispose/delete the buffer
