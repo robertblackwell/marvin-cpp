@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "C605F0836AD7855A3A2BBF7BB7F91E2031D537C8",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "C605F0836AD7855A3A2BBF7BB7F91E2031D537C8" : 0,
+    "09C05CE0354296460C689E085D56CC8A2B6B3ABA" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "4E794B7E-6093-4F47-BE39-12388DC40D13",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "C605F0836AD7855A3A2BBF7BB7F91E2031D537C8" : "HTTPMessage\/",
+    "09C05CE0354296460C689E085D56CC8A2B6B3ABA" : "HTTPMessage\/deps\/easyloggingpp\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MarvinCpp",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MarvinCpp.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "\/Users\/rob\/git-repos\/easyloggingpp",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "09C05CE0354296460C689E085D56CC8A2B6B3ABA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "bitbucket.org:rblackwell\/httpmessage.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C605F0836AD7855A3A2BBF7BB7F91E2031D537C8"
+    }
+  ]
+}

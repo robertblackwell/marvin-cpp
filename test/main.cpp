@@ -78,10 +78,10 @@ typedef std::function<void(Error& err, HTTPMessage* msg)>      ResponseCbType;
 /**
  * Instances of this class read an incoming http(s) response message from a stream
  */
-class ResponseReader
+class MessageReader
 {
 public:
-    ResponseReader(Connection* conn)
+    MessageReader(Connection* conn)
     {
         _conn = conn;
     }
@@ -187,7 +187,7 @@ public:
 
 TEST_CASE("next step"){
     Connection* conn = new Connection();
-    ResponseReader* rdr = new ResponseReader(conn);
+    MessageReader* rdr = new MessageReader(conn);
     rdr->readResponse([](Error& er, HTTPMessage* msg){
         std::cout << __FUNCTION__ << std::endl;
     });

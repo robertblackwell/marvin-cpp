@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "RBLogger.hpp"
+#include "rb_logger.hpp"
 #define RBLOGGER_ON
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)

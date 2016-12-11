@@ -9,7 +9,7 @@
 #include <functional>
 #include <memory>
 
-#include "RBLogger.hpp"
+#include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 
@@ -18,7 +18,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 #include "buffer.hpp"
 #include "mock_connection.hpp"
 
-#include "response_reader.hpp"
+#include "message_reader.hpp"
 
 void testRepeatTimer(){
     boost::asio::io_service io_service;
@@ -50,7 +50,7 @@ class TestReader
 {
     
 public:
-    ResponseReader*             rdr_;
+    MessageReader*             rdr_;
     Connection                  conn_;
     boost::asio::io_service&    io_;
     std::string                 body;
@@ -69,7 +69,7 @@ public:
         tcObj(tcObjs.getCase(tcIndex))
     {
         LogDebug("");
-        rdr_ = new ResponseReader(conn_, io_);
+        rdr_ = new MessageReader(conn_, io_);
         body = std::string("");
         bodyStream.str(body);
     }
@@ -78,7 +78,10 @@ public:
         LogDebug("");
         delete rdr_;
     }
-
+    void onMessage(Marvin::ErrorType& er)
+    {
+        LogDebug("");
+    }
     void onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
     {
         LogDebug(" entry");
@@ -120,7 +123,7 @@ public:
         LogDebug("exit");
         
     }
-    void onResponse(Marvin::ErrorType& er){
+    void onHeaders(Marvin::ErrorType& er){
         LogDebug("entry");
         rdr_->dumpHeaders(std::cout);
 
@@ -128,23 +131,38 @@ public:
         rdr_->readBody(bh);
         LogDebug("exit");
     }
-
-    void run(){
+    void runFullMessageRead()
+    {
         LogDebug("getting started");
-        auto h = std::bind(&TestReader::onResponse, this, std::placeholders::_1);
-        rdr_->readResponse(h);
+        auto h = std::bind(&TestReader::onMessage, this, std::placeholders::_1);
+        rdr_->readMessage(h);
+    }
+    void runStreamingBodyRead()
+    {
+        LogDebug("getting started");
+        auto h = std::bind(&TestReader::onHeaders, this, std::placeholders::_1);
+        rdr_->readHeaders(h);
 
     }
 };
-
-void testRequestReader(int testcase)
+void testFullMessageReader(int testcase)
 {
     boost::asio::io_service io_service;
     auto tr = new TestReader(io_service, testcase);
-    tr->run();
+    tr->runFullMessageRead();
     io_service.run();
     delete tr;
-    std::cout << "testResponseReader" << std::endl;
+    std::cout << "testMessageReader" << std::endl;
+}
+
+void testStreamingReader(int testcase)
+{
+    boost::asio::io_service io_service;
+    auto tr = new TestReader(io_service, testcase);
+    tr->runStreamingBodyRead();
+    io_service.run();
+    delete tr;
+    std::cout << "testMessageReader" << std::endl;
 }
 
 void TestBuffer(){
@@ -185,11 +203,12 @@ void TestBuffer(){
 
 int main(){
 //    TestBuffer();
-    testRequestReader(1);
-//    printf("");
-    testRequestReader(2);
-    testRequestReader(3);
-    testRequestReader(4);
-    testRequestReader(5);
-    testRequestReader(6);
+    testFullMessageReader(1);
+
+    testStreamingReader(1);
+    testStreamingReader(2);
+    testStreamingReader(3);
+    testStreamingReader(4);
+    testStreamingReader(5);
+    testStreamingReader(6);
 }

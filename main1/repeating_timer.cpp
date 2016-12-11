@@ -4,7 +4,7 @@
 #include <functional>
 #include <memory>
 
-#include "RBLogger.hpp"
+#include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 
