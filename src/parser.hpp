@@ -188,7 +188,6 @@ private:
      */
     http_parser*            parser;
     http_parser_settings*   parserSettings;
-    
     bool                    headersCompleteFlag;
     bool                    messageCompleteFlag;
     std::string             messageData;

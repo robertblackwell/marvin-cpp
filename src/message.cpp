@@ -4,8 +4,20 @@
 #include "http_parser.h"
 #include "message.hpp"
 
+std::string httpMethodString(HttpMethod m){
+
+    enum http_method c_m = (enum http_method) m;
+    std::string s(http_method_str(c_m));
+    return s;
+}
 
 #pragma - http message base impl
+
+bool
+MessageBase::isRequest(){ return _isRequest; }
+
+void
+MessageBase::setIsRequest(bool flag){ _isRequest = flag;}
 
 void
 MessageBase::setStatusCode(int sc){ _status_code = sc;}
@@ -20,16 +32,20 @@ std::string
 MessageBase::status() {return _status;};
 
 void
+MessageBase::setMethod(HttpMethod m){ _method = (enum http_method)m;}
+void
 MessageBase::setMethod(enum http_method m){ _method = m;}
+void
+MessageBase::setMethod(std::string m){ _methodStr = m;}
 
 std::string
-MessageBase::getMethodAsString(){return std::string("");};
+MessageBase::getMethodAsString(){return httpMethodString((HttpMethod) _method);};
 
 void
-MessageBase::setUrl(std::string u){ _url = u;}
+MessageBase::setUri(std::string u){ _uri = u;}
 
 std::string
-MessageBase::url(){ return _url; }
+MessageBase::uri(){ return _uri; }
 
 void
 MessageBase::setHttpVersMajor(int major){ _http_major = major; }

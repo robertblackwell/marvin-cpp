@@ -13,16 +13,17 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "repeating_timer.hpp"
-#include "mock_connection.hpp"
+//#include "repeating_timer.hpp"
+//#include "mock_rsockection.hpp"
+#include "read_socket_interface.hpp"
 #include "message_reader.hpp"
 
 
-MessageReader::MessageReader(Connection& conn, boost::asio::io_service& io): _io(io), _conn(conn)
+MessageReader::MessageReader(ReadSocketInterface& readSock, boost::asio::io_service& io): _io(io), _rsock(readSock)
 {
     LogDebug("");
-    _body_buffer_size   = 10000;
-    _header_buffer_size = 10000;
+    _body_buffer_size   = 100;
+    _header_buffer_size = 100;
     _readBodyStarted    = false;
     clearBodyBuffer();
 }
@@ -32,7 +33,10 @@ MessageReader::~MessageReader()
     // how to know what to get rid of
     // delete _readBuffer;
 }
-
+std::string& MessageReader::getBody()
+{
+    return body;
+}
 //
 // This function is the only place where each piece of de-chunked body data is seen.
 // So this is where the "fragmentation" of the buffer has to take place.
@@ -50,11 +54,11 @@ void MessageReader::OnBodyData(void* buf, int len)
     // I would like to be able to guarentee that the memory pointed to by "buf"
     // would stay valid long enough to be used without memcpy'ing it
     //
-    std::string tmp((char*)buf, len);
-    LogDebug("tmp:", tmp);
-    FLogDebug("buf:%x", (long)buf);
-    FLogDebug("_readBuffer: %x", _readBuffer->data());
-    FLogDebug("buf+len: %x",(long)((char*)buf+len));
+//    std::string tmp((char*)buf, len);
+//    LogDebug("tmp:", tmp);
+//    FLogDebug("buf:%x", (long)buf);
+//    FLogDebug("_readBuffer: %x", _readBuffer->data());
+//    FLogDebug("buf+len: %x",(long)((char*)buf+len));
     if( ! _readBodyStarted ){
         //
         // we got here while parsing a header buffer that simply had some body data in it.
@@ -84,7 +88,7 @@ void MessageReader::OnBodyData(void* buf, int len)
         assert( (_bodyFBufferPtr != nullptr) );
         _bodyFBufferPtr->addFragment(buf, len);
     }
-    LogDebug("exit buf:",  std::string((char*)buf, len));
+    LogDebug("exit buf:");//,  std::string((char*)buf, len));
 };
 MessageInterface* MessageReader::currentMessage(){
     MessageInterface* m = this;
@@ -151,14 +155,13 @@ void MessageReader::startReadBody()
     // WARNING - this is a leak of readBuffer
     
     _readBuffer = _bodyMBufferPtr;
-    _conn.asyncRead(*_readBuffer, h);
-//    _conn.asyncRead(*_bodyMBufferPtr, h);
+    _rsock.asyncRead(*_readBuffer, h);
 }
 
 void MessageReader::startRead(){
     LogDebug("");
     auto h = std::bind(&MessageReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
-    _conn.asyncRead(*_readBuffer, h);
+    _rsock.asyncRead(*_readBuffer, h);
 }
 //
 // called ONLY if there is body data in a header buffer
@@ -306,7 +309,7 @@ void MessageReader::readHeaders(ReadHeadersCallbackType cb)
     LogDebug("");
     // this is trashy - when do I dispose/delete the buffer
     // have the size as a variable of constant
-    _readBuffer = new MBuffer(10000);
+    _readBuffer = new MBuffer(_header_buffer_size);
     this->_responseCb = cb;
     startRead();
 }
@@ -328,30 +331,14 @@ void MessageReader::onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
     auto bh = std::bind(&MessageReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
     bool done = (er == Marvin::make_error_eom());
     
-    if( er != Marvin::make_error_ok() )
+//    if( er != Marvin::make_error_ok() ){
+
     if( done ){
         bodyStream << *fBufPtr;
         delete fBufPtr;
         Marvin::ErrorType ee = Marvin::make_error_ok();
         onMessage(ee);
-//        std::string msgStr = rdr_->MessageBase::str() + bodyStream.str();
         body = bodyStream.str();
-//        std::string expectedBody = tcObj.result_body();
-//        
-//        bool vb = tcObj.verifyBody(body);
-//        std::map<std::string, std::string> hh = rdr_->MessageBase::getHeaders();
-//        bool vh = tcObj.verifyHeaders(hh);
-//        if( vb && vh ){
-//            LogDebug("Test for test case", _tcIndex ,"succeeded");
-//        }else{
-//            LogDebug("Test for test case", _tcIndex ," FAILED");
-//            if( ! vb )
-//                LogDebug("Body failed ", body, expectedBody );
-//            if( ! vh ){
-//                LogDebug("Headers failed");
-//
-//            }
-//        }
     }else{
         // do something with fBuf
         //

@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>client_test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>9</integer>
+		</dict>
 		<key>error_test.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -17,37 +22,32 @@
 		<key>logger.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>6</integer>
-		</dict>
-		<key>main1 copy 2.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>9</integer>
-		</dict>
-		<key>main1 copy.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>4</integer>
-		</dict>
-		<key>main1.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>5</integer>
 		</dict>
 		<key>nullstream.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>5</integer>
+			<integer>4</integer>
+		</dict>
+		<key>reader_test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>server_test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
 		</dict>
 		<key>streamtest.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>7</integer>
+			<integer>6</integer>
 		</dict>
 		<key>testcase.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>8</integer>
+			<integer>7</integer>
 		</dict>
 		<key>unit-test.xcscheme</key>
 		<dict>
@@ -93,6 +93,11 @@
 			<true/>
 		</dict>
 		<key>D466146D1DFB2A5F00E3FAB0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D46614C11DFCF46400E3FAB0</key>
 		<dict>
 			<key>primary</key>
 			<true/>

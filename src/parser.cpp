@@ -232,8 +232,8 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
     (p->headers)[n_str] = v_str;
     MessageInterface* m = p->currentMessage();
     m->setHeader(n_str, v_str);
-    std::cout << "SaveNameValuePair::set " << n_str << " " << v_str << std::endl;
-    auto h = p->headers;
+//    std::cout << "SaveNameValuePair::set " << n_str << " " << v_str << std::endl;
+//    auto h = p->headers;
 //    for (auto iter = h.begin(); iter != h.end(); iter++)
 //    {
 //        std::cout << "SaveNameValuePair: "<< "Key: " << iter->first << " : " << iter->second << std::endl;
@@ -259,9 +259,12 @@ int
 url_data_cb(http_parser* parser, const char* at, size_t length)
 {
     Parser* p = getParser(parser);
+    MessageInterface* message = p->currentMessage();
+
     if( p->url_buf == NULL)
         p->url_buf = sb_create();
-    
+        
+    message->setIsRequest(true);
     sb_append( p->url_buf, (char*)at, length);
     return 0;
 }
@@ -270,8 +273,11 @@ int
 status_data_cb(http_parser* parser, const char* at, size_t length)
 {
     Parser* p = getParser(parser);
+    MessageInterface* message = p->currentMessage();
     if( p->status_buf == NULL)
         p->status_buf = sb_create();
+    
+    message->setIsRequest(false);
     sb_append( p->status_buf, (char*)at, length);
     return 0;
 }
@@ -281,7 +287,6 @@ header_field_data_cb(http_parser* parser, const char* at, size_t length)
 {
     Parser* p = getParser(parser);
     int state = p->header_state;
-    printf("Parser::header_field_value %s \n", at);
     if( (state == 0)||(state == kHEADER_STATE_NOTHING) || (state == kHEADER_STATE_VALUE)){
         if( p->name_buf!= NULL){
             saveNameValuePair(parser, p->name_buf, p->value_buf);
@@ -335,9 +340,9 @@ headers_complete_cb(http_parser* parser)
     message->setHttpVersMajor( parser->http_major );
     message->setHttpVersMinor( parser->http_minor );
     if( p->url_buf == NULL ){
-        message->setUrl( "" );
+        message->setUri( "" );
     }else{
-        message->setUrl( std::string(p->url_buf->buffer, p->url_buf->used) );
+        message->setUri( std::string(p->url_buf->buffer, p->url_buf->used) );
     }
     if( p->status_buf == NULL ){
         message->setStatus(std::string(""));

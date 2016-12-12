@@ -16,7 +16,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 #include "repeating_timer.hpp"
 #include "marvin_error.hpp"
 #include "buffer.hpp"
-#include "mock_connection.hpp"
+#include "mock_read_socket.hpp"
 
 #include "message_reader.hpp"
 
@@ -50,8 +50,8 @@ class TestReader
 {
     
 public:
-    MessageReader*             rdr_;
-    Connection                  conn_;
+    MessageReader*              rdr_;
+    MockReadSocket              conn_;
     boost::asio::io_service&    io_;
     std::string                 body;
     std::ostringstream          bodyStream;
@@ -64,7 +64,7 @@ public:
     TestReader(boost::asio::io_service& io, int tcIndex)
         : io_(io),
         _tcIndex(tcIndex),
-        conn_(Connection(io, tcIndex)),
+        conn_(MockReadSocket(io, tcIndex)),
         tcObjs(Testcases()),
         tcObj(tcObjs.getCase(tcIndex))
     {
@@ -126,7 +126,7 @@ public:
     void onHeaders(Marvin::ErrorType& er){
         LogDebug("entry");
         rdr_->dumpHeaders(std::cout);
-
+        bool x = rdr_->_isRequest;
         auto bh = std::bind(&TestReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
         rdr_->readBody(bh);
         LogDebug("exit");

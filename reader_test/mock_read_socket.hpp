@@ -12,17 +12,19 @@
 #include "repeating_timer.hpp"
 #include "error.hpp"
 #include "tcase.hpp"
+#include "read_socket_interface.hpp"
 
 typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallback;
 
 /**
  * This class simulates an async/non-blocking sockt connection
  */
-class Connection
+ 
+class MockReadSocket : public ReadSocketInterface
 {
 public:
-    Connection(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
-    ~Connection();
+    MockReadSocket(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
+    ~MockReadSocket();
     void startRead();
     void asyncRead(MBuffer& mb, AsyncReadCallback cb);
     

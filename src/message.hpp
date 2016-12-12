@@ -8,14 +8,28 @@
 #pragma once
 #pragma mark - http message interfaces
 
+//
+// BAD kludge to get C++ enum same as http_parser c enum
+//
+//  usage HttpMethod::GET -- see http_parser.h for list of names
+//
+enum class HttpMethod{
+#define EC(num, name, string) name = HTTP_##name,
+    HTTP_METHOD_MAP(EC)
+#undef EC
+};
+std::string httpMethodString(HttpMethod m);
+
 class MessageInterface
 {
 public:
+    virtual void setMethod(HttpMethod m) = 0 ;
     virtual void setMethod(enum http_method m) = 0 ;
+    virtual void setMethod(std::string m_str) = 0;
 //    virtual std::string method() = 0;
     
-    virtual void setUrl(std::string u) = 0 ;
-    virtual std::string url() = 0;
+    virtual void setUri(std::string u) = 0 ;
+    virtual std::string uri() = 0;
     
     virtual void setStatusCode(int sc) = 0 ;
     virtual int  statusCode() = 0;
@@ -34,6 +48,10 @@ public:
     
     virtual void setTrailer(std::string key, std::string value) = 0;
     virtual std::string trailer(std::string key) = 0;
+    
+    virtual void setIsRequest(bool isrreq) = 0;
+    virtual bool isRequest() = 0;
+    
 };
 
 #pragma - http message base
@@ -46,11 +64,13 @@ public:
     int  statusCode();
     std::string status();
 
+    void setMethod(HttpMethod m);
     void setMethod(enum http_method m);
+    virtual void setMethod(std::string m_str);
     std::string getMethodAsString();
     
-    void setUrl(std::string u);
-    std::string url();
+    void setUri(std::string u);
+    std::string uri();
     
     void setHttpVersMajor(int major);
     int  httpVersMajor();
@@ -80,10 +100,16 @@ public:
     bool
     hasTrailer( std::string key);
     std::string trailer(std::string key);
+
+    void    setIsRequest(bool flag);
+    bool    isRequest();
     
-private:
+protected:
+
+    bool                                _isRequest;
     enum http_method  					_method;
-    std::string							_url;
+    std::string                         _methodStr;
+    std::string							_uri;
 
     int									_status_code;
     std::string							_status;

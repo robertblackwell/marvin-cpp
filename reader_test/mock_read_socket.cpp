@@ -10,29 +10,29 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "tcase.hpp"
-#include "mock_connection.hpp"
+#include "mock_read_socket.hpp"
 
-Connection::Connection(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc))
+MockReadSocket::MockReadSocket(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc))
 {
     index = 0;
     _tc = tc;
     _rdBuf = (char*)malloc(100000);
     st = new SingleTimer(io_, 500);
 }
-Connection::~Connection()
+MockReadSocket::~MockReadSocket()
 {
     delete st;
     std::cout << __FUNCTION__ << std::endl;
     free((void*)_rdBuf);
 }
-void Connection::startRead()
+void MockReadSocket::startRead()
 {
         
 }
 //
 // New buffer strategy make the upper level provide the buffer. All we do is check the size
 //
-void Connection::asyncRead(MBuffer& mb, AsyncReadCallback cb)
+void MockReadSocket::asyncRead(MBuffer& mb, AsyncReadCallback cb)
 {
     LogDebug("");
     char* buf;
@@ -45,8 +45,8 @@ void Connection::asyncRead(MBuffer& mb, AsyncReadCallback cb)
         len = strlen(buf);
         std::size_t buf_max = mb.capacity();
         if( buf_max < len + 1){
-            LogError("Connection:asyncRead error buffer too small");
-            throw "Connection:asyncRead error buffer too small";
+            LogError("MockReadSocket:asyncRead error buffer too small");
+            throw "MockReadSocket:asyncRead error buffer too small";
         }
         void* rawPtr = mb.data();
         memcpy(rawPtr, buf, len);

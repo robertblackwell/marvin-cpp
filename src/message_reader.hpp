@@ -13,18 +13,20 @@
 #include "parser.hpp"
 #include "rb_logger.hpp"
 
+#include "read_socket_interface.hpp"
+#include "callback_typedefs.hpp"
 //
 // Two call back types required by MessageReader
 //
 
 /// call back when reading headers
-typedef std::function<void(Marvin::ErrorType& err)>                         ReadHeadersCallbackType;
+//typedef std::function<void(Marvin::ErrorType& err)>                         ReadHeadersCallbackType;
 
 /// Callback when reading body data
-typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>       ReadBodyDataCallbackType;
+//typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>       ReadBodyDataCallbackType;
 
 /// Call back when reading full message is complete
-typedef std::function<void(Marvin::ErrorType& err)>                         ReadMessageCallbackType;
+//typedef std::function<void(Marvin::ErrorType& err)>                         ReadMessageCallbackType;
 
 /**
  * Instances of this class represent an incoming http(s) response message from a socket/stream.
@@ -67,7 +69,7 @@ typedef std::function<void(Marvin::ErrorType& err)>                         Read
 class MessageReader : public Parser, public MessageBase
 {
 public:
-    MessageReader(Connection& conn, boost::asio::io_service& io);
+    MessageReader(ReadSocketInterface& readSock, boost::asio::io_service& io);
     ~MessageReader();
     //
     // Starts the reading process and invokes cb when all headers have been received
@@ -97,6 +99,7 @@ public:
     // requires the buffering of the full message body.
     //
     void readMessage(ReadMessageCallbackType cb);
+    std::string& getBody();
     
 private:
     //----------------------------------------------------------------------------------------------------
@@ -116,6 +119,7 @@ private:
     // These method starts all reading operations
     void startRead();
     void startReadBody();
+    
     
     /// handler methods for reading a full message
     void onHeaders(Marvin::ErrorType& er);
@@ -142,7 +146,7 @@ private:
     //----------------------------------------------------------------------------------------------------
     // private properties
     //----------------------------------------------------------------------------------------------------
-    Connection&                 _conn;
+    ReadSocketInterface&        _rsock;
     boost::asio::io_service&    _io;
     std::size_t                 _body_buffer_size;
     std::size_t                 _header_buffer_size;
@@ -164,9 +168,9 @@ private:
     std::ostringstream          bodyStream;
 
     
-    ReadBodyDataCallbackType        _bodyCallback;
+    ReadBodyDataCallbackType   _bodyCallback;
     ReadHeadersCallbackType    _responseCb;
-    ReadMessageCallbackType     _messageCb;
+    ReadMessageCallbackType    _messageCb;
 };
 
 #endif

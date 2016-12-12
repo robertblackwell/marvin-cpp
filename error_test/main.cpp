@@ -43,21 +43,34 @@ void xprint_error(Marvin::ErrorType er){
     std::cout << er.category().message(er.value()) << '\n';
     
 }
-
-int main()
+void testBoosterc(boost::system::error_code& ec)
 {
-    boost::system::error_code ec1{129, Marvin::cat};
-    boost::system::error_code ec{static_cast<int>(Marvin::errc::end_of_message), Marvin::cat};
     std::cout << ec.value() << '\n';
     std::cout << ec.category().name() << '\n';
     std::cout << ec.category().message(ec.value()) << '\n';
+}
+void testMarvinerc(Marvin::ErrorType& ec)
+{
+    std::cout << ec.value() << '\n';
+    std::cout << ec.category().name() << '\n';
+    std::cout << ec.category().message(ec.value()) << '\n';
+}
+
+int main()
+{
+
+    Marvin::ErrorType mec = Marvin::make_error_eob();
+    boost::system::error_code bec = make_error_code(boost::system::errc::stream_timeout);
+    // demonstrate interchangeability of the error types
+    testBoosterc(mec);
+    testMarvinerc(bec);
+
 
     // using marvin custom make_error_code funtion
     boost::system::error_code ec3 = Marvin::make_error_code(Marvin::errc::end_of_message);
     std::cout << ec3.value() << '\n';
     std::cout << ec3.category().name() << '\n';
     std::cout << ec3.category().message(ec3.value()) << '\n';
-    auto x = (ec == ec3 );
     
     // assigning marvin error codes to a boost error code variable
     // and assigning eof to boost::system::error_code

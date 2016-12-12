@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-               BuildableName = "main1"
-               BlueprintName = "main1"
+               BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
+               BuildableName = "client_test"
+               BlueprintName = "client_test"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-            BuildableName = "main1"
-            BlueprintName = "main1"
+            BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
+            BuildableName = "client_test"
+            BlueprintName = "client_test"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -55,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-            BuildableName = "main1"
-            BlueprintName = "main1"
+            BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
+            BuildableName = "client_test"
+            BlueprintName = "client_test"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-            BuildableName = "main1"
-            BlueprintName = "main1"
+            BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
+            BuildableName = "client_test"
+            BlueprintName = "client_test"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
