@@ -8,22 +8,22 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef HTTP_CONNECTION_MANAGER_HPP
-#define HTTP_CONNECTION_MANAGER_HPP
+#ifndef HTTP_SERVER_CONNECTION_MANAGER_HPP
+#define HTTP_SERVER_CONNECTION_MANAGER_HPP
 
 #include <set>
-#include "connection.hpp"
+#include "server_connection.hpp"
 
 /// Manages open connections so that they may be cleanly stopped when the server
 /// needs to shut down.
-class ConnectionManager
+class ServerConnectionManager
 {
 public:
-  ConnectionManager(const ConnectionManager&) = delete;
-  ConnectionManager& operator=(const ConnectionManager&) = delete;
+  ServerConnectionManager(const ServerConnectionManager&) = delete;
+  ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
 
   /// Construct a connection manager.
-  ConnectionManager();
+  ServerConnectionManager();
 
   /// Add the specified connection to the manager and start it.
   void start(connection_ptr c);
@@ -39,4 +39,4 @@ private:
   std::set<connection_ptr> connections_;
 };
 
-#endif // HTTP_CONNECTION_MANAGER_HPP
+#endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

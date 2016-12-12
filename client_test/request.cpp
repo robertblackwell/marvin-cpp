@@ -12,18 +12,22 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "request.hpp"
-#include "ConnectionManager.hpp"
+#include "client_connection_manager.hpp"
 
 using boost::asio::ip::tcp;
 using boost::system::error_code;
 using boost::asio::io_service;
 using boost::asio::streambuf;
 
+Request::~Request()
+{
+    LogDebug("");
+}
+
 Request::Request(boost::asio::io_service& io): _io(io), MessageWriter(io, true)
 {
     _writeSock = nullptr;
 }
-Request::~Request(){}
 
 MessageReader& Request::getResponse()
 {
@@ -45,20 +49,20 @@ void Request::setUrl(std::string url)
     setHeader("Host", host);
 //    _uri = url;
 }
+
 void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 {
-    ConnectionManager* cm = ConnectionManager::getInstance(_io);
+    ClientConnectionManager* cm = ClientConnectionManager::getInstance(_io);
     if( _writeSock == nullptr){
         std::string scheme("http:");
         std::string server("whiteacorn");
         std::string port("80");
-        cm->asyncGetConnection(scheme, server, port, [this, connectCb](Marvin::ErrorType& ec, Connection* conn){
+        cm->asyncGetClientConnection(scheme, server, port, [this, connectCb](Marvin::ErrorType& ec, ClientConnection* conn){
             LogDebug("");
             if( ec ){
                 Marvin::ErrorType m_er = ec;
                 connectCb(m_er, nullptr);
             } else {
-//                _writeSock = conn;
                 Marvin::ErrorType m_er = Marvin::make_error_ok();
                 connectCb(m_er, conn);
             }
@@ -68,29 +72,33 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
         
     }
 }
+
 void Request::fullWriteHandler(Marvin::ErrorType& err)
 {
     LogDebug("");
     std::cout << "Request::fullWriteHandler:: " << std:: hex << this << std::endl;
     _rdr->readMessage([this](Marvin::ErrorType& err){
+        ClientConnectionManager* cm = ClientConnectionManager::getInstance(_io);
+        cm->releaseClientConnection(_connection);
+        _connection = nullptr;
         auto pf = std::bind(this->_goCb, err);
         _io.post(pf);
     
     });
-//    _goCb(err);
-    
 }
 //
 // we are connected start read and write
 //
-void Request::haveConnection(Marvin::ErrorType& err, Connection* conn)
+void Request::haveConnection(Marvin::ErrorType& err, ClientConnection* conn)
 {
     if( !err ){
     std::cout << "Request::haveConnection:: " << std:: hex << this << " conn: " << conn <<  std::endl;
     
-        this->_writeSock = conn;
-        this->_readSock = conn;
-        this->_rdr = new MessageReader(*_readSock, _io);
+        // give the MessageWrite base class instance a write socket
+        this->_connection = conn;
+        this->setWriteSock(conn);
+        // create a MessageReader with a read socket
+        this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(conn, _io));
         // set up read also
 
         auto cf = std::bind(&Request::fullWriteHandler, this, std::placeholders::_1);

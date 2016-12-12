@@ -11,19 +11,19 @@
 #include "connection.hpp"
 #include <utility>
 #include <vector>
-#include "connection_manager.hpp"
+#include "server_connection_manager.hpp"
 #include "request_handler.hpp"
 
 
-Connection::Connection(std::shared_ptr<boost::asio::ip::tcp::socket> socket_sptr,
-    ConnectionManager& manager, RequestHandlerInterface& handler)
+ServerConnection::ServerConnection(std::shared_ptr<boost::asio::ip::tcp::socket> socket_sptr,
+    ServerConnectionManager& manager, RequestHandlerInterface& handler)
   : socket_sptr_(socket_sptr),
     connection_manager_(manager),
     request_handler_(handler)
 {
 }
 
-void Connection::start()
+void ServerConnection::start()
 {
     startRead();
     //  create socket_wrap
@@ -39,11 +39,11 @@ void Connection::start()
     
 }
 
-void Connection::stop()
+void ServerConnection::stop()
 {
   socket_sptr_->close();
 }
-void Connection::onGoodRequest(){
+void ServerConnection::onGoodRequest(){
     request_handler_.handle_request(request_, reply_, [this](bool good){
         if( good){
             std::cout << "handler done" << std::endl;
@@ -54,18 +54,18 @@ void Connection::onGoodRequest(){
         }
     });
 }
-void Connection::onBadRequest(){
+void ServerConnection::onBadRequest(){
     reply_ = reply::stock_reply(reply::bad_request);
     startWrite();
     
 }
-void Connection::onHandlerDone(){
+void ServerConnection::onHandlerDone(){
     
 }
-void Connection::handleRead(){
+void ServerConnection::handleRead(){
     
 }
-void Connection::startRead()
+void ServerConnection::startRead()
 {
     auto self(shared_from_this());
     socket_sptr_->async_read_some(boost::asio::buffer(buffer_),
@@ -88,7 +88,7 @@ void Connection::startRead()
       });
 }
 
-void Connection::startWrite()
+void ServerConnection::startWrite()
 {
     auto self(shared_from_this());
     boost::asio::async_write(*socket_sptr_, reply_.to_buffers(),

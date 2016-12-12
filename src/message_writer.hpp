@@ -13,7 +13,7 @@
 #include "callback_typedefs.hpp"
 #include "message.hpp"
 #include "read_socket_interface.hpp"
-#include "connection.hpp"
+#include "client_connection.hpp"
 
 class MessageWriter : public MessageBase{
 public:
@@ -21,9 +21,6 @@ public:
     MessageWriter(boost::asio::io_service& io, bool is_request);
     ~MessageWriter();
     
-    /// MUST override
-    virtual void asyncGetWriteSocket(ConnectCallbackType connectCb);
-
     void setContent(std::string& contentStr);
     
     void asyncWrite(WriteMessageCallbackType cb);

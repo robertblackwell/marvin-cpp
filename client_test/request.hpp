@@ -10,7 +10,7 @@
 #include <boost/bind.hpp>
 #include "message_writer.hpp"
 #include "message_reader.hpp"
-#include "Connection.hpp"
+#include "client_connection.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -18,28 +18,30 @@ class Request : public MessageWriter
 {
 public:
     Request(boost::asio::io_service& io);
+    
+    Request(const Request& other) = delete;
+    Request& operator=(const Request&) = delete;
+    
     ~Request();
     
     void go(std::function<void(Marvin::ErrorType& err)> cb);
-    
-    void asyncGetConnection(ConnectCallbackType connectCb);
-    void asyncGetWriteSocket(ConnectCallbackType connectCb);
-    void asyncGetReadSocket(ConnectCallbackType connectCb);
+    // void goHeaders() - coming to a universe near you
     
     MessageReader&  getResponse();
     
     void setUrl(std::string url);
     
 private:
-    void haveConnection(Marvin::ErrorType& err, Connection* conn);
+    void asyncGetWriteSocket(ConnectCallbackType connectCb);
+    void haveConnection(Marvin::ErrorType& err, ClientConnection* conn);
     void fullWriteHandler(Marvin::ErrorType& err);
     
     boost::asio::io_service&                        _io;
-    MessageReader*                                  _rdr;
+    std::shared_ptr<MessageReader>                  _rdr;
     
-//    WriteSocketInterface*                           _writeSock;
+    ClientConnection*                               _connection;
     ReadSocketInterface*                            _readSock;
-//    Connection*                                     _connection;
+    
     std::function<void(Marvin::ErrorType& err)>     _goCb;
 };
 #endif

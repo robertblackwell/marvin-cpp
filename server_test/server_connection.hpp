@@ -1,6 +1,6 @@
 
-#ifndef HTTP_CONNECTION_HPP
-#define HTTP_CONNECTION_HPP
+#ifndef HTTP_SERVER_CONNECTION_HPP
+#define HTTP_SERVER_CONNECTION_HPP
 
 #include <array>
 #include <memory>
@@ -10,26 +10,26 @@
 #include "request_handler.hpp"
 #include "request_parser.hpp"
 
-class ConnectionManager;
+class ServerConnectionManager;
 
-/// Represents a single connection from a client.
-class Connection
-  : public std::enable_shared_from_this<Connection>
+/// Represents a single ServerConnection from a client.
+class ServerConnection
+  : public std::enable_shared_from_this<ServerConnection>
 {
 public:
-  Connection(const Connection&) = delete;
-  Connection& operator=(const Connection&) = delete;
+  ServerConnection(const ServerConnection&) = delete;
+  ServerConnection& operator=(const ServerConnection&) = delete;
 
-  /// Construct a connection with the given socket.
-    explicit Connection(
+  /// Construct a ServerConnection with the given socket.
+    explicit ServerConnection(
                         std::shared_ptr<boost::asio::ip::tcp::socket> socket_sptr,
-                        ConnectionManager& manager,
+                        ServerConnectionManager& manager,
                         RequestHandlerInterface& handler);
 
-    /// Start the first asynchronous operation for the connection.
+    /// Start the first asynchronous operation for the ServerConnection.
     void start();
 
-    /// Stop all asynchronous operations associated with the connection.
+    /// Stop all asynchronous operations associated with the ServerConnection.
     void stop();
 
 private:
@@ -44,11 +44,11 @@ private:
     /// Perform an asynchronous write operation.
     void startWrite();
 
-    /// Socket for the connection.
+    /// Socket for the ServerConnection.
     std::shared_ptr<boost::asio::ip::tcp::socket> socket_sptr_;
 
-    /// The manager for this connection.
-    ConnectionManager& connection_manager_;
+    /// The manager for this ServerConnection.
+    ServerConnectionManager& connection_manager_;
 
     /// The handler used to process the incoming request.
     RequestHandlerInterface& request_handler_;
@@ -67,7 +67,7 @@ private:
     
 };
 
-typedef std::shared_ptr<Connection> connection_ptr;
+typedef std::shared_ptr<ServerConnection> connection_ptr;
 
 
 #endif // HTTP_CONNECTION_HPP

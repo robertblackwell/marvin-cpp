@@ -6,8 +6,8 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef ConnectionManager_hpp
-#define ConnectionManager_hpp
+#ifndef client_connection_manager_hpp
+#define client_connection_manager_hpp
 
 #include <iostream>
 #include <istream>
@@ -21,31 +21,28 @@
 class Connection;
 
 #include <stdio.h>
-//typedef boost::function<void (Connection*)>;
 
-typedef boost::function<void (Connection*)> connectionCb_t;
-
-class ConnectionManager
+class ClientConnectionManager
 {
 public:
-    static ConnectionManager* getInstance(boost::asio::io_service& io);
+    static ClientConnectionManager* getInstance(boost::asio::io_service& io);
            
-    ConnectionManager(boost::asio::io_service& io);
+    ClientConnectionManager(boost::asio::io_service& io);
     
     void init(boost::asio::io_service& io);
     
-    void asyncGetConnection(
+    void asyncGetClientConnection(
         std::string scheme,
         std::string server,
         std::string port,
         ConnectCallbackType cb
     );
     
-    void releaseConnection(Connection* conn);
+    void releaseClientConnection(ClientConnection* conn);
 
 private:
 
-    void postSuccess(ConnectCallbackType cb, Connection* conn);    
+    void postSuccess(ConnectCallbackType cb, ClientConnection* conn);
     void postFail(ConnectCallbackType cb, Marvin::ErrorType& ec);
     
     boost::asio::io_service&        io;

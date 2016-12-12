@@ -19,7 +19,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "message_reader.hpp"
 
 
-MessageReader::MessageReader(ReadSocketInterface& readSock, boost::asio::io_service& io): _io(io), _rsock(readSock)
+MessageReader::MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io): _io(io), _readSock(readSock)
 {
     LogDebug("");
     _body_buffer_size   = 100;
@@ -37,6 +37,10 @@ std::string& MessageReader::getBody()
 {
     return body;
 }
+//void MessageReader::setReadSock(ReadSocketInterface* rSock)
+//{
+//    _readSock = rSock;
+//}
 //
 // This function is the only place where each piece of de-chunked body data is seen.
 // So this is where the "fragmentation" of the buffer has to take place.
@@ -155,13 +159,13 @@ void MessageReader::startReadBody()
     // WARNING - this is a leak of readBuffer
     
     _readBuffer = _bodyMBufferPtr;
-    _rsock.asyncRead(*_readBuffer, h);
+    _readSock->asyncRead(*_readBuffer, h);
 }
 
 void MessageReader::startRead(){
     LogDebug("");
     auto h = std::bind(&MessageReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
-    _rsock.asyncRead(*_readBuffer, h);
+    _readSock->asyncRead(*_readBuffer, h);
 }
 //
 // called ONLY if there is body data in a header buffer

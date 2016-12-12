@@ -13,17 +13,12 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-void MessageWriter::asyncGetWriteSocket(ConnectCallbackType connectCb)
-{
-    assert(false);
-}
-
 
 MessageWriter::MessageWriter(boost::asio::io_service& io, bool is_request):_io(io)
 {
     _isRequest = is_request;
 }
-MessageWriter::~MessageWriter(){}
+MessageWriter::~MessageWriter(){ LogDebug("");}
 
 void
 MessageWriter::setContent(std::string& contentStr)
@@ -38,8 +33,6 @@ void MessageWriter::putHeadersStuffInBuffer()
     
     LogDebug("request size: ");
     std::ostream _headerStream(&_headerBuf);
-//    _headerStream << "GET /utests/echo/index.php HTTP/1.1\r\nHost: whiteacorn\r\n\r\n";
-//    return;
     
     if( isRequest() ){
         std::string s = httpMethodString((HttpMethod) this->_method);
@@ -47,11 +40,6 @@ void MessageWriter::putHeadersStuffInBuffer()
     } else{
         _headerStream << " HTTP/1.1 " << _status_code << " " << _status <<  "\r\n";
     }
-    
-//    typedef std::map<std::string, std::string>::iterator it_type;
-//    for(it_type iterator = this->headers_.begin(); iterator != this->headers_.end(); iterator++) {
-//        _header_stream << iterator->first << ": " << iterator->second << "\r\n";
-//    }
     
     for(auto const& h : _headers) {
         _headerStream << h.first << ": " << h.second << "\r\n";
@@ -104,18 +92,6 @@ MessageWriter::asyncWriteHeaders(WriteHeadersCallbackType cb)
             _io.post(pf);
 //        cb(ec);
     });
-    return;
-//    asyncGetWriteSocket([this, cb](Marvin::ErrorType& er, Connection* conn){
-//        if( !er ){
-//            this->_writeSock = conn;
-//            this->_writeSock->asyncWrite(_headerBuf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
-//                LogDebug("");
-//                // need to check and do something about insufficient write
-//                cb(ec);
-//            });
-//        }else{
-//        }
-//    });
 }
 
 //
@@ -130,8 +106,6 @@ void MessageWriter::asyncWriteFullBody(WriteMessageCallbackType cb)
         Marvin::ErrorType ee = Marvin::make_error_ok();
         auto pf = std::bind(cb, ee);
         _io.post(pf);
-
-//        cb(ee);
     } else{
         //
         // PROBLEM - this copies the body - find a better way
@@ -143,7 +117,6 @@ void MessageWriter::asyncWriteFullBody(WriteMessageCallbackType cb)
             LogDebug("");
             auto pf = std::bind(cb, ec);
             _io.post(pf);
-//            cb(ec);
         });
     }
     

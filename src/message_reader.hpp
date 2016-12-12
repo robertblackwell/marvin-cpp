@@ -69,7 +69,7 @@
 class MessageReader : public Parser, public MessageBase
 {
 public:
-    MessageReader(ReadSocketInterface& readSock, boost::asio::io_service& io);
+    MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io);
     ~MessageReader();
     //
     // Starts the reading process and invokes cb when all headers have been received
@@ -99,6 +99,12 @@ public:
     // requires the buffering of the full message body.
     //
     void readMessage(ReadMessageCallbackType cb);
+    
+//    //
+//    // Must be called to prvide a socket before any reading can be done
+//    //
+//    void setReadSock(ReadSocketInterface* rSock);
+    
     std::string& getBody();
     
 private:
@@ -146,7 +152,7 @@ private:
     //----------------------------------------------------------------------------------------------------
     // private properties
     //----------------------------------------------------------------------------------------------------
-    ReadSocketInterface&        _rsock;
+    ReadSocketInterface*        _readSock;
     boost::asio::io_service&    _io;
     std::size_t                 _body_buffer_size;
     std::size_t                 _header_buffer_size;
