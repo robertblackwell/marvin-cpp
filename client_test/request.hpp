@@ -43,5 +43,14 @@ private:
     ReadSocketInterface*                            _readSock;
     
     std::function<void(Marvin::ErrorType& err)>     _goCb;
+    
+    std::string _service;   //used by boost for resolve and connnect http/https or a port number
+    std::string _server;    // as used in boost resolve/connect WITHOUT port number
+    
+    std::string _scheme;    // http or https
+    std::string _host;      // as used in the headers localhost:9991 for example
+    std::string _port;
+    std::string _path;
+    std::string _query;
 };
 #endif

@@ -69,7 +69,7 @@ public:
         tcObj(tcObjs.getCase(tcIndex))
     {
         LogDebug("");
-        rdr_ = new MessageReader(conn_, io_);
+        rdr_ = new MessageReader(&conn_, io_);
         body = std::string("");
         bodyStream.str(body);
     }
@@ -126,7 +126,7 @@ public:
     void onHeaders(Marvin::ErrorType& er){
         LogDebug("entry");
         rdr_->dumpHeaders(std::cout);
-        bool x = rdr_->_isRequest;
+//        bool x = rdr_->_isRequest;
         auto bh = std::bind(&TestReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
         rdr_->readBody(bh);
         LogDebug("exit");

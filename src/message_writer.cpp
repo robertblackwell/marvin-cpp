@@ -17,6 +17,10 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 MessageWriter::MessageWriter(boost::asio::io_service& io, bool is_request):_io(io)
 {
     _isRequest = is_request;
+    // set default version
+    setHttpVersMajor(1);
+    setHttpVersMinor(1);
+
 }
 MessageWriter::~MessageWriter(){ LogDebug("");}
 
@@ -38,7 +42,7 @@ void MessageWriter::putHeadersStuffInBuffer()
         std::string s = httpMethodString((HttpMethod) this->_method);
         _headerStream << s << " " << _uri << " HTTP/1.1\r\n";
     } else{
-        _headerStream << " HTTP/1.1 " << _status_code << " " << _status <<  "\r\n";
+        _headerStream << "HTTP/1.1 " << _status_code << " " << _status <<  "\r\n";
     }
     
     for(auto const& h : _headers) {
@@ -72,8 +76,8 @@ MessageWriter::asyncWrite(WriteMessageCallbackType cb)
         } else {
             asyncWriteFullBody([this, cb](Marvin::ErrorType& ec2){
                 auto pf = std::bind(cb, ec2);
-                _io.post(pf);
-//                cb(ec2);
+//                _io.post(pf);
+                cb(ec2);
             });
         }
     });
@@ -89,8 +93,8 @@ MessageWriter::asyncWriteHeaders(WriteHeadersCallbackType cb)
         LogDebug("");
         // need to check and do something about insufficient write
             auto pf = std::bind(cb, ec);
-            _io.post(pf);
-//        cb(ec);
+//            _io.post(pf);
+        cb(ec);
     });
 }
 

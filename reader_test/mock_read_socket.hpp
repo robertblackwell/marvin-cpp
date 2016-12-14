@@ -27,6 +27,7 @@ public:
     ~MockReadSocket();
     void startRead();
     void asyncRead(MBuffer& mb, AsyncReadCallback cb);
+    int nativeSocketFD();
     
 private:
     SingleTimer*                st;

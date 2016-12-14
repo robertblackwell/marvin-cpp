@@ -96,7 +96,7 @@ Testcases::Testcases(){
             Testcase(
                 // raw message text
                 std::vector<std::string> {
-                    "HTTP/1.1 200 OK 11Reason Phrase",
+                    " HTTP/1.1 200 OK 11Reason Phrase",
                     "Host: ahost",
                     "Connection: keep-alive",
                     "Proxy-Connection: keep-alive",

@@ -25,16 +25,16 @@ ClientConnectionManager* ClientConnectionManager::getInstance(boost::asio::io_se
 void ClientConnectionManager::asyncGetClientConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
-            std::string port,   // port number 
+            std::string service,// http/https or port number
             ConnectCallbackType cb
 )
 {
     boost::asio::ip::tcp::resolver::query query(boost::asio::ip::tcp::v4(),
                                                 server,
-                                                port,
+                                                service,
                                                 tcp::resolver::query::canonical_name);
     
-    ClientConnection* conn = new ClientConnection(io, scheme, server, port);
+    ClientConnection* conn = new ClientConnection(io, scheme, server, service);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //

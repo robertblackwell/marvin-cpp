@@ -144,11 +144,17 @@ void MessageReader::readBodyHandler(MBuffer& mb){
 }
 
 void MessageReader::handleReadError(Marvin::ErrorType& er){
+    LogDebug(
+    "fd: ", _readSock->nativeSocketFD(),
+    "error.value :", er.value(),
+    "error.cat:", er.category().name(),
+    "error.message", er.category().message(er.value()));
+
     
 }
 void MessageReader::handleParseError(){
     enum http_errno en = Parser::getErrno();
-
+    LogDebug("fd: ", _readSock->nativeSocketFD() );
 }
 
 void MessageReader::startReadBody()
@@ -163,7 +169,7 @@ void MessageReader::startReadBody()
 }
 
 void MessageReader::startRead(){
-    LogDebug("");
+    LogDebug(" fd: ", _readSock->nativeSocketFD());
     auto h = std::bind(&MessageReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
     _readSock->asyncRead(*_readBuffer, h);
 }
@@ -219,32 +225,37 @@ void MessageReader::postMessageCallback(Marvin::ErrorType& er)
 }
 
 void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_transfered){
-    LogDebug("entry");
-    //        if( er != Error::success() ){
-    //            handleError(er);
-    //            return;
-    //        }
+    LogDebug("entry fd: ", _readSock->nativeSocketFD());
     _readBuffer->setSize(bytes_transfered);
     MBuffer& mb = *_readBuffer;
     bool saved_EOH = isFinishedHeaders();
     bool saved_EOM = isFinishedMessage();
     int nparsed;
-    bool readError = !(
-                        ( er == Marvin::make_error_ok()) ||
-                        ( er == Marvin::make_error_eob())||
-                        ( er == Marvin::make_error_eom())||
-                        ( er == Marvin::make_error_eof())
-                        );
-    if( readError ){
-        handleReadError(er);
-    }
     
     int sz = (int)mb.size();
     LogDebug("sz: ", sz);
     if( sz == 0 ){
-        LogDebug("zero ");
+        std::cout << er.value() << '\n';
+        std::cout << er.category().name() << '\n';
+        std::cout << er.category().message(er.value()) << '\n';
+        LogDebug("zero ",
+            "fd: ", _readSock->nativeSocketFD(),
+            "error.value :", er.value(),
+            "error.cat:", er.category().name(),
+            "error.message", er.category().message(er.value()));
         nparsed = sz;
         this->appendEOF();
+        // did the EOF finish a message - if so bubble it up else - error
+        if( isFinishedMessage() ){
+            Marvin::ErrorType m_er = Marvin::make_error_ok();
+            postMessageCallback(m_er);
+            LogDebug("exit fd: ", _readSock->nativeSocketFD() );
+            return;
+        }else{
+            postMessageCallback(er);
+            LogDebug("exit fd: ", _readSock->nativeSocketFD() );
+            return;
+        }
     }else{
         nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
     }
@@ -253,6 +264,7 @@ void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_tr
     if( ee ){
         LogDebug(" parse error ");
         handleParseError();
+        LogDebug("exit fd: ", _readSock->nativeSocketFD() );
         return;
     }
     
@@ -305,7 +317,7 @@ void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_tr
     }else{
         LogWarn("else - should not get here", sz);
     }
-    LogDebug("exit");
+    LogDebug("exit fd: ", _readSock->nativeSocketFD() );
     
 }
 void MessageReader::readHeaders(ReadHeadersCallbackType cb)

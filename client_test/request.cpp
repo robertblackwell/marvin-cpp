@@ -4,6 +4,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <cassert>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
@@ -36,28 +37,55 @@ MessageReader& Request::getResponse()
 void Request::setUrl(std::string url)
 {
     http::url parsed = http::ParseHttpUrl(url);
-    std::string _scheme = parsed.protocol;
-    std::string _host = parsed.host;
-    std::string _port = (parsed.port == 0)? "" : ":"+std::to_string(parsed.port);
-    std::string _path = parsed.path;
-    std::string _query = parsed.search;
+    std::string __scheme = parsed.protocol;
+    std::string __host = parsed.host;
+    if( parsed.port == 0) {
+        if( __scheme == "http"){
+            _port = "80";
+            _service = "http";
+        }else if(__scheme == "https"){
+            _port = "443";
+            _service = "https";
+        }else{
+            assert(false);
+        }
+    }else{
+        _port = std::to_string(parsed.port);
+        _service = _port;
+    }
+    std::string __path = parsed.path;
+    if( parsed.path == "" ) { __path = "/"; }
+    _query = parsed.search;
+    
     std::ostringstream host_s, path_s;
-    host_s << _host << _port ;
-    path_s << _path << "?" << _query;
-    std::string host = host_s.str();
+    host_s << __host << ":" << _port ;
+    path_s << __path << "?" << _query;
+    _scheme = __scheme;
+    _server = __host;
+    _host = host_s.str();
     _uri = path_s.str();
-    setHeader("Host", host);
-//    _uri = url;
+    _path = path_s.str();
+    setUri(_path);
 }
 
 void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 {
     ClientConnectionManager* cm = ClientConnectionManager::getInstance(_io);
     if( _writeSock == nullptr){
-        std::string scheme("http:");
-        std::string server("whiteacorn");
-        std::string port("80");
-        cm->asyncGetClientConnection(scheme, server, port, [this, connectCb](Marvin::ErrorType& ec, ClientConnection* conn){
+//        std::string scheme("http:");
+//        std::string server("localhost");
+//        std::string port("9991");
+
+        std::string scheme = _scheme;
+        std::string server = _server;
+        std::string port   = _port;
+        std::string service = _service;
+        
+        cm->asyncGetClientConnection(
+                scheme,
+                server,
+                service,
+        [this, connectCb](Marvin::ErrorType& ec, ClientConnection* conn){
             LogDebug("");
             if( ec ){
                 Marvin::ErrorType m_er = ec;

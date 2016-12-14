@@ -18,11 +18,13 @@ typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>
 class ReadSocketInterface{
 public:
     virtual void asyncRead(MBuffer& mb, AsyncReadCallback cb) = 0;
+    virtual int nativeSocketFD() = 0;
 
 };
 
 class WriteSocketInterface{
 public:
+    virtual int nativeSocketFD() = 0;
     virtual void asyncWrite(FBuffer& fb, AsyncWriteCallback) = 0;
     virtual void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
 };

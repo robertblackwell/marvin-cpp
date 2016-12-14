@@ -104,6 +104,7 @@ private:
 
 
 // want to default to "ON" - disable by #define RBLOGGER_OFF
+//#define RBLOGGER_OFF
 #if !defined(RBLOGGER_OFF) || defined(RBLOGGER_ON) || defined(RBLOGGER_ENABLED)
     #define RBLOGGER_ENABLED
 #else

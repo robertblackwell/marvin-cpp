@@ -12,31 +12,38 @@
 #define HTTP_SERVER_CONNECTION_MANAGER_HPP
 
 #include <set>
-#include "server_connection.hpp"
+#include <map>
+#include "connection_handler.hpp"
+
+class ConnectionHandler;
 
 /// Manages open connections so that they may be cleanly stopped when the server
 /// needs to shut down.
 class ServerConnectionManager
 {
 public:
-  ServerConnectionManager(const ServerConnectionManager&) = delete;
-  ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
+    ServerConnectionManager(const ServerConnectionManager&) = delete;
+    ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
 
-  /// Construct a connection manager.
-  ServerConnectionManager();
+    /// Construct a connection manager.
+    ServerConnectionManager();
 
-  /// Add the specified connection to the manager and start it.
-  void start(connection_ptr c);
+    void registerConnectionHandler(ConnectionHandler* connHandler);
+ 
+    /// Stop the specified connection.
+    void stop(ConnectionHandler* ch);
 
-  /// Stop the specified connection.
-  void stop(connection_ptr c);
-
-  /// Stop all connections.
-  void stop_all();
+    /// Stop all connections.
+    void stop_all();
 
 private:
   /// The managed connections.
-  std::set<connection_ptr> connections_;
+#define CM_SMARTPOINTER  
+#ifdef CM_SMARTPOINTER
+  std::map<ConnectionHandler*, std::unique_ptr<ConnectionHandler>> _connections;
+#else
+  std::set<ConnectionHandler*> _connections;
+#endif
 };
 
 #endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

@@ -336,6 +336,7 @@ headers_complete_cb(http_parser* parser)
     if( p->name_buf != NULL){
         saveNameValuePair(parser, p->name_buf, p->value_buf);
     }
+    message->setMethod((enum http_method)parser->method);
     message->setStatusCode( parser->status_code );
     message->setHttpVersMajor( parser->http_major );
     message->setHttpVersMinor( parser->http_minor );

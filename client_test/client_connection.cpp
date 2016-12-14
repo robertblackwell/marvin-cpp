@@ -36,23 +36,50 @@ using boost::asio::io_service;
  *  @param {string}     scheme      -   "http" or "https"
  *  @param {string}     server      -   domain string
  */
-ClientConnection::ClientConnection(boost::asio::io_service& io_service,
-           const std::string& scheme,
-           const std::string& server,
-           const std::string& port
-           )
-            : _resolver(io_service),_boost_socket(io_service), _scheme(scheme), _server(server)
+ClientConnection::ClientConnection(
+            boost::asio::io_service& io_service,
+            const std::string& scheme,
+            const std::string& server,
+            const std::string& port
+            )
+            :
+            _io(io_service),
+            _resolver(io_service),
+            _boost_socket(io_service),
+            _scheme(scheme),
+            _server(server),
+            _port(port)
 {
 }
+ClientConnection::ClientConnection(
+    boost::asio::io_service& io_service
+    ):   _io(io_service),
+         _resolver(io_service), // dont really need this
+         _boost_socket(io_service)
 
+{
+}
 ClientConnection::~ClientConnection()
 {
     LogDebug("");
 }
-
+void ClientConnection::close()
+{
+    LogDebug(" fd: ", nativeSocketFD());
+    _boost_socket.cancel();
+    _boost_socket.close();
+}
+boost::asio::ip::tcp::socket& ClientConnection::getSocketRef()
+{
+    return _boost_socket;
+}
+int ClientConnection::nativeSocketFD()
+{
+    return _boost_socket.native_handle();
+}
 void ClientConnection::asyncConnect(ConnectCallbackType final_cb)
 {
-    tcp::resolver::query query(this->_server, "http");
+    tcp::resolver::query query(this->_server, _port);
     _finalCb = final_cb; // save the final callback
     
     _resolver.async_resolve(query, [this](const boost::system::error_code& ec,
@@ -100,6 +127,7 @@ void ClientConnection::handle_connect(
     if (!err)
     {
         LogDebug("connect OK");
+        _boost_socket.non_blocking(true);
         completeWithSuccess();
     }
     else if (endpoint_iterator != tcp::resolver::iterator())

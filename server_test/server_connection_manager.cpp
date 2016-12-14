@@ -1,27 +1,32 @@
-
+#include "rb_logger.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "server_connection_manager.hpp"
 
 
-ConnectionManager::ConnectionManager()
+ServerConnectionManager::ServerConnectionManager()
 {
 }
 
-void ConnectionManager::start(connection_ptr c)
+void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connHandler)
 {
-    connections_.insert(c);
-    c->start();
+//    std::unique_ptr<ConnectionHandler> hp = std::unique_ptr<ConnectionHandler>(connHandler);
+#ifdef CM_SMARTPOINTER
+    _connections[connHandler] = std::unique_ptr<ConnectionHandler>(connHandler);
+#else
+    _connections.insert(connHandler);
+#endif
 }
 
-void ConnectionManager::stop(connection_ptr c)
+void ServerConnectionManager::stop(ConnectionHandler* ch)
 {
-    connections_.erase(c);
-    c->stop();
+    LogDebug("");
+    _connections.erase(ch);
 }
 
-void ConnectionManager::stop_all()
+void ServerConnectionManager::stop_all()
 {
-    for (auto c: connections_)
-        c->stop();
-    connections_.clear();
+//    for (auto c: _connections)
+//        c->stop();
+//    _connections.clear();
 }
 

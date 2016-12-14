@@ -25,11 +25,18 @@ using system::error_code;
 class ClientConnection : public ReadSocketInterface, public WriteSocketInterface
 {
     public:
-    ClientConnection(boost::asio::io_service& io_service,
+    // client socket needs to know who to connect to
+    ClientConnection(
+            boost::asio::io_service& io_service,
             const std::string& scheme,
             const std::string& server,
             const std::string& port
                );
+    // server socket will be connected via listen/accept
+    ClientConnection(
+        boost::asio::io_service& io_service
+    );
+    
     ~ClientConnection();
     
     void asyncConnect(ConnectCallbackType cb);
@@ -38,8 +45,10 @@ class ClientConnection : public ReadSocketInterface, public WriteSocketInterface
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 
     void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb);
-
-
+    void close();
+    boost::asio::ip::tcp::socket&   getSocketRef();
+    int nativeSocketFD();
+    
 private:
 
     void handle_resolve(
@@ -58,7 +67,8 @@ private:
 
     std::string                     _scheme;
     std::string                     _server;
-    
+    std::string                     _port;
+    boost::asio::io_service&        _io;
     boost::asio::ip::tcp::resolver  _resolver;
     boost::asio::ip::tcp::socket    _boost_socket;
     ConnectCallbackType             _finalCb;
