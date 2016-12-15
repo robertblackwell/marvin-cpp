@@ -6,6 +6,7 @@
 //
 #include <iostream>
 #include <sstream>
+#include <pthread.h>
 #include <boost/filesystem.hpp>
 #ifndef RBLOGGER_HPP
 #define RBLOGGER_HPP
@@ -71,15 +72,19 @@ public:
             auto tmp2 = boost::filesystem::path(file_name);
             auto tmp3 = tmp2.filename();
             auto tmp4 = tmp3.stem();
+            auto pid = ::getpid();
+            auto tid = pthread_self();
 
-            os <<  tmp3.c_str();
+
+            os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
             os << "::"<< func_name << "[" << line_number << "]:";
             myprint(os, firstArg, args...);
             //
             // Only use the stream in the last step and this way we can send the log record somewhere else
             // easily
             //
-            __outStream << os.str();
+            write(STDERR_FILENO, os.str().c_str(), strlen(os.str().c_str()) );
+//            __outStream << os.str();
         }
     }
     
@@ -93,11 +98,13 @@ private:
     void myprint (std::ostringstream& os,  const T& firstArg, const Types&... args)
     {
         os << " " << firstArg ; // print first argument
+//        write(STDERR_FILENO, firstArg);
         myprint(os, args...); // call print() for remaining arguments
     }
 
     void myprint(std::ostringstream& os)
     {
+//        write(STDERR_FILENO, "\n", 2);
         os << std::endl;
     }
 };

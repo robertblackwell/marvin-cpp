@@ -72,7 +72,11 @@ std::shared_ptr<Request> do_request1(std::string code, boost::asio::io_service& 
 
         std::string t = code+code+code+code+code+code+code+code+code + code;
         bool x = (t == resp.getBody());
-        if( x ){ std::cout << "OK";} else {std::cout << "FAIL";}; 
+        if( x ){ std::cout << "OK";} else {std::cout << "FAIL";};
+        if( !x ){
+            std::cout << "expecting " << t << std::endl;
+            std::cout << "got " << resp.getBody() << std::endl;
+        }
         std::cout << std::endl;
         LogDebug("");
     });
@@ -89,13 +93,13 @@ void runTestClient()
 //        std::shared_ptr<Request> p1 = do_request1("1", io_service);
 
         rt.push_back(do_request1("1", io_service));
-//        rt.push_back(do_request1("A", io_service));
-//        rt.push_back(do_request1("B", io_service));
-//        rt.push_back(do_request1("C", io_service));
-//        rt.push_back(do_request1("D", io_service));
-//        rt.push_back(do_request1("E", io_service));
-//        rt.push_back(do_request1("F", io_service));
-//        rt.push_back(do_request1("G", io_service));
+        rt.push_back(do_request1("A", io_service));
+        rt.push_back(do_request1("B", io_service));
+        rt.push_back(do_request1("C", io_service));
+        rt.push_back(do_request1("D", io_service));
+        rt.push_back(do_request1("E", io_service));
+        rt.push_back(do_request1("F", io_service));
+        rt.push_back(do_request1("G", io_service));
         io_service.run();
         rt.clear();
     }

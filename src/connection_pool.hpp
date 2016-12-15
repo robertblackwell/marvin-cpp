@@ -1,25 +1,23 @@
 //
-//  ConnectionManager.hpp
-//  asio-mitm
+//  connection_pool.hpp
+//  MarvinCpp
 //
-//  Created by ROBERT BLACKWELL on 11/20/16.
+//  Created by ROBERT BLACKWELL on 12/14/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef client_connection_manager_hpp
-#define client_connection_manager_hpp
+#ifndef connection_pool_hpp
+#define connection_pool_hpp
+
 #include <stdio.h>
 
-#include <iostream>
-#include <istream>
-#include <ostream>
-#include <string>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-#include "callback_typedefs.hpp"
-
 class Connection;
+//class AllConnectionsType;
+//class FreeConnectionsType;
+//class IdleConnectionsType;
+class InUseConnectionsType;
+class WaitingRequestsType;
+//class HostsCounterType;
 
 //
 //  This singleton class manages a pool of connections, the basic algorithm is:
@@ -63,41 +61,31 @@ class Connection;
 //
 //  get_a_connection(host_id, callback)
 //
-//      req = make_conn_request(host_id, callback)
-//      if free.size() > 0
-//          if host_counter(host_id) < max_per_host
-//              conn = free.allocateTo(req.host_id)
-//              conn.host_id = req.host_id
-//              in_use.add(conn, host_id)
-//              host_counter.incrementFor(host_id)
-//              req.callback(conn)
-//          else
-//              waitingRequests.add(req)
+//      if inUse.size()= max_connections
+//          req = make_conn_request(host_id, callback)
+//          waitingRequests.add(req)
 //      else
-//          if idle.size() == 0
-//              waitingRequests.add(req)
-//          else
-//              conn = idle.findForHost(req.host_id)
-//              if not found
-//                  conn = idle.highjackOldestFor(req.host_id)
-//              conn.host_id = req.host_id
-//              in_use.add(conn, host_id);
-//              host_counter.incrementFor(host_id)
-//              req.callback(conn)
+//          conn = create_and_connect()
+//          inUse.add(conn)
+//          connection_count++
+//          req.callback(conn)
 //
 //  release_connection(conn)
-//      idle.add(conn)
-//      in_use.remove(conn, conn.host_id)
-//      host_counter.decrementFor(conn.host_id)
-//      req = waitingRequest.removeOldest()
-//      get_a_connection(req.host_id, req.callback)
+//      if waitinRequests.size() > 0
+//          req = waitRequests.findOldestRequestForHost(conn.host_id)
+//          req.callback(conn)
+//      else
+//          inUse.remove(conn)
+//          conn.close
+//          delete conn
+//          connection_count--
 //
-class ClientConnectionManager
+class ConnectionPool
 {
 public:
-    static ClientConnectionManager* getInstance(boost::asio::io_service& io);
+    static ConnectionPoolr* getInstance(boost::asio::io_service& io);
            
-    ClientConnectionManager(boost::asio::io_service& io);
+    ConnectionPool(boost::asio::io_service& io);
     
     void init(boost::asio::io_service& io);
     
@@ -117,7 +105,18 @@ private:
     
     boost::asio::io_service&        io;
     boost::asio::ip::tcp::resolver  resolver_;
+    
+    std::size_t                     _maxConnections;
+//    AllConnectionsType              _all;
+//    FreeConnectionsType             _free;
+//    IdleConnectionsType             _idle;
+    InUseConnectionsType            _inUse;
+    WaitingRequestsType             _waitingRequests;
+//    HostsCounterType                _hostsCounter;
 
 };
 
-#endif /* ConnectionManager_hpp */
+
+
+
+#endif /* connection_pool_hpp */

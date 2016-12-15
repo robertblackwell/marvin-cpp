@@ -8,6 +8,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include "url.hpp"
 #include "UriParser.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
@@ -36,30 +37,58 @@ MessageReader& Request::getResponse()
 }
 void Request::setUrl(std::string url)
 {
+    std::string __url(url);
     http::url parsed = http::ParseHttpUrl(url);
+    Url u(__url);
+    std::string ___scheme = u.scheme();
+    //
+    // this user staff will go in the Auth header
+    //
+    std::string ___user = u.user_info();
+    std::string ___host = u.host();
+    std::string ___port = u.port();
+    std::string ___path = u.path();
+    Url::Query query = u.query();
+    
+    // only used by the browser never sendin the http message
+    std::string ___fragment = u.fragment();
+    
     std::string __scheme = parsed.protocol;
     std::string __host = parsed.host;
-    if( parsed.port == 0) {
-        if( __scheme == "http"){
+    if( ___port == "") {
+        if( ___scheme == "http"){
             _port = "80";
             _service = "http";
-        }else if(__scheme == "https"){
+        }else if(___scheme == "https"){
             _port = "443";
             _service = "https";
         }else{
             assert(false);
         }
     }else{
-        _port = std::to_string(parsed.port);
-        _service = _port;
+        _port = ___port;
+        _service = ___port;
     }
-    std::string __path = parsed.path;
-    if( parsed.path == "" ) { __path = "/"; }
-    _query = parsed.search;
     
+    std::string __path = ___path;
+    if( ___path == "" ) { __path = "/"; }
+    
+    _query = query;
+    std::string q_str("");
+    if( query.size() > 0 ){
+        for(auto const& keyVal: query){
+            if( q_str == "")
+                q_str += keyVal.key() + "=" + keyVal.val();
+            else
+                q_str += "&"+keyVal.key() + "=" + keyVal.val();
+        }
+        q_str = "?" + q_str;
+    }
+    _queryStr = q_str;
     std::ostringstream host_s, path_s;
     host_s << __host << ":" << _port ;
-    path_s << __path << "?" << _query;
+
+    path_s << __path << _queryStr;
     _scheme = __scheme;
     _server = __host;
     _host = host_s.str();

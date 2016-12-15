@@ -11,6 +11,7 @@
 #include "message_writer.hpp"
 #include "message_reader.hpp"
 #include "client_connection.hpp"
+#include "url.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -51,6 +52,7 @@ private:
     std::string _host;      // as used in the headers localhost:9991 for example
     std::string _port;
     std::string _path;
-    std::string _query;
+    Url::Query  _query;
+    std::string _queryStr;
 };
 #endif

@@ -33,42 +33,58 @@ clientFunction(void *threadid)
     boost::asio::io_service io(1);
     long tid;
     tid = (long)threadid;
-    printf("Hello World! It's me client, thread #%ld!\n", tid);
+    LogDebug("Hello World! It's me client");
     runTestClient();
     io.run();
     return (void*)0;
  }
+//---------------------------------------------------------------------------------------
+//
+// Run cient and server in separate processes
+//
+//---------------------------------------------------------------------------------------
 void twoProcesses()
 {
-pid_t parent = getpid();
-pid_t pid = fork();
-
-    if (pid == -1){
+    pid_t parent = getpid();
+    pid_t child_pid = fork();
+    LogDebug("starting two processes");
+    std::cout.setf(std::ios::unitbuf);
+    if (child_pid == -1){
         // error, failed to fork()
-    }else if (pid > 0){
+    }else if (child_pid > 0){
+        std::cout.setf(std::ios::unitbuf);
+        // this is the child process
         int status;
         
         sleep(5);
+        LogDebug("about to start client");
         clientFunction((void*)2);
-        waitpid(pid, &status, 0);
+        kill(child_pid, 9);
+        waitpid(child_pid, &status, 0);
     }else{
+        std::cout.setf(std::ios::unitbuf);
+        LogDebug("about to fork server");
         char* arg[] = {(char*)"./server_alone"};
         execv("./server_alone", arg);
         _exit(EXIT_FAILURE);   // exec never returns
     }
 }
-
+//---------------------------------------------------------------------------------------
+// run client and server in separate P_THREADS
+//---------------------------------------------------------------------------------------
 #define NUMTHREADS 1
 int serverAndRequests()
 {
+    std::cout.setf(std::ios::unitbuf);
+
     pthread_t serverThread;
     int s_rc = pthread_create(&serverThread, NULL, serverFunction, (void*)(0));
-
+    
     pthread_t threads[NUMTHREADS];
     int rc;
     long t;
     for(t=0; t<NUMTHREADS; t++){
-       printf("In main: creating thread %ld\n", t);
+       LogDebug("In main: creating thread %ld\n", t);
        rc = pthread_create(&threads[t], NULL, clientFunction, (void *)t);
        if (rc){
           printf("ERROR; return code from pthread_create() is %d\n", rc);
@@ -90,7 +106,7 @@ pthread_exit(NULL);
 
 int main(int argc, char* argv[])
 {
-    twoProcesses();
-//    serverAndRequests();
+//    twoProcesses();
+    serverAndRequests();
     return 0;
 }

@@ -27,6 +27,8 @@ std::string RBLogging::LogLevelText(RBLogging::LogLevelType level){
     return tab[(int)level];
 }
 
+
+
 void RBLogging::Logger::logWithFormat(
                              LogLevelType           level,
                              LogLevelType           threshold,
@@ -44,13 +46,21 @@ void RBLogging::Logger::logWithFormat(
         auto tmp4 = tmp3.stem();
         auto tmp5 = tmp4.string();
         auto tmp6 = tmp4.c_str();
+        auto pid = ::getpid();
+        auto tid = pthread_self();
+
         os << tmp3.c_str() ;
-        os << ":" << func_name << "["<< line_number <<"]:" ;
+        os << ":" << "[" <<pid << ":" << tid <<"]" << func_name << "["<< line_number <<"]:" ;
         va_list argptr;
         va_start(argptr,format);
         char* bufptr;
         vasprintf(&bufptr, format, argptr);
         va_end(argptr);
+        std::string outStr = os.str() + std::string(bufptr, strlen(bufptr));
+        const char* outCharStar = outStr.c_str();
+        size_t len = strlen(outCharStar);
+        write(STDERR_FILENO, (void*)outCharStar, len);
+        return;
         __outStream << os.str() << bufptr << std::endl;
     }
 }

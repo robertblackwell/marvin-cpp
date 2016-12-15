@@ -59,6 +59,11 @@
 			<key>orderHint</key>
 			<integer>6</integer>
 		</dict>
+		<key>test_query.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
 		<key>test_server_client.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -77,6 +82,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>D421D0D91E01D18500831883</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>D42DB9711E00DD3200B2AF60</key>
 		<dict>
 			<key>primary</key>

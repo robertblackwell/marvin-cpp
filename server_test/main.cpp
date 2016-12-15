@@ -25,6 +25,7 @@ public:
         HandlerDoneCallbackType done
     ){
         std::cout << "got to a new handler " << std::endl;
+        std::string u = req.uri();
         std::ostringstream os;
         os << "<!DOCTYPE html>";
         os << "<html><head></head><body>";
@@ -129,21 +130,31 @@ clientFunction(void *threadid)
  }
 void twoProcesses()
 {
-pid_t parent = getpid();
-pid_t pid = fork();
+    pid_t parent = getpid();
+    pid_t pid = fork();
+    bool make_server_new_process = true;
 
     if (pid == -1){
         // error, failed to fork()
     }else if (pid > 0){
         int status;
-        
         sleep(5);
-        clientFunction((void*)2);
-        waitpid(pid, &status, 0);
+        if( make_server_new_process ){
+            clientFunction((void*)2);
+            waitpid(pid, &status, 0);
+        } else {
+            char* arg[] = {(char*)"./client_alone" };
+            execv("./client_alone", arg);
+            _exit(EXIT_FAILURE);   // exec never returns
+        }
     }else{
-        char* arg[] = {(char*)"./server_alone"};
-        execv("./server_alone", arg);
-        _exit(EXIT_FAILURE);   // exec never returns
+        if(make_server_new_process ){
+            char* arg[] = {(char*)"./server_alone"};
+            execv("./server_alone", arg);
+            _exit(EXIT_FAILURE);   // exec never returns
+        }else{
+            serverFunction((void*)"");
+        }
     }
 }
 
@@ -179,7 +190,8 @@ pthread_exit(NULL);
 
 int main(int argc, char* argv[])
 {
-    twoProcesses();
-//    serverAndRequests();
+    std::cout.setf(std::ios::unitbuf);
+//    twoProcesses();
+    serverAndRequests();
     return 0;
 }
