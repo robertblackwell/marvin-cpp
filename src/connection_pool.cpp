@@ -5,7 +5,8 @@
 //  Created by ROBERT BLACKWELL on 12/14/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
-
+#include <map>
+#include <set>
 #include "connection_pool.hpp"
 
 #include "rb_logger.hpp"
@@ -13,203 +14,88 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "client_connection.hpp"
-#ifdef NOT_YET
+
+
 //---------------------------------------------------------------------------------------------------
-// A list of all available connections. They are primed with an io_service but NOT host information
+// InUseConnections - List of assigned connections currently "in use"
 //---------------------------------------------------------------------------------------------------
-class AllConnectionsType
+InUseConnectionsType::InUseConnectionsType()
 {
-    private:
-    std::vector<std::shared_ptr<ClientConnections>>  _connections;
-    boost::asio::io_service _io;
-    
-    public:
-    AllConnections(boost::asio::io_service& io, std::size_t max): _io(io)
-    {
-        for(int i = 0; i < max; i++){
-            add(std::shared_ptr<ClientConnection>(new ClientConnection(_io)) );
-        }
-    }
-    std::size_t size()
-    {
-        return _connections.size();
-    }
-    void add(ClientConnection* conn)
-    {
-        _connections.push_back(conn);
-    }
 }
-//---------------------------------------------------------------------------------------------------
-//
-//---------------------------------------------------------------------------------------------------
-class FreeConnectionsType
+std::size_t
+InUseConnectionsType::size()
 {
-    private:
-        std::vector<ClientConnections>  _connections;
-    
-    public:
-        FreeConnections(AllConnections& all): _io(io)
-        {
-            for(const& c: all){
-                add(c.get());
-            }
-        }
-        std::size_t size()
-        {
-            return _connections.size();
-        }
-        
-        ClientConnection*
-        removeLast()
-        {
-            auto oldest = _connections.back();
-            _connection.erase(oldest);
-            return oldest;
-        }
-        
-        void add(ClientConnection* conn)
-        {
-            _connections.push_back(conn);
-        }
-
+    return _connections.size();
 }
-//---------------------------------------------------------------------------------------------------
-// A class to hold a connection once it has been assigned to a host.
-// @PROBLEM - how to know if the connection is still open ??
-//---------------------------------------------------------------------------------------------------
-class AssignedConnection
+
+void
+InUseConnectionsType::remove(ClientConnection* aConn)
 {
-    private:
-        std::string         _hostId;
-        ClientConnection*   _conn;
-    public:
-        AssignedConnection(std::string hostId, ClientConnection* conn): _hostId(hostId), _conn(conn) {}
+    if( _connections.find(aConn) == _connections.cend() ) { assert(false);}
+    _connections.erase(aConn);
+    
 }
-//---------------------------------------------------------------------------------------------------
-// A list of assigned (and assumed open) connections that are not being used
-// @PROBLEM - what happens if it closes while on this list
-//---------------------------------------------------------------------------------------------------
-class IdleConnectionsType
+
+void
+InUseConnectionsType::add(ClientConnection* conn)
 {
-    private:
-        std::vector<AssignedConnections>  _connections;
-        boost::asio::io_service _io;
-    
-    public:
-        IdleConnections(boost::asio::io_service& io): _io(io)
-        {
-        }
-        std::size_t size()
-        {
-            return _connections.size();
-        }
-        AssignedConnection*
-        removeOldest()
-        {
-            auto oldest = _connections.back();
-            _connection.erase(oldest);
-            return oldest;
-        }
-    
-        void
-        add(AssignedConnection* conn)
-        {
-            _connections.push_back(conn);
-        }
-
-};
-#endif
-//---------------------------------------------------------------------------------------------------
-// List of assigned connections currently "in use"
-//---------------------------------------------------------------------------------------------------
-class InUseConnectionsType
-{
-    private:
-    std::vector<AssignedConnections>  _connections;
-    boost::asio::io_service _io;
-    
-    public:
-    
-    InUseConnections(boost::asio::io_service& io): _io(io)
-    {
-    }
-    std::size_t size()
-    {
-        return _connections.size();
-    }
-    
-    void
-    remove(AssignedConnection* aConn)
-    {
-        if( _connections.find(aConn) == std::map::end { assert(false);}
-        _connections.erase(aConn);
-        
-    }
-    
-    void
-    add(AssignedConnection* conn)
-    {
-        _connections.push_back(conn);
-    }
-
-
-
-};
-//---------------------------------------------------------------------------------------------------
-// Holds a pending request for a connection
-//---------------------------------------------------------------------------------------------------
-typedef  std::function<void()> ConnectionRequestCallbackType;
-class ConnectionRequest
-{
-    private:
-        std::string             _hostId;
-        std:function<void()>    _callBack;
-    public:
-    
-    ConnectionRequest(std::string hostId, ConnectionRequestCallbackType cb)
-    {
-        _hostId = hostId;
-        +_callBack = cb;
-    }
+    _connections[conn] = conn;
 }
 
 //---------------------------------------------------------------------------------------------------
-// List of requests for a connection that have been put into "wait"
+// ConnectionRequest - Holds a pending request for a connection
 //---------------------------------------------------------------------------------------------------
-class WaitingRequestsType
+ConnectionRequest::ConnectionRequest(
+    std::string scheme,
+    std::string server,
+    std::string service,
+    ConnectCallbackType cb)
 {
-    private:
-    std::vector<ConnectionRequest>  _waitingRequests;
-    boost::asio::io_service _io;
+    _scheme = scheme;
+    _server = server;
+    _service = service;
+    _callback = cb;
+}
+//---------------------------------------------------------------------------------------------------
+// WaitingRequests - List of requests for a connection that have been put into "wait"
+//---------------------------------------------------------------------------------------------------
+WaitingRequestsType::WaitingRequestsType()
+{
+}
     
-    public:
-    WaitingRequests(boost::asio::io_service& io): _io(io)
-    {
+std::size_t
+WaitingRequestsType::size()
+{
+    return _waitingRequests.size();
+}
+ConnectionRequest*
+WaitingRequestsType::find(std::string scheme, std::string server, std::string service)
+{
+    for( auto itr = _waitingRequests.begin(); itr < _waitingRequests.end(); itr++ ){
+        auto ent = *itr;
+        if( (ent->_scheme == scheme) && (ent->_server == server) && (ent->_service == service) ){
+            _waitingRequests.erase(itr);
+            return ent;
+        }
     }
+    return nullptr;
+}
+
+ConnectionRequest*
+WaitingRequestsType::removeOldest()
+{
+    auto r =  _waitingRequests[0];
+    _waitingRequests.erase(_waitingRequests.begin());
+    return r;
+}
     
-    std::size_t
-    size()
-    {
-        return _connections.size();
-    }
-    
-    ConnectionRequest*
-    removeOldest()
-    {
-        auto oldest = _connectionRequests.back();
-        _connection.erase(oldest);
-        return oldest;
-    }
-    
-    void
-    add(ConnectionRequest* connReq)
-    {
-        _connectionRequests.push_back(connReq);
-    }
+void
+WaitingRequestsType::add(ConnectionRequest* connReq)
+{
+    _waitingRequests.push_back(connReq);
+}
 
 
-
-};
 #ifdef NOTYET
 //---------------------------------------------------------------------------------------------------
 // map of counters by assigned host - that is host that have been assigned to a connection
@@ -273,13 +159,13 @@ void ConnectionPool::asyncGetClientConnection(
 )
 {
     if( _inUse.size() >= 10){
-        auto r = ConnectionRequest(scheme, server, service);
+        auto r = new ConnectionRequest(scheme, server, service, cb);
         _waitingRequests.add(r);
     }else{
         createNewConnection(scheme, server, service, cb);
     }
 }
-void createNewConnection(
+void ConnectionPool::createNewConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
@@ -290,21 +176,20 @@ void createNewConnection(
             //                                                service,
             //                                                tcp::resolver::query::canonical_name);
     
-        ClientConnection* conn = new ClientConnection(io, scheme, server, service);
-        //
-        // a bunch of logic here about find existing, add to connection table etc
-        //
-        _inUse.add(conn);
-        //
-        //
-        conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ClientConnection* conn){
-            if( !ec ){
-                postSuccess(cb, conn);
-            }else{
-                postFail(cb, ec);
-            }
-        });
-    }
+    ClientConnection* conn = new ClientConnection(io, scheme, server, service);
+    //
+    // a bunch of logic here about find existing, add to connection table etc
+    //
+    _inUse.add(conn);
+    //
+    //
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ClientConnection* conn){
+        if( !ec ){
+            postSuccess(cb, conn);
+        }else{
+            postFail(cb, ec);
+        }
+    });
 }
 void ConnectionPool::releaseClientConnection(ClientConnection* conn)
 {
@@ -312,19 +197,22 @@ void ConnectionPool::releaseClientConnection(ClientConnection* conn)
         auto req = _waitingRequests.find(conn->scheme(), conn->server(), conn->service());
         // found a request for the same host
         if( req != nullptr ){
-            postSuccess(req.callback, conn);
+            postSuccess(req->_callback, conn);
             return;
         }else{
             // none of the request are for same host
             // destroy releasing conn and create a new one
+            
+            // could try and be trickey here and repurpose the conn
+            
             _inUse.remove(conn);
             delete conn;
             // get oldest waiting request
-            req = _waitingRequests.getOldest();
+            req = _waitingRequests.removeOldest();
             // create a connection for it
-            createNewConnection(req->scheme, req->server, req->service, req->callback);
+            createNewConnection(req->_scheme, req->_server, req->_service, req->_callback);
         }
-    }else
+    }else{
         LogDebug("");
         _inUse.remove(conn);
         delete conn;

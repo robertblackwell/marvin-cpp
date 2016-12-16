@@ -43,6 +43,7 @@ class ConnectionHandler
     
         void readMessageHandler(Marvin::ErrorType& err);
         void requestComplete();
+        void handlerComplete();
 
     
         boost::asio::io_service&         _io;

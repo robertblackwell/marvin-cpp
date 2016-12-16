@@ -32,11 +32,14 @@ public:
     
     void setUrl(std::string url);
     
+    void end();
+    
 private:
     void asyncGetWriteSocket(ConnectCallbackType connectCb);
     void haveConnection(Marvin::ErrorType& err, ClientConnection* conn);
     void fullWriteHandler(Marvin::ErrorType& err);
-    
+    void readComplete(Marvin::ErrorType& err);
+
     boost::asio::io_service&                        _io;
     std::shared_ptr<MessageReader>                  _rdr;
     
@@ -44,6 +47,8 @@ private:
     ReadSocketInterface*                            _readSock;
     
     std::function<void(Marvin::ErrorType& err)>     _goCb;
+    
+    bool        _oneTripOnly;
     
     std::string _service;   //used by boost for resolve and connnect http/https or a port number
     std::string _server;    // as used in boost resolve/connect WITHOUT port number

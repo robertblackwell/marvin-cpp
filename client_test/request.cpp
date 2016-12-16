@@ -14,7 +14,8 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "request.hpp"
-#include "client_connection_manager.hpp"
+//#include "client_connection_manager.hpp"
+#include "connection_pool.hpp"
 
 using boost::asio::ip::tcp;
 using boost::system::error_code;
@@ -29,6 +30,7 @@ Request::~Request()
 Request::Request(boost::asio::io_service& io): _io(io), MessageWriter(io, true)
 {
     _writeSock = nullptr;
+    _oneTripOnly = true;
 }
 
 MessageReader& Request::getResponse()
@@ -97,9 +99,27 @@ void Request::setUrl(std::string url)
     setUri(_path);
 }
 
+//
+// Get connected
+//
+void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
+{
+    _goCb = cb;
+    auto cf = std::bind(&Request::haveConnection, this, std::placeholders::_1, std::placeholders::_2);
+    asyncGetWriteSocket(cf);
+}
+
+void Request::end()
+{
+    ConnectionPool* cm = ConnectionPool::getInstance(_io);
+    cm->releaseClientConnection(_connection);
+    _connection = nullptr;
+}
+
 void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 {
-    ClientConnectionManager* cm = ClientConnectionManager::getInstance(_io);
+//    ClientConnectionManager* cm = ClientConnectionManager::getInstance(_io);
+    ConnectionPool* cm = ConnectionPool::getInstance(_io);
     if( _writeSock == nullptr){
 //        std::string scheme("http:");
 //        std::string server("localhost");
@@ -130,19 +150,7 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
     }
 }
 
-void Request::fullWriteHandler(Marvin::ErrorType& err)
-{
-    LogDebug("");
-    std::cout << "Request::fullWriteHandler:: " << std:: hex << this << std::endl;
-    _rdr->readMessage([this](Marvin::ErrorType& err){
-        ClientConnectionManager* cm = ClientConnectionManager::getInstance(_io);
-        cm->releaseClientConnection(_connection);
-        _connection = nullptr;
-        auto pf = std::bind(this->_goCb, err);
-        _io.post(pf);
-    
-    });
-}
+
 //
 // we are connected start read and write
 //
@@ -165,11 +173,35 @@ void Request::haveConnection(Marvin::ErrorType& err, ClientConnection* conn)
     }
 }
 //
-// Get connected
+// write is finished - start read
 //
-void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
+void Request::fullWriteHandler(Marvin::ErrorType& err)
 {
-    _goCb = cb;
-    auto cf = std::bind(&Request::haveConnection, this, std::placeholders::_1, std::placeholders::_2);
-    asyncGetWriteSocket(cf);
+    LogDebug("");
+    
+    auto rh = std::bind(&Request::readComplete, this, std::placeholders::_1);
+    
+    _rdr->readMessage([this](Marvin::ErrorType& err){
+        ConnectionPool* cm = ConnectionPool::getInstance(_io);
+        cm->releaseClientConnection(_connection);
+        _connection = nullptr;
+        auto pf = std::bind(this->_goCb, err);
+        _io.post(pf);
+    
+    });
+}
+//
+// the round-trip cycle is complete - write messages - followed by read message
+//
+// now determine whether we need to close the connection.
+//
+void Request::readComplete(Marvin::ErrorType& err)
+{
+    if( _oneTripOnly){
+        ConnectionPool* cm = ConnectionPool::getInstance(_io);
+        cm->releaseClientConnection(_connection);
+        _connection = nullptr;
+        auto pf = std::bind(this->_goCb, err);
+        _io.post(pf);
+    }
 }

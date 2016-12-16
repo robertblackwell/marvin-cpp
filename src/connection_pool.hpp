@@ -10,14 +10,67 @@
 #define connection_pool_hpp
 
 #include <stdio.h>
+#include <vector>
+#include <map>
+#include <set>
+#include "client_connection.hpp"
+#include "connection_pool.hpp"
 
-class Connection;
-//class AllConnectionsType;
-//class FreeConnectionsType;
-//class IdleConnectionsType;
-class InUseConnectionsType;
-class WaitingRequestsType;
-//class HostsCounterType;
+//---------------------------------------------------------------------------------------------------
+// InUseConnections - List of assigned connections currently "in use"
+//---------------------------------------------------------------------------------------------------
+class InUseConnectionsType
+{
+    private:
+    std::map<ClientConnection*, ClientConnection*>  _connections;
+    
+    public:
+    
+    InUseConnectionsType();
+    std::size_t size();
+    
+    void remove(ClientConnection* aConn);
+    
+    void add(ClientConnection* conn);
+};
+//---------------------------------------------------------------------------------------------------
+// ConnectionRequest - Holds a pending request for a connection
+//---------------------------------------------------------------------------------------------------
+typedef  std::function<void()> ConnectionRequestCallbackType;
+class ConnectionRequest
+{
+    public:
+        std::string             _scheme;
+        std::string             _server;
+        std::string             _service;
+        ConnectCallbackType    _callback;
+    
+        ConnectionRequest(
+            std::string scheme,
+            std::string server,
+            std::string service,
+            ConnectCallbackType cb
+        );
+};
+
+
+//---------------------------------------------------------------------------------------------------
+// WaitingRequests - List of requests for a connection that have been put into "wait"
+//---------------------------------------------------------------------------------------------------
+class WaitingRequestsType
+{
+    private:
+    std::vector<ConnectionRequest*>  _waitingRequests;
+    
+    public:
+    WaitingRequestsType();
+    std::size_t    size();
+
+    ConnectionRequest*  find(std::string scheme,std::string server,std::string service);
+    
+    ConnectionRequest*  removeOldest();
+    void add(ConnectionRequest* connReq);
+};
 
 //
 //  This singleton class manages a pool of connections, the basic algorithm is:
@@ -83,7 +136,7 @@ class WaitingRequestsType;
 class ConnectionPool
 {
 public:
-    static ConnectionPoolr* getInstance(boost::asio::io_service& io);
+    static ConnectionPool* getInstance(boost::asio::io_service& io);
            
     ConnectionPool(boost::asio::io_service& io);
     
@@ -100,6 +153,13 @@ public:
 
 private:
 
+    void createNewConnection(
+                std::string scheme, // http: or https:
+                std::string server, // also called hostname
+                std::string service,// http/https or port number
+                ConnectCallbackType cb
+    );
+
     void postSuccess(ConnectCallbackType cb, ClientConnection* conn);
     void postFail(ConnectCallbackType cb, Marvin::ErrorType& ec);
     
@@ -107,12 +167,8 @@ private:
     boost::asio::ip::tcp::resolver  resolver_;
     
     std::size_t                     _maxConnections;
-//    AllConnectionsType              _all;
-//    FreeConnectionsType             _free;
-//    IdleConnectionsType             _idle;
     InUseConnectionsType            _inUse;
     WaitingRequestsType             _waitingRequests;
-//    HostsCounterType                _hostsCounter;
 
 };
 

@@ -49,6 +49,10 @@ class ClientConnection : public ReadSocketInterface, public WriteSocketInterface
     boost::asio::ip::tcp::socket&   getSocketRef();
     int nativeSocketFD();
     
+    std::string scheme();
+    std::string server();
+    std::string service();
+    
 private:
 
     void handle_resolve(

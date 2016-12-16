@@ -170,22 +170,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "client_test/request.cpp"
-            timestampString = "503433612.681672"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "Request::asyncGetWriteSocket(ConnectCallbackType connectCb)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "client_test/request.cpp"
             timestampString = "503431337.5619"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"

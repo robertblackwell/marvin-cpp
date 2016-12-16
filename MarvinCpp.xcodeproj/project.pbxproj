@@ -18,10 +18,13 @@
 		D421D0D51E01D01600831883 /* uri_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0D21E01CE2A00831883 /* uri_query.cpp */; };
 		D421D0DD1E01D18500831883 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0DC1E01D18500831883 /* main.cpp */; };
 		D421D0E11E01D1C500831883 /* uri_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0D21E01CE2A00831883 /* uri_query.cpp */; };
+		D421D0E41E024E6F00831883 /* connection_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E21E0222BB00831883 /* connection_pool.cpp */; };
+		D421D0E71E043DFF00831883 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* client_connection.cpp */; };
+		D421D0E81E043E2000831883 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* client_connection.cpp */; };
+		D421D0E91E043E3500831883 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* client_connection.cpp */; };
 		D42DB9731E00DD3200B2AF60 /* connection_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47923191DFF82E90077B91A /* connection_handler.cpp */; };
 		D42DB9741E00DD3200B2AF60 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D42DB9751E00DD3200B2AF60 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
-		D42DB9761E00DD3200B2AF60 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */; };
 		D42DB9771E00DD3200B2AF60 /* client_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */; };
 		D42DB9781E00DD3200B2AF60 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
 		D42DB9791E00DD3200B2AF60 /* buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614651DFB24B200E3FAB0 /* buffer.cpp */; };
@@ -48,10 +51,6 @@
 		D42DB99B1E00DEA100B2AF60 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
 		D42DB99C1E00DEA100B2AF60 /* message_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614AE1DFCE18700E3FAB0 /* message_writer.cpp */; };
 		D42DB99D1E00DEA100B2AF60 /* message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614621DFA5D7100E3FAB0 /* message.cpp */; };
-		D42DB99F1E00DEA100B2AF60 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */; };
-		D42DB9A01E00DEA100B2AF60 /* client_connection.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B61DFCEAAA00E3FAB0 /* client_connection.hpp */; };
-		D42DB9A11E00DEA100B2AF60 /* client_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */; };
-		D42DB9A21E00DEA100B2AF60 /* client_connection_manager.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B81DFCEAAA00E3FAB0 /* client_connection_manager.hpp */; };
 		D42DB9A31E00DEA100B2AF60 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
 		D42DB9A51E00DEA100B2AF60 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
 		D42DB9A61E00DEA100B2AF60 /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
@@ -62,7 +61,6 @@
 		D42DB9B61E00F93000B2AF60 /* connection_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47923191DFF82E90077B91A /* connection_handler.cpp */; };
 		D42DB9B71E00F93000B2AF60 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D42DB9B81E00F93000B2AF60 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
-		D42DB9B91E00F93000B2AF60 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */; };
 		D42DB9BA1E00F93000B2AF60 /* client_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */; };
 		D42DB9BB1E00F93000B2AF60 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
 		D42DB9BC1E00F93000B2AF60 /* buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614651DFB24B200E3FAB0 /* buffer.cpp */; };
@@ -111,7 +109,6 @@
 		D46614A51DFB2C5A00E3FAB0 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614941DFB2ADD00E3FAB0 /* server.cpp */; };
 		D46614A61DFB5F0C00E3FAB0 /* server_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614851DFB2ADD00E3FAB0 /* server_connection_manager.cpp */; };
 		D46614B01DFCE18700E3FAB0 /* message_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614AE1DFCE18700E3FAB0 /* message_writer.cpp */; };
-		D46614BC1DFCEAAA00E3FAB0 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */; };
 		D46614BD1DFCEAAA00E3FAB0 /* client_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */; };
 		D46614BE1DFCEAAA00E3FAB0 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
 		D46614C01DFCEF1A00E3FAB0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614BF1DFCEF1A00E3FAB0 /* main.cpp */; };
@@ -119,8 +116,6 @@
 		D46614CD1DFCF46400E3FAB0 /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
 		D46614CE1DFCF46400E3FAB0 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D46614D41DFCF49500E3FAB0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614BF1DFCEF1A00E3FAB0 /* main.cpp */; };
-		D46614D51DFCF49500E3FAB0 /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */; };
-		D46614D61DFCF49500E3FAB0 /* client_connection.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B61DFCEAAA00E3FAB0 /* client_connection.hpp */; };
 		D46614D71DFCF49500E3FAB0 /* client_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */; };
 		D46614D81DFCF49500E3FAB0 /* client_connection_manager.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B81DFCEAAA00E3FAB0 /* client_connection_manager.hpp */; };
 		D46614D91DFCF49500E3FAB0 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
@@ -148,7 +143,6 @@
 		D47923131DFF7E1E0077B91A /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F227B1D12188B007F8F72 /* parser.cpp */; };
 		D47923141DFF7E400077B91A /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D47923151DFF7E400077B91A /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
-		D47923161DFF7E400077B91A /* client_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */; };
 		D47923171DFF7E400077B91A /* client_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */; };
 		D47923181DFF7E400077B91A /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
 		D479231B1DFF82E90077B91A /* connection_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47923191DFF82E90077B91A /* connection_handler.cpp */; };
@@ -301,6 +295,8 @@
 		D421D0DC1E01D18500831883 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D421D0E21E0222BB00831883 /* connection_pool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = connection_pool.cpp; sourceTree = "<group>"; };
 		D421D0E31E0222BB00831883 /* connection_pool.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = connection_pool.hpp; sourceTree = "<group>"; };
+		D421D0E51E043DFF00831883 /* client_connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client_connection.cpp; sourceTree = "<group>"; };
+		D421D0E61E043DFF00831883 /* client_connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = client_connection.hpp; sourceTree = "<group>"; };
 		D42DB98B1E00DD3200B2AF60 /* server_alone */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = server_alone; sourceTree = BUILT_PRODUCTS_DIR; };
 		D42DB98D1E00DD9B00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D42DB98F1E00DD9B00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -351,8 +347,6 @@
 		D46614AE1DFCE18700E3FAB0 /* message_writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = message_writer.cpp; sourceTree = "<group>"; };
 		D46614AF1DFCE18700E3FAB0 /* message_writer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = message_writer.hpp; sourceTree = "<group>"; };
 		D46614B11DFCE2E700E3FAB0 /* callback_typedefs.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = callback_typedefs.hpp; sourceTree = "<group>"; };
-		D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client_connection.cpp; sourceTree = "<group>"; };
-		D46614B61DFCEAAA00E3FAB0 /* client_connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = client_connection.hpp; sourceTree = "<group>"; };
 		D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client_connection_manager.cpp; sourceTree = "<group>"; };
 		D46614B81DFCEAAA00E3FAB0 /* client_connection_manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = client_connection_manager.hpp; sourceTree = "<group>"; };
 		D46614B91DFCEAAA00E3FAB0 /* request.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = request.cpp; sourceTree = "<group>"; };
@@ -610,8 +604,6 @@
 			isa = PBXGroup;
 			children = (
 				D46614BF1DFCEF1A00E3FAB0 /* main.cpp */,
-				D46614B61DFCEAAA00E3FAB0 /* client_connection.hpp */,
-				D46614B51DFCEAAA00E3FAB0 /* client_connection.cpp */,
 				D46614B81DFCEAAA00E3FAB0 /* client_connection_manager.hpp */,
 				D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */,
 				D46614B91DFCEAAA00E3FAB0 /* request.cpp */,
@@ -639,6 +631,8 @@
 		D46F22781D12188B007F8F72 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				D421D0E51E043DFF00831883 /* client_connection.cpp */,
+				D421D0E61E043DFF00831883 /* client_connection.hpp */,
 				D46614661DFB24B200E3FAB0 /* buffer.hpp */,
 				D46614651DFB24B200E3FAB0 /* buffer.cpp */,
 				D46614B11DFCE2E700E3FAB0 /* callback_typedefs.hpp */,
@@ -1081,7 +1075,6 @@
 				D42DB9731E00DD3200B2AF60 /* connection_handler.cpp in Sources */,
 				D42DB9741E00DD3200B2AF60 /* http_parser.c in Sources */,
 				D42DB9751E00DD3200B2AF60 /* simple_buffer.c in Sources */,
-				D42DB9761E00DD3200B2AF60 /* client_connection.cpp in Sources */,
 				D42DB9771E00DD3200B2AF60 /* client_connection_manager.cpp in Sources */,
 				D42DB9781E00DD3200B2AF60 /* request.cpp in Sources */,
 				D42DB9B31E00F6DF00B2AF60 /* test_server.cpp in Sources */,
@@ -1101,6 +1094,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D421D0E81E043E2000831883 /* client_connection.cpp in Sources */,
+				D421D0E41E024E6F00831883 /* connection_pool.cpp in Sources */,
 				D421D0D01E01C12C00831883 /* url.cpp in Sources */,
 				D42DB9AD1E00DECE00B2AF60 /* main.cpp in Sources */,
 				D42DB9951E00DEA100B2AF60 /* parser.cpp in Sources */,
@@ -1112,11 +1107,7 @@
 				D42DB99B1E00DEA100B2AF60 /* rb_logger.cpp in Sources */,
 				D42DB99C1E00DEA100B2AF60 /* message_writer.cpp in Sources */,
 				D42DB99D1E00DEA100B2AF60 /* message.cpp in Sources */,
-				D42DB99F1E00DEA100B2AF60 /* client_connection.cpp in Sources */,
-				D42DB9A01E00DEA100B2AF60 /* client_connection.hpp in Sources */,
 				D42DB9B01E00F65D00B2AF60 /* test_client.cpp in Sources */,
-				D42DB9A11E00DEA100B2AF60 /* client_connection_manager.cpp in Sources */,
-				D42DB9A21E00DEA100B2AF60 /* client_connection_manager.hpp in Sources */,
 				D42DB9A31E00DEA100B2AF60 /* request.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1131,7 +1122,6 @@
 				D42DB9B61E00F93000B2AF60 /* connection_handler.cpp in Sources */,
 				D42DB9B71E00F93000B2AF60 /* http_parser.c in Sources */,
 				D42DB9B81E00F93000B2AF60 /* simple_buffer.c in Sources */,
-				D42DB9B91E00F93000B2AF60 /* client_connection.cpp in Sources */,
 				D42DB9BA1E00F93000B2AF60 /* client_connection_manager.cpp in Sources */,
 				D42DB9BB1E00F93000B2AF60 /* request.cpp in Sources */,
 				D42DB9BC1E00F93000B2AF60 /* buffer.cpp in Sources */,
@@ -1202,7 +1192,6 @@
 				D479231C1DFF8CE30077B91A /* connection_handler.cpp in Sources */,
 				D47923141DFF7E400077B91A /* http_parser.c in Sources */,
 				D47923151DFF7E400077B91A /* simple_buffer.c in Sources */,
-				D47923161DFF7E400077B91A /* client_connection.cpp in Sources */,
 				D47923171DFF7E400077B91A /* client_connection_manager.cpp in Sources */,
 				D47923181DFF7E400077B91A /* request.cpp in Sources */,
 				D479230E1DFF7E1E0077B91A /* buffer.cpp in Sources */,
@@ -1222,6 +1211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D421D0E91E043E3500831883 /* client_connection.cpp in Sources */,
 				D46614E51DFE2BBB00E3FAB0 /* parser.cpp in Sources */,
 				D46614E41DFE2AA700E3FAB0 /* buffer.cpp in Sources */,
 				D46614E21DFE2A7C00E3FAB0 /* simple_buffer.c in Sources */,
@@ -1232,8 +1222,6 @@
 				D46614DC1DFCFD0700E3FAB0 /* message_writer.cpp in Sources */,
 				D46614DB1DFCFD0000E3FAB0 /* message.cpp in Sources */,
 				D46614D41DFCF49500E3FAB0 /* main.cpp in Sources */,
-				D46614D51DFCF49500E3FAB0 /* client_connection.cpp in Sources */,
-				D46614D61DFCF49500E3FAB0 /* client_connection.hpp in Sources */,
 				D46614D71DFCF49500E3FAB0 /* client_connection_manager.cpp in Sources */,
 				D46614D81DFCF49500E3FAB0 /* client_connection_manager.hpp in Sources */,
 				D46614D91DFCF49500E3FAB0 /* request.cpp in Sources */,
@@ -1253,10 +1241,10 @@
 				D46F22961D121915007F8F72 /* simple_buffer.c in Sources */,
 				D46F229A1D121A7A007F8F72 /* parser.cpp in Sources */,
 				D46614BE1DFCEAAA00E3FAB0 /* request.cpp in Sources */,
-				D46614BC1DFCEAAA00E3FAB0 /* client_connection.cpp in Sources */,
 				D42DB9901E00DD9B00B2AF60 /* main.cpp in Sources */,
 				D466149D1DFB2ADD00E3FAB0 /* server.cpp in Sources */,
 				D47923011DFE3EFB0077B91A /* UriCodec.cpp in Sources */,
+				D421D0E71E043DFF00831883 /* client_connection.cpp in Sources */,
 				D40D2E851D131EAF00AA74AF /* main.cpp in Sources */,
 				D46614981DFB2ADD00E3FAB0 /* main.cpp in Sources */,
 				D46614961DFB2ADD00E3FAB0 /* server_connection_manager.cpp in Sources */,

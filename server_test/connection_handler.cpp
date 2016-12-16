@@ -48,13 +48,18 @@ int ConnectionHandler::nativeSocketFD()
 }
 void ConnectionHandler::requestComplete()
 {
+    // a stub for future expansionto have a handler handle
+    // multiple requests from the same connection
+}
+void ConnectionHandler::handlerComplete()
+{
     LogDebug(" fd:", nativeSocketFD());
     _connection->close();
     //
     // This call will start the process of deleting linked objects. Hence we need to have closed the
     // connection before this because after it we may not have the connection to close
     //
-    _connectionManager.stop(this);
+    _connectionManager.stop(this); // should be maybe called deregister
     
 }
 
@@ -68,11 +73,15 @@ void ConnectionHandler::readMessageHandler(Marvin::ErrorType& err)
             //
             // On read error do not call the handler - simply abort the request
             //
-            this->requestComplete();
+            this->handlerComplete();
     } else{
         _requestHandler.handle_request(_io, *_reader, *_writer, [this](bool good){
             LogDebug("");
-            this->requestComplete();
+            //
+            // should check here for Connection::close/keep-alive
+            // and if keep-alive call requestComplete to read another request
+            //
+            this->handlerComplete();
         } );
     }
 }

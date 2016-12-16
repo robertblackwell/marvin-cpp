@@ -63,6 +63,10 @@ ClientConnection::~ClientConnection()
 {
     LogDebug("");
 }
+std::string ClientConnection::scheme(){return _scheme;}
+std::string ClientConnection::server(){return _server;}
+std::string ClientConnection::service(){return _port;}
+
 void ClientConnection::close()
 {
     LogDebug(" fd: ", nativeSocketFD());
