@@ -18,7 +18,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "UriParser.hpp"
 #include "url.hpp"
 #include "server.hpp"
-#include "handler_interface.hpp"
+#include "request_handler_interface.hpp"
 #include "request.hpp"
 #include "uri_query.hpp"
 
@@ -31,6 +31,23 @@ public:
         counter++;
     }
     
+    void handleConnect(
+        boost::asio::io_service& io,
+        MessageReader& req,
+        ConnectionPtr  connPtr,
+        HandlerDoneCallbackType hijack_connection)
+    {
+        LogDebug("");
+        hijack_connection(true);
+        
+        boost::asio::streambuf b;
+        std::ostream strm(&b);
+        strm << "HTTP/1.1 200 OK\r\nContent-length:5\r\n\r\n12345" << std::endl;
+        connPtr->asyncWriteStreamBuf(b, [this, connPtr](Marvin::ErrorType& err, std::size_t bytes_transfered){
+            LogDebug(" callback");
+        });
+    }
+
     void pathHandler_A(
         boost::asio::io_service& io,
         MessageReader& req,
@@ -74,7 +91,7 @@ public:
             return "ERROR WRONG REQUEST";
         }
     }
-    void handle_request(
+    void handleRequest(
         boost::asio::io_service& io,
         MessageReader& req,
         MessageWriter& resp,

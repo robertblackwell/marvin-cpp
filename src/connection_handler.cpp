@@ -15,7 +15,7 @@ ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&    io,
     ServerConnectionManager&    connectionManager,
     RequestHandlerInterface&    requestHandler,
-    ClientConnection*           conn
+    Connection*           conn
 ):  _io(io),
     _connectionManager(connectionManager),
     _requestHandler(requestHandler)
@@ -23,7 +23,7 @@ ConnectionHandler::ConnectionHandler(
 {
 
 #ifdef CON_SMARTPOINTER
-    _connection = std::unique_ptr<ClientConnection>(conn);
+    _connection = std::shared_ptr<Connection>(conn);
 #else
     _connection = conn;
 #endif
@@ -46,6 +46,18 @@ int ConnectionHandler::nativeSocketFD()
 {
     return _connection->nativeSocketFD();
 }
+
+void ConnectionHandler::handleConnectComplete(bool hijacked)
+{
+    // do not want the connction closed unless !hijacked
+    LogDebug(" fd:", nativeSocketFD());
+    
+    if( ! hijacked )
+        _connection->close();
+    
+    _connectionManager.deregister(this); // should be maybe called deregister
+}
+
 void ConnectionHandler::requestComplete()
 {
     // a stub for future expansionto have a handler handle
@@ -75,14 +87,25 @@ void ConnectionHandler::readMessageHandler(Marvin::ErrorType& err)
             //
             this->handlerComplete();
     } else{
-        _requestHandler.handle_request(_io, *_reader, *_writer, [this](bool good){
-            LogDebug("");
+        if(_reader->method() == HttpMethod::CONNECT ){
+             _requestHandler.handleConnect(_io, *_reader, _connection, [this](bool hijack){
+                this->handleConnectComplete(hijack);
+             });
+            
             //
-            // should check here for Connection::close/keep-alive
-            // and if keep-alive call requestComplete to read another request
+            // by the time this returns anything needed has been saved or retained
+            // so we can exit the connection handler
             //
-            this->handlerComplete();
-        } );
+        } else {
+            _requestHandler.handleRequest(_io, *_reader, *_writer, [this](bool good){
+                LogDebug("");
+                //
+                // @TODO should check here for Connection::close/keep-alive
+                // and if keep-alive call requestComplete to read another request
+                //
+                this->handlerComplete();
+            } );
+        }
     }
 }
 //
@@ -93,9 +116,9 @@ void ConnectionHandler::serve()
     LogDebug(" fd:", nativeSocketFD());
     // set up reader and writer
 #ifdef CON_SMARTPOINTER
-    ClientConnection* cptr = _connection.get();
+    Connection* cptr = _connection.get();
 #else
-    ClientConnection* cptr = _connection;
+    Connection* cptr = _connection;
 #endif
     
 #ifdef CH_SMARTPOINTER

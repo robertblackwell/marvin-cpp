@@ -6,8 +6,8 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef client_connection_manager_hpp
-#define client_connection_manager_hpp
+#ifndef connection_manager_hpp
+#define connection_manager_hpp
 #include <stdio.h>
 
 #include <iostream>
@@ -92,27 +92,27 @@ class Connection;
 //      req = waitingRequest.removeOldest()
 //      get_a_connection(req.host_id, req.callback)
 //
-class ClientConnectionManager
+class ConnectionManager
 {
 public:
-    static ClientConnectionManager* getInstance(boost::asio::io_service& io);
+    static ConnectionManager* getInstance(boost::asio::io_service& io);
            
-    ClientConnectionManager(boost::asio::io_service& io);
+    ConnectionManager(boost::asio::io_service& io);
     
     void init(boost::asio::io_service& io);
     
-    void asyncGetClientConnection(
+    void asyncGetConnection(
         std::string scheme,
         std::string server,
         std::string port,
         ConnectCallbackType cb
     );
     
-    void releaseClientConnection(ClientConnection* conn);
+    void releaseConnection(Connection* conn);
 
 private:
 
-    void postSuccess(ConnectCallbackType cb, ClientConnection* conn);
+    void postSuccess(ConnectCallbackType cb, Connection* conn);
     void postFail(ConnectCallbackType cb, Marvin::ErrorType& ec);
     
     boost::asio::io_service&        io;

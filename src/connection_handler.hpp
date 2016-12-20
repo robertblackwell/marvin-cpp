@@ -19,7 +19,7 @@
 class ServerConnectionManager;
 
 //
-// If these are defined we use unique_ptr to hold ClientConnection, MessageReader, MessageWriter
+// If these are defined we use unique_ptr to hold Connection, MessageReader, MessageWriter
 //
 #define CH_SMARTPOINTER
 #define CON_SMARTPOINTER
@@ -28,10 +28,10 @@ class ConnectionHandler
 {
     public:
         ConnectionHandler(
-            boost::asio::io_service&     io,
+            boost::asio::io_service&    io,
             ServerConnectionManager&    connectionManager,
             RequestHandlerInterface&    requestHandler,
-            ClientConnection*           conn
+            Connection*                 conn
         );
     
         ~ConnectionHandler();
@@ -44,16 +44,18 @@ class ConnectionHandler
         void readMessageHandler(Marvin::ErrorType& err);
         void requestComplete();
         void handlerComplete();
+        void handleConnectComplete(bool hijack);
 
     
         boost::asio::io_service&         _io;
-        ClientConnection*               _conn;
+        Connection*                     _conn;
         ServerConnectionManager&        _connectionManager;
         RequestHandlerInterface&        _requestHandler;
 #ifdef CON_SMARTPOINTER
-        std::unique_ptr<ClientConnection>   _connection;
+        ConnectionPtr                   _connection;
+//        std::unique_ptr<Connection>         _connection;
 #else
-        ClientConnection*                   _connection;
+        Connection*                         _connection;
 #endif
 
 #ifdef CH_SMARTPOINTER

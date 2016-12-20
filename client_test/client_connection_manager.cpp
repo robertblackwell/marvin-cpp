@@ -3,26 +3,26 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "client_connection.hpp"
+#include "connection.hpp"
 #include "client_connection_manager.hpp"
 
-ClientConnectionManager* globalClientConnectionManager = NULL;
+ConnectionManager* globalConnectionManager = NULL;
 
-ClientConnectionManager::ClientConnectionManager(boost::asio::io_service& io_service): io(io_service), resolver_(io_service)
+ConnectionManager::ConnectionManager(boost::asio::io_service& io_service): io(io_service), resolver_(io_service)
 {
     
 }
-ClientConnectionManager* ClientConnectionManager::getInstance(boost::asio::io_service& io)
+ConnectionManager* ConnectionManager::getInstance(boost::asio::io_service& io)
 {
-    if( globalClientConnectionManager == NULL ){
-        globalClientConnectionManager = new ClientConnectionManager(io);
+    if( globalConnectionManager == NULL ){
+        globalConnectionManager = new ConnectionManager(io);
     }
-    return globalClientConnectionManager;
+    return globalConnectionManager;
 }
 /**
  * get a connection to the scheme::server
  */
-void ClientConnectionManager::asyncGetClientConnection(
+void ConnectionManager::asyncGetConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
@@ -34,11 +34,11 @@ void ClientConnectionManager::asyncGetClientConnection(
                                                 service,
                                                 tcp::resolver::query::canonical_name);
     
-    ClientConnection* conn = new ClientConnection(io, scheme, server, service);
+    Connection* conn = new Connection(io, scheme, server, service);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ClientConnection* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, Connection* conn){
         if( !ec ){
             postSuccess(cb, conn);
         }else{
@@ -47,18 +47,18 @@ void ClientConnectionManager::asyncGetClientConnection(
     });
 
 }
-void ClientConnectionManager::releaseClientConnection(ClientConnection* conn)
+void ConnectionManager::releaseConnection(Connection* conn)
 {
     LogDebug("");
     delete conn;
 }
-void ClientConnectionManager::postSuccess(ConnectCallbackType cb, ClientConnection* conn)
+void ConnectionManager::postSuccess(ConnectCallbackType cb, Connection* conn)
 {
     Marvin::ErrorType merr = Marvin::make_error_ok();
     auto pf = std::bind(cb, merr, conn);
     io.post(pf);
 }
-void ClientConnectionManager::postFail(ConnectCallbackType cb, Marvin::ErrorType& ec)
+void ConnectionManager::postFail(ConnectCallbackType cb, Marvin::ErrorType& ec)
 {
     Marvin::ErrorType merr = ec;
     auto pf = std::bind(cb, merr, nullptr);

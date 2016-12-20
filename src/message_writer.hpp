@@ -13,7 +13,7 @@
 #include "callback_typedefs.hpp"
 #include "message.hpp"
 #include "read_socket_interface.hpp"
-#include "client_connection.hpp"
+#include "connection.hpp"
 
 class MessageWriter : public MessageBase{
 public:

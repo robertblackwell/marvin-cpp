@@ -23,6 +23,11 @@ void ServerConnectionManager::stop(ConnectionHandler* ch)
     _connections.erase(ch);
 }
 
+void ServerConnectionManager::deregister(ConnectionHandler* ch)
+{
+    LogDebug("");
+    _connections.erase(ch);
+}
 void ServerConnectionManager::stop_all()
 {
 //    for (auto c: _connections)

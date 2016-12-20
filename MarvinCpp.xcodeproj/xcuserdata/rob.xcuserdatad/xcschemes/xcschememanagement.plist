@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>all.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>15</integer>
+		</dict>
 		<key>client_alone.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -153,6 +158,11 @@
 			<true/>
 		</dict>
 		<key>D47923051DFF0A7C0077B91A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D4A6E9D91E0477710096441E</key>
 		<dict>
 			<key>primary</key>
 			<true/>

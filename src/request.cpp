@@ -14,7 +14,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "request.hpp"
-//#include "client_connection_manager.hpp"
+//#include "connection_manager.hpp"
 #include "connection_pool.hpp"
 
 using boost::asio::ip::tcp;
@@ -112,13 +112,13 @@ void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
 void Request::end()
 {
     ConnectionPool* cm = ConnectionPool::getInstance(_io);
-    cm->releaseClientConnection(_connection);
+    cm->releaseConnection(_connection);
     _connection = nullptr;
 }
 
 void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 {
-//    ClientConnectionManager* cm = ClientConnectionManager::getInstance(_io);
+//    ConnectionManager* cm = ConnectionManager::getInstance(_io);
     ConnectionPool* cm = ConnectionPool::getInstance(_io);
     if( _writeSock == nullptr){
 //        std::string scheme("http:");
@@ -130,11 +130,11 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
         std::string port   = _port;
         std::string service = _service;
         
-        cm->asyncGetClientConnection(
+        cm->asyncGetConnection(
                 scheme,
                 server,
                 service,
-        [this, connectCb](Marvin::ErrorType& ec, ClientConnection* conn){
+        [this, connectCb](Marvin::ErrorType& ec, Connection* conn){
             LogDebug("");
             if( ec ){
                 Marvin::ErrorType m_er = ec;
@@ -154,7 +154,7 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 //
 // we are connected start read and write
 //
-void Request::haveConnection(Marvin::ErrorType& err, ClientConnection* conn)
+void Request::haveConnection(Marvin::ErrorType& err, Connection* conn)
 {
     if( !err ){
     std::cout << "Request::haveConnection:: " << std:: hex << this << " conn: " << conn <<  std::endl;
@@ -183,7 +183,7 @@ void Request::fullWriteHandler(Marvin::ErrorType& err)
     
     _rdr->readMessage([this](Marvin::ErrorType& err){
         ConnectionPool* cm = ConnectionPool::getInstance(_io);
-        cm->releaseClientConnection(_connection);
+        cm->releaseConnection(_connection);
         _connection = nullptr;
         auto pf = std::bind(this->_goCb, err);
         _io.post(pf);
@@ -199,7 +199,7 @@ void Request::readComplete(Marvin::ErrorType& err)
 {
     if( _oneTripOnly){
         ConnectionPool* cm = ConnectionPool::getInstance(_io);
-        cm->releaseClientConnection(_connection);
+        cm->releaseConnection(_connection);
         _connection = nullptr;
         auto pf = std::bind(this->_goCb, err);
         _io.post(pf);

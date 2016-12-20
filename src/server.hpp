@@ -15,9 +15,9 @@
 #include <string>
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
-#include "handler_interface.hpp"
+#include "request_handler_interface.hpp"
 #include "request_handler.hpp"
-#include "client_connection.hpp"
+#include "connection.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"
 

@@ -170,6 +170,7 @@ void MessageReader::startReadBody()
 
 void MessageReader::startRead(){
     LogDebug(" fd: ", _readSock->nativeSocketFD());
+
     auto h = std::bind(&MessageReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
     _readSock->asyncRead(*_readBuffer, h);
 }

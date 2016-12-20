@@ -14,7 +14,7 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "marvin_error.hpp"
-#include "client_connection.hpp"
+#include "connection.hpp"
 #include "connection_handler.hpp"
 #include "read_socket_interface.hpp"
 #include "message_reader.hpp"
@@ -73,7 +73,7 @@ void Server::handleAccept(ConnectionHandler* connHandler, const boost::system::e
 }
 void Server::startAccept()
 {
-    ClientConnection* conptr = new ClientConnection(_io);
+    Connection* conptr = new Connection(_io);
     ConnectionHandler* connectionHandler =
         new ConnectionHandler(_io, _connectionManager, _requestHandler, conptr);
     

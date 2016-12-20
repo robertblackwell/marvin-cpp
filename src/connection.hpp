@@ -22,22 +22,25 @@ using namespace boost::asio;
 using ip::tcp;
 using system::error_code;
 
-class ClientConnection : public ReadSocketInterface, public WriteSocketInterface
+class Connection;
+typedef std::shared_ptr<Connection> ConnectionPtr;
+
+class Connection : public ReadSocketInterface, public WriteSocketInterface
 {
     public:
     // client socket needs to know who to connect to
-    ClientConnection(
+    Connection(
             boost::asio::io_service& io_service,
             const std::string& scheme,
             const std::string& server,
             const std::string& port
                );
     // server socket will be connected via listen/accept
-    ClientConnection(
+    Connection(
         boost::asio::io_service& io_service
     );
     
-    ~ClientConnection();
+    ~Connection();
     
     void asyncConnect(ConnectCallbackType cb);
     

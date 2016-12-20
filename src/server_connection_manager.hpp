@@ -30,6 +30,8 @@ public:
 
     void registerConnectionHandler(ConnectionHandler* connHandler);
  
+    /// deregister the specified connection.
+    void deregister(ConnectionHandler* ch);
     /// Stop the specified connection.
     void stop(ConnectionHandler* ch);
 

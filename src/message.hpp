@@ -68,6 +68,7 @@ public:
     void setMethod(enum http_method m);
     virtual void setMethod(std::string m_str);
     std::string getMethodAsString();
+    HttpMethod method(){ return (HttpMethod)_method; };
     
     void setUri(std::string u);
     std::string uri();

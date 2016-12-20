@@ -8,7 +8,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "server.hpp"
-#include "handler_interface.hpp"
+#include "request_handler_interface.hpp"
 #include "request.hpp"
 #ifdef GHDF
 class MyHandler : public RequestHandlerInterface

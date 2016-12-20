@@ -9,7 +9,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "server.hpp"
-#include "handler_interface.hpp"
+#include "request_handler_interface.hpp"
 #include "request.hpp"
 
 class MyHandler : public RequestHandlerInterface
@@ -18,7 +18,7 @@ public:
     MyHandler()
     {
     }
-    void handle_request(
+    void handleRequest(
         boost::asio::io_service& io,
         MessageReader& req,
         MessageWriter& resp,

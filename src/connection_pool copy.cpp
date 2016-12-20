@@ -12,7 +12,7 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "client_connection.hpp"
+#include "connection.hpp"
 
 //---------------------------------------------------------------------------------------------------
 // A list of all available connections. They are primed with an io_service but NOT host information
@@ -20,21 +20,21 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 class AllConnectionsType
 {
     private:
-    std::vector<std::shared_ptr<ClientConnections>>  _connections;
+    std::vector<std::shared_ptr<Connections>>  _connections;
     boost::asio::io_service _io;
     
     public:
     AllConnections(boost::asio::io_service& io, std::size_t max): _io(io)
     {
         for(int i = 0; i < max; i++){
-            add(std::shared_ptr<ClientConnection>(new ClientConnection(_io)) );
+            add(std::shared_ptr<Connection>(new Connection(_io)) );
         }
     }
     std::size_t size()
     {
         return _connections.size();
     }
-    void add(ClientConnection* conn)
+    void add(Connection* conn)
     {
         _connections.push_back(conn);
     }
@@ -45,7 +45,7 @@ class AllConnectionsType
 class FreeConnectionsType
 {
     private:
-        std::vector<ClientConnections>  _connections;
+        std::vector<Connections>  _connections;
     
     public:
         FreeConnections(AllConnections& all): _io(io)
@@ -59,7 +59,7 @@ class FreeConnectionsType
             return _connections.size();
         }
         
-        ClientConnection*
+        Connection*
         removeLast()
         {
             auto oldest = _connections.back();
@@ -67,7 +67,7 @@ class FreeConnectionsType
             return oldest;
         }
         
-        void add(ClientConnection* conn)
+        void add(Connection* conn)
         {
             _connections.push_back(conn);
         }
@@ -81,9 +81,9 @@ class AssignedConnection
 {
     private:
         std::string         _hostId;
-        ClientConnection*   _conn;
+        Connection*   _conn;
     public:
-        AssignedConnection(std::string hostId, ClientConnection* conn): _hostId(hostId), _conn(conn) {}
+        AssignedConnection(std::string hostId, Connection* conn): _hostId(hostId), _conn(conn) {}
 }
 //---------------------------------------------------------------------------------------------------
 // A list of assigned (and assumed open) connections that are not being used
@@ -263,7 +263,7 @@ ConnectionPool* ConnectionPool::getInstance(boost::asio::io_service& io)
 /**
  * get a connection to the scheme::server
  */
-void ConnectionPool::asyncGetClientConnection(
+void ConnectionPool::asyncGetConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
@@ -275,11 +275,11 @@ void ConnectionPool::asyncGetClientConnection(
                                                 service,
                                                 tcp::resolver::query::canonical_name);
     
-    ClientConnection* conn = new ClientConnection(io, scheme, server, service);
+    Connection* conn = new Connection(io, scheme, server, service);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ClientConnection* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, Connection* conn){
         if( !ec ){
             postSuccess(cb, conn);
         }else{
@@ -288,12 +288,12 @@ void ConnectionPool::asyncGetClientConnection(
     });
 
 }
-void ConnectionPool::releaseClientConnection(ClientConnection* conn)
+void ConnectionPool::releaseConnection(Connection* conn)
 {
     LogDebug("");
     delete conn;
 }
-void ConnectionPool::postSuccess(ConnectCallbackType cb, ClientConnection* conn)
+void ConnectionPool::postSuccess(ConnectCallbackType cb, Connection* conn)
 {
     Marvin::ErrorType merr = Marvin::make_error_ok();
     auto pf = std::bind(cb, merr, conn);

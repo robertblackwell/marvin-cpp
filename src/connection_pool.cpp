@@ -13,7 +13,7 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "client_connection.hpp"
+#include "connection.hpp"
 
 
 //---------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ InUseConnectionsType::size()
 }
 
 void
-InUseConnectionsType::remove(ClientConnection* aConn)
+InUseConnectionsType::remove(Connection* aConn)
 {
     if( _connections.find(aConn) == _connections.cend() ) { assert(false);}
     _connections.erase(aConn);
@@ -37,7 +37,7 @@ InUseConnectionsType::remove(ClientConnection* aConn)
 }
 
 void
-InUseConnectionsType::add(ClientConnection* conn)
+InUseConnectionsType::add(Connection* conn)
 {
     _connections[conn] = conn;
 }
@@ -56,6 +56,10 @@ ConnectionRequest::ConnectionRequest(
     _service = service;
     _callback = cb;
 }
+ConnectionRequest::~ConnectionRequest()
+{
+    LogDebug("");
+}
 //---------------------------------------------------------------------------------------------------
 // WaitingRequests - List of requests for a connection that have been put into "wait"
 //---------------------------------------------------------------------------------------------------
@@ -71,6 +75,7 @@ WaitingRequestsType::size()
 ConnectionRequest*
 WaitingRequestsType::find(std::string scheme, std::string server, std::string service)
 {
+    LogDebug(" size:", _waitingRequests.size());
     for( auto itr = _waitingRequests.begin(); itr < _waitingRequests.end(); itr++ ){
         auto ent = *itr;
         if( (ent->_scheme == scheme) && (ent->_server == server) && (ent->_service == service) ){
@@ -84,6 +89,7 @@ WaitingRequestsType::find(std::string scheme, std::string server, std::string se
 ConnectionRequest*
 WaitingRequestsType::removeOldest()
 {
+    LogDebug(" size:", _waitingRequests.size());
     auto r =  _waitingRequests[0];
     _waitingRequests.erase(_waitingRequests.begin());
     return r;
@@ -92,6 +98,7 @@ WaitingRequestsType::removeOldest()
 void
 WaitingRequestsType::add(ConnectionRequest* connReq)
 {
+    LogDebug(" size:", _waitingRequests.size());
     _waitingRequests.push_back(connReq);
 }
 
@@ -139,7 +146,7 @@ ConnectionPool* globalConnectionPool = NULL;
 
 ConnectionPool::ConnectionPool(boost::asio::io_service& io_service): io(io_service), resolver_(io_service)
 {
-    
+    _maxConnections = 25;
 }
 ConnectionPool* ConnectionPool::getInstance(boost::asio::io_service& io)
 {
@@ -151,14 +158,15 @@ ConnectionPool* ConnectionPool::getInstance(boost::asio::io_service& io)
 /**
  * get a connection to the scheme::server
  */
-void ConnectionPool::asyncGetClientConnection(
+void ConnectionPool::asyncGetConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
             ConnectCallbackType cb
 )
 {
-    if( _inUse.size() >= 10){
+    LogDebug(" inUser size : ", _inUse.size());
+    if( _inUse.size() >= _maxConnections){
         auto r = new ConnectionRequest(scheme, server, service, cb);
         _waitingRequests.add(r);
     }else{
@@ -176,14 +184,14 @@ void ConnectionPool::createNewConnection(
             //                                                service,
             //                                                tcp::resolver::query::canonical_name);
     
-    ClientConnection* conn = new ClientConnection(io, scheme, server, service);
+    Connection* conn = new Connection(io, scheme, server, service);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
     _inUse.add(conn);
     //
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ClientConnection* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, Connection* conn){
         if( !ec ){
             postSuccess(cb, conn);
         }else{
@@ -191,8 +199,32 @@ void ConnectionPool::createNewConnection(
         }
     });
 }
-void ConnectionPool::releaseClientConnection(ClientConnection* conn)
+
+//
+//so far all we implement is a limit on the number of connections
+//
+void ConnectionPool::releaseConnection(Connection* conn)
 {
+    LogDebug("");
+    _inUse.remove(conn);
+    delete conn;
+    if( _waitingRequests.size() > 0 )
+    {
+        LogDebug(" dispatch a waiting connection request size: ", _waitingRequests.size());
+        //
+        // get the req that has been waiting the lngests
+        //
+        auto req = _waitingRequests.removeOldest();
+        std::string scheme = req->_scheme;
+        std::string server = req->_server;
+        std::string service = req->_service;
+        ConnectCallbackType cb = req->_callback;
+        delete req;
+        createNewConnection(scheme, server, service, cb);
+    }
+// have not implemented real pooling - where we keep connections open
+#ifdef CONN_POOLING
+    return;
     if( _waitingRequests.size() > 0 ){
         auto req = _waitingRequests.find(conn->scheme(), conn->server(), conn->service());
         // found a request for the same host
@@ -217,8 +249,9 @@ void ConnectionPool::releaseClientConnection(ClientConnection* conn)
         _inUse.remove(conn);
         delete conn;
     }
+#endif
 }
-void ConnectionPool::postSuccess(ConnectCallbackType cb, ClientConnection* conn)
+void ConnectionPool::postSuccess(ConnectCallbackType cb, Connection* conn)
 {
     Marvin::ErrorType merr = Marvin::make_error_ok();
     auto pf = std::bind(cb, merr, conn);
