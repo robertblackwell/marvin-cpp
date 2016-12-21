@@ -1,12 +1,3 @@
-//
-// server.hpp
-// ~~~~~~~~~~
-//
-// Copyright (c) 2003-2016 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
 
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
@@ -19,7 +10,6 @@
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
 #include "request_handler_interface.hpp"
-#include "request_handler.hpp"
 #include "connection.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"

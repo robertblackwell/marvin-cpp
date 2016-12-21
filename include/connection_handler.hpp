@@ -14,7 +14,6 @@
 
 #include "message_reader.hpp"
 #include "message_writer.hpp"
-#include "request_handler.hpp"
 #include "server_connection_manager.hpp"
 
 

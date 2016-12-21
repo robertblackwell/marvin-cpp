@@ -57,8 +57,7 @@ runAServerProdItWithBrowser()
 {
     try
     {
-        MyHandler handler;
-        Server server(handler);
+        Server<MyHandler> server;
         server.listen();
     }
     catch (std::exception& e)
@@ -110,8 +109,7 @@ serverFunction(void* arg)
     tid = (long)arg;
     printf("Hello World! This is server\n");
 
-    MyHandler handler;
-    Server server(handler);
+    Server<MyHandler> server;
     server.listen();
 
     return (void*)0;
