@@ -42,7 +42,7 @@ public:
 private:
     /// Perform an asynchronous accept operation.
     void startAccept();
-    void handleAccept(ConnectionHandler* handler, const boost::system::error_code& err);
+    void handleAccept(ConnectionHandler<H>* handler, const boost::system::error_code& err);
     void readMessageHandler(Marvin::ErrorType& err);
     
     /// Wait for a request to stop the server.
@@ -51,7 +51,7 @@ private:
     boost::asio::io_service                     _io;
     boost::asio::signal_set                     _signals;
     boost::asio::ip::tcp::acceptor              _acceptor;
-    ServerConnectionManager<ConnectionHandler>  _connectionManager;
+    ServerConnectionManager<ConnectionHandler<H>>  _connectionManager;
 
 };
 #include "server.cpp"

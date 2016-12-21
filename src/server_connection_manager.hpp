@@ -1,12 +1,3 @@
-//
-// connection_manager.hpp
-// ~~~~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2016 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
 
 #ifndef HTTP_SERVER_CONNECTION_MANAGER_HPP
 #define HTTP_SERVER_CONNECTION_MANAGER_HPP
@@ -15,7 +6,7 @@
 #include <map>
 
 
-/// Manages open connections so that they may be cleanly stopped when the server
+/// Manages open connection handlers so that they may be cleanly stopped when the server
 /// needs to shut down.
 template<class CONNECTION_HANDLER>
 class ServerConnectionManager

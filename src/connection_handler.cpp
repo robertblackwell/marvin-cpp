@@ -5,23 +5,15 @@
 //  Created by ROBERT BLACKWELL on 12/12/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
-#
-#include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "connection_handler.hpp"
-#include "request_handler.hpp"
-
-ConnectionHandler::ConnectionHandler(
-    boost::asio::io_service&                        io,
-    ServerConnectionManager<ConnectionHandler>&     connectionManager,
-    RequestHandlerInterface*                        requestHandlerPtr,
-    Connection*                                     conn
-):  _io(io),
-    _connectionManager(connectionManager),
-    _requestHandlerPtr(requestHandlerPtr)
+template<class REQUEST_HANDLER>
+ConnectionHandler<REQUEST_HANDLER>::ConnectionHandler(
+    boost::asio::io_service&                                        io,
+    ServerConnectionManager<ConnectionHandler<REQUEST_HANDLER>>&    connectionManager,
+    Connection*                                                     conn):  _io(io), _connectionManager(connectionManager)
 {
-    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerInterface>(_requestHandlerPtr);
+    _requestHandlerPtr  = new REQUEST_HANDLER();
+    _requestHandlerUnPtr = std::unique_ptr<REQUEST_HANDLER>(_requestHandlerPtr);
     
 #ifdef CON_SMARTPOINTER
     _connection = std::shared_ptr<Connection>(conn);
@@ -31,7 +23,8 @@ ConnectionHandler::ConnectionHandler(
 }
 
 
-ConnectionHandler::~ConnectionHandler()
+template<class REQUEST_HANDLER>
+ConnectionHandler<REQUEST_HANDLER>::~ConnectionHandler()
 {
 #ifdef CON_SMARTPOINTER
 #else
@@ -40,18 +33,21 @@ ConnectionHandler::~ConnectionHandler()
     LogDebug("");
     
 }
-void ConnectionHandler::close()
+template<class REQUEST_HANDLER>
+void ConnectionHandler<REQUEST_HANDLER>::close()
 {
     LogDebug(" fd:", nativeSocketFD());
 //    _connection->close();
 }
 
-int ConnectionHandler::nativeSocketFD()
+template<class REQUEST_HANDLER>
+int ConnectionHandler<REQUEST_HANDLER>::nativeSocketFD()
 {
     return _connection->nativeSocketFD();
 }
 
-void ConnectionHandler::handleConnectComplete(bool hijacked)
+template<class REQUEST_HANDLER>
+void ConnectionHandler<REQUEST_HANDLER>::handleConnectComplete(bool hijacked)
 {
     // do not want the connction closed unless !hijacked
     LogDebug(" fd:", nativeSocketFD());
@@ -62,12 +58,15 @@ void ConnectionHandler::handleConnectComplete(bool hijacked)
     _connectionManager.deregister(this); // should be maybe called deregister
 }
 
-void ConnectionHandler::requestComplete()
+template<class REQUEST_HANDLER>
+void ConnectionHandler<REQUEST_HANDLER>::requestComplete()
 {
     // a stub for future expansionto have a handler handle
     // multiple requests from the same connection
 }
-void ConnectionHandler::handlerComplete()
+
+template<class REQUEST_HANDLER>
+void ConnectionHandler<REQUEST_HANDLER>::handlerComplete()
 {
     LogDebug(" fd:", nativeSocketFD());
     _connection->close();
@@ -79,7 +78,8 @@ void ConnectionHandler::handlerComplete()
     
 }
 
-void ConnectionHandler::readMessageHandler(Marvin::ErrorType& err)
+template<class REQUEST_HANDLER>
+void ConnectionHandler<REQUEST_HANDLER>::readMessageHandler(Marvin::ErrorType& err)
 {
     LogDebug(" fd:", nativeSocketFD());
     if( err ){
@@ -115,9 +115,10 @@ void ConnectionHandler::readMessageHandler(Marvin::ErrorType& err)
     }
 }
 //
-// This is a setup - the read is initiated somewhere else
+// Gets the connection handler going
 //
-void ConnectionHandler::serve()
+template<class REQUEST_HANDLER>
+void ConnectionHandler<REQUEST_HANDLER>::serve()
 {
     LogDebug(" fd:", nativeSocketFD());
     // set up reader and writer

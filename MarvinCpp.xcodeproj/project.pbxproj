@@ -22,7 +22,6 @@
 		D421D0E71E043DFF00831883 /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* connection.cpp */; };
 		D421D0E81E043E2000831883 /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* connection.cpp */; };
 		D421D0E91E043E3500831883 /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* connection.cpp */; };
-		D42DB9731E00DD3200B2AF60 /* connection_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47923191DFF82E90077B91A /* connection_handler.cpp */; };
 		D42DB9741E00DD3200B2AF60 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D42DB9751E00DD3200B2AF60 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
 		D42DB9781E00DD3200B2AF60 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
@@ -597,8 +596,8 @@
 			isa = PBXGroup;
 			children = (
 				D42DB98F1E00DD9B00B2AF60 /* main.cpp */,
-				D42DB9B11E00F6DF00B2AF60 /* test_server.cpp */,
 				D42DB9B21E00F6DF00B2AF60 /* test_server.hpp */,
+				D42DB9B11E00F6DF00B2AF60 /* test_server.cpp */,
 			);
 			path = server_alone;
 			sourceTree = "<group>";
@@ -1179,7 +1178,6 @@
 				D421D0D51E01D01600831883 /* uri_query.cpp in Sources */,
 				D421D0D11E01CAED00831883 /* url.cpp in Sources */,
 				D42DB9921E00DDF000B2AF60 /* main.cpp in Sources */,
-				D42DB9731E00DD3200B2AF60 /* connection_handler.cpp in Sources */,
 				D42DB9741E00DD3200B2AF60 /* http_parser.c in Sources */,
 				D42DB9751E00DD3200B2AF60 /* simple_buffer.c in Sources */,
 				D42DB9781E00DD3200B2AF60 /* request.cpp in Sources */,

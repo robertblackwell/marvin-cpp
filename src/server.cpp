@@ -83,7 +83,7 @@ void Server<H>::readMessageHandler(Marvin::ErrorType& err)
 {
 }
 template<class H>
-void Server<H>::handleAccept(ConnectionHandler* connHandler, const boost::system::error_code& err)
+void Server<H>::handleAccept(ConnectionHandler<H>* connHandler, const boost::system::error_code& err)
 {
     if (! _acceptor.is_open()){
         delete connHandler;
@@ -109,8 +109,8 @@ void Server<H>::startAccept()
     
     RequestHandlerInterface* hi = new H();
     
-    ConnectionHandler* connectionHandler =
-        new ConnectionHandler(_io, _connectionManager, hi, conptr);
+    ConnectionHandler<H>* connectionHandler =
+        new ConnectionHandler<H>(_io, _connectionManager, conptr);
         // new ConnectionHandler(_io, _connectionManager, _requestHandler, conptr);
     
     boost::asio::ip::tcp::socket& sock_ref = conptr->getSocketRef();

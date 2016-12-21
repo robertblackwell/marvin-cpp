@@ -24,13 +24,12 @@
 #define CH_SMARTPOINTER
 #define CON_SMARTPOINTER
 
-class ConnectionHandler
+template<class REQUEST_HANDLER> class ConnectionHandler
 {
     public:
         ConnectionHandler(
             boost::asio::io_service&                        io,
-            ServerConnectionManager<ConnectionHandler>&     connectionManager,
-            RequestHandlerInterface*                        requestHandlerPtr,
+            ServerConnectionManager<ConnectionHandler<REQUEST_HANDLER>>&     connectionManager,
             Connection*                                     conn
         );
     
@@ -50,8 +49,8 @@ class ConnectionHandler
         boost::asio::io_service&                            _io;
         Connection*                                         _conn;
         ServerConnectionManager<ConnectionHandler>&         _connectionManager;
-        RequestHandlerInterface*                            _requestHandlerPtr;
-        std::unique_ptr<RequestHandlerInterface>            _requestHandlerUnPtr;
+        REQUEST_HANDLER*                                    _requestHandlerPtr;
+        std::unique_ptr<REQUEST_HANDLER>                    _requestHandlerUnPtr;
     
 #ifdef CON_SMARTPOINTER
         ConnectionPtr                                       _connection;
@@ -68,4 +67,7 @@ class ConnectionHandler
         MessageWriter*                      _writer;
 #endif
 };
+
+#include "connection_handler.cpp"
+
 #endif /* ConnectionHandler_hpp */
