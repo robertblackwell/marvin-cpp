@@ -32,7 +32,7 @@ bool xstrncmp(char* one, char* two, int n){
 
 void sb_test_guards(simple_buffer_t* sb, char* msg)
 {
-//    return;
+    return;
     char const * opn = "OPN";
     char const * cls = "CLS";
 //    if( xstrncmp(sb->open_guard, opn, 3) && xstrncmp(sb->close_guard, cls, 3) )
