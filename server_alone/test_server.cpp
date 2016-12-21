@@ -15,6 +15,7 @@
 #include <pthread.h>
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+
 #include "UriParser.hpp"
 #include "url.hpp"
 #include "server.hpp"
@@ -29,6 +30,10 @@ public:
     MyHandler()
     {
         counter++;
+    }
+    ~MyHandler()
+    {
+        LogDebug("");
     }
     
     void handleConnect(
@@ -155,8 +160,7 @@ runTestServer()
 {
     try
     {
-        MyHandler handler;
-        Server server(handler);
+        Server<MyHandler> server;
         server.listen();
     }
     catch (std::exception& e)

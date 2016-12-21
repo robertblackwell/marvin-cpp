@@ -5,7 +5,9 @@
 #include <boost/asio.hpp>
 #include <pthread.h>
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+//RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+
+RBLogging::LogLevel  rbLogLevel = RBLogging::LogLevel::debug;
 
 #include "server.hpp"
 #include "request_handler_interface.hpp"
@@ -16,6 +18,7 @@ class MyHandler : public RequestHandlerInterface
 public:
     MyHandler()
     {
+        LogDebug("");
     }
     void handle_request(
         boost::asio::io_service& io,
@@ -53,20 +56,6 @@ public:
     }
 };
 
-void
-runAServer()
-{
-    try
-    {
-        MyHandler handler;
-        Server server(handler);
-        server.listen();
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "exception: " << e.what() << "\n";
-    }
-}
 #endif
 #include "test_server.hpp"
 int main(int argc, char* argv[])

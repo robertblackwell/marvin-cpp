@@ -33,8 +33,6 @@
 		D42DB97D1E00DD3200B2AF60 /* message_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614AE1DFCE18700E3FAB0 /* message_writer.cpp */; };
 		D42DB97E1E00DD3200B2AF60 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F227B1D12188B007F8F72 /* parser.cpp */; };
 		D42DB97F1E00DD3200B2AF60 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
-		D42DB9801E00DD3200B2AF60 /* server_connection_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614851DFB2ADD00E3FAB0 /* server_connection_manager.cpp */; };
-		D42DB9811E00DD3200B2AF60 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614941DFB2ADD00E3FAB0 /* server.cpp */; };
 		D42DB9841E00DD3200B2AF60 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
 		D42DB9851E00DD3200B2AF60 /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
 		D42DB9861E00DD3200B2AF60 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
@@ -1193,8 +1191,6 @@
 				D42DB97D1E00DD3200B2AF60 /* message_writer.cpp in Sources */,
 				D42DB97E1E00DD3200B2AF60 /* parser.cpp in Sources */,
 				D42DB97F1E00DD3200B2AF60 /* rb_logger.cpp in Sources */,
-				D42DB9801E00DD3200B2AF60 /* server_connection_manager.cpp in Sources */,
-				D42DB9811E00DD3200B2AF60 /* server.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

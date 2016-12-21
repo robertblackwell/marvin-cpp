@@ -314,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/main.cpp"
-            timestampString = "503422729.810078"
+            timestampString = "503971167.862736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
             landmarkName = "main(int argc, char* argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -330,11 +330,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/main.cpp"
-            timestampString = "503422737.370854"
+            timestampString = "503971167.862736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "main(int argc, char* argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -410,11 +410,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/test_server.cpp"
-            timestampString = "503943833.704346"
+            timestampString = "503971253.789181"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
             landmarkName = "handleRequest( boost::asio::io_service&amp; io, MessageReader&amp; req, MessageWriter&amp; resp, HandlerDoneCallbackType done )"
             landmarkType = "5">
          </BreakpointContent>
@@ -570,11 +570,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/test_server.cpp"
-            timestampString = "503943833.704346"
+            timestampString = "503971253.789181"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
             landmarkName = "handleRequest( boost::asio::io_service&amp; io, MessageReader&amp; req, MessageWriter&amp; resp, HandlerDoneCallbackType done )"
             landmarkType = "5">
          </BreakpointContent>
@@ -586,11 +586,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/test_server.cpp"
-            timestampString = "503943833.704346"
+            timestampString = "503971253.789181"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
             landmarkName = "handleRequest( boost::asio::io_service&amp; io, MessageReader&amp; req, MessageWriter&amp; resp, HandlerDoneCallbackType done )"
             landmarkType = "5">
          </BreakpointContent>
@@ -602,11 +602,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/test_server.cpp"
-            timestampString = "503943833.704346"
+            timestampString = "503971253.789181"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
             landmarkName = "handleRequest( boost::asio::io_service&amp; io, MessageReader&amp; req, MessageWriter&amp; resp, HandlerDoneCallbackType done )"
             landmarkType = "5">
          </BreakpointContent>
@@ -864,15 +864,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/connection_handler.cpp"
-            timestampString = "503940866.078712"
+            timestampString = "503970679.524676"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
             landmarkName = "ConnectionHandler::readMessageHandler(Marvin::ErrorType&amp; err)"
             landmarkType = "5">
          </BreakpointContent>
@@ -915,13 +915,45 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "src/connection_handler.cpp"
-            timestampString = "503941332.355213"
+            filePath = "server_alone/test_server.cpp"
+            timestampString = "503971253.789181"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
-            landmarkName = "_requestHandler(requestHandler)"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "handleConnect( boost::asio::io_service&amp; io, MessageReader&amp; req, ConnectionPtr connPtr, HandlerDoneCallbackType hijack_connection)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "server_alone/test_server.cpp"
+            timestampString = "503971253.789181"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "handleConnect( boost::asio::io_service&amp; io, MessageReader&amp; req, ConnectionPtr connPtr, HandlerDoneCallbackType hijack_connection)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/server.cpp"
+            timestampString = "503971166.693192"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "startAccept()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -932,12 +964,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/test_server.cpp"
-            timestampString = "503943823.654596"
+            timestampString = "503971295.406056"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "handleConnect( boost::asio::io_service&amp; io, MessageReader&amp; req, ConnectionPtr connPtr, HandlerDoneCallbackType hijack_connection)"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "~MyHandler()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -948,12 +980,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "server_alone/test_server.cpp"
-            timestampString = "503943835.91892"
+            timestampString = "503971320.447541"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "handleConnect( boost::asio::io_service&amp; io, MessageReader&amp; req, ConnectionPtr connPtr, HandlerDoneCallbackType hijack_connection)"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "MyHandler()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/connection_handler.cpp"
+            timestampString = "503971436.696486"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "ConnectionHandler::~ConnectionHandler()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

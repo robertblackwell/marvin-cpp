@@ -7,20 +7,47 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
+/*
 #include <iostream>
 #include "server.hpp"
 #include <signal.h>
 #include <utility>
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "marvin_error.hpp"
 #include "connection.hpp"
 #include "connection_handler.hpp"
 #include "read_socket_interface.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"
+*/
 
-Server::Server(RequestHandlerInterface& handler)
+template<class H>
+Server<H>::Server()
+  : _io(1),
+    _signals(_io),
+    _acceptor(_io),
+    _connectionManager()
+{
+    // Register to handle the signals that indicate when the Server should exit.
+    // It is safe to register for the same signal multiple times in a program,
+    // provided all registration for the specified signal is made through Asio.
+    _signals.add(SIGINT);
+    _signals.add(SIGTERM);
+    #if defined(SIGQUIT)
+    _signals.add(SIGQUIT);
+    #endif // defined(SIGQUIT)
+
+    waitForStop();
+    
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), 9991);
+    _acceptor.open(endpoint.protocol());
+    _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+    _acceptor.bind(endpoint);
+}
+
+/*
+template<class H>
+Server<H>::Server(RequestHandlerInterface& handler)
   : _io(1),
     _signals(_io),
     _acceptor(_io),
@@ -43,16 +70,20 @@ Server::Server(RequestHandlerInterface& handler)
     _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     _acceptor.bind(endpoint);
 }
-void Server::listen(){
+*/
+template<class H>
+void Server<H>::listen(){
     _acceptor.listen();
     startAccept();
     _io.run();
     
 }
-void Server::readMessageHandler(Marvin::ErrorType& err)
+template<class H>
+void Server<H>::readMessageHandler(Marvin::ErrorType& err)
 {
 }
-void Server::handleAccept(ConnectionHandler* connHandler, const boost::system::error_code& err)
+template<class H>
+void Server<H>::handleAccept(ConnectionHandler* connHandler, const boost::system::error_code& err)
 {
     if (! _acceptor.is_open()){
         delete connHandler;
@@ -71,18 +102,24 @@ void Server::handleAccept(ConnectionHandler* connHandler, const boost::system::e
     startAccept();
     
 }
-void Server::startAccept()
+template<class H>
+void Server<H>::startAccept()
 {
     Connection* conptr = new Connection(_io);
+    
+    RequestHandlerInterface* hi = new H();
+    
     ConnectionHandler* connectionHandler =
-        new ConnectionHandler(_io, _connectionManager, _requestHandler, conptr);
+        new ConnectionHandler(_io, _connectionManager, hi, conptr);
+        // new ConnectionHandler(_io, _connectionManager, _requestHandler, conptr);
     
     boost::asio::ip::tcp::socket& sock_ref = conptr->getSocketRef();
 
     auto hf = std::bind(&Server::handleAccept, this, connectionHandler, std::placeholders::_1);
     _acceptor.async_accept(sock_ref, hf);
 }
-void Server::waitForStop()
+template<class H>
+void Server<H>::waitForStop()
 {
   _signals.async_wait([this](boost::system::error_code /*ec*/, int /*signo*/)
       {

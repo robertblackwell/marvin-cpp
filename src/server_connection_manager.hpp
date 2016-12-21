@@ -13,12 +13,11 @@
 
 #include <set>
 #include <map>
-#include "connection_handler.hpp"
 
-class ConnectionHandler;
 
 /// Manages open connections so that they may be cleanly stopped when the server
 /// needs to shut down.
+template<class CONNECTION_HANDLER>
 class ServerConnectionManager
 {
 public:
@@ -28,12 +27,12 @@ public:
     /// Construct a connection manager.
     ServerConnectionManager();
 
-    void registerConnectionHandler(ConnectionHandler* connHandler);
+    void registerConnectionHandler(CONNECTION_HANDLER* connHandler);
  
     /// deregister the specified connection.
-    void deregister(ConnectionHandler* ch);
+    void deregister(CONNECTION_HANDLER* ch);
     /// Stop the specified connection.
-    void stop(ConnectionHandler* ch);
+    void stop(CONNECTION_HANDLER* ch);
 
     /// Stop all connections.
     void stop_all();
@@ -42,10 +41,12 @@ private:
   /// The managed connections.
 #define CM_SMARTPOINTER  
 #ifdef CM_SMARTPOINTER
-  std::map<ConnectionHandler*, std::unique_ptr<ConnectionHandler>> _connections;
+  std::map<CONNECTION_HANDLER*, std::unique_ptr<CONNECTION_HANDLER>> _connections;
 #else
-  std::set<ConnectionHandler*> _connections;
+  std::set<CONNECTION_HANDLER*> _connections;
 #endif
 };
+
+#include "server_connection_manager.cpp"
 
 #endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

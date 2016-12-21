@@ -13,6 +13,9 @@
 
 #include <boost/asio.hpp>
 #include <string>
+#include <signal.h>
+#include <utility>
+
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
 #include "request_handler_interface.hpp"
@@ -20,10 +23,11 @@
 #include "connection.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"
-
+#include "rb_logger.hpp"
+#include "connection_handler.hpp"
 
 /// The top-level class of the HTTP server.
-class Server
+template<class H> class Server
 {
 public:
     Server(const Server&) = delete;
@@ -31,7 +35,7 @@ public:
 
     /// Construct the server to listen on the specified TCP address and port, and
     /// serve up files from the given directory.
-    explicit Server(RequestHandlerInterface& handler);
+    explicit Server();
 
     void listen();
     
@@ -44,11 +48,11 @@ private:
     /// Wait for a request to stop the server.
     void waitForStop();
 
-    boost::asio::io_service         _io;
-    boost::asio::signal_set         _signals;
-    boost::asio::ip::tcp::acceptor  _acceptor;
-    ServerConnectionManager         _connectionManager;
-    RequestHandlerInterface&        _requestHandler;
-};
+    boost::asio::io_service                     _io;
+    boost::asio::signal_set                     _signals;
+    boost::asio::ip::tcp::acceptor              _acceptor;
+    ServerConnectionManager<ConnectionHandler>  _connectionManager;
 
+};
+#include "server.cpp"
 #endif // HTTP_SERVER_HPP

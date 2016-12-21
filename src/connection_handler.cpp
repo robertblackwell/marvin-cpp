@@ -6,28 +6,31 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 #
-#include "connection_handler.hpp"
-#include "request_handler.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
+#include "connection_handler.hpp"
+#include "request_handler.hpp"
+
 ConnectionHandler::ConnectionHandler(
-    boost::asio::io_service&    io,
-    ServerConnectionManager&    connectionManager,
-    RequestHandlerInterface&    requestHandler,
-    Connection*           conn
+    boost::asio::io_service&                        io,
+    ServerConnectionManager<ConnectionHandler>&     connectionManager,
+    RequestHandlerInterface*                        requestHandlerPtr,
+    Connection*                                     conn
 ):  _io(io),
     _connectionManager(connectionManager),
-    _requestHandler(requestHandler)
-//    _connection(conn)
+    _requestHandlerPtr(requestHandlerPtr)
 {
-
+    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerInterface>(_requestHandlerPtr);
+    
 #ifdef CON_SMARTPOINTER
     _connection = std::shared_ptr<Connection>(conn);
 #else
     _connection = conn;
 #endif
 }
+
+
 ConnectionHandler::~ConnectionHandler()
 {
 #ifdef CON_SMARTPOINTER
@@ -42,6 +45,7 @@ void ConnectionHandler::close()
     LogDebug(" fd:", nativeSocketFD());
 //    _connection->close();
 }
+
 int ConnectionHandler::nativeSocketFD()
 {
     return _connection->nativeSocketFD();
@@ -88,7 +92,8 @@ void ConnectionHandler::readMessageHandler(Marvin::ErrorType& err)
             this->handlerComplete();
     } else{
         if(_reader->method() == HttpMethod::CONNECT ){
-             _requestHandler.handleConnect(_io, *_reader, _connection, [this](bool hijack){
+//             _requestHandler.handleConnect(_io, *_reader, _connection, [this](bool hijack){
+             _requestHandlerUnPtr->handleConnect(_io, *_reader, _connection, [this](bool hijack){
                 this->handleConnectComplete(hijack);
              });
             
@@ -97,7 +102,8 @@ void ConnectionHandler::readMessageHandler(Marvin::ErrorType& err)
             // so we can exit the connection handler
             //
         } else {
-            _requestHandler.handleRequest(_io, *_reader, *_writer, [this](bool good){
+            _requestHandlerUnPtr->handleRequest(_io, *_reader, *_writer, [this](bool good){
+//            _requestHandler.handleRequest(_io, *_reader, *_writer, [this](bool good){
                 LogDebug("");
                 //
                 // @TODO should check here for Connection::close/keep-alive

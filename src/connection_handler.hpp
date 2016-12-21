@@ -11,12 +11,12 @@
 
 #include <stdio.h>
 #include <boost/asio.hpp>
+
 #include "message_reader.hpp"
 #include "message_writer.hpp"
 #include "request_handler.hpp"
 #include "server_connection_manager.hpp"
 
-class ServerConnectionManager;
 
 //
 // If these are defined we use unique_ptr to hold Connection, MessageReader, MessageWriter
@@ -28,10 +28,10 @@ class ConnectionHandler
 {
     public:
         ConnectionHandler(
-            boost::asio::io_service&    io,
-            ServerConnectionManager&    connectionManager,
-            RequestHandlerInterface&    requestHandler,
-            Connection*                 conn
+            boost::asio::io_service&                        io,
+            ServerConnectionManager<ConnectionHandler>&     connectionManager,
+            RequestHandlerInterface*                        requestHandlerPtr,
+            Connection*                                     conn
         );
     
         ~ConnectionHandler();
@@ -47,12 +47,14 @@ class ConnectionHandler
         void handleConnectComplete(bool hijack);
 
     
-        boost::asio::io_service&         _io;
-        Connection*                     _conn;
-        ServerConnectionManager&        _connectionManager;
-        RequestHandlerInterface&        _requestHandler;
+        boost::asio::io_service&                            _io;
+        Connection*                                         _conn;
+        ServerConnectionManager<ConnectionHandler>&         _connectionManager;
+        RequestHandlerInterface*                            _requestHandlerPtr;
+        std::unique_ptr<RequestHandlerInterface>            _requestHandlerUnPtr;
+    
 #ifdef CON_SMARTPOINTER
-        ConnectionPtr                   _connection;
+        ConnectionPtr                                       _connection;
 //        std::unique_ptr<Connection>         _connection;
 #else
         Connection*                         _connection;
