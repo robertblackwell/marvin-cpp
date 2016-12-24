@@ -69,12 +69,14 @@ void
 MessageWriter::asyncWrite(WriteMessageCallbackType cb)
 {
     asyncWriteHeaders([this, cb](Marvin::ErrorType& ec){
-        LogDebug("");
+        LogDebug(" cb: ", (long) &cb);
         // doing a full write of the message
         if( ec ){
+            LogDebug("", ec.value(), ec.category().name(), ec.category().message(ec.value()));
             cb(ec);
         } else {
             asyncWriteFullBody([this, cb](Marvin::ErrorType& ec2){
+                LogDebug(" cb: ", (long) &cb);
                 auto pf = std::bind(cb, ec2);
 //                _io.post(pf);
                 cb(ec2);
@@ -103,13 +105,15 @@ MessageWriter::asyncWriteHeaders(WriteHeadersCallbackType cb)
 //
 void MessageWriter::asyncWriteFullBody(WriteMessageCallbackType cb)
 {
+    LogDebug(" cb: ", (long) &cb);
     // if body not set throw exception
     if( ! _haveContent ){
         throw std::invalid_argument("asyncWriteFullBody:: no content");
     } else if( _bodyContent.size() == 0 ){
         Marvin::ErrorType ee = Marvin::make_error_ok();
-        auto pf = std::bind(cb, ee);
-        _io.post(pf);
+        cb(ee);
+//        auto pf = std::bind(cb, ee);
+//        _io.post(pf);
     } else{
         //
         // PROBLEM - this copies the body - find a better way

@@ -25,7 +25,7 @@ MockReadSocket::~MockReadSocket()
     std::cout << __FUNCTION__ << std::endl;
     free((void*)_rdBuf);
 }
-int MockReadSocket::nativeSocketFD(){ return 9876; };
+long MockReadSocket::nativeSocketFD(){ return 9876; };
 void MockReadSocket::startRead()
 {
         

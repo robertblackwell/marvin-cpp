@@ -14,6 +14,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "request.hpp"
+
 //#include "connection_manager.hpp"
 #include "connection_pool.hpp"
 
@@ -32,11 +33,22 @@ Request::Request(boost::asio::io_service& io): _io(io), MessageWriter(io, true)
     _writeSock = nullptr;
     _oneTripOnly = true;
 }
-
+//--------------------------------------------------------------------------------
+// getter for the response message inside this request
+//--------------------------------------------------------------------------------
 MessageReader& Request::getResponse()
 {
     return *_rdr;
 }
+//--------------------------------------------------------------------------------
+// sets the url for the request, parses the url into components and saves them
+// in particular deduces
+//  -   scheme
+//  -   host - both with and without port appended
+//  -   port
+//  -   path/uri
+//  -   query string
+//--------------------------------------------------------------------------------
 void Request::setUrl(std::string url)
 {
     std::string __url(url);
@@ -96,16 +108,44 @@ void Request::setUrl(std::string url)
     _host = host_s.str();
     _uri = path_s.str();
     _path = path_s.str();
+    setHeader("Host",_host);
+
     setUri(_path);
 }
+//--------------------------------------------------------------------------------
+// set default values for headers if they have not already been set
+// does not know how to handle proxied requests
+// for the moment insists on Connection::close
+//--------------------------------------------------------------------------------
+void Request::defaultHeaders()
+{
 
-//
-// Get connected
-//
+    if( ! hasHeader("Connection") ) setHeader("Connection", "close");
+    if( ! hasHeader("Host") ) setHeader("Host",_host);
+    if( ! hasHeader("User-agent") ) setHeader("User-agent", "Marvin-proxy");
+    if( ! hasHeader("Date") ){
+        time_t rawtime;
+        time (&rawtime);
+        struct tm * timeinfo;
+        char buffer [80];
+        timeinfo = localtime (&rawtime);
+
+        strftime (buffer,80,"%c %Z",timeinfo);
+
+        std::string s(buffer);
+        setHeader("Date",s);
+    }
+}
+//--------------------------------------------------------------------------------
+// go - execute the request
+//--------------------------------------------------------------------------------
 void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
 {
     _goCb = cb;
+    defaultHeaders();
+    
     auto cf = std::bind(&Request::haveConnection, this, std::placeholders::_1, std::placeholders::_2);
+
     asyncGetWriteSocket(cf);
 }
 
@@ -115,7 +155,9 @@ void Request::end()
     cm->releaseConnection(_connection);
     _connection = nullptr;
 }
-
+//--------------------------------------------------------------------------------
+// get a socket from the connection manager for this request
+//--------------------------------------------------------------------------------
 void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 {
 //    ConnectionManager* cm = ConnectionManager::getInstance(_io);
@@ -134,7 +176,7 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
                 scheme,
                 server,
                 service,
-        [this, connectCb](Marvin::ErrorType& ec, Connection* conn){
+        [this, connectCb](Marvin::ErrorType& ec, ConnectionInterface* conn){
             LogDebug("");
             if( ec ){
                 Marvin::ErrorType m_er = ec;
@@ -151,10 +193,10 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 }
 
 
-//
+//--------------------------------------------------------------------------------
 // we are connected start read and write
-//
-void Request::haveConnection(Marvin::ErrorType& err, Connection* conn)
+//--------------------------------------------------------------------------------
+void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
 {
     if( !err ){
     std::cout << "Request::haveConnection:: " << std:: hex << this << " conn: " << conn <<  std::endl;
@@ -172,9 +214,9 @@ void Request::haveConnection(Marvin::ErrorType& err, Connection* conn)
         LogError("");
     }
 }
-//
+//--------------------------------------------------------------------------------
 // write is finished - start read
-//
+//--------------------------------------------------------------------------------
 void Request::fullWriteHandler(Marvin::ErrorType& err)
 {
     LogDebug("");
@@ -190,11 +232,11 @@ void Request::fullWriteHandler(Marvin::ErrorType& err)
     
     });
 }
-//
+//--------------------------------------------------------------------------------
 // the round-trip cycle is complete - write messages - followed by read message
 //
 // now determine whether we need to close the connection.
-//
+//--------------------------------------------------------------------------------
 void Request::readComplete(Marvin::ErrorType& err)
 {
     if( _oneTripOnly){

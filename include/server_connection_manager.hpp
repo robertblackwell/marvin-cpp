@@ -8,7 +8,9 @@
 
 /// Manages open connection handlers so that they may be cleanly stopped when the server
 /// needs to shut down.
-template<class CONNECTION_HANDLER>
+
+/// TConnectionHandler must be an instantiation of the template ConnectionHandler
+template<class TConnectionHandler>
 class ServerConnectionManager
 {
 public:
@@ -18,12 +20,12 @@ public:
     /// Construct a connection manager.
     ServerConnectionManager();
 
-    void registerConnectionHandler(CONNECTION_HANDLER* connHandler);
+    void registerConnectionHandler(TConnectionHandler* connHandler);
  
     /// deregister the specified connection.
-    void deregister(CONNECTION_HANDLER* ch);
+    void deregister(TConnectionHandler* ch);
     /// Stop the specified connection.
-    void stop(CONNECTION_HANDLER* ch);
+    void stop(TConnectionHandler* ch);
 
     /// Stop all connections.
     void stop_all();
@@ -32,12 +34,12 @@ private:
   /// The managed connections.
 #define CM_SMARTPOINTER  
 #ifdef CM_SMARTPOINTER
-  std::map<CONNECTION_HANDLER*, std::unique_ptr<CONNECTION_HANDLER>> _connections;
+  std::map<TConnectionHandler*, std::unique_ptr<TConnectionHandler>> _connections;
 #else
-  std::set<CONNECTION_HANDLER*> _connections;
+  std::set<TConnectionHandler*> _connections;
 #endif
 };
 
-#include "server_connection_manager.cpp"
+#include "server_connection_manager.ipp"
 
 #endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

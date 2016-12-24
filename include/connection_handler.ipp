@@ -6,25 +6,25 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-template<class REQUEST_HANDLER>
-ConnectionHandler<REQUEST_HANDLER>::ConnectionHandler(
+template<class TRequestHandler>
+ConnectionHandler<TRequestHandler>::ConnectionHandler(
     boost::asio::io_service&                                        io,
-    ServerConnectionManager<ConnectionHandler<REQUEST_HANDLER>>&    connectionManager,
-    Connection*                                                     conn):  _io(io), _connectionManager(connectionManager)
+    ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
+    ConnectionInterface*                                            conn):  _io(io), _connectionManager(connectionManager)
 {
-    _requestHandlerPtr  = new REQUEST_HANDLER();
-    _requestHandlerUnPtr = std::unique_ptr<REQUEST_HANDLER>(_requestHandlerPtr);
+    _requestHandlerPtr  = new TRequestHandler();
+    _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
     
 #ifdef CON_SMARTPOINTER
-    _connection = std::shared_ptr<Connection>(conn);
+    _connection = std::shared_ptr<ConnectionInterface>(conn);
 #else
     _connection = conn;
 #endif
 }
 
 
-template<class REQUEST_HANDLER>
-ConnectionHandler<REQUEST_HANDLER>::~ConnectionHandler()
+template<class TRequestHandler>
+ConnectionHandler<TRequestHandler>::~ConnectionHandler()
 {
 #ifdef CON_SMARTPOINTER
 #else
@@ -33,21 +33,21 @@ ConnectionHandler<REQUEST_HANDLER>::~ConnectionHandler()
     LogDebug("");
     
 }
-template<class REQUEST_HANDLER>
-void ConnectionHandler<REQUEST_HANDLER>::close()
+template<class TRequestHandler>
+void ConnectionHandler<TRequestHandler>::close()
 {
     LogDebug(" fd:", nativeSocketFD());
 //    _connection->close();
 }
 
-template<class REQUEST_HANDLER>
-int ConnectionHandler<REQUEST_HANDLER>::nativeSocketFD()
+template<class TRequestHandler>
+int ConnectionHandler<TRequestHandler>::nativeSocketFD()
 {
     return _connection->nativeSocketFD();
 }
 
-template<class REQUEST_HANDLER>
-void ConnectionHandler<REQUEST_HANDLER>::handleConnectComplete(bool hijacked)
+template<class TRequestHandler>
+void ConnectionHandler<TRequestHandler>::handleConnectComplete(bool hijacked)
 {
     // do not want the connction closed unless !hijacked
     LogDebug(" fd:", nativeSocketFD());
@@ -58,15 +58,15 @@ void ConnectionHandler<REQUEST_HANDLER>::handleConnectComplete(bool hijacked)
     _connectionManager.deregister(this); // should be maybe called deregister
 }
 
-template<class REQUEST_HANDLER>
-void ConnectionHandler<REQUEST_HANDLER>::requestComplete()
+template<class TRequestHandler>
+void ConnectionHandler<TRequestHandler>::requestComplete()
 {
     // a stub for future expansionto have a handler handle
     // multiple requests from the same connection
 }
 
-template<class REQUEST_HANDLER>
-void ConnectionHandler<REQUEST_HANDLER>::handlerComplete()
+template<class TRequestHandler>
+void ConnectionHandler<TRequestHandler>::handlerComplete()
 {
     LogDebug(" fd:", nativeSocketFD());
     _connection->close();
@@ -78,8 +78,8 @@ void ConnectionHandler<REQUEST_HANDLER>::handlerComplete()
     
 }
 
-template<class REQUEST_HANDLER>
-void ConnectionHandler<REQUEST_HANDLER>::readMessageHandler(Marvin::ErrorType& err)
+template<class TRequestHandler>
+void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType& err)
 {
     LogDebug(" fd:", nativeSocketFD());
     if( err ){
@@ -117,15 +117,15 @@ void ConnectionHandler<REQUEST_HANDLER>::readMessageHandler(Marvin::ErrorType& e
 //
 // Gets the connection handler going
 //
-template<class REQUEST_HANDLER>
-void ConnectionHandler<REQUEST_HANDLER>::serve()
+template<class TRequestHandler>
+void ConnectionHandler<TRequestHandler>::serve()
 {
     LogDebug(" fd:", nativeSocketFD());
     // set up reader and writer
 #ifdef CON_SMARTPOINTER
-    Connection* cptr = _connection.get();
+    ConnectionInterface* cptr = _connection.get();
 #else
-    Connection* cptr = _connection;
+    ConnectionInterface* cptr = _connection;
 #endif
     
 #ifdef CH_SMARTPOINTER

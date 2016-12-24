@@ -14,20 +14,19 @@ class RequestHandlerInterface
 {
 public:
     //
-    // This method is called on a CONNECT request to offer the opportunity to take over "hijack"
+    // This method is called on a CONNECT request to offer the opportunity to take over, or "hijack",
     // the connection for use that is independent of the server.
     //
     // By the time the method returns the parameters must be saved if they are required with
     // the following limitations:
     //
     //      io      -   will survive the scope of the call and can be used in other async operations
-    //      req     -   will NOT survive beyond the call so dont after the method returns, copy and data
-    //                  required
-    //      connPtr -   will NOT survive the call unless you copy it. Its a smart pointer
+    //      req     -   will NOT survive beyond the call so dont use after the method returns, copy if required
+    //      connPtr -   will NOT survive the call unless you copy it/save it. Its a smart pointer
     //
     //      if you want to take over the connection and not have the caller close the connection
     //      you must pass TRUE for (hijacked==true) to the callback. Passing false will
-    //      result in the caller (server.cpp) closing the connection
+    //      result in the caller (server.cpp) closing the connection as soon as this method returns
     //
     //
     virtual void handleConnect(

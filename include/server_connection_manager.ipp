@@ -3,37 +3,37 @@
 /*#include "connection_handler.hpp"
 #include "server_connection_manager.hpp"
 */
-template<class CONNECTION_HANDLER>
-ServerConnectionManager<CONNECTION_HANDLER>::ServerConnectionManager()
+template<class TConnectionHandler>
+ServerConnectionManager<TConnectionHandler>::ServerConnectionManager()
 {
 }
 
-template<class CONNECTION_HANDLER>
-void ServerConnectionManager<CONNECTION_HANDLER>::registerConnectionHandler(CONNECTION_HANDLER* connHandler)
+template<class TConnectionHandler>
+void ServerConnectionManager<TConnectionHandler>::registerConnectionHandler(TConnectionHandler* connHandler)
 {
 //    std::unique_ptr<ConnectionHandler> hp = std::unique_ptr<ConnectionHandler>(connHandler);
 #ifdef CM_SMARTPOINTER
-    _connections[connHandler] = std::unique_ptr<CONNECTION_HANDLER>(connHandler);
+    _connections[connHandler] = std::unique_ptr<TConnectionHandler>(connHandler);
 #else
     _connections.insert(connHandler);
 #endif
 }
 
-template<class CONNECTION_HANDLER>
-void ServerConnectionManager<CONNECTION_HANDLER>::stop(CONNECTION_HANDLER* ch)
+template<class TConnectionHandler>
+void ServerConnectionManager<TConnectionHandler>::stop(TConnectionHandler* ch)
 {
     LogDebug("");
     _connections.erase(ch);
 }
 
-template<class CONNECTION_HANDLER>
-void ServerConnectionManager<CONNECTION_HANDLER>::deregister(CONNECTION_HANDLER* ch)
+template<class TConnectionHandler>
+void ServerConnectionManager<TConnectionHandler>::deregister(TConnectionHandler* ch)
 {
     LogDebug("");
     _connections.erase(ch);
 }
-template<class CONNECTION_HANDLER>
-void ServerConnectionManager<CONNECTION_HANDLER>::stop_all()
+template<class TConnectionHandler>
+void ServerConnectionManager<TConnectionHandler>::stop_all()
 {
 //    for (auto c: _connections)
 //        c->stop();

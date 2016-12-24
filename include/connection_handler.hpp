@@ -14,6 +14,7 @@
 
 #include "message_reader.hpp"
 #include "message_writer.hpp"
+#include "connection_interface.hpp"
 #include "server_connection_manager.hpp"
 
 
@@ -22,14 +23,14 @@
 //
 #define CH_SMARTPOINTER
 #define CON_SMARTPOINTER
-
-template<class REQUEST_HANDLER> class ConnectionHandler
+/// TRequestHandler must conform to RequestHandlerInterface
+template<class TRequestHandler> class ConnectionHandler
 {
     public:
         ConnectionHandler(
             boost::asio::io_service&                        io,
-            ServerConnectionManager<ConnectionHandler<REQUEST_HANDLER>>&     connectionManager,
-            Connection*                                     conn
+            ServerConnectionManager<ConnectionHandler<TRequestHandler>>&     connectionManager,
+            ConnectionInterface*                                     conn
         );
     
         ~ConnectionHandler();
@@ -46,16 +47,16 @@ template<class REQUEST_HANDLER> class ConnectionHandler
 
     
         boost::asio::io_service&                            _io;
-        Connection*                                         _conn;
+        ConnectionInterface*                                _conn;
         ServerConnectionManager<ConnectionHandler>&         _connectionManager;
-        REQUEST_HANDLER*                                    _requestHandlerPtr;
-        std::unique_ptr<REQUEST_HANDLER>                    _requestHandlerUnPtr;
+        TRequestHandler*                                    _requestHandlerPtr;
+        std::unique_ptr<TRequestHandler>                    _requestHandlerUnPtr;
     
 #ifdef CON_SMARTPOINTER
         ConnectionPtr                                       _connection;
 //        std::unique_ptr<Connection>         _connection;
 #else
-        Connection*                         _connection;
+        ConnectionInterface*                         _connection;
 #endif
 
 #ifdef CH_SMARTPOINTER
@@ -67,6 +68,6 @@ template<class REQUEST_HANDLER> class ConnectionHandler
 #endif
 };
 
-#include "connection_handler.cpp"
+#include "connection_handler.ipp"
 
 #endif /* ConnectionHandler_hpp */

@@ -21,11 +21,12 @@
 #include "message_writer.hpp"
 */
 
-template<class H>
-Server<H>::Server()
+template<class TRequestHandler>
+Server<TRequestHandler>::Server()
   : _io(1),
     _signals(_io),
     _acceptor(_io),
+    _serverStrand(_io),
     _connectionManager()
 {
     // Register to handle the signals that indicate when the Server should exit.
@@ -44,46 +45,39 @@ Server<H>::Server()
     _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     _acceptor.bind(endpoint);
 }
-
-/*
-template<class H>
-Server<H>::Server(RequestHandlerInterface& handler)
-  : _io(1),
-    _signals(_io),
-    _acceptor(_io),
-    _connectionManager(),
-    _requestHandler(handler)
+//-------------------------------------------------------------------------------------
+// postOnStrand - wraps a parameterless function in _strand and posts to _io
+//-------------------------------------------------------------------------------------
+template<class TRequestHandler> void Server<TRequestHandler>::postOnStrand(std::function<void()> fn)
 {
-    // Register to handle the signals that indicate when the Server should exit.
-    // It is safe to register for the same signal multiple times in a program,
-    // provided all registration for the specified signal is made through Asio.
-    _signals.add(SIGINT);
-    _signals.add(SIGTERM);
-    #if defined(SIGQUIT)
-    _signals.add(SIGQUIT);
-    #endif // defined(SIGQUIT)
-
-    waitForStop();
-    
-    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), 9991);
-    _acceptor.open(endpoint.protocol());
-    _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-    _acceptor.bind(endpoint);
+    auto wrappedFn = _serverStrand.wrap(fn);
+    _io.post(wrappedFn);
 }
-*/
-template<class H>
-void Server<H>::listen(){
+//-------------------------------------------------------------------------------------
+// listen - starts the accept cycle
+//-------------------------------------------------------------------------------------
+template<class TRequestHandler> void Server<TRequestHandler>::listen()
+{
     _acceptor.listen();
-    startAccept();
+    
+    // start the accept process on the _serverStrand
+    auto hf = std::bind(&Server<TRequestHandler>::startAccept, this);
+    postOnStrand(hf);
     _io.run();
     
 }
-template<class H>
-void Server<H>::readMessageHandler(Marvin::ErrorType& err)
+//-------------------------------------------------------------------------------------
+//
+//-------------------------------------------------------------------------------------
+template<class TRequestHandler> void Server<TRequestHandler>::readMessageHandler(Marvin::ErrorType& err)
 {
 }
-template<class H>
-void Server<H>::handleAccept(ConnectionHandler<H>* connHandler, const boost::system::error_code& err)
+//-------------------------------------------------------------------------------------
+// handleAccept - called on _strand to handle a new client connection
+//-------------------------------------------------------------------------------------
+template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
+                                                                ConnectionHandler<TRequestHandler>* connHandler,
+                                                                const boost::system::error_code& err)
 {
     if (! _acceptor.is_open()){
         delete connHandler;
@@ -94,7 +88,13 @@ void Server<H>::handleAccept(ConnectionHandler<H>* connHandler, const boost::sys
         LogDebug("got a connection", connHandler->nativeSocketFD());
         
         _connectionManager.registerConnectionHandler(connHandler);
-        connHandler->serve();
+        //
+        // at this point we are running on _serveStrand start the connectionHandler with a post to
+        // liberate it from the strand
+        //
+        auto hf = std::bind(&ConnectionHandler<TRequestHandler>::serve, connHandler);
+        _io.post(hf);
+//        _io.post(connHandler->serve());
     }else{
         LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         delete connHandler;
@@ -102,33 +102,40 @@ void Server<H>::handleAccept(ConnectionHandler<H>* connHandler, const boost::sys
     startAccept();
     
 }
-template<class H>
-void Server<H>::startAccept()
+//-------------------------------------------------------------------------------------
+// startAccept
+//-------------------------------------------------------------------------------------
+template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
 {
-    Connection* conptr = new Connection(_io);
+    ConnectionInterface* conptr = new HttpConnection(_io);
     
-    RequestHandlerInterface* hi = new H();
+    RequestHandlerInterface* hi = new TRequestHandler();
     
-    ConnectionHandler<H>* connectionHandler =
-        new ConnectionHandler<H>(_io, _connectionManager, conptr);
-        // new ConnectionHandler(_io, _connectionManager, _requestHandler, conptr);
-    
-    boost::asio::ip::tcp::socket& sock_ref = conptr->getSocketRef();
+    ConnectionHandler<TRequestHandler>* connectionHandler =
+        new ConnectionHandler<TRequestHandler>(_io, _connectionManager, conptr);
 
-    auto hf = std::bind(&Server::handleAccept, this, connectionHandler, std::placeholders::_1);
-    _acceptor.async_accept(sock_ref, hf);
-}
-template<class H>
-void Server<H>::waitForStop()
-{
-  _signals.async_wait([this](boost::system::error_code /*ec*/, int /*signo*/)
-      {
-        // The Server is stopped by cancelling all outstanding asynchronous
-        // operations. Once all operations have finished the io_context::run()
-        // call will exit.
-        _acceptor.close();
-//        connection_manager_.stop_all();
-      });
+    auto hf = _serverStrand.wrap(
+                    std::bind(&Server::handleAccept, this, connectionHandler, std::placeholders::_1)
+                    );
+    conptr->asyncAccept(_acceptor, hf);
 }
 
+//-------------------------------------------------------------------------------------
+//
+//-------------------------------------------------------------------------------------
+template<class TRequestHandler> void Server<TRequestHandler>::waitForStop()
+{
+    LogDebug("");
+    auto hf = _serverStrand.wrap(
+                    std::bind(&Server::doStop, this, std::placeholders::_1)
+                    );
+
+  _signals.async_wait(hf);
+}
+template<class TRequestHandler> void Server<TRequestHandler>::doStop(const Marvin::ErrorType& err)
+{
+    LogDebug("");
+    _acceptor.close();
+//  connection_manager_.stop_all();
+}
 

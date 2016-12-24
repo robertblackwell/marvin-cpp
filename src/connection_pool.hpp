@@ -13,7 +13,7 @@
 #include <vector>
 #include <map>
 #include <set>
-#include "connection.hpp"
+#include "connection_interface.hpp"
 #include "connection_pool.hpp"
 
 //---------------------------------------------------------------------------------------------------
@@ -22,16 +22,16 @@
 class InUseConnectionsType
 {
     private:
-    std::map<Connection*, Connection*>  _connections;
+    std::map<ConnectionInterface*, ConnectionInterface*>  _connections;
     
     public:
     
     InUseConnectionsType();
     std::size_t size();
     
-    void remove(Connection* aConn);
+    void remove(ConnectionInterface* aConn);
     
-    void add(Connection* conn);
+    void add(ConnectionInterface* conn);
 };
 //---------------------------------------------------------------------------------------------------
 // ConnectionRequest - Holds a pending request for a connection
@@ -150,7 +150,7 @@ public:
         ConnectCallbackType cb
     );
     
-    void releaseConnection(Connection* conn);
+    void releaseConnection(ConnectionInterface* conn);
 
 private:
 
@@ -161,7 +161,7 @@ private:
                 ConnectCallbackType cb
     );
 
-    void postSuccess(ConnectCallbackType cb, Connection* conn);
+    void postSuccess(ConnectCallbackType cb, ConnectionInterface* conn);
     void postFail(ConnectCallbackType cb, Marvin::ErrorType& ec);
     
     boost::asio::io_service&        io;

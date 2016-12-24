@@ -13,7 +13,7 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "connection.hpp"
+#include "connection_interface.hpp"
 
 
 //---------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ InUseConnectionsType::size()
 }
 
 void
-InUseConnectionsType::remove(Connection* aConn)
+InUseConnectionsType::remove(ConnectionInterface* aConn)
 {
     if( _connections.find(aConn) == _connections.cend() ) { assert(false);}
     _connections.erase(aConn);
@@ -37,7 +37,7 @@ InUseConnectionsType::remove(Connection* aConn)
 }
 
 void
-InUseConnectionsType::add(Connection* conn)
+InUseConnectionsType::add(ConnectionInterface* conn)
 {
     _connections[conn] = conn;
 }
@@ -184,14 +184,14 @@ void ConnectionPool::createNewConnection(
             //                                                service,
             //                                                tcp::resolver::query::canonical_name);
     
-    Connection* conn = new Connection(io, scheme, server, service);
+    ConnectionInterface* conn = connectionFactory(io, scheme, server, service);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
     _inUse.add(conn);
     //
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, Connection* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ConnectionInterface* conn){
         if( !ec ){
             postSuccess(cb, conn);
         }else{
@@ -203,7 +203,7 @@ void ConnectionPool::createNewConnection(
 //
 //so far all we implement is a limit on the number of connections
 //
-void ConnectionPool::releaseConnection(Connection* conn)
+void ConnectionPool::releaseConnection(ConnectionInterface* conn)
 {
     LogDebug("");
     _inUse.remove(conn);
@@ -251,7 +251,7 @@ void ConnectionPool::releaseConnection(Connection* conn)
     }
 #endif
 }
-void ConnectionPool::postSuccess(ConnectCallbackType cb, Connection* conn)
+void ConnectionPool::postSuccess(ConnectCallbackType cb, ConnectionInterface* conn)
 {
     Marvin::ErrorType merr = Marvin::make_error_ok();
     auto pf = std::bind(cb, merr, conn);

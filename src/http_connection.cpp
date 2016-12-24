@@ -12,17 +12,20 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <cassert>
+
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "connection.hpp"
-#include <cassert>
+#include "connection_interface.hpp"
+#include "http_connection.hpp"
 
 using boost::asio::ip::tcp;
 using boost::bind;
@@ -36,7 +39,7 @@ using boost::asio::io_service;
  *  @param {string}     scheme      -   "http" or "https"
  *  @param {string}     server      -   domain string
  */
-Connection::Connection(
+HttpConnection::HttpConnection(
             boost::asio::io_service& io_service,
             const std::string& scheme,
             const std::string& server,
@@ -51,7 +54,7 @@ Connection::Connection(
             _port(port)
 {
 }
-Connection::Connection(
+HttpConnection::HttpConnection(
     boost::asio::io_service& io_service
     ):   _io(io_service),
          _resolver(io_service), // dont really need this
@@ -59,29 +62,34 @@ Connection::Connection(
 
 {
 }
-Connection::~Connection()
+HttpConnection::~HttpConnection()
 {
     LogDebug("");
 }
-std::string Connection::scheme(){return _scheme;}
-std::string Connection::server(){return _server;}
-std::string Connection::service(){return _port;}
+std::string HttpConnection::scheme(){return _scheme;}
+std::string HttpConnection::server(){return _server;}
+std::string HttpConnection::service(){return _port;}
 
-void Connection::close()
+void HttpConnection::close()
 {
     LogDebug(" fd: ", nativeSocketFD());
     _boost_socket.cancel();
     _boost_socket.close();
 }
-boost::asio::ip::tcp::socket& Connection::getSocketRef()
-{
-    return _boost_socket;
-}
-int Connection::nativeSocketFD()
+
+long HttpConnection::nativeSocketFD()
 {
     return _boost_socket.native_handle();
 }
-void Connection::asyncConnect(ConnectCallbackType final_cb)
+void HttpConnection::asyncAccept(
+    boost::asio::ip::tcp::acceptor&                     acceptor,
+    std::function<void(const boost::system::error_code& err)> cb
+)
+{
+    acceptor.async_accept(_boost_socket, cb);
+}
+
+void HttpConnection::asyncConnect(ConnectCallbackType final_cb)
 {
     tcp::resolver::query query(this->_server, _port);
     _finalCb = final_cb; // save the final callback
@@ -95,14 +103,14 @@ void Connection::asyncConnect(ConnectCallbackType final_cb)
             completeWithError(me);
         } else {
             tcp::endpoint endpoint = *endpoint_iterator;
-            auto connect_cb = bind(&Connection::handle_connect, this, _1, ++endpoint_iterator);
+            auto connect_cb = bind(&HttpConnection::handle_connect, this, _1, ++endpoint_iterator);
             _boost_socket.async_connect(endpoint, connect_cb);
             LogDebug("leaving");
         }
     });
 }
 
-void Connection::handle_resolve(
+void HttpConnection::handle_resolve(
                     const error_code& err,
                     tcp::resolver::iterator endpoint_iterator)
 {
@@ -116,14 +124,14 @@ void Connection::handle_resolve(
     }else{
         LogDebug("resolve OK","so now connect");
         tcp::endpoint endpoint = *endpoint_iterator;
-        auto connect_cb = bind(&Connection::handle_connect, this, _1, ++endpoint_iterator);
+        auto connect_cb = bind(&HttpConnection::handle_connect, this, _1, ++endpoint_iterator);
         _boost_socket.async_connect(endpoint, connect_cb);
         LogDebug("leaving");
     }
 }
 
 
-void Connection::handle_connect(
+void HttpConnection::handle_connect(
                     const boost::system::error_code& err,
                     tcp::resolver::iterator endpoint_iterator)
 {
@@ -139,7 +147,7 @@ void Connection::handle_connect(
         LogDebug("try next iterator");
         _boost_socket.close();
         tcp::endpoint endpoint = *endpoint_iterator;
-        auto handler = boost::bind(&Connection::handle_connect, this, _1, ++endpoint_iterator);
+        auto handler = boost::bind(&HttpConnection::handle_connect, this, _1, ++endpoint_iterator);
         _boost_socket.async_connect(endpoint, handler);
     }
     else
@@ -150,11 +158,11 @@ void Connection::handle_connect(
     }
     LogDebug("leaving");
 }
-void Connection::completeWithError(Marvin::ErrorType& ec)
+void HttpConnection::completeWithError(Marvin::ErrorType& ec)
 {
     _finalCb(ec, nullptr);
 }
-void Connection::completeWithSuccess()
+void HttpConnection::completeWithSuccess()
 {
     Marvin::ErrorType err = Marvin::make_error_ok();
     _finalCb(err, this);
@@ -162,7 +170,7 @@ void Connection::completeWithSuccess()
 /**
  * read
  */
-void Connection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
+void HttpConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
 {
     // if a read is active - throw an exception
     //    async_read(this->socket_, buf, )
@@ -180,16 +188,16 @@ void Connection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
 /**
  * write
  */
-void Connection::asyncWrite(FBuffer& buffer, AsyncWriteCallbackType cb)
+void HttpConnection::asyncWrite(FBuffer& buffer, AsyncWriteCallbackType cb)
 {
     LogDebug("buffer size: ");
-//    auto wcb2 = boost::bind(&Connection::handle_write_request,this,_1, _2);
+//    auto wcb2 = boost::bind(&HttpConnection::handle_write_request,this,_1, _2);
     /// use the boost function that ONLY returns when the write is DONE
     char* x;
     assert(false);
 //    boost::asio::async_write(_boost_socket, boost::asio::buffer(x, 0), cb);
 }
-void Connection::asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback cb)
+void HttpConnection::asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback cb)
 {
     LogDebug("");
     boost::asio::async_write(
@@ -211,9 +219,5 @@ void Connection::asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallb
     });
 }
 
-void close()
-{
-    
-}
 
 

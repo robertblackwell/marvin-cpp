@@ -10,14 +10,18 @@
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
 #include "request_handler_interface.hpp"
-#include "connection.hpp"
+#include "connection_interface.hpp"
+#include "http_connection.hpp"
+#include "tls_connection.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"
 #include "rb_logger.hpp"
 #include "connection_handler.hpp"
 
 /// The top-level class of the HTTP server.
-template<class H> class Server
+
+/// TRequestHandler must conform to RequestHandlerInterface
+template<class TRequestHandler> class Server
 {
 public:
     Server(const Server&) = delete;
@@ -32,17 +36,19 @@ public:
 private:
     /// Perform an asynchronous accept operation.
     void startAccept();
-    void handleAccept(ConnectionHandler<H>* handler, const boost::system::error_code& err);
+    void handleAccept(ConnectionHandler<TRequestHandler>* handler, const boost::system::error_code& err);
     void readMessageHandler(Marvin::ErrorType& err);
     
-    /// Wait for a request to stop the server.
+    void postOnStrand(std::function<void()> fn);
     void waitForStop();
+    void doStop(const Marvin::ErrorType& err);
 
-    boost::asio::io_service                     _io;
-    boost::asio::signal_set                     _signals;
-    boost::asio::ip::tcp::acceptor              _acceptor;
-    ServerConnectionManager<ConnectionHandler<H>>  _connectionManager;
+    boost::asio::io_service                         _io;
+    boost::asio::strand                             _serverStrand;
+    boost::asio::signal_set                         _signals;
+    boost::asio::ip::tcp::acceptor                  _acceptor;
+    ServerConnectionManager<ConnectionHandler<TRequestHandler>>   _connectionManager;
 
 };
-#include "server.cpp"
+#include "server.ipp"
 #endif // HTTP_SERVER_HPP

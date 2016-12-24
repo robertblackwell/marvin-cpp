@@ -11,12 +11,13 @@
 #include "marvin_error.hpp"
 #include "buffer.hpp"
 
-class Connection;
+
+class ConnectionInterface;
 
 typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallbackType;
 typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncWriteCallbackType;
 
-typedef std::function<void(Marvin::ErrorType& err, Connection* conn)>  ConnectCallbackType;
+typedef std::function<void(Marvin::ErrorType& err, ConnectionInterface* conn)>  ConnectCallbackType;
 
 typedef std::function<void(Marvin::ErrorType& err)>                    WriteHeadersCallbackType;
 
