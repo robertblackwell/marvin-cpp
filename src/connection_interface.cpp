@@ -19,9 +19,9 @@ ConnectionInterface* connectionFactory(
             const std::string& port
 ){
     ConnectionInterface* ptr;
-    if( scheme == "http" ){
+    if( boost::to_lower_copy(scheme) == "http" ){
         ptr = new HttpConnection(io_service, scheme, server, port);
-    }else if( scheme == "https" ){
+    }else if( boost::to_lower_copy(scheme) == "https" ){
         ptr = new TLSConnection(io_service, scheme, server, port);
     } else{
         assert(false);
@@ -42,3 +42,4 @@ ConnectionInterface* connectionFactory(
     }
     return ptr;
 }
+ConnectionInterface::~ConnectionInterface(){}

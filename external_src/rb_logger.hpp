@@ -45,6 +45,7 @@ enum class LogLevel {
 std::string LogLevelText(LogLevelType level);
 
 class Logger{
+    std::mutex _loggerMutex;
 public:
     Logger(std::ostream& os = std::cerr): __outStream(os){
     }
@@ -68,6 +69,8 @@ public:
     {
         std::ostringstream os;
         if( levelIsActive(level, threshold) ){
+            std::lock_guard<std::mutex> lg(_loggerMutex);
+            
             os << LogLevelText(level) <<"|";
             auto tmp2 = boost::filesystem::path(file_name);
             auto tmp3 = tmp2.filename();

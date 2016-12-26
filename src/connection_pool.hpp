@@ -153,7 +153,18 @@ public:
     void releaseConnection(ConnectionInterface* conn);
 
 private:
+    
+    // this is the real interface - but is wrapped in a strand by the public call
+    void __asyncGetConnection(
+        std::string scheme,
+        std::string server,
+        std::string port,
+        ConnectCallbackType cb
+    );
 
+    // this is the real interface - but is wrapped in a strand by the public call
+    void __releaseConnection(ConnectionInterface* conn);
+    
     void createNewConnection(
                 std::string scheme, // http: or https:
                 std::string server, // also called hostname
@@ -170,6 +181,9 @@ private:
     std::size_t                     _maxConnections;
     InUseConnectionsType            _inUse;
     WaitingRequestsType             _waitingRequests;
+    
+    // a srand on which to execute all the pools functions to prevent thread contention
+    boost::asio::strand             _poolStrand;
 
 };
 

@@ -66,6 +66,10 @@
  *      what the MessageReader passes up to the caller via the read callback functions.
  *  
  */
+class MessageReader;
+typedef std::shared_ptr<MessageReader> MessageReaderSPtr;
+typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
+
 class MessageReader : public Parser, public MessageBase
 {
 public:

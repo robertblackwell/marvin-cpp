@@ -15,6 +15,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "request.hpp"
 
+//#include "connection_manager.hpp"
+#include "connection_pool.hpp"
+
 using boost::asio::ip::tcp;
 using boost::system::error_code;
 using boost::asio::io_service;
@@ -31,22 +34,22 @@ Request::Request(boost::asio::io_service& io): _io(io), MessageWriter(io, true)
     _writeSock = nullptr;
     _oneTripOnly = true;
 }
-/*!--------------------------------------------------------------------------------
-* getter for the response message inside this request
-*--------------------------------------------------------------------------------*/
+//--------------------------------------------------------------------------------
+// getter for the response message inside this request
+//--------------------------------------------------------------------------------
 MessageReader& Request::getResponse()
 {
     return *_rdr;
 }
-/*!--------------------------------------------------------------------------------
-* sets the url for the request, parses the url into components and saves them
-* in particular deduces
-*  -   scheme
-*  -   host - both with and without port appended
-*  -   port
-*  -   path/uri
-*  -   query string
-*--------------------------------------------------------------------------------*/
+//--------------------------------------------------------------------------------
+// sets the url for the request, parses the url into components and saves them
+// in particular deduces
+//  -   scheme
+//  -   host - both with and without port appended
+//  -   port
+//  -   path/uri
+//  -   query string
+//--------------------------------------------------------------------------------
 void Request::setUrl(std::string url)
 {
     std::string __url(url);
@@ -145,30 +148,20 @@ void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
     
     auto cf = std::bind(&Request::haveConnection, this, std::placeholders::_1, std::placeholders::_2);
 
-//    asyncGetWriteSocket(cf);
-
-    ConnectionInterface* conn = connectionFactory(_io, _scheme, _server, _port);
-    //
-    // a bunch of logic here about find existing, add to connection table etc
-    //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ConnectionInterface* conn){
-        LogInfo(" conn", (long)conn);
-        this->haveConnection(ec, conn);
-    });
-
+    asyncGetWriteSocket(cf);
 }
 
 void Request::end()
 {
-//    _connection = nullptr;
+    ConnectionPool* cm = ConnectionPool::getInstance(_io);
+    cm->releaseConnection(_connection);
+    _connection = nullptr;
 }
 //--------------------------------------------------------------------------------
 // get a socket from the connection manager for this request
 //--------------------------------------------------------------------------------
 void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 {
-#ifdef SSSS
-
 //    ConnectionManager* cm = ConnectionManager::getInstance(_io);
     ConnectionPool* cm = ConnectionPool::getInstance(_io);
     if( _writeSock == nullptr){
@@ -200,7 +193,6 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
     }else{
         
     }
-#endif
 }
 
 
@@ -225,7 +217,6 @@ void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
         this->asyncWrite(cf);
     }else{
         LogError("");
-        assert(false);
     }
 }
 //--------------------------------------------------------------------------------
@@ -239,6 +230,9 @@ void Request::fullWriteHandler(Marvin::ErrorType& err)
     
     _rdr->readMessage([this](Marvin::ErrorType& err){
         LogInfo("readMessage callback");
+        ConnectionPool* cm = ConnectionPool::getInstance(_io);
+        cm->releaseConnection(_connection);
+        _connection = nullptr;
         auto pf = std::bind(this->_goCb, err);
         _io.post(pf);
     
@@ -254,6 +248,9 @@ void Request::readComplete(Marvin::ErrorType& err)
     LogInfo(" oneTripOnly", _oneTripOnly);
     LogInfo("", (long)this, " connection: ", (long)_connection, " FD:",_connection->nativeSocketFD());
     if( _oneTripOnly){
+        ConnectionPool* cm = ConnectionPool::getInstance(_io);
+        cm->releaseConnection(_connection);
+        _connection = nullptr;
         auto pf = std::bind(this->_goCb, err);
         _io.post(pf);
     }

@@ -23,7 +23,7 @@
 //
 #define CH_SMARTPOINTER
 #define CON_SMARTPOINTER
-/// TRequestHandler must conform to RequestHandlerInterface
+/// TRequestHandler must conform to RequestHandlerBase
 template<class TRequestHandler> class ConnectionHandler
 {
     public:
@@ -37,34 +37,35 @@ template<class TRequestHandler> class ConnectionHandler
     
         void serve();
         void close();
-        int nativeSocketFD();
+        long nativeSocketFD();
     private:
     
+        void serveAnother();
         void readMessageHandler(Marvin::ErrorType& err);
-        void requestComplete();
-        void handlerComplete();
-        void handleConnectComplete(bool hijack);
+        void requestComplete(Marvin::ErrorType& err, bool keepAlive);
+        void handlerComplete(Marvin::ErrorType& err);
+        void handleConnectComplete(Marvin::ErrorType& err, bool hijack);
 
     
         boost::asio::io_service&                            _io;
+//        boost::asio::strand&                                _serverStrand;
         ConnectionInterface*                                _conn;
         ServerConnectionManager<ConnectionHandler>&         _connectionManager;
         TRequestHandler*                                    _requestHandlerPtr;
         std::unique_ptr<TRequestHandler>                    _requestHandlerUnPtr;
     
 #ifdef CON_SMARTPOINTER
-        ConnectionPtr                                       _connection;
-//        std::unique_ptr<Connection>         _connection;
+        ConnectionInterfaceSPtr                             _connection;
 #else
         ConnectionInterface*                         _connection;
 #endif
 
 #ifdef CH_SMARTPOINTER
-        std::unique_ptr<MessageReader>      _reader;
-        std::unique_ptr<MessageWriter>      _writer;
+        MessageReaderSPtr   _reader;
+        MessageWriterSPtr   _writer;
 #else
-        MessageReader*                      _reader;
-        MessageWriter*                      _writer;
+        MessageReader*      _reader;
+        MessageWriter*      _writer;
 #endif
 };
 

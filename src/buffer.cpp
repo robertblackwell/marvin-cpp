@@ -139,14 +139,13 @@ FBuffer::FBuffer(MBuffer* mbuf)
 FBuffer::~FBuffer()
 {
     delete _container;
-    std::cout << "here" << std::endl;
 }
 
 // copies these bytes into the FBuffer so that they are continguous with
 // (that is added to) the last fragement
 void FBuffer::copyIn(void* bytes, std::size_t len)
 {
-    assert((this != nullptr));
+//    assert((this != nullptr));
     assert((_container != nullptr));
     void* na = _container->nextAvailable();
     _container->append(bytes, len);
@@ -161,8 +160,8 @@ void FBuffer::copyIn(void* bytes, std::size_t len)
 //
 void FBuffer::addFragment(void* bytes, std::size_t len)
 {
-    char* containerPtr = (char*)_container->data();
-    char* containerEndPtr = ((char*)_container->data()) + _container->capacity();
+//    char* containerPtr = (char*)_container->data();
+//    char* containerEndPtr = ((char*)_container->data()) + _container->capacity();
     // make sure fragment is inside container
     bool startOK = _container->contains((char*)bytes);
     bool endOK   = _container->contains((char*)bytes + len) ;
@@ -192,8 +191,8 @@ std::ostream &operator<< (std::ostream &os, FBuffer const &fb)
 {
     for(auto const& frag: fb._fragments) {
         Fragment fg = frag;
-        char* st = (char*)fg.startPointer();
-        std::size_t  sz = fg.size();
+//        char* st = (char*)fg.startPointer();
+//        std::size_t  sz = fg.size();
         std::string s((char*)fg.startPointer(), fg.size());
         os << std::string((char*)fg.startPointer(), fg.size());
     }

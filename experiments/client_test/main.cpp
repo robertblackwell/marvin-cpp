@@ -11,8 +11,11 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
+//#include <boost/asio.hpp>
+//#include <boost/bind.hpp>
+
+#include "boost_stuff.hpp"
+
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "request.hpp"

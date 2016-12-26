@@ -23,8 +23,6 @@ using namespace boost::asio;
 using ip::tcp;
 using system::error_code;
 
-class ConnectionInterface;
-typedef std::shared_ptr<ConnectionInterface> ConnectionPtr;
 
 ConnectionInterface* connectionFactory(
             boost::asio::io_service& io_service,
@@ -40,6 +38,13 @@ ConnectionInterface* connectionFactory(
 //--------------------------------------------------------------------------------------------------
 // Interface to specify the interface to sockets that do SSL/TLS and sockets that do NOT
 //--------------------------------------------------------------------------------------------------
+class ConnectionInterface;
+typedef std::shared_ptr<ConnectionInterface> ConnectionInterfaceSPtr;
+typedef std::unique_ptr<ConnectionInterface> ConnectionInterfaceUPtr;
+
+//typedef std::shared_ptr<ConnectionInterface> ConnectionPtr;
+
+
 class ConnectionInterface : public ReadSocketInterface, public WriteSocketInterface
 {
     public:
@@ -57,8 +62,10 @@ class ConnectionInterface : public ReadSocketInterface, public WriteSocketInterf
         boost::asio::io_service& io_service
     );
     
-    virtual ~ConnectionInterface();
+    
 #endif
+    virtual ~ConnectionInterface()=0;
+
     virtual void asyncConnect(ConnectCallbackType cb) = 0;
     virtual void asyncAccept(
         boost::asio::ip::tcp::acceptor& acceptor,
@@ -69,6 +76,7 @@ class ConnectionInterface : public ReadSocketInterface, public WriteSocketInterf
     virtual void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
 
     virtual void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb) = 0;
+    virtual void shutdown() = 0;
     virtual void close() = 0;
     
     virtual long nativeSocketFD() = 0;

@@ -89,7 +89,7 @@ public:
     std::string
     getHeader(std::string key);
 
-    std::map<std::string, std::string>
+    std::map<std::string, std::string>&
     getHeaders();
     
     std::string

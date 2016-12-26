@@ -82,11 +82,14 @@ inline bool is_uint(const char *&s, const char *e, uint32_t max) {
     s=t;
     return true;
 }
-
-
+#pragma clang diagnostic  push
+#pragma clang diagnostic ignored "-Wall"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-function"
 inline bool is_pchars(const char *s, const char *e) {
     return is_chars(s, e, 0x07);
 }
+#pragma clang diagnostic  pop
 
 
 inline char get_hex_digit(char c) {

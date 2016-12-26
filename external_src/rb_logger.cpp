@@ -40,12 +40,12 @@ void RBLogging::Logger::logWithFormat(
 {
     std::ostringstream os;
     if( levelIsActive(level, threshold) ){
+        std::lock_guard<std::mutex> lg(_loggerMutex);
         os << RBLogging::LogLevelText(level) << "|";
         auto tmp2 = boost::filesystem::path(file_name);
         auto tmp3 = tmp2.filename();
         auto tmp4 = tmp3.stem();
         auto tmp5 = tmp4.string();
-        auto tmp6 = tmp4.c_str();
         auto pid = ::getpid();
         auto tid = pthread_self();
 
@@ -60,8 +60,6 @@ void RBLogging::Logger::logWithFormat(
         const char* outCharStar = outStr.c_str();
         size_t len = strlen(outCharStar);
         write(STDERR_FILENO, (void*)outCharStar, len);
-        return;
-        __outStream << os.str() << bufptr << std::endl;
     }
 }
 

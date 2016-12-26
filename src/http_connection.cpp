@@ -14,15 +14,17 @@
 #include <string>
 #include <cassert>
 
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+//#include <boost/asio.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/function.hpp>
+
+#include "boost_stuff.hpp"
 
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "connection_interface.hpp"
 #include "http_connection.hpp"
@@ -75,6 +77,10 @@ void HttpConnection::close()
     LogDebug(" fd: ", nativeSocketFD());
     _boost_socket.cancel();
     _boost_socket.close();
+}
+void HttpConnection::shutdown()
+{
+    _boost_socket.shutdown(boost::asio::socket_base::shutdown_both);
 }
 
 long HttpConnection::nativeSocketFD()
@@ -178,7 +184,7 @@ void HttpConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
     // start a boost async_read, on callback pass the data to the http parser
     //
     auto b = boost::asio::buffer(buffer.data(), buffer.capacity());
-    auto opn = _boost_socket.is_open();
+//    auto opn = _boost_socket.is_open();
     _boost_socket.async_read_some(b, [this, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered){
         Marvin::ErrorType m_err = err;
         cb(m_err, bytes_transfered);
@@ -193,7 +199,7 @@ void HttpConnection::asyncWrite(FBuffer& buffer, AsyncWriteCallbackType cb)
     LogDebug("buffer size: ");
 //    auto wcb2 = boost::bind(&HttpConnection::handle_write_request,this,_1, _2);
     /// use the boost function that ONLY returns when the write is DONE
-    char* x;
+
     assert(false);
 //    boost::asio::async_write(_boost_socket, boost::asio::buffer(x, 0), cb);
 }

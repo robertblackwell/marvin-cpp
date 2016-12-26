@@ -6,9 +6,13 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+
+//#include <boost/asio.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/function.hpp>
+
+#include "boost_stuff.hpp"
+
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "read_socket_interface.hpp"
@@ -53,6 +57,7 @@ class HttpConnection : public ConnectionInterface //public ReadSocketInterface, 
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 
     void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb);
+    void shutdown();
     void close();
     
     long nativeSocketFD();

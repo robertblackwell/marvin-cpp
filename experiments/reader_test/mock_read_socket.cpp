@@ -3,9 +3,7 @@
 #include <iterator>
 #include <algorithm>
 #include "catch.hpp"
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
@@ -53,7 +51,7 @@ void MockReadSocket::asyncRead(MBuffer& mb, AsyncReadCallback cb)
         memcpy(rawPtr, buf, len);
         ((char*)rawPtr)[len] = (char)0;
         
-        char* b = (char*)rawPtr;
+//        char* b = (char*)rawPtr;
         std::string bb = std::string((char*)rawPtr, len);
         
         std::size_t startIndex = bb.find("\r\n");

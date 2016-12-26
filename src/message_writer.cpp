@@ -11,7 +11,7 @@
 #include <exception>
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 
 MessageWriter::MessageWriter(boost::asio::io_service& io, bool is_request):_io(io)
@@ -108,7 +108,8 @@ void MessageWriter::asyncWriteFullBody(WriteMessageCallbackType cb)
     LogDebug(" cb: ", (long) &cb);
     // if body not set throw exception
     if( ! _haveContent ){
-        throw std::invalid_argument("asyncWriteFullBody:: no content");
+        LogWarn("writing empty body");
+//        throw std::invalid_argument("asyncWriteFullBody:: no content");
     } else if( _bodyContent.size() == 0 ){
         Marvin::ErrorType ee = Marvin::make_error_ok();
         cb(ee);

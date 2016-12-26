@@ -3,50 +3,50 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
+
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "server.hpp"
-#include "request_handler_interface.hpp"
+#include "request_handler_base.hpp"
 #include "request.hpp"
 
-class MyHandler : public RequestHandlerInterface
+class MyHandler : public RequestHandlerBase
 {
 public:
-    MyHandler()
+    MyHandler(boost::asio::io_service& io): RequestHandlerBase(io)
     {
     }
     void handleRequest(
-        boost::asio::io_service& io,
-        MessageReader& req,
-        MessageWriter& resp,
+        MessageReaderSPtr req,
+        MessageWriterSPtr resp,
         HandlerDoneCallbackType done
     ){
         std::cout << "got to a new handler " << std::endl;
-        std::string u = req.uri();
+        std::string u = req->uri();
         std::ostringstream os;
         os << "<!DOCTYPE html>";
         os << "<html><head></head><body>";
-        os << "<p>Method: " << req.getMethodAsString() << "</p>";
-        os << "<p>Vers Maj: " << req.httpVersMajor() << "</p>";
-        os << "<p>Vers Minor: " << req.httpVersMinor() << "</p>";
-        req.dumpHeaders(os);
+        os << "<p>Method: " << req->getMethodAsString() << "</p>";
+        os << "<p>Vers Maj: " << req->httpVersMajor() << "</p>";
+        os << "<p>Vers Minor: " << req->httpVersMinor() << "</p>";
+        req->dumpHeaders(os);
         for(int i = 0; i < 10; i++ ){
             os << "<p>This is simple a line to fill out the transmission</p>";
         }
         os << "</body>";
         
-        resp.setStatusCode(200);
-        resp.setStatus("OK");
-        resp.setHttpVersMajor(1);
-        resp.setHttpVersMinor(1);
+        resp->setStatusCode(200);
+        resp->setStatus("OK");
+        resp->setHttpVersMajor(1);
+        resp->setHttpVersMinor(1);
         std::string s = os.str();
-        resp.setContent(s);
-        resp.setHeader("Content-length", std::to_string(s.length() ));
-        resp.setHeader("Connection","close");
-        resp.asyncWrite([done](Marvin::ErrorType& err){;
+        resp->setContent(s);
+        resp->setHeader("Content-length", std::to_string(s.length() ));
+        resp->setHeader("Connection","close");
+        resp->asyncWrite([done](Marvin::ErrorType& err){;
             done(true);
         });
     }

@@ -4,7 +4,8 @@
 #include "server_connection_manager.hpp"
 */
 template<class TConnectionHandler>
-ServerConnectionManager<TConnectionHandler>::ServerConnectionManager()
+ServerConnectionManager<TConnectionHandler>::ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand)
+    : _io(io), _serverStrand(serverStrand)
 {
 }
 
@@ -20,17 +21,21 @@ void ServerConnectionManager<TConnectionHandler>::registerConnectionHandler(TCon
 }
 
 template<class TConnectionHandler>
-void ServerConnectionManager<TConnectionHandler>::stop(TConnectionHandler* ch)
+void ServerConnectionManager<TConnectionHandler>::_deregister(TConnectionHandler* ch)
 {
     LogDebug("");
-    _connections.erase(ch);
+//    _connections.erase(ch);
 }
 
 template<class TConnectionHandler>
 void ServerConnectionManager<TConnectionHandler>::deregister(TConnectionHandler* ch)
 {
     LogDebug("");
-    _connections.erase(ch);
+    auto pf = std::bind(
+            &ServerConnectionManager<TConnectionHandler>::_deregister,
+            this,
+            ch);
+    _io.post(pf);
 }
 template<class TConnectionHandler>
 void ServerConnectionManager<TConnectionHandler>::stop_all()

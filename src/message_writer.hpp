@@ -15,6 +15,10 @@
 #include "read_socket_interface.hpp"
 #include "connection_interface.hpp"
 
+class MessageWriter;
+typedef std::shared_ptr<MessageWriter> MessageWriterSPtr;
+typedef std::unique_ptr<MessageWriter> MessageWriterUPtr;
+
 class MessageWriter : public MessageBase{
 public:
 

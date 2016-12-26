@@ -1,16 +1,17 @@
 
-#ifndef HTTP_REQUEST_HANDLER_INTERFACE_HPP
-#define HTTP_REQUEST_HANDLER_INTERFACE_HPP
+#ifndef HTTP_REQUEST_HANDLER_BASE_HPP
+#define HTTP_REQUEST_HANDLER_BASE_HPP
 
 #include <string>
 #include <iostream>
-#include "boost/asio.hpp"
+
+#include "boost_stuff.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"
 
-typedef std::function<void(bool)> HandlerDoneCallbackType;
+typedef std::function<void(Marvin::ErrorType& err, bool keepAlive)> HandlerDoneCallbackType;
 
-class RequestHandlerInterface
+class RequestHandlerBase
 {
 public:
     //
@@ -29,37 +30,25 @@ public:
     //      result in the caller (server.cpp) closing the connection as soon as this method returns
     //
     //
+    RequestHandlerBase(boost::asio::io_service& io);
+    
+    virtual ~RequestHandlerBase();
+    
     virtual void handleConnect(
-        boost::asio::io_service&    io,
-        MessageReader&              req,
-        ConnectionPtr               connPtr,
+        MessageReaderSPtr           req,
+        ConnectionInterfaceSPtr     connPtr,
         HandlerDoneCallbackType done)
-        {done(false);}
+        { auto err = Marvin::make_error_ok(); done(err, false);}
     
     virtual void handleRequest(
-        boost::asio::io_service& io,
-        MessageReader& req,
-        MessageWriter& rep,
+        MessageReaderSPtr           req,
+        MessageWriterSPtr           rep,
         HandlerDoneCallbackType done) = 0;
     
+    protected:
+        boost::asio::io_service&    _io;
 };
-class TestHandler : public RequestHandlerInterface
-{
-public:
-    void handleRequest(
-        boost::asio::io_service io,
-        MessageReader& req,
-        MessageWriter& rep,
-        HandlerDoneCallbackType done){
-//        std::cout << "got to a new handler " << std::endl;
-//        rep = reply::stock_reply(reply::ok_just_joking);
-//        rep.status = reply::ok;
-//        rep.content = "<html><body>hello world</body></html>";
-//        rep.headers.resize(1);
-//        rep.headers[0].name = "Content-Length";
-//        rep.headers[0].value = std::to_string(rep.content.size());
-//        done(true);
-    }
-};
+
+
 
 #endif // HTTP_REQUEST_HANDLER_INTERFACE_HPP

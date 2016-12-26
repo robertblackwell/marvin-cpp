@@ -127,13 +127,20 @@ void runTestClient()
 
         rt.push_back(connect_request(io_service));
         rt.push_back(do_request1("1", io_service));
-//        rt.push_back(do_request1("A", io_service));
-//        rt.push_back(do_request1("B", io_service));
-//        rt.push_back(do_request1("C", io_service));
-//        rt.push_back(do_request1("D", io_service));
-//        rt.push_back(do_request1("E", io_service));
-//        rt.push_back(do_request1("F", io_service));
-//        rt.push_back(do_request1("G", io_service));
+        rt.push_back(do_request1("A", io_service));
+        rt.push_back(do_request1("B", io_service));
+        rt.push_back(do_request1("C", io_service));
+        rt.push_back(do_request1("D", io_service));
+        rt.push_back(do_request1("E", io_service));
+        rt.push_back(do_request1("F", io_service));
+        rt.push_back(do_request1("G", io_service));
+        rt.push_back(do_request1("A", io_service));
+        rt.push_back(do_request1("B", io_service));
+        rt.push_back(do_request1("C", io_service));
+        rt.push_back(do_request1("D", io_service));
+        rt.push_back(do_request1("E", io_service));
+        rt.push_back(do_request1("F", io_service));
+        rt.push_back(do_request1("G", io_service));
         io_service.run();
         rt.clear();
     }

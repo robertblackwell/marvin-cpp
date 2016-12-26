@@ -20,15 +20,16 @@
 #include "message_reader.hpp"
 #include "message_writer.hpp"
 */
-
+#include <thread>
 template<class TRequestHandler>
-Server<TRequestHandler>::Server()
-  : _io(1),
+Server<TRequestHandler>::Server(long port)
+  : _io(5),
     _signals(_io),
     _acceptor(_io),
     _serverStrand(_io),
-    _connectionManager()
+    _connectionManager(_io, _serverStrand)
 {
+    _port = port;
     // Register to handle the signals that indicate when the Server should exit.
     // It is safe to register for the same signal multiple times in a program,
     // provided all registration for the specified signal is made through Asio.
@@ -40,7 +41,7 @@ Server<TRequestHandler>::Server()
 
     waitForStop();
     
-    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), 9991);
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), _port);
     _acceptor.open(endpoint.protocol());
     _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     _acceptor.bind(endpoint);
@@ -63,14 +64,29 @@ template<class TRequestHandler> void Server<TRequestHandler>::listen()
     // start the accept process on the _serverStrand
     auto hf = std::bind(&Server<TRequestHandler>::startAccept, this);
     postOnStrand(hf);
-    _io.run();
     
-}
-//-------------------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::readMessageHandler(Marvin::ErrorType& err)
-{
+//#define MULTI_THREAD
+#ifndef MULTI_THREAD
+    _io.run();
+#else
+    long numThreads = 2;
+    std::thread threads[5];
+    
+    boost::asio::io_service& tmp_io = _io;
+    for(int t_count = 0; t_count < numThreads - 1; t_count++)
+    {
+        threads[t_count] = std::thread([&tmp_io](){
+            LogDebug("thread");
+            tmp_io.run();
+        });
+    }
+    LogDebug("original thread");
+    _io.run();
+    for(int t_count = 0; t_count < numThreads - 1; t_count++)
+    {
+        threads[t_count-1].join();
+    }
+#endif
 }
 //-------------------------------------------------------------------------------------
 // handleAccept - called on _strand to handle a new client connection
@@ -79,13 +95,14 @@ template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
                                                                 ConnectionHandler<TRequestHandler>* connHandler,
                                                                 const boost::system::error_code& err)
 {
+    LogInfo("", connHandler);
     if (! _acceptor.is_open()){
         delete connHandler;
         LogWarn("Accept is not open ???? WTF - lets TERM the server");
         return; // something is wrong
     }
     if (!err){
-        LogDebug("got a connection", connHandler->nativeSocketFD());
+        LogInfo("got a connection", connHandler->nativeSocketFD());
         
         _connectionManager.registerConnectionHandler(connHandler);
         //
@@ -94,7 +111,6 @@ template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
         //
         auto hf = std::bind(&ConnectionHandler<TRequestHandler>::serve, connHandler);
         _io.post(hf);
-//        _io.post(connHandler->serve());
     }else{
         LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         delete connHandler;
@@ -107,9 +123,10 @@ template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
 //-------------------------------------------------------------------------------------
 template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
 {
+    LogInfo("");
     ConnectionInterface* conptr = new HttpConnection(_io);
     
-    RequestHandlerInterface* hi = new TRequestHandler();
+    RequestHandlerBase* hi = new TRequestHandler(_io);
     
     ConnectionHandler<TRequestHandler>* connectionHandler =
         new ConnectionHandler<TRequestHandler>(_io, _connectionManager, conptr);

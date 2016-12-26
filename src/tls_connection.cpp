@@ -12,15 +12,19 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+
+//#include <boost/asio.hpp>
+//#include <boost/asio/ssl.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/function.hpp>
+
+#include "boost_stuff.hpp"
+
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "connection_interface.hpp"
 #include "tls_connection.hpp"
 #include <cassert>
@@ -110,7 +114,9 @@ void TLSConnection::close()
     _boostSocketUPtr->cancel();
     _boostSocketUPtr->close();
 }
-
+void TLSConnection::shutdown()
+{
+}
 //----------------------------------------------------------------------------
 long TLSConnection::nativeSocketFD()
 {
@@ -270,7 +276,7 @@ void TLSConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
     // start a boost async_read, on callback pass the data to the http parser
     //
     auto b = boost::asio::buffer(buffer.data(), buffer.capacity());
-    auto opn = _boostSslSocketUPtr->lowest_layer().is_open();
+//    auto opn = _boostSslSocketUPtr->lowest_layer().is_open();
     _boostSslSocketUPtr->async_read_some(b, [this, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered){
         Marvin::ErrorType m_err = err;
         cb(m_err, bytes_transfered);
@@ -286,7 +292,6 @@ void TLSConnection::asyncWrite(FBuffer& buffer, AsyncWriteCallbackType cb)
     LogDebug("buffer size: ");
 //    auto wcb2 = boost::bind(&TLSConnection::handle_write_request,this,_1, _2);
     /// use the boost function that ONLY returns when the write is DONE
-    char* x;
     assert(false);
 //    boost::asio::async_write(_boost_socket, boost::asio::buffer(x, 0), cb);
 }

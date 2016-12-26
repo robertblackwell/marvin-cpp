@@ -29,6 +29,11 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>hdoc-test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>20</integer>
+		</dict>
 		<key>logger.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -38,6 +43,11 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>4</integer>
+		</dict>
+		<key>proxy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>19</integer>
 		</dict>
 		<key>reader_test.xcscheme</key>
 		<dict>
@@ -102,6 +112,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>D407D5111E103480003E5F8E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>D40B756B1E0AC60100431E06</key>
 		<dict>
 			<key>primary</key>
@@ -178,6 +193,11 @@
 			<true/>
 		</dict>
 		<key>D46F228C1D1218D2007F8F72</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D470B3191E0FE51F00AEF135</key>
 		<dict>
 			<key>primary</key>
 			<true/>

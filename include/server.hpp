@@ -9,7 +9,7 @@
 
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
-#include "request_handler_interface.hpp"
+#include "request_handler_base.hpp"
 #include "connection_interface.hpp"
 #include "http_connection.hpp"
 #include "tls_connection.hpp"
@@ -18,31 +18,45 @@
 #include "rb_logger.hpp"
 #include "connection_handler.hpp"
 
-/// The top-level class of the HTTP server.
-
-/// TRequestHandler must conform to RequestHandlerInterface
+/// @brief HTTP server class.
+/// @discussion TRequestHandler is a template argument that must conform to RequestHandlerBase
+/// for a class that will handle an http request and send the necessary response
+///
 template<class TRequestHandler> class Server
 {
 public:
     Server(const Server&) = delete;
     Server& operator=(const Server&) = delete;
 
-    /// Construct the server to listen on the specified TCP address and port, and
-    /// serve up files from the given directory.
-    explicit Server();
-
+    /// @brief Construct the server to listen on the specified TCP address and port.
+    /// @param long port defaults to 9991
+    ///
+    explicit Server(long port = 9991);
+    
+    /// @brief starts the listen process on the servers port, and from there
+    /// dispatches instances of TRequestHandler to service the connection
     void listen();
     
 private:
-    /// Perform an asynchronous accept operation.
+    /// @brief Initiates an asynchronous accept operation.
     void startAccept();
-    void handleAccept(ConnectionHandler<TRequestHandler>* handler, const boost::system::error_code& err);
-    void readMessageHandler(Marvin::ErrorType& err);
     
-    void postOnStrand(std::function<void()> fn);
-    void waitForStop();
-    void doStop(const Marvin::ErrorType& err);
+    /// @brief callback that is invoked on completio of an accept call
+    /// @param handler an object responsible for managing the new connection established by the
+    ///          completed accept call.
+    /// @param err a boost errorcide that described any error condition
+    void handleAccept(ConnectionHandler<TRequestHandler>* handler, const boost::system::error_code& err);
 
+    /// @brief encapsulates the process of posting a callback fn to the servcers strand
+    void postOnStrand(std::function<void()> fn);
+    
+    /// @brief sets up a signal callback
+    void waitForStop();
+    
+    /// @brief IS the signal callback
+    void doStop(const Marvin::ErrorType& err);
+    
+    long                                            _port;
     boost::asio::io_service                         _io;
     boost::asio::strand                             _serverStrand;
     boost::asio::signal_set                         _signals;

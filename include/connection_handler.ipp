@@ -12,7 +12,7 @@ ConnectionHandler<TRequestHandler>::ConnectionHandler(
     ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
     ConnectionInterface*                                            conn):  _io(io), _connectionManager(connectionManager)
 {
-    _requestHandlerPtr  = new TRequestHandler();
+    _requestHandlerPtr  = new TRequestHandler(_io);
     _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
     
 #ifdef CON_SMARTPOINTER
@@ -39,88 +39,113 @@ void ConnectionHandler<TRequestHandler>::close()
     LogDebug(" fd:", nativeSocketFD());
 //    _connection->close();
 }
-
+/*!
+*   Utility method returns the underlying FD for this connection.
+*   Used only for debug racing purposes
+*/
 template<class TRequestHandler>
-int ConnectionHandler<TRequestHandler>::nativeSocketFD()
+long ConnectionHandler<TRequestHandler>::nativeSocketFD()
 {
     return _connection->nativeSocketFD();
 }
 
+/*!
+* Come here when a the CONNECT handler calls its "done" callback
+*/
 template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::handleConnectComplete(bool hijacked)
+void ConnectionHandler<TRequestHandler>::handleConnectComplete(Marvin::ErrorType& err, bool hijacked)
 {
     // do not want the connction closed unless !hijacked
-    LogDebug(" fd:", nativeSocketFD());
+    LogInfo(" fd:", nativeSocketFD());
     
     if( ! hijacked )
         _connection->close();
     
     _connectionManager.deregister(this); // should be maybe called deregister
 }
-
+/*!
+* Called when a request/response cycle is complete and starts a read
+* to initiate another request/response cycle or to wait for the client to
+* close the connection
+*/
 template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::requestComplete()
+void ConnectionHandler<TRequestHandler>::requestComplete(Marvin::ErrorType& err, bool keepAlive)
 {
-    // a stub for future expansionto have a handler handle
-    // multiple requests from the same connection
+    /*!
+    * start serving the next request/response cycle
+    */
+    if(!err){
+        try{
+//            _connection->shutdown();
+            this->serveAnother();
+            }
+            catch (std::exception& e)
+            {
+                LogError("exception: ", e.what());
+            }
+    }else{
+        _connection->close();
+    }
 }
 
+/*!
+* Come here when the latest request/response cycle is complete and
+* the client has indicated no more requests/
+*/
 template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::handlerComplete()
+void ConnectionHandler<TRequestHandler>::handlerComplete(Marvin::ErrorType& err)
 {
-    LogDebug(" fd:", nativeSocketFD());
-    _connection->close();
+    LogInfo(" fd:", nativeSocketFD());
+    if(!err)
+        _connection->close();
     //
     // This call will start the process of deleting linked objects. Hence we need to have closed the
     // connection before this because after it we may not have the connection to close
     //
-    _connectionManager.stop(this); // should be maybe called deregister
+    _connectionManager.deregister(this); // should be maybe called deregister
     
 }
-
+/*!
+* Come here after a request message has been successfully read,
+* this is the first step in the request/response cycle
+*/
 template<class TRequestHandler>
 void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType& err)
 {
-    LogDebug(" fd:", nativeSocketFD());
+    LogInfo(" fd:", nativeSocketFD());
+    LogError("error value: ", err.value(),
+        " category: ", err.category().name(),
+        " msg: ", err.category().message(err.value()));
     if( err ){
-        LogDebug("error value: ", err.value(),
+        LogError("error value: ", err.value(),
             " category: ", err.category().name(),
             " msg: ", err.category().message(err.value()));
             //
             // On read error do not call the handler - simply abort the request
             //
-            this->handlerComplete();
+            this->handlerComplete(err);
     } else{
         if(_reader->method() == HttpMethod::CONNECT ){
-//             _requestHandler.handleConnect(_io, *_reader, _connection, [this](bool hijack){
-             _requestHandlerUnPtr->handleConnect(_io, *_reader, _connection, [this](bool hijack){
-                this->handleConnectComplete(hijack);
+            LogWarn("CONNECT request");
+             _requestHandlerUnPtr->handleConnect(_reader, _connection, [this](Marvin::ErrorType& err, bool hijack){
+                this->handleConnectComplete(err, hijack);
              });
-            
-            //
-            // by the time this returns anything needed has been saved or retained
-            // so we can exit the connection handler
-            //
         } else {
-            _requestHandlerUnPtr->handleRequest(_io, *_reader, *_writer, [this](bool good){
-//            _requestHandler.handleRequest(_io, *_reader, *_writer, [this](bool good){
-                LogDebug("");
-                //
-                // @TODO should check here for Connection::close/keep-alive
-                // and if keep-alive call requestComplete to read another request
-                //
-                this->handlerComplete();
+            _requestHandlerUnPtr->handleRequest(_reader, _writer, [this](Marvin::ErrorType& err, bool keepAlive){
+                LogInfo("");
+                this->requestComplete(err, keepAlive);
             } );
         }
     }
+    LogInfo(" fd:", nativeSocketFD());
 }
-//
-// Gets the connection handler going
-//
+/*!
+* Come here to start the read of a request message, ahdnhence start a request/response cycle
+*/
 template<class TRequestHandler>
 void ConnectionHandler<TRequestHandler>::serve()
 {
-    LogDebug(" fd:", nativeSocketFD());
+    LogInfo(" fd:", nativeSocketFD());
     // set up reader and writer
 #ifdef CON_SMARTPOINTER
     ConnectionInterface* cptr = _connection.get();
@@ -129,8 +154,8 @@ void ConnectionHandler<TRequestHandler>::serve()
 #endif
     
 #ifdef CH_SMARTPOINTER
-    _reader = std::unique_ptr<MessageReader>(new MessageReader(cptr, _io));
-    _writer = std::unique_ptr<MessageWriter>(new MessageWriter(_io, false));
+    _reader = std::shared_ptr<MessageReader>(new MessageReader(cptr, _io));
+    _writer = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
 #else
     _reader = new MessageReader(_connection, _io);
     _writer = new MessageWriter(_io, false);
@@ -139,4 +164,20 @@ void ConnectionHandler<TRequestHandler>::serve()
     auto rmh = std::bind(&ConnectionHandler::readMessageHandler, this, std::placeholders::_1 );
     _reader->readMessage(rmh);
     
+}
+/*!
+* Serve the enxt request/response cycle - deliberately DO NOT create new MessageReader
+* and MessageWriter objects - this is a effort to keep the same connection/socket open
+* for the next request
+*/
+template<class TRequestHandler>
+void ConnectionHandler<TRequestHandler>::serveAnother()
+{
+    LogInfo(" fd:", nativeSocketFD());
+    /// get a new request object
+    _requestHandlerPtr  = new TRequestHandler(_io);
+    _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
+
+    auto rmh = std::bind(&ConnectionHandler::readMessageHandler, this, std::placeholders::_1 );
+    _reader->readMessage(rmh);
 }

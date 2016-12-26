@@ -11,7 +11,7 @@
 #include "parser.hpp"
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 //#include "repeating_timer.hpp"
 //#include "mock_rsockection.hpp"
@@ -22,8 +22,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 MessageReader::MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io): _io(io), _readSock(readSock)
 {
     LogDebug("");
-    _body_buffer_size   = 100;
-    _header_buffer_size = 100;
+    _body_buffer_size   = 10000;
+    _header_buffer_size = 10000;
     _readBodyStarted    = false;
     clearBodyBuffer();
 }
@@ -95,7 +95,7 @@ void MessageReader::OnBodyData(void* buf, int len)
     LogDebug("exit buf:");//,  std::string((char*)buf, len));
 };
 MessageInterface* MessageReader::currentMessage(){
-    MessageInterface* m = this;
+//    MessageInterface* m = this;
     return this;
 }
 
@@ -153,14 +153,14 @@ void MessageReader::handleReadError(Marvin::ErrorType& er){
     
 }
 void MessageReader::handleParseError(){
-    enum http_errno en = Parser::getErrno();
+//    enum http_errno en = Parser::getErrno();
     LogDebug("fd: ", _readSock->nativeSocketFD() );
 }
 
 void MessageReader::startReadBody()
 {
     auto h = std::bind(&MessageReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
-    MBuffer* mb = _bodyMBufferPtr;
+//    MBuffer* mb = _bodyMBufferPtr;
     
     // WARNING - this is a leak of readBuffer
     
@@ -214,13 +214,13 @@ void MessageReader::postBodyCallback(Marvin::ErrorType& er)
 }
 void MessageReader::postResponseCallback(Marvin::ErrorType& er)
 {
-    MessageInterface* m = currentMessage();
+//    MessageInterface* m = currentMessage();
     auto pf = std::bind(_responseCb, er);
     _io.post(pf);
 }
 void MessageReader::postMessageCallback(Marvin::ErrorType& er)
 {
-    MessageInterface* m = currentMessage();
+//    MessageInterface* m = currentMessage();
     auto pf = std::bind(_messageCb, er);
     _io.post(pf);
 }
@@ -236,9 +236,9 @@ void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_tr
     int sz = (int)mb.size();
     LogDebug("sz: ", sz);
     if( sz == 0 ){
-        std::cout << er.value() << '\n';
-        std::cout << er.category().name() << '\n';
-        std::cout << er.category().message(er.value()) << '\n';
+        LogInfo("err.value: ", er.value());
+        LogInfo("err.cat: ", er.category().name());
+        LogInfo("err.msg: ", er.category().message(er.value()));
         LogDebug("zero ",
             "fd: ", _readSock->nativeSocketFD(),
             "error.value :", er.value(),
@@ -254,7 +254,7 @@ void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_tr
             return;
         }else{
             postMessageCallback(er);
-            LogDebug("exit fd: ", _readSock->nativeSocketFD() );
+            LogInfo("exit fd: ", _readSock->nativeSocketFD() );
             return;
         }
     }else{
@@ -372,7 +372,7 @@ void MessageReader::onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
 
 void MessageReader::onHeaders(Marvin::ErrorType& er){
     LogDebug("entry");
-    this->dumpHeaders(std::cout);
+//    this->dumpHeaders(std::cout);
 
     auto bh = std::bind(&MessageReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
     this->readBody(bh);

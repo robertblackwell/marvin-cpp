@@ -1,6 +1,4 @@
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost_stuff.hpp"
 #include <functional>
 #include <memory>
 
@@ -16,6 +14,7 @@ SingleTimer::SingleTimer(boost::asio::io_service& io, int millSeconds): io_(io),
 }
 SingleTimer::~SingleTimer()
 {
+    LogDebug("");
     t_->cancel();
     delete t_;
 }

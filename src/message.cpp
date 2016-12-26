@@ -2,6 +2,7 @@
 #include <map>
 #include <sstream>
 #include "http_parser.h"
+#include "http_header.hpp"
 #include "message.hpp"
 
 std::string httpMethodString(HttpMethod m){
@@ -60,28 +61,39 @@ int
 MessageBase::httpVersMinor(){return _http_minor; }
 
 void
-MessageBase::setHeader(std::string key, std::string value){ _headers[key] = value; };
+MessageBase::setHeader(std::string key, std::string value){
+    HttpHeader::canonicalKey(key);
+    _headers[key] = value;
+};
 
 bool
-MessageBase::hasHeader( std::string key){ return ( _headers.find(key) != _headers.end() ); };
+MessageBase::hasHeader( std::string key){
+    HttpHeader::canonicalKey(key);
+    return ( _headers.find(key) != _headers.end() );
+};
 
 std::string
-MessageBase::header(std::string key){ if( hasHeader(key) ){ return _headers[key]; } else { return nullptr;}  }
+MessageBase::header(std::string key){
+    HttpHeader::canonicalKey(key);
+    if( hasHeader(key) ){ return _headers[key]; } else { return nullptr;}
+}
 
 void
 MessageBase::removeHeader( std::string key){
+    HttpHeader::canonicalKey(key);
     if( _headers.find(key) != _headers.end()  )
         _headers.erase(key);
 }
 
 std::string
 MessageBase::getHeader(std::string key){
+    HttpHeader::canonicalKey(key);
     if( _headers.find(key) != _headers.end() ){
         return _headers[key];
     }
     return nullptr;
 }
-std::map<std::string, std::string>
+std::map<std::string, std::string>&
 MessageBase::getHeaders(){
     return _headers;
 }

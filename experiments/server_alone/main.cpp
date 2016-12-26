@@ -10,10 +10,10 @@
 RBLogging::LogLevel  rbLogLevel = RBLogging::LogLevel::debug;
 
 #include "server.hpp"
-#include "request_handler_interface.hpp"
+#include "request_handler_base.hpp"
 #include "request.hpp"
 #ifdef GHDF
-class MyHandler : public RequestHandlerInterface
+class MyHandler : public RequestHandlerBase
 {
 public:
     MyHandler()
@@ -22,8 +22,8 @@ public:
     }
     void handle_request(
         boost::asio::io_service& io,
-        MessageReader& req,
-        MessageWriter& resp,
+        MessageReaderSPtr req,
+        MessageWriterSPtr resp,
         HandlerDoneCallbackType done
     ){
         std::cout << "got to a new handler " << std::endl;

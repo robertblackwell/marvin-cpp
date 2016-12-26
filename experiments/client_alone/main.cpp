@@ -21,6 +21,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "test_client.hpp"
 
 int main(){
+    LogDebug("");
     runTestClient();
     return 0;
 }

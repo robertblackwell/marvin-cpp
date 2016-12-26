@@ -11,7 +11,7 @@
 
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "connection_interface.hpp"
 
@@ -31,6 +31,8 @@ InUseConnectionsType::size()
 void
 InUseConnectionsType::remove(ConnectionInterface* aConn)
 {
+    if( aConn == NULL )
+        return;
     if( _connections.find(aConn) == _connections.cend() ) { assert(false);}
     _connections.erase(aConn);
     
@@ -144,7 +146,7 @@ class HostsCounterType
 #endif
 ConnectionPool* globalConnectionPool = NULL;
 
-ConnectionPool::ConnectionPool(boost::asio::io_service& io_service): io(io_service), resolver_(io_service)
+ConnectionPool::ConnectionPool(boost::asio::io_service& io_service): io(io_service), resolver_(io_service), _poolStrand(io)
 {
     _maxConnections = 25;
 }
@@ -159,6 +161,16 @@ ConnectionPool* ConnectionPool::getInstance(boost::asio::io_service& io)
  * get a connection to the scheme::server
  */
 void ConnectionPool::asyncGetConnection(
+            std::string scheme, // http: or https:
+            std::string server, // also called hostname
+            std::string service,// http/https or port number
+            ConnectCallbackType cb
+)
+{
+    auto hf = _poolStrand.wrap(std::bind(&ConnectionPool::__asyncGetConnection, this, scheme, server, service, cb));
+    io.post(hf);
+}
+void ConnectionPool::__asyncGetConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
@@ -205,7 +217,14 @@ void ConnectionPool::createNewConnection(
 //
 void ConnectionPool::releaseConnection(ConnectionInterface* conn)
 {
-    LogDebug("");
+    auto hf = _poolStrand.wrap(std::bind(&ConnectionPool::__releaseConnection, this, conn));
+    io.post(hf);
+
+}
+void ConnectionPool::__releaseConnection(ConnectionInterface* conn)
+{
+    LogDebug(" conn: ", conn);
+    assert( conn != NULL );
     _inUse.remove(conn);
     delete conn;
     if( _waitingRequests.size() > 0 )

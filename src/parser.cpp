@@ -7,11 +7,14 @@
 //
 #include <stdlib.h>
 #include <iostream>
-#include "rb_logger.hpp"
-#import "parser.hpp"
 #include <cassert>
+#include "http_header.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+#include "rb_logger.hpp"
+#include "parser.hpp"
+
+
+RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 /******************************************************************************/
 #pragma mark - forward decleration of parser c-language call back functions
@@ -222,6 +225,8 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
     int n;
     n = sb_to_string(name, &n_p);
     n = sb_to_string(value,&v_p);
+    
+    HttpHeader::canonicalKey(name->buffer, name->used);
     
     std::string n_str = std::string(name->buffer, name->used);
     std::string v_str = std::string(value->buffer, value->used);
