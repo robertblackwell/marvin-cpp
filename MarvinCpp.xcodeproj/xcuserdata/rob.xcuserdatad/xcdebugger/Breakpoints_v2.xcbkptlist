@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/message_reader.cpp"
-            timestampString = "504499372.099925"
+            timestampString = "504511476.46882"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
             landmarkName = "MessageReader::OnBodyData(void* buf, int len)"
             landmarkType = "5">
          </BreakpointContent>
@@ -102,17 +102,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "src/message_reader.cpp"
-            timestampString = "504499389.428794"
+            filePath = "src/message_reader.hpp"
+            timestampString = "504510883.737803"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "243"
-            endingLineNumber = "243"
-            landmarkName = "MessageReader::asyncReadHandler(Marvin::ErrorType&amp; er, std::size_t bytes_transfered)"
-            landmarkType = "5">
+            startingLineNumber = "116"
+            endingLineNumber = "116">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

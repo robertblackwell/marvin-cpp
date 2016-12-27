@@ -3,9 +3,10 @@
 #include <iterator>
 #include <algorithm>
 #include "catch.hpp"
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost_stuff.hpp"
+//#include <boost/asio.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/date_time/posix_time/posix_time.hpp>
 #include "buffer.hpp"
 #include "message.hpp"
 #include "parser.hpp"
@@ -40,21 +41,49 @@ MessageReader::~MessageReader()
     // how to know what to get rid of
     // delete _readBuffer;
 }
+#pragma mark -  simple public getters
+
+MessageInterface* MessageReader::currentMessage()
+{
+//    MessageInterface* m = this;
+    return this;
+}
+
+/*!
+* Returns the message body as a std::string
+* @return std::string
+* !!! we need something much better for body buffers
+*/
 std::string& MessageReader::getBody()
 {
     return body;
 }
-//void MessageReader::setReadSock(ReadSocketInterface* rSock)
-//{
-//    _readSock = rSock;
-//}
-//
-// This function is the only place where each piece of de-chunked body data is seen.
-// So this is where the "fragmentation" of the buffer has to take place.
-// In addition if any body data accompanies the buffer that completed the headers
-// this is the only place that sees that data.Hence it needs to be cached for returning on the
-// next read of body data.
-//
+
+/*!
+* Returns true if the reader has accumulated any body data
+* @return bool
+*/
+bool MessageReader::hasBodyData()
+{
+    if( _bodyFBufferPtr != nullptr ){
+        return true;
+    }
+    return false;
+}
+
+#pragma mark - Parser virtual overrides
+/*!
+*
+* Overrides a virtual method in Parser.hpp/cpp 
+* 
+* Called whenever the http_parser sees a piece of body data
+*
+* This function is the only place where each piece of de-chunked body data is seen.
+* So this is where the "fragmentation" of the buffer has to take place.
+* In addition if any body data accompanies the buffer that completed the headers
+* this is the only place that sees that data. Hence it needs to be cached that body data
+* so it can be returned on the next read of body data.
+*/
 void MessageReader::OnBodyData(void* buf, int len)
 {
     //
@@ -101,11 +130,91 @@ void MessageReader::OnBodyData(void* buf, int len)
     }
     LogDebug("exit buf:");//,  std::string((char*)buf, len));
 };
-MessageInterface* MessageReader::currentMessage(){
-//    MessageInterface* m = this;
-    return this;
+#pragma mark - empty methods, need to refactor
+/// !!! do something with this
+void MessageReader::readBodyHandler(MBuffer& mb)
+{
+}
+/// !!! do something with this
+void MessageReader::handleReadError(Marvin::ErrorType& er){
+    LogDebug(
+    "fd: ", _readSock->nativeSocketFD(),
+    "error.value :", er.value(),
+    "error.cat:", er.category().name(),
+    "error.message", er.category().message(er.value()));
+
+    
+}
+/// !!! do something with this
+void MessageReader::handleParseError()
+{
+//    enum http_errno en = Parser::getErrno();
+    LogDebug("fd: ", _readSock->nativeSocketFD() );
 }
 
+#pragma mark - buffer handling methods
+/*!
+* Internal method, called ONLY if there is body data in a header buffer that finished 
+* the headers. We cache the body data.
+* NOTE in this case CANNOT overight the readBuffer
+*/
+void MessageReader::makeBodyBufferDuringHeaderProcessing(std::size_t size)
+{
+    std::size_t len = (size > _body_buffer_size) ? size : _body_buffer_size ;
+    _bodyMBufferPtr = new MBuffer(len);
+//    _readBuffer = _bodyMBufferPtr ;
+    _bodyFBufferPtr = new FBuffer(_bodyMBufferPtr);
+}
+
+/*!
+* create an FBuffer big enough to hold size bytes
+*/
+void MessageReader::makeBodyBuffer(std::size_t size)
+{
+    std::size_t len = (size > _body_buffer_size) ? size : _body_buffer_size ;
+    _bodyMBufferPtr = new MBuffer(len);
+    _readBuffer = _bodyMBufferPtr ;
+    _bodyFBufferPtr = new FBuffer(_bodyMBufferPtr);
+}
+/*!
+* clears pointers to various body buffers
+* !!! check that we dnt leak
+*/
+void MessageReader::clearBodyBuffer()
+{
+//    _readBuffer = nullptr;
+    _bodyFBufferPtr = nullptr;
+    _bodyMBufferPtr = nullptr;
+}
+#pragma mark - public read methods
+/**
+* An interface method that is called to initiate the read of an entire
+* message
+*/
+void MessageReader::readMessage(ReadMessageCallbackType cb)
+{
+    this->_messageCb = cb;
+    auto h = std::bind(&MessageReader::onHeaders, this, std::placeholders::_1);
+    this->readHeaders(h);
+}
+
+/*!
+* An interface method called to initiate the reading of message first line and headers
+* Completion signalled through the callback
+*/
+void MessageReader::readHeaders(ReadHeadersCallbackType cb)
+{
+    LogDebug("");
+    // this is trashy - when do I dispose/delete the buffer
+    // have the size as a variable of constant
+    _readBuffer = new MBuffer(_header_buffer_size);
+    this->_responseCb = cb;
+    startRead();
+}
+/*!
+* An interface method that is called to initiate an async read of some body data.
+* Result is returned via the callback
+*/
 void MessageReader::readBody(ReadBodyDataCallbackType cb)
 {
     this->_bodyCallback = cb;
@@ -146,92 +255,37 @@ void MessageReader::readBody(ReadBodyDataCallbackType cb)
         }
     }
 }
-
-void MessageReader::readBodyHandler(MBuffer& mb){
-}
-
-void MessageReader::handleReadError(Marvin::ErrorType& er){
-    LogDebug(
-    "fd: ", _readSock->nativeSocketFD(),
-    "error.value :", er.value(),
-    "error.cat:", er.category().name(),
-    "error.message", er.category().message(er.value()));
-
-    
-}
-void MessageReader::handleParseError(){
-//    enum http_errno en = Parser::getErrno();
-    LogDebug("fd: ", _readSock->nativeSocketFD() );
-}
-
+#pragma mark - internal methods to initiate reads
+/*!
+* An internal method that actually kicks off an async socket read to get some
+* body data. The result of the read is handled by asyncReadHandler
+*/
 void MessageReader::startReadBody()
 {
     auto h = std::bind(&MessageReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
 //    MBuffer* mb = _bodyMBufferPtr;
     
-    // WARNING - this is a leak of readBuffer
+    ///!!!! WARNING - this is a leak of readBuffer
     
     _readBuffer = _bodyMBufferPtr;
     _readSock->asyncRead(*_readBuffer, h);
 }
-
-void MessageReader::startRead(){
+/*!
+* Internal method that actually kicks off an async read to get some of the message header
+*/
+void MessageReader::startRead()
+{
     LogDebug(" fd: ", _readSock->nativeSocketFD());
 
     auto h = std::bind(&MessageReader::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
     _readSock->asyncRead(*_readBuffer, h);
 }
-//
-// called ONLY if there is body data in a header buffer
-// in this case CANNOT overight the readBuffer
-//
-void MessageReader::makeBodyBufferDuringHeaderProcessing(std::size_t size)
-{
-    std::size_t len = (size > _body_buffer_size) ? size : _body_buffer_size ;
-    _bodyMBufferPtr = new MBuffer(len);
-//    _readBuffer = _bodyMBufferPtr ;
-    _bodyFBufferPtr = new FBuffer(_bodyMBufferPtr);
-}
-//
-// create an FBuffer big enough to hold size bytes
-//
-void MessageReader::makeBodyBuffer(std::size_t size)
-{
-    std::size_t len = (size > _body_buffer_size) ? size : _body_buffer_size ;
-    _bodyMBufferPtr = new MBuffer(len);
-    _readBuffer = _bodyMBufferPtr ;
-    _bodyFBufferPtr = new FBuffer(_bodyMBufferPtr);
-}
-bool MessageReader::hasBodyData(){
-    if( _bodyFBufferPtr != nullptr ){
-        return true;
-    }
-    return false;
-}
-void MessageReader::clearBodyBuffer(){
-//    _readBuffer = nullptr;
-    _bodyFBufferPtr = nullptr;
-    _bodyMBufferPtr = nullptr;
-}
-void MessageReader::postBodyCallback(Marvin::ErrorType& er)
-{
-    auto pf = std::bind(_bodyCallback, er, _bodyFBufferPtr);
-    _io.post(pf);
-//    clearBodyBuffer();
-}
-void MessageReader::postResponseCallback(Marvin::ErrorType& er)
-{
-//    MessageInterface* m = currentMessage();
-    auto pf = std::bind(_responseCb, er);
-    _io.post(pf);
-}
-void MessageReader::postMessageCallback(Marvin::ErrorType& er)
-{
-//    MessageInterface* m = currentMessage();
-    auto pf = std::bind(_messageCb, er);
-    _io.post(pf);
-}
-
+#pragma mark - the main internal method that is the socket read callback
+/*!
+* The main read handler. Handles reading data for headers and body data.
+* Also has to be able to handle getting zero bytes and errors.
+*
+*/
 void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_transfered){
     LogDebug("entry fd: ", _readSock->nativeSocketFD());
     _readBuffer->setSize(bytes_transfered);
@@ -322,26 +376,34 @@ void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_tr
     LogDebug("exit fd: ", _readSock->nativeSocketFD() );
     
 }
-void MessageReader::readHeaders(ReadHeadersCallbackType cb)
-{
-    LogDebug("");
-    // this is trashy - when do I dispose/delete the buffer
-    // have the size as a variable of constant
-    _readBuffer = new MBuffer(_header_buffer_size);
-    this->_responseCb = cb;
-    startRead();
-}
-#pragma mark - read full message functions
-//--------------------------------------------------------------------------------------------------------------
-//
-//
-//
-//--------------------------------------------------------------------------------------------------------------
+
+
+#pragma mark - event methods
+/*!
+* called when a message is complete or when an error terminated reading/parsing
+*/
 void MessageReader::onMessage(Marvin::ErrorType& ec)
 {
     LogDebug("");
     postMessageCallback(ec);
 }
+
+/*!
+* called when all headers have been read or when reading headers is terminated by an error
+*/
+void MessageReader::onHeaders(Marvin::ErrorType& er)
+{
+    LogDebug("entry");
+//    this->dumpHeaders(std::cout);
+
+    auto bh = std::bind(&MessageReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
+    this->readBody(bh);
+    LogDebug("exit");
+}
+/*!
+* called when a blob of body data has been read or when reading the body 
+* has been terminated by an error
+*/
 void MessageReader::onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
 {
     LogDebug(" entry");
@@ -370,21 +432,28 @@ void MessageReader::onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
     LogDebug("exit");
     
 }
+#pragma mark - post method for scheduling a callback to run later on the runloop
 
-void MessageReader::onHeaders(Marvin::ErrorType& er){
-    LogDebug("entry");
-//    this->dumpHeaders(std::cout);
-
-    auto bh = std::bind(&MessageReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
-    this->readBody(bh);
-    LogDebug("exit");
-}
-
-void MessageReader::readMessage(ReadMessageCallbackType cb)
+void MessageReader::postBodyCallback(Marvin::ErrorType& er)
 {
-    this->_messageCb = cb;
-    auto h = std::bind(&MessageReader::onHeaders, this, std::placeholders::_1);
-    this->readHeaders(h);
-
+    auto pf = std::bind(_bodyCallback, er, _bodyFBufferPtr);
+    _io.post(pf);
 }
+
+/*!
+* This should be called postHeaderCallback
+*/
+void MessageReader::postResponseCallback(Marvin::ErrorType& er)
+{
+//    MessageInterface* m = currentMessage();
+    auto pf = std::bind(_responseCb, er);
+    _io.post(pf);
+}
+
+void MessageReader::postMessageCallback(Marvin::ErrorType& er)
+{
+    auto pf = std::bind(_messageCb, er);
+    _io.post(pf);
+}
+
 

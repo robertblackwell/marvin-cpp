@@ -220,6 +220,14 @@ static Logger activeLogger{};
 
 #endif // header guard
 
-#define SET_LOGLEVEL(level) static RBLogging::LogLevelType rbLogLevel = level; 
+#if ! defined(RBLOGGER_ENABLED)
 
-#define RBLOGGER_SETLEVEL(level) static  RBLogging::LogLevelType rbLogLevel = level;
+    #define SET_LOGLEVEL(level)
+    #define RBLOGGER_SETLEVEL(level) 
+
+#else
+
+    #define SET_LOGLEVEL(level) static RBLogging::LogLevelType rbLogLevel = level;
+    #define RBLOGGER_SETLEVEL(level) static  RBLogging::LogLevelType rbLogLevel = level;
+
+#endif

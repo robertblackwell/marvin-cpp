@@ -107,9 +107,12 @@ enum http_errno Parser::getErrno()
 }
 
 bool Parser::isError(){
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wall"
     enum http_errno x = (enum http_errno)this->parser->http_errno;
     char* n = (char*)http_errno_name(x);
     char* d = (char*)http_errno_description(x);
+#pragma clang diagnostic pops
     FLogDebug(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
     return (this->parser->http_errno != 0);
 };

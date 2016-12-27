@@ -15,18 +15,6 @@
 
 #include "read_socket_interface.hpp"
 #include "callback_typedefs.hpp"
-//
-// Two call back types required by MessageReader
-//
-
-/// call back when reading headers
-//typedef std::function<void(Marvin::ErrorType& err)>                         ReadHeadersCallbackType;
-
-/// Callback when reading body data
-//typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>       ReadBodyDataCallbackType;
-
-/// Call back when reading full message is complete
-//typedef std::function<void(Marvin::ErrorType& err)>                         ReadMessageCallbackType;
 
 /**
  * Instances of this class represent an incoming http(s) response message from a socket/stream.
@@ -75,40 +63,41 @@ class MessageReader : public Parser, public MessageBase
 public:
     MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io);
     ~MessageReader();
-    //
-    // Starts the reading process and invokes cb when all headers have been received
-    // Passes back an error code to indicate success/failure or maybe even EOM. The headers can be obtained from the
-    // the MessageReader object.
-    // This method should only be called ONCE
-    //
+    /*!
+    * Starts the reading process and invokes cb when all headers have been received
+    * Passes back an error code to indicate success/failure or maybe even EOM. 
+    * The headers can be obtained from the
+    * the MessageReader object.
+    * This method should only be called ONCE
+    */
     void readHeaders(ReadHeadersCallbackType cb);
     
-    //
-    //  This methods read the body data. Should be called multiple times until the end of message
-    //  body is signalled by the returned error code being equal to Marvin::make_error_eob() or
-    //  or Marvin::make_error_eom()
-    //
-    //  The callback to readBody receives an error code and a  pointer to a fragmented buffer(FBuffer)
-    //  This is because the body data returned in that buffer is "de-chunked" and the buffer MAY contain
-    //  multiple chunk bodies. It was done this way to prevent copying the body data to eliminate the chunk headers.
-    //  the callback is responsible for handling the buffer and delete-ing it when appropriate
-    //
-    //  The pointer to an FBuffer passes ownership of the buffer to the callback. A new buffer will be
-    //  provided on each call to the callback
-    //
+    /*!
+    *  This methods read the body data. Should be called multiple times until the end of message
+    *  body is signalled by the returned error code being equal to Marvin::make_error_eob() or
+    *  or Marvin::make_error_eom()
+    *
+    *  The callback to readBody receives an error code and a  pointer to a fragmented buffer(FBuffer)
+    *  This is because the body data returned in that buffer is "de-chunked" and the buffer MAY contain
+    *  multiple chunk bodies. It was done this way to prevent copying the 
+    *  body data to eliminate the chunk headers.
+    *  the callback is responsible for handling the buffer and delete-ing it when appropriate
+    *
+    *  The pointer to an FBuffer passes ownership of the buffer to the callback. A new buffer will be
+    *  provided on each call to the callback
+    */
     void readBody(ReadBodyDataCallbackType cb);
     
-    //
-    // This method starts the read of a full message including the body of the message. Use of this method
-    // requires the buffering of the full message body.
-    //
+    /*!
+    * This method starts the read of a full message including the body of the message. Use of this method
+    * requires the buffering of the full message body.
+    */
     void readMessage(ReadMessageCallbackType cb);
     
-//    //
-//    // Must be called to prvide a socket before any reading can be done
-//    //
-//    void setReadSock(ReadSocketInterface* rSock);
-    
+    /*!
+    * Gets the message body as a std::string 
+    * !!! need to do better
+    */
     std::string& getBody();
     
     friend std::string traceReader(MessageReader& rdr);
@@ -118,10 +107,10 @@ private:
     // private methods
     //----------------------------------------------------------------------------------------------------
 
-    // not used as yet
+    /// not used as yet
     void readBodyHandler(MBuffer& mb);
     
-    // returns the MessageReader object as it is also a MessageInterface object
+    /// returns the MessageReader object as it is also a MessageInterface object
     MessageInterface* currentMessage();
 
     // Called by the parser when a lump of (de-chunked) body data is available. Generally it Splices

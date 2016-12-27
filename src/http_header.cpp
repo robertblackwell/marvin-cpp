@@ -53,8 +53,8 @@ namespace HttpHeader
         for(auto it = hdrs.begin(); it != hdrs.end(); it++ )
         {
             std::string k = it->first;
-            auto x = filterList.find(k);
-            auto y = filterList.end();
+//            auto x = filterList.find(k);
+//            auto y = filterList.end();
             if( filterList.end() == filterList.find(k) )
             {
                 // IS in filterList so remove from headers
