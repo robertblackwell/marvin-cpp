@@ -22,14 +22,38 @@
 */
 #include <thread>
 template<class TRequestHandler>
-Server<TRequestHandler>::Server(long port)
+Server<TRequestHandler>::Server()
   : _io(5),
     _signals(_io),
     _acceptor(_io),
     _serverStrand(_io),
     _connectionManager(_io, _serverStrand)
 {
-    _port = port;
+//    _port = port;
+//    initialize();
+    // Register to handle the signals that indicate when the Server should exit.
+    // It is safe to register for the same signal multiple times in a program,
+    // provided all registration for the specified signal is made through Asio.
+#ifdef IINNIITT
+    _signals.add(SIGINT);
+    _signals.add(SIGTERM);
+    #if defined(SIGQUIT)
+    _signals.add(SIGQUIT);
+    #endif // defined(SIGQUIT)
+
+    waitForStop();
+    
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), _port);
+    _acceptor.open(endpoint.protocol());
+    _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+    _acceptor.bind(endpoint);
+#endif
+}
+/**
+** init
+*/
+template<class TRequestHandler> void Server<TRequestHandler>::initialize()
+{
     // Register to handle the signals that indicate when the Server should exit.
     // It is safe to register for the same signal multiple times in a program,
     // provided all registration for the specified signal is made through Asio.
@@ -45,20 +69,16 @@ Server<TRequestHandler>::Server(long port)
     _acceptor.open(endpoint.protocol());
     _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     _acceptor.bind(endpoint);
+
 }
-//-------------------------------------------------------------------------------------
-// postOnStrand - wraps a parameterless function in _strand and posts to _io
-//-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::postOnStrand(std::function<void()> fn)
-{
-    auto wrappedFn = _serverStrand.wrap(fn);
-    _io.post(wrappedFn);
-}
+#pragma mark - listen, accept processing
 //-------------------------------------------------------------------------------------
 // listen - starts the accept cycle
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::listen()
+template<class TRequestHandler> void Server<TRequestHandler>::listen(long port)
 {
+    _port = port;
+    initialize();
     _acceptor.listen();
     
     // start the accept process on the _serverStrand
@@ -89,6 +109,25 @@ template<class TRequestHandler> void Server<TRequestHandler>::listen()
 #endif
 }
 //-------------------------------------------------------------------------------------
+// startAccept
+//-------------------------------------------------------------------------------------
+template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
+{
+    LogInfo("");
+    ConnectionInterface* conptr = new HttpConnection(_io);
+    
+    RequestHandlerBase* hi = new TRequestHandler(_io);
+    
+    ConnectionHandler<TRequestHandler>* connectionHandler =
+        new ConnectionHandler<TRequestHandler>(_io, _connectionManager, conptr);
+
+    auto hf = _serverStrand.wrap(
+                    std::bind(&Server::handleAccept, this, connectionHandler, std::placeholders::_1)
+                    );
+    conptr->asyncAccept(_acceptor, hf);
+}
+
+//-------------------------------------------------------------------------------------
 // handleAccept - called on _strand to handle a new client connection
 //-------------------------------------------------------------------------------------
 template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
@@ -118,25 +157,16 @@ template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
     startAccept();
     
 }
+
 //-------------------------------------------------------------------------------------
-// startAccept
+// postOnStrand - wraps a parameterless function in _strand and posts to _io
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
+template<class TRequestHandler> void Server<TRequestHandler>::postOnStrand(std::function<void()> fn)
 {
-    LogInfo("");
-    ConnectionInterface* conptr = new HttpConnection(_io);
-    
-    RequestHandlerBase* hi = new TRequestHandler(_io);
-    
-    ConnectionHandler<TRequestHandler>* connectionHandler =
-        new ConnectionHandler<TRequestHandler>(_io, _connectionManager, conptr);
-
-    auto hf = _serverStrand.wrap(
-                    std::bind(&Server::handleAccept, this, connectionHandler, std::placeholders::_1)
-                    );
-    conptr->asyncAccept(_acceptor, hf);
+    auto wrappedFn = _serverStrand.wrap(fn);
+    _io.post(wrappedFn);
 }
-
+#pragma mark - signal handling
 //-------------------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------------------

@@ -1,24 +1,27 @@
-#include <iostream>
-#include <sstream>
-#include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "UriParser.hpp"
-#include "request.hpp"
-#include "http_header.hpp"
-#include "forwarding_handler.hpp"
+//#include <iostream>
+//#include <sstream>
+//#include "rb_logger.hpp"
+//RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+//#include "UriParser.hpp"
+//#include "request.hpp"
+//#include "http_header.hpp"
+//#include "forwarding_handler.hpp"
 
 void response403Forbidden(boost::asio::streambuf& sbuf);
 void response200OKConnected(boost::asio::streambuf& sbuf);
 void response502Badgateway(boost::asio::streambuf& sbuf);
 
-
-ForwardingHandler::ForwardingHandler(
+template<class TCollector>
+ForwardingHandler<TCollector>::ForwardingHandler(
     boost::asio::io_service& io
 ): RequestHandlerBase(io)
 {}
-ForwardingHandler::~ForwardingHandler(){}
 
-void ForwardingHandler::handleConnect(
+template<class TCollector>
+ForwardingHandler<TCollector>::~ForwardingHandler(){}
+
+template<class TCollector>
+void ForwardingHandler<TCollector>::handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
         HandlerDoneCallbackType done
@@ -35,7 +38,8 @@ void ForwardingHandler::handleConnect(
 /// and the reader and writer
 /// @param req
 ///
-void ForwardingHandler::handleRequest(
+template<class TCollector>
+void ForwardingHandler<TCollector>::handleRequest(
         MessageReaderSPtr req,
         MessageWriterSPtr resp,
         HandlerDoneCallbackType done
@@ -96,12 +100,13 @@ void ForwardingHandler::handleRequest(
     // now attach the body
     _upStreamRequestUPtr->setContent(_req->getBody());
     // set up the callback on response received and GO
-    auto hf = std::bind(&ForwardingHandler::handleUpstreamResponseReceived, this, std::placeholders::_1);
+    auto hf = std::bind(&ForwardingHandler<TCollector>::handleUpstreamResponseReceived, this, std::placeholders::_1);
     _upStreamRequestUPtr->go(hf);
     
 };
 
-void ForwardingHandler::handleUpstreamResponseReceived(Marvin::ErrorType& err)
+template<class TCollector>
+void ForwardingHandler<TCollector>::handleUpstreamResponseReceived(Marvin::ErrorType& err)
 {
     LogInfo("");
     LogInfo("",traceRequest(*_upStreamRequestUPtr));
@@ -118,10 +123,12 @@ void ForwardingHandler::handleUpstreamResponseReceived(Marvin::ErrorType& err)
     }
     _upStreamRequestUPtr->end();
     LogTrace("send to client", traceWriter(*_resp));
-    auto hf = std::bind(&ForwardingHandler::onComplete, this, std::placeholders::_1);
+    auto hf = std::bind(&ForwardingHandler<TCollector>::onComplete, this, std::placeholders::_1);
     _resp->asyncWrite(hf);
 }
-void ForwardingHandler::makeDownstreamResponse()
+
+template<class TCollector>
+void ForwardingHandler<TCollector>::makeDownstreamResponse()
 {
     LogInfo("");
     MessageReader& upStreamResponse = _upStreamRequestUPtr->getResponse();
@@ -159,7 +166,9 @@ void ForwardingHandler::makeDownstreamResponse()
         _resp->setHeader("Content-length", std::to_string(len));
     }
 }
-void ForwardingHandler::makeDownstreamErrorResponse(Marvin::ErrorType& err)
+
+template<class TCollector>
+void ForwardingHandler<TCollector>::makeDownstreamErrorResponse(Marvin::ErrorType& err)
 {
     LogDebug("");
     // bad gateway 502
@@ -168,7 +177,8 @@ void ForwardingHandler::makeDownstreamErrorResponse(Marvin::ErrorType& err)
     std::string n("");
     _resp->setContent(n);
 }
-void ForwardingHandler::handleUpgrade()
+template<class TCollector>
+void ForwardingHandler<TCollector>::handleUpgrade()
 {
     // deny the upgrade
     _resp->setStatus("Forbidden");
@@ -179,7 +189,8 @@ void ForwardingHandler::handleUpgrade()
         _doneCallback(err, false);
     });
 }
-void ForwardingHandler::onComplete(Marvin::ErrorType& err)
+template<class TCollector>
+void ForwardingHandler<TCollector>::onComplete(Marvin::ErrorType& err)
 {
     LogInfo("");
     if( err ){
@@ -193,16 +204,19 @@ void ForwardingHandler::onComplete(Marvin::ErrorType& err)
     }
 }
 
+template<class TCollector>
 void response403Forbidden(boost::asio::streambuf& sbuf)
 {
     std::ostream   os(&sbuf);
     os << "Http/1.1 401 Forbidden\r\n\r\b";
 }
+template<class TCollector>
 void response200OKConnected(boost::asio::streambuf& sbuf)
 {
     std::ostream   os(&sbuf);
     os << "Http/1.1 200 OK\r\n\r\b";
 }
+template<class TCollector>
 void response502Badgateway(boost::asio::streambuf& sbuf)
 {
     std::ostream   os(&sbuf);

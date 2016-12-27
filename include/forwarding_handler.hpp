@@ -8,14 +8,25 @@
 
 #ifndef forwarding_handler_hpp
 #define forwarding_handler_hpp
-
 #include <stdio.h>
+#include <iostream>
+#include <sstream>
 #include "request.hpp"
 #include "request_handler_base.hpp"
+#include "rb_logger.hpp"
+#include "UriParser.hpp"
+#include "request.hpp"
+#include "http_header.hpp"
+
 /**
-* @brief This class implements the proxy forwarding process for http/https protocols.
+**  @brief This class implements the proxy forwarding process for http/https protocols.
+**  @discussion Reads a message from the downstream client, converts that to a non-proxy request
+**  to the targets server, sends that request, collects the response and finally sends that response
+**  to the originating client.
+**  Along the way it captures (via template parameter TCapture) a summary of the original request and 
+**  upstream server response and distributes that according to the rules of the particular TCapture object
 */
-class ForwardingHandler : public RequestHandlerBase
+template<class TCollector> class ForwardingHandler : public RequestHandlerBase
 {
     public:
         ForwardingHandler(boost::asio::io_service& io);
@@ -27,8 +38,8 @@ class ForwardingHandler : public RequestHandlerBase
             HandlerDoneCallbackType done);
 
         void handleRequest(
-            MessageReaderSPtr req,
-            MessageWriterSPtr rep,
+            MessageReaderSPtr           req,
+            MessageWriterSPtr           rep,
             HandlerDoneCallbackType done);
     
     private:
@@ -45,5 +56,7 @@ class ForwardingHandler : public RequestHandlerBase
         RequestUPtr                 _upStreamRequestUPtr;
         HandlerDoneCallbackType     _doneCallback;
 };
+
+#include "forwarding_handler.ipp"
 
 #endif /* forwarding_handler_hpp */

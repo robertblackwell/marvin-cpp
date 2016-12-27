@@ -17,15 +17,24 @@ public:
     ServerConnectionManager(const ServerConnectionManager&) = delete;
     ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
 
-    /// Construct a connection manager.
+    /**
+    ** Construct a connection manager.
+    */
     ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand);
 
+    /**
+    ** Register a connection handler in a table so that it stays around to process request/response
+    */
     void registerConnectionHandler(TConnectionHandler* connHandler);
  
-    /// deregister the specified connection.
+    /**
+    ** deregister the specified connection.
+    */
     void deregister(TConnectionHandler* ch);
 
-    /// Stop all connections.
+    /**
+    ** Stop all connections.
+    */
     void stop_all();
 
 private:
@@ -34,13 +43,7 @@ private:
     boost::asio::io_service&    _io;
     boost::asio::strand&        _serverStrand;
     
-  /// The managed connections.
-#define CM_SMARTPOINTER  
-#ifdef CM_SMARTPOINTER
-  std::map<TConnectionHandler*, std::unique_ptr<TConnectionHandler>> _connections;
-#else
-  std::set<TConnectionHandler*> _connections;
-#endif
+    std::map<TConnectionHandler*, std::unique_ptr<TConnectionHandler>> _connections;
 };
 
 #include "server_connection_manager.ipp"

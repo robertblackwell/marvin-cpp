@@ -17,6 +17,10 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "request.hpp"
 #include "forwarding_handler.hpp"
 
+class NullCollector{
+    NullCollector(){}
+};
+
 int main(int argc, const char * argv[])
 {
     LogError("This is an error", std::string(""));
@@ -24,8 +28,8 @@ int main(int argc, const char * argv[])
     LogTrace(std::string("hello"), std::string("this"), std::string("is"), std::string("a"), std::string("test"));
     try
     {
-        Server<ForwardingHandler> server(9991);
-        server.listen();
+        Server<ForwardingHandler<NullCollector>> server;
+        server.listen(9991);
     }
     catch (std::exception& e)
     {

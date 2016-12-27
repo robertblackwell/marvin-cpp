@@ -3,21 +3,19 @@
 /*#include "connection_handler.hpp"
 #include "server_connection_manager.hpp"
 */
+
+#define TMPL template<class TConnectionHandler>
+#define TCLASS ServerConnectionManager<TConnectionHandler>
+
 template<class TConnectionHandler>
-ServerConnectionManager<TConnectionHandler>::ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand)
-    : _io(io), _serverStrand(serverStrand)
+ServerConnectionManager<TConnectionHandler>::ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand)    : _io(io), _serverStrand(serverStrand)
 {
 }
-
 template<class TConnectionHandler>
 void ServerConnectionManager<TConnectionHandler>::registerConnectionHandler(TConnectionHandler* connHandler)
 {
 //    std::unique_ptr<ConnectionHandler> hp = std::unique_ptr<ConnectionHandler>(connHandler);
-#ifdef CM_SMARTPOINTER
     _connections[connHandler] = std::unique_ptr<TConnectionHandler>(connHandler);
-#else
-    _connections.insert(connHandler);
-#endif
 }
 
 template<class TConnectionHandler>

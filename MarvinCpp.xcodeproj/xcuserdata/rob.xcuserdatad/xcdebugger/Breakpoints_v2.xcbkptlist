@@ -15,8 +15,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "128"
             endingLineNumber = "128"
-            landmarkName = "ForwardingHandler::makeDownstreamResponse()"
-            landmarkType = "5">
+            landmarkName = "makeDownstreamResponse()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
