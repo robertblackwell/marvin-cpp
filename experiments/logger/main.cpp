@@ -9,6 +9,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 int main()
 {
+    LogTrace(std::string("this is a string"));
+    LogTrace("this is a string");
     LogError("ERROR This is the message", "a string", (int) 33);
     LogWarn("WARN This is the message", "a string", (int) 33);
     LogInfo("INFO This is the message", "a string", (int) 33);

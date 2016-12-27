@@ -57,6 +57,8 @@ void ForwardingHandler::handleRequest(
     LogDebug(" query:", _u.search);
     
     _upStreamRequestUPtr = RequestUPtr(new Request(_io));
+    LogInfo("",traceReader(*_req));
+    
 //    _req->dumpHeaders(std::cerr);
     
     // filter out upgrade requests
@@ -102,19 +104,20 @@ void ForwardingHandler::handleRequest(
 void ForwardingHandler::handleUpstreamResponseReceived(Marvin::ErrorType& err)
 {
     LogInfo("");
-    
+    LogInfo("",traceRequest(*_upStreamRequestUPtr));
+
     if( err ){
         LogWarn("");
         // this means we got an error NOT a response wit an error status code
         // so we have to consttruct a response
-        makeDownstreamErrorResponse(err);
+        LogTrace(Marvin::make_error_description(err));
     }else{
         // Got a response from the upstream server
         // use it to create the downstream response
         makeDownstreamResponse();
     }
     _upStreamRequestUPtr->end();
-    LogInfo(" send downstream response");
+    LogTrace("send to client", traceWriter(*_resp));
     auto hf = std::bind(&ForwardingHandler::onComplete, this, std::placeholders::_1);
     _resp->asyncWrite(hf);
 }
@@ -122,6 +125,7 @@ void ForwardingHandler::makeDownstreamResponse()
 {
     LogInfo("");
     MessageReader& upStreamResponse = _upStreamRequestUPtr->getResponse();
+    LogTrace("got from server ", traceReader(upStreamResponse));
     
     // copy the headers
     auto hdrs = upStreamResponse.getHeaders();
@@ -148,15 +152,12 @@ void ForwardingHandler::makeDownstreamResponse()
     // Http versions defaults to 1.1, so force it to the same as the request
     _resp->setHttpVersMinor(upStreamResponse.httpVersMinor());
     // now attach the body
-    std::string xxxxx = upStreamResponse.getBody();
+    
     std::size_t len;
     if( (len = upStreamResponse.getBody().size()) > 0){
         _resp->setContent(upStreamResponse.getBody());
         _resp->setHeader("Content-length", std::to_string(len));
     }
-    //
-    // dont do the actual write just fill in the response
-    //
 }
 void ForwardingHandler::makeDownstreamErrorResponse(Marvin::ErrorType& err)
 {

@@ -5,13 +5,15 @@
 #include <ostream>
 #include <string>
 #include <cassert>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include "boost_stuff.hpp"
+//#include <boost/asio.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/function.hpp>
 #include "url.hpp"
 #include "UriParser.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+#include "message_reader.hpp"
 
 #include "request.hpp"
 
@@ -19,6 +21,20 @@ using boost::asio::ip::tcp;
 using boost::system::error_code;
 using boost::asio::io_service;
 using boost::asio::streambuf;
+
+std::string traceRequest(Request& request)
+{
+    std::stringstream ss;
+    ss << "Request: ";
+    if( request._connection != NULL ){
+        ss << "conn: " << std::hex << (long)request._connection;
+        ss << std::dec << "FD: " << request._connection->nativeSocketFD();
+    }else{
+        ss << "conn:" << "NULL";
+    }
+    return ss.str();
+}
+
 
 Request::~Request()
 {
@@ -220,8 +236,9 @@ void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
         // create a MessageReader with a read socket
         this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(conn, _io));
         // set up read also
-
+        LogInfo("", traceRequest(*this), traceWriter(*this));
         auto cf = std::bind(&Request::fullWriteHandler, this, std::placeholders::_1);
+        LogTrace(traceWriter(*this));
         this->asyncWrite(cf);
     }else{
         LogError("");
@@ -234,10 +251,16 @@ void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
 void Request::fullWriteHandler(Marvin::ErrorType& err)
 {
     LogInfo("", (long)this, " connection: ", (long)_connection, " FD:",_connection->nativeSocketFD());
+    LogInfo("", traceRequest(*this), traceWriter(*this));
     
     auto rh = std::bind(&Request::readComplete, this, std::placeholders::_1);
     
     _rdr->readMessage([this](Marvin::ErrorType& err){
+//        if(err){
+//            LogTrace(Marvin::make_error_description(err));
+//        }else{
+//            LogTrace(traceReader(*_rdr));
+//        }
         LogInfo("readMessage callback");
         auto pf = std::bind(this->_goCb, err);
         _io.post(pf);
@@ -253,6 +276,7 @@ void Request::readComplete(Marvin::ErrorType& err)
 {
     LogInfo(" oneTripOnly", _oneTripOnly);
     LogInfo("", (long)this, " connection: ", (long)_connection, " FD:",_connection->nativeSocketFD());
+    LogInfo("", traceRequest(*this), traceWriter(*this), traceReader(*(this->_rdr)));
     if( _oneTripOnly){
         auto pf = std::bind(this->_goCb, err);
         _io.post(pf);

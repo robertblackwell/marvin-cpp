@@ -37,6 +37,8 @@ public:
     
     void end();
     
+    friend std::string traceRequest(Request& request);
+    
 private:
     void asyncGetWriteSocket(ConnectCallbackType connectCb);
     void haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn);

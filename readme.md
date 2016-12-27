@@ -1,7 +1,24 @@
 ## TODO
+### need test harness
+### message body
+-	clean up how message bodies are handled and how EOF is handled by readers
+-	request does not handle body correctly and forwardingHandler probably copies the body too many times. Need a review of how body content is being managed. 
+-	line 345 MessageReader::onBody - need an efficient way of collectin the body data
+
+### design issue
+-	some kind of "data base" for collected exchanges so GUI can display them
+-	how to do edit/replay of echanges, does this imply tight coupling between mitmproxy and GUI or a command interface to the proxy
+
+### development steps
+-	package up request/response for transmission to GUI
+-	select the media types for which we will collect the body data
+-	de-compress the body data of those media types 
+
+### others
+-	read timeouts
+-	how to pass preferences/options to the proxy so that they can be updated during execution
 -	set sensible buffer sizes
 -	need to have some better method of handling header keys that simply literals
--	request does not handle body correctly and forwardingHandler probably copies the body too many times. Need a review of how body content is being managed. 
 -	related to body - Request needs for interface routines to manage start/end of message and streaming body data
 -	document the code using headerdocs syntax
 -	finish and test a stand alonehttps server

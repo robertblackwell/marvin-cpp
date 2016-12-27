@@ -113,9 +113,10 @@ template<class TRequestHandler>
 void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType& err)
 {
     LogInfo(" fd:", nativeSocketFD());
-    LogError("error value: ", err.value(),
-        " category: ", err.category().name(),
-        " msg: ", err.category().message(err.value()));
+    LogInfo("", Marvin::make_error_description(err));
+//    LogError("error value: ", err.value(),
+//        " category: ", err.category().name(),
+//        " msg: ", err.category().message(err.value()));
     if( err ){
         LogError("error value: ", err.value(),
             " category: ", err.category().name(),
@@ -131,6 +132,7 @@ void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType& e
                 this->handleConnectComplete(err, hijack);
              });
         } else {
+            LogTrace(traceMessage(*_reader));
             _requestHandlerUnPtr->handleRequest(_reader, _writer, [this](Marvin::ErrorType& err, bool keepAlive){
                 LogInfo("");
                 this->requestComplete(err, keepAlive);
@@ -146,21 +148,11 @@ template<class TRequestHandler>
 void ConnectionHandler<TRequestHandler>::serve()
 {
     LogInfo(" fd:", nativeSocketFD());
-    // set up reader and writer
-#ifdef CON_SMARTPOINTER
     ConnectionInterface* cptr = _connection.get();
-#else
-    ConnectionInterface* cptr = _connection;
-#endif
-    
-#ifdef CH_SMARTPOINTER
     _reader = std::shared_ptr<MessageReader>(new MessageReader(cptr, _io));
     _writer = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
-#else
-    _reader = new MessageReader(_connection, _io);
-    _writer = new MessageWriter(_io, false);
-#endif
     _writer->setWriteSock(cptr);
+
     auto rmh = std::bind(&ConnectionHandler::readMessageHandler, this, std::placeholders::_1 );
     _reader->readMessage(rmh);
     
@@ -175,6 +167,10 @@ void ConnectionHandler<TRequestHandler>::serveAnother()
 {
     LogInfo(" fd:", nativeSocketFD());
     /// get a new request object
+    ConnectionInterface* cptr = _connection.get();
+    _reader = std::shared_ptr<MessageReader>(new MessageReader(cptr, _io));
+    _writer = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
+    _writer->setWriteSock(cptr);
     _requestHandlerPtr  = new TRequestHandler(_io);
     _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
 

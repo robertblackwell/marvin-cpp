@@ -1,9 +1,4 @@
 //
-//
-//
-//
-//
-//
 #include <iostream>
 #include <sstream>
 #include <pthread.h>
@@ -17,7 +12,8 @@ enum class LogLevel {
     warn = 2,
     info = 3,
     debug = 4,
-    verbose = 5
+    verbose = 5,
+    trace = 6
 };
 
     
@@ -90,6 +86,35 @@ public:
 //            __outStream << os.str();
         }
     }
+    template<typename T, typename... Types>
+    void traceLog(
+              const char* file_name,
+              const char* func_name,
+              int line_number,
+              const T& firstArg,
+              const Types&... args)
+    {
+        std::ostringstream os;
+        std::lock_guard<std::mutex> lg(_loggerMutex);
+        
+        os << "MTRAC" <<"|";
+        auto tmp2 = boost::filesystem::path(file_name);
+        auto tmp3 = tmp2.filename();
+        auto tmp4 = tmp3.stem();
+        auto pid = ::getpid();
+        auto tid = pthread_self();
+
+
+        os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
+        os << "::"<< func_name << "[" << line_number << "]:";
+        myprint(os, firstArg, args...);
+        //
+        // Only use the stream in the last step and this way we can send the log record somewhere else
+        // easily
+        //
+        write(STDERR_FILENO, os.str().c_str(), strlen(os.str().c_str()) );
+
+    }
     
 private:
     std::ostream& __outStream;
@@ -100,9 +125,8 @@ private:
     template <typename T, typename... Types>
     void myprint (std::ostringstream& os,  const T& firstArg, const Types&... args)
     {
-        os << " " << firstArg ; // print first argument
-//        write(STDERR_FILENO, firstArg);
-        myprint(os, args...); // call print() for remaining arguments
+        os << " " << firstArg ;
+        myprint(os, args...);
     }
 
     void myprint(std::ostringstream& os)
@@ -114,7 +138,8 @@ private:
 
 
 // want to default to "ON" - disable by #define RBLOGGER_OFF
-//#define RBLOGGER_OFF
+#define RBLOGGER_OFF
+
 #if !defined(RBLOGGER_OFF) || defined(RBLOGGER_ON) || defined(RBLOGGER_ENABLED)
     #define RBLOGGER_ENABLED
 #else
@@ -125,7 +150,7 @@ private:
     
     #define ROBMACROFormatLog(lvl, frmt, ...)
     #define ROBMACROLog(lvl, arg1, ...)
-
+    #define TRACE( arg1, ...)
 #else
     #define ROBMACROFormatLog(lvl, frmt, ...) \
         RBLogging::activeLogger.logWithFormat(\
@@ -148,6 +173,19 @@ private:
             /*arg1*/        arg1, \
             /*var args*/    ##__VA_ARGS__\
         )
+#endif
+
+#ifndef NO_TRACE
+    #define RBLOGTRACE(arg1, ...) \
+        RBLogging::activeLogger.vlog(\
+            /*log:*/        RBLogging::LogLevel::trace, \
+            /*threshold:*/  RBLogging::LogLevel::trace, \
+            /*file */       (char*)__FILE__, \
+            /*function:*/   (char*)__FUNCTION__, \
+            /*line:*/       __LINE__, \
+            /*arg1*/        arg1, \
+            /*var args*/    ##__VA_ARGS__\
+    )
 #endif
 //
 // define the printf style log macros
@@ -173,7 +211,7 @@ private:
 #define  LogDebug(arg1, ...)   ROBMACROLog(LOG_LEVEL_DEBUG,   arg1, ##__VA_ARGS__)
 #define  LogVerbose(arg1, ...) ROBMACROLog(LOG_LEVEL_VERBOSE, arg1, ##__VA_ARGS__)
 
-    
+#define  LogTrace(arg1, ...)   RBLOGTRACE(arg1, ##__VA_ARGS__)    
 
 static Logger activeLogger{};
 

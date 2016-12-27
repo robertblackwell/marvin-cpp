@@ -65,7 +65,7 @@ template<class TRequestHandler> void Server<TRequestHandler>::listen()
     auto hf = std::bind(&Server<TRequestHandler>::startAccept, this);
     postOnStrand(hf);
     
-//#define MULTI_THREAD
+#define MULTI_THREAD
 #ifndef MULTI_THREAD
     _io.run();
 #else

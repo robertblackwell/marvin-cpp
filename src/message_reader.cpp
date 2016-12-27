@@ -18,6 +18,13 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "read_socket_interface.hpp"
 #include "message_reader.hpp"
 
+std::string traceReader(MessageReader& rdr)
+{
+    std::stringstream ss;
+    ss  << traceMessage(rdr)
+        << " body.len: " << rdr.body.size() ;
+    return ss.str();
+}
 
 MessageReader::MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io): _io(io), _readSock(readSock)
 {
@@ -236,14 +243,8 @@ void MessageReader::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_tr
     int sz = (int)mb.size();
     LogDebug("sz: ", sz);
     if( sz == 0 ){
-        LogInfo("err.value: ", er.value());
-        LogInfo("err.cat: ", er.category().name());
-        LogInfo("err.msg: ", er.category().message(er.value()));
-        LogDebug("zero ",
-            "fd: ", _readSock->nativeSocketFD(),
-            "error.value :", er.value(),
-            "error.cat:", er.category().name(),
-            "error.message", er.category().message(er.value()));
+        LogInfo("", Marvin::make_error_description(er));
+
         nparsed = sz;
         this->appendEOF();
         // did the EOF finish a message - if so bubble it up else - error
@@ -346,16 +347,15 @@ void MessageReader::onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
     LogDebug(" entry");
     // are we done - if not hang another read
     auto bh = std::bind(&MessageReader::onBody, this, std::placeholders::_1, std::placeholders::_2);
-    bool done = (er == Marvin::make_error_eom());
+    bool done = ( (er == Marvin::make_error_eom()) || (er == Marvin::make_error_eof()) );
     
-//    if( er != Marvin::make_error_ok() ){
-
     if( done ){
         bodyStream << *fBufPtr;
         delete fBufPtr;
         Marvin::ErrorType ee = Marvin::make_error_ok();
-        onMessage(ee);
         body = bodyStream.str();
+//        LogTrace("onBody ", traceReader(*this));
+        onMessage(ee);
     }else{
         // do something with fBuf
         //
@@ -363,6 +363,7 @@ void MessageReader::onBody(Marvin::ErrorType& er, FBuffer* fBufPtr)
         //
 //        std::string xx = bodyStream.str();
         bodyStream << *fBufPtr;
+//        body = bodyStream.str();
         delete fBufPtr;
         this->readBody(bh);
     }

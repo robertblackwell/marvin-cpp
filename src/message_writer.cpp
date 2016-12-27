@@ -13,6 +13,17 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
+std::string traceWriter(MessageWriter& writer)
+{
+    std::stringstream ss;
+    ss  << traceMessage(writer)
+        << "[" << writer._haveContent << "]"
+        << " body.len: " << writer._bodyContent.size() ;
+//    std::stringstream ss;
+//    ss << "Just testing";
+    return ss.str();
+}
+
 
 MessageWriter::MessageWriter(boost::asio::io_service& io, bool is_request):_io(io)
 {

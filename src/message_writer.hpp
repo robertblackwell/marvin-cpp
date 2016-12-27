@@ -35,6 +35,8 @@ public:
     
     void setWriteSock(WriteSocketInterface* conn){ _writeSock = conn;}
     
+    friend std::string traceWriter(MessageWriter& wrtr);
+
 protected:
     void asyncWriteFullBody(WriteMessageCallbackType cb);
 

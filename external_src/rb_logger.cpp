@@ -6,7 +6,7 @@
 //
 #include <iostream>
 #include <sstream>
-#include <boost/filesystem.hpp>
+//#include <boost/filesystem.hpp>
 #include "rb_logger.hpp"
 
 std::string RBLogging::Logger::className(std::string& func_name){
@@ -22,7 +22,8 @@ std::string RBLogging::LogLevelText(RBLogging::LogLevelType level){
         "WARN",
         "INFO",
         "DEBG",
-        "VERB"
+        "VERB",
+        "MTRAC"
     };
     return tab[(int)level];
 }

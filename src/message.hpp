@@ -105,6 +105,8 @@ public:
     void    setIsRequest(bool flag);
     bool    isRequest();
     
+    friend std::string traceMessage(MessageBase& msg);
+
 protected:
 
     bool                                _isRequest;

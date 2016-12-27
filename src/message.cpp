@@ -5,6 +5,31 @@
 #include "http_header.hpp"
 #include "message.hpp"
 
+std::string traceMessage(MessageBase& msg)
+{
+    std::stringstream ss;
+    ss << std::hex << &msg << std::dec << " ";
+    
+    if( msg.isRequest() ){
+        ss << msg.getMethodAsString() << " " << msg.uri() << " HTTP/1." << msg.httpVersMinor();
+    }else{
+        ss << "HTTP/1." << msg.httpVersMinor() << " " << msg.statusCode() << " " << msg.status();
+    }
+    if( msg.hasHeader(HttpHeader::Name::ContentLength) ){
+        ss << "ContentLen : " << msg.getHeader(HttpHeader::Name::ContentLength);
+    }else{
+        ss << "No content length header";
+    }
+    if( msg.hasHeader(HttpHeader::Name::TransferEncoding) ){
+        ss << "TransferEncodin : " << msg.getHeader(HttpHeader::Name::TransferEncoding);
+    }else{
+        ss << "No transfer encoding";
+    }
+    std::string s = ss.str();
+    return ss.str();
+}
+
+
 std::string httpMethodString(HttpMethod m){
 
     enum http_method c_m = (enum http_method) m;

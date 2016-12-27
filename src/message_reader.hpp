@@ -111,6 +111,8 @@ public:
     
     std::string& getBody();
     
+    friend std::string traceReader(MessageReader& rdr);
+    
 private:
     //----------------------------------------------------------------------------------------------------
     // private methods

@@ -60,6 +60,7 @@ namespace Marvin{
     ErrorType make_error_eof();
     ErrorType make_error_eom();
     ErrorType make_error_eob();
+    std::string make_error_description(Marvin::ErrorType& err);
 } // namespace Marvin
 
 namespace Marvin{

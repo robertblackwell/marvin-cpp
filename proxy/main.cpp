@@ -19,7 +19,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 int main(int argc, const char * argv[])
 {
-    std::cout << "Hello, World!\n";
+    LogError("This is an error", std::string(""));
+    LogTrace(std::string("hello"));
+    LogTrace(std::string("hello"), std::string("this"), std::string("is"), std::string("a"), std::string("test"));
     try
     {
         Server<ForwardingHandler> server(9991);
