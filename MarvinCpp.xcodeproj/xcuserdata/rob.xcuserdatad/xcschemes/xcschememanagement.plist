@@ -44,6 +44,11 @@
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
+		<key>proxy-objc.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>22</integer>
+		</dict>
 		<key>proxy.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -158,6 +163,16 @@
 			<true/>
 		</dict>
 		<key>D458EA2F1DF6413600E820A9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D45F5A0F1E12E5CA0032F943</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D45F5A171E12E61A0032F943</key>
 		<dict>
 			<key>primary</key>
 			<true/>

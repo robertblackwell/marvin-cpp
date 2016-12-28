@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)http://philjordan.eu/article/mixing-objective-c-c++-and-objective-c++ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="./Mixing Objective-C, C++ and Objective-C++_ an Updated Summary – Phil Jordan_files/reset-min.css">
+<link rel="stylesheet" type="text/css" href="./Mixing Objective-C, C++ and Objective-C++_ an Updated Summary – Phil Jordan_files/style.css">
+<title>Mixing Objective-C, C++ and Objective-C++: an Updated Summary – Phil Jordan</title>
+</head>
+<body>
+
+<div class="positioning_frame">
+<header>
+	<div class="bubbles">
+		<div class="about_bubble">
+			<a href="http://philjordan.eu/about">About</a>
+		</div>
+		<div class="articles_bubble">
+			<a href="http://philjordan.eu/">Articles</a>
+		</div>
+	</div>
+</header>
+
+<div class="content_frame">
+	<div class="top_border"><div class="left_corner"></div><div class="border"></div><div class="right_corner"></div></div>
+	<div class="content_left_border"><div class="content_right_border">
+	<div class="content_middle">
+<div class="name_tag"><a href="http://philjordan.eu/about"><img src="./Mixing Objective-C, C++ and Objective-C++_ an Updated Summary – Phil Jordan_files/label.png"></a></div>
+<article>
+
+<h1>Mixing Objective-C, C++ and Objective-C++: an Updated Summary</h1>
+
+<p><strong><a href="http://philjordan.eu/article/mixing-objective-c-c++-and-objective-c++">Originally published on 25th May 2012</a>, updated on 15th July 2012.</strong></p>
+
+<p>Quite some time ago, I ran into the situation of including a C++ library in an Objective-C project. I failed to find any sensible documentation on the subject, so I came up with a solution myself and eventually <a href="http://philjordan.eu/article/strategies-for-using-c++-in-objective-c-projects" title="Strategies for Using C++ in Objective-C Projects (and vice versa)">wrote it up in an article</a>. That article went on to become something of a sleeper hit (by my modest standards anyway) and is to this day one of the highest-ranked results for Objective-C++ and related keywords on Google.</p>
+
+<p>Since then, Apple has switched to the LLVM-based <a href="http://clang.llvm.org/" title="clang: a C language family frontend for LLVM">clang</a> as the primary compiler for Mac and iOS development. One of the effects of this has been an accelerated pace of changes to the Objective-C language, compared to the rather more glacial rate of change under the GCC regime. One particular change has caused my old article to no longer be up-to-date. This, along with the steady stream of clarification questions I receive about it, has prompted me to write this new article.</p>
+
+<h2>Recap of the problem</h2>
+
+<p>To save you going through the old article, here's the issue: let's say you have some existing C++ code, a library perhaps, and you want to use it in an Objective-C application. Typically, your C++ code will define some class you'd like to use. You <em>could</em> switch your whole project to Objective-C++ by renaming all the .m files to .mm, and freely mix C++ and Objective-C. That's certainly an option, but the two worlds are quite different, so such "deep" mixing can become awkward.</p>
+
+<p>So usually you'll want to wrap the C++ types and functions with Objective-C equivalents that you can use in the rest of your project. Let's say you have a C++ class called <code>CppObject</code>, defined in CppObject.h:</p>
+
+<pre><code>#include &lt;string&gt;
+class CppObject
+{
+public:
+  void ExampleMethod(const std::string&amp; str);
+  // constructor, destructor, other members, etc.
+};
+</code></pre>
+
+<p>You can have C++-typed members in an Objective-C class, so the typical first attempt is to do this with your wrapper class, <code>ObjcObject</code> - in ObjcObject.h:</p>
+
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+#import "CppObject.h"
+
+@interface ObjcObject : NSObject {
+  CppObject wrapped;
+}
+- (void)exampleMethodWithString:(NSString*)str;
+// other wrapped methods and properties
+@end
+</code></pre>
+
+<p>And then implementing the methods in ObjcObject.mm. Many are then surprised to get preprocessor and compile errors in ObjcObject.h and CppObject.h when they <code>#import "ObjcObject.h"</code> from a pure Objective-C (.m) file directly or indirectly via another header (.h) file. The thing to bear in mind is that the preprocessor basically just does text substitution, so <code>#include</code> and <code>#import</code> directives are essentially equivalent to recursively copy-and-pasting the contents of the file in question into the location of the directive. So in this example, if you <code>#import "ObjcObject.h"</code> you're essentially inserting the following code:</p>
+
+<pre><code>// [lots and lots of Objective-C code from Foundation/Foundation.h]
+// [fail to include &lt;string&gt;] as that header is not in the include path outside of C++ mode
+class CppObject
+{
+public:
+  void ExampleMethod(const std::string&amp; str);
+  // constructor, destructor, other members, etc.
+};
+
+@interface ObjcObject : NSObject {
+  CppObject wrapped;
+}
+- (void)exampleMethodWithString:(NSString*)str;
+// other wrapped methods and properties
+@end
+</code></pre>
+
+<p>The compiler will get enormously confused by <code>class CppObject</code> and the block following it, as that's simply not valid Objective-C syntax. The error will typically be something like</p>
+
+<pre><code>Unknown type name 'class'; did you mean 'Class'?
+</code></pre>
+
+<p>as there is no <code>class</code> keyword in Objective-C. So to be compatible with Objective-C, our Objective-C++ class's header file must contain only Objective-C code, absolutely no C++ - this mainly affects types in particular&nbsp;(like the CppObject class type here).</p>
+
+<h2>Keeping your headers clean</h2>
+
+<p>In the <a href="http://philjordan.eu/article/strategies-for-using-c++-in-objective-c-projects" title="Strategies for Using C++ in Objective-C Projects (and vice versa)">old article</a>, I talked through a few solutions to this, so I won't reiterate them here. The nicest one at the time was the PIMPL idiom. It continues to work well today, and is still the best way for the opposite problem of wrapping Objective-C with C++ (more on that later on). However, with clang, there is a new way to keep C++ out of your Objective-C headers: <abbr title="instance variable">ivar</abbr>s in <a href="http://developer.apple.com/library/ios/#documentation/cocoa/conceptual/objectivec/Chapters/ocCategories.html#//apple_ref/doc/uid/TP30001163-CH20-SW1">class extensions</a>.</p>
+
+<p>Class extensions (not to be confused with <em>categories</em>) have existed in Objective-C for a while: they let you declare additional parts of the class's interface outside the public header before the <code>@implementation</code> block. As such, the only sensible place to put them is just above said block, e.g. ObjcObject.mm:</p>
+
+<pre><code>#import "ObjcObject.h"
+@interface ObjcObject () // note the empty parentheses
+- (void)methodWeDontWantInTheHeaderFile;
+@end
+@implementation ObjcObject
+// etc.
+</code></pre>
+
+<p>This much already worked with GCC, but with clang, you can also add an ivar block to it. This means we can declare any instance variables with C++ types in the extension, or at the start of the <code>@implementation</code> block. In our case, we can reduce the ObjcObject.h file to this:</p>
+
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+
+@interface ObjcObject : NSObject
+- (void)exampleMethodWithString:(NSString*)str;
+// other wrapped methods and properties
+@end
+</code></pre>
+
+<p>The missing parts all move to the class extension in the implementation file (ObjcObject.mm):</p>
+
+<pre><code>#import "ObjcObject.h"
+#import "CppObject.h"
+@interface ObjcObject () {
+  CppObject wrapped;
+}
+@end
+
+@implementation ObjcObject
+- (void)exampleMethodWithString:(NSString*)str
+{
+  // NOTE: if str is nil this will produce an empty C++ string
+  // instead of dereferencing the NULL pointer from UTF8String. 
+  std::string cpp_str([str UTF8String], [str lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
+  wrapped.ExampleMethod(cpp_str);
+}
+</code></pre>
+
+<p>Alternatively, if we don't need the interface extension to declare any extra properties and methods, the ivar block can also live at the start of the <code>@implementation</code>:</p>
+
+<pre><code>#import "ObjcObject.h"
+#import "CppObject.h"
+
+@implementation ObjcObject {
+  CppObject wrapped;
+}
+
+- (void)exampleMethodWithString:(NSString*)str
+{
+  // NOTE: if str is nil this will produce an empty C++ string
+  // instead of dereferencing the NULL pointer from UTF8String. 
+  std::string cpp_str([str UTF8String], [str lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
+  wrapped.ExampleMethod(cpp_str);
+}
+</code></pre>
+
+<p>Either way, we now <code>#import "ObjcObject.h"</code> to our heart's content and use <code>ObjcObject</code> like any other Objective-C class. The CppObject instance for the <code>wrapped</code> ivar will be constructed using the <em>default constructor</em> when you <em>alloc</em> (<strong>not</strong> init) an ObjcObject, the destructor will be called on <em>dealloc</em>. This often isn't what you want, particularly if there isn't a (public) default constructor at all, in which case the code will fail to compile.</p>
+
+<h2>Managing the wrapped C++ object's lifecycle</h2>
+
+<p>The solution is to manually trigger construction via the <code>new</code> keyword, e.g.</p>
+
+<pre><code>@interface ObjcObject () {
+  CppObject* wrapped; // Pointer! Will be initialised to NULL by alloc.
+}
+@end
+@implementation ObjcObject
+- (id)initWithSize:(int)size
+{
+  self = [super init];
+  if (self)
+  {
+    wrapped = new CppObject(size);
+    if (!wrapped) self = nil;
+  }
+  return self;
+}
+//...
+</code></pre>
+
+<p>If using C++ exceptions, you may want to wrap the construction in a <code>try {...} catch {...}</code> block and handle any construction errors. With explicit construction, we also need to explicitly destroy the wrapped object:</p>
+
+<pre><code>- (void)dealloc
+{
+  delete wrapped;
+  [super dealloc]; // omit if using ARC
+}
+</code></pre>
+
+<p>Note that the extra level of indirection involves an extra memory allocation. Objective-C heavily allocates and frees memory all over the place, so this one extra allocation shouldn't be a big deal. If it is, you can use placement <code>new</code> instead, and reserve memory within the Objective-C object via an extra <code>char wrapped_mem[sizeof(CppObject)];</code> ivar, creating the instance using <code>wrapped = new(wrapped_mem) CppObject();</code> and destroying it via an explicit destructor call: <code>if (wrapped) wrapped-&gt;~CppObject();</code>. As with any use of placement new, though, you'd better have a good reason for it. Placement <code>new</code> returns a pointer to the constructed object. I would personally keep that (typed) pointer in an ivar just as with regular <code>new</code>. The address will normally coincide with the start of the char array, so you could get away with casting that instead.</p>
+
+<h2>Wrapping up</h2>
+
+<p>Now you'll probably want to wrap a bunch of member functions with Objective-C methods, and public fields with properties whose getters and setters forward to the C++ object. Make sure that your wrapper methods only return and take parameters with C or Objective-C types. You may need to do some conversions or wrap some more C++ types. Don't forget Objective-C's special nil semantics don't exist in C++: NULL pointers must not be dereferenced.</p>
+
+<h2>The reverse: using Objective-C classes from C++ code</h2>
+
+<p>I've had some email regarding the opposite: calling into Objective-C from C++. Again the problem lies with header files. You don't want to pollute the C++ header with Objective-C types, or it can't be <code>#include</code>d from pure C++. Let's say we want to wrap the Objective-C class <code>ABCWidget</code>, declared in ABCWidget.h:</p>
+
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+@interface ABCWidget
+- (void)init;
+- (void)reticulate;
+// etc.
+@end
+</code></pre>
+
+<p>Once again, this kind of class definition will work in Objective-C++, but this time not in pure C++:</p>
+
+<pre><code>#import "ABCWidget.h"
+namespace abc
+{
+  class Widget
+  {
+    ABCWidget* wrapped;
+  public:
+    Widget();
+    ~Widget();
+    void Reticulate();
+  };
+}
+</code></pre>
+
+<p>A pure C++ compiler will trip over the code in Foundation.h and eventually the <code>@interface</code> block for <code>ABCWidget</code>.</p>
+
+<h2>Some things never change: PIMPL</h2>
+
+<p>There's no such thing as a class extension in C++, so that trick won't work. PIMPL, on the other hand, works just fine and is actually quite commonly used in plain C++ anyway. In our case, we reduce the C++ class to its bare minimum:</p>
+
+<pre><code>namespace abc
+{
+  struct WidgetImpl;
+  class Widget
+  {
+    WidgetImpl* impl;
+  public:
+    Widget();
+    ~Widget();
+    void Reticulate();
+  };
+}
+</code></pre>
+
+<p>And then, in Widget.mm:</p>
+
+<pre><code>#include "Widget.hpp"
+#import "ABCWidget.h"
+namespace abc
+{
+  struct WidgetImpl
+  {
+    ABCWidget* wrapped;
+  };
+  Widget::Widget() :
+    impl(new WidgetImpl)
+  {
+    impl-&gt;wrapped = [[ABCWidget alloc] init];
+  }
+  Widget::~Widget()
+  {
+    if (impl)
+      [impl-&gt;wrapped release];
+    delete impl;
+  }
+  void Widget::Reticulate()
+  {
+    [impl-&gt;wrapped reticulate];
+  }
+}
+</code></pre>
+
+<p>This is mostly self-explanatory; the reason it works is that a forward declaration of a struct or class suffices for declaring variables or members as <em>pointers</em> to such struct or class objects. We only dereference the <code>impl</code> pointer inside Widget.mm after we fully define the <code>WidgetImpl</code> struct type.</p>
+
+<p>Notice that I <code>release</code> the wrapped object in the destructor. Even if you use ARC in your project, I recommend you disable it for C++-heavy Objective-C++ files like this one. You <em>can</em> make your C++ code behave itself even with ARC, but it'll often be more work than just putting in the <code>release</code> and <code>retain</code> calls. You can disable ARC for individual files in XCode under the 'Build Phases' tab in the build target's properties. Fold out the 'Compile Sources' section and add <code>-fno-objc-arc</code> to the compiler flags for the file(s) in question.</p>
+
+<h2>A shortcut for wrapping Objective-C objects in C++</h2>
+
+<p>You may have noticed that the PIMPL solution uses <em>two</em> levels of indirection. If the wrapper is as thin as the one in this example, that's probably overkill. Although Objective-C types can generally not be used in plain C++, there are a few types that are actually defined in C. The <code>id</code> type is one of them, and it's declared in the <code>&lt;objc/objc-runtime.h&gt;</code> header. You lose what little type safety Objective-C gives you, but it does mean you can place your object pointer directly into the C++ class definition:</p>
+
+<pre><code>#include &lt;objc/objc-runtime.h&gt;
+namespace abc
+{
+  class Widget
+  {
+    id /* ABCWidget* */ wrapped;
+  public:
+    Widget();
+    ~Widget();
+    void Reticulate();
+  };
+}
+</code></pre>
+
+<p>Sending messages to id isn't really advisable, as you lose a lot of the compiler's checking mechanism, particularly in the presence of ambiguities between differently-typed methods with the same selector (name) in different classes. So:</p>
+
+<pre><code>#include "Widget.hpp"
+#import "ABCWidget.h"
+namespace abc
+{
+  Widget::Widget() :
+    wrapped([[ABCWidget alloc] init])
+  {
+  }
+  Widget::~Widget()
+  {
+    [(ABCWidget*)impl release];
+  }
+  void Widget::Reticulate()
+  {
+    [(ABCWidget*)impl reticulate];
+  }
+}
+</code></pre>
+
+<p><a name="objc-in-cpp-clean"></a>Casting like this all the time is tedious and can easily hide bugs in your code, so let's try to do a better job in the header:</p>
+
+<pre><code>#ifdef __OBJC__
+@class ABCWidget;
+#else
+typedef struct objc_object ABCWidget;
+#endif
+
+namespace abc
+{
+  class Widget
+  {
+    ABCWidget* wrapped;
+  public:
+    Widget();
+    ~Widget();
+    void Reticulate();
+  };
+}
+</code></pre>
+
+<p>So, if this header is <code>#import</code>ed in a .mm file, the compiler is fully aware of the specific class type. If <code>#include</code>d in pure C++ mode, <code>ABCWidget*</code> is identical to the <code>id</code> type: <code>id</code> is defined as <code>typedef struct objc_object* id;</code>. The <code>#ifdef</code> block can of course be further tidied up into a reusable macro:</p>
+
+<pre><code>#ifdef __OBJC__
+#define OBJC_CLASS(name) @class name
+#else
+#define OBJC_CLASS(name) typedef struct objc_object name
+#endif
+</code></pre>
+
+<p>We can now forward-declare Objective-C classes in headers usable by all 4 languages:</p>
+
+<pre><code>OBJC_CLASS(ABCWidget);
+</code></pre>
+
+<h2>Acknowledgements</h2>
+
+<p>Many thanks to <a href="http://www.creativeinaustria.com/">Christopher Atlan</a>, <a href="http://www.zathras.de/">Uli Kusterer</a> and <a href="http://jhaberstro.blogspot.com/">Jedd Haberstro</a> for their suggestions and corrections after reading drafts of this article.</p>
+
+<p>Thanks to <a href="http://roderickmann.org/">Rick Mann</a> for making a suggestion that prompted me to come up with the final version for wrapping Objective-C classes with C++.</p>
+</article>
+
+</div>
+</div>
+</div>
+
+	<div class="bottom_border"><div class="left_corner"></div><div class="border"></div><div class="right_corner"></div></div>
+	<footer>Content Copyright 2010-2012 Phillip Jordan; Design Copyright 2010 Laura Dennis; all rights reserved</footer>
+
+</div>
+</div>
+<script type="text/javascript" async="" defer="" src="./Mixing Objective-C, C++ and Objective-C++_ an Updated Summary – Phil Jordan_files/saved_resource"></script><script type="text/javascript" async="" defer="" src="./Mixing Objective-C, C++ and Objective-C++_ an Updated Summary – Phil Jordan_files/saved_resource(1)"></script><script type="text/javascript" src="./Mixing Objective-C, C++ and Objective-C++_ an Updated Summary – Phil Jordan_files/mixpanel.js"></script>
+<script type="text/javascript" src="./Mixing Objective-C, C++ and Objective-C++_ an Updated Summary – Phil Jordan_files/analytics.js"></script>
+
+
+</body></html>

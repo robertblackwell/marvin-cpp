@@ -55,6 +55,8 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
         MessageWriterSPtr           _resp;
         RequestUPtr                 _upStreamRequestUPtr;
         HandlerDoneCallbackType     _doneCallback;
+        /// this will collect summaries of the req and resp
+        TCollector*                 _collector;
 };
 
 #include "forwarding_handler.ipp"

@@ -223,8 +223,8 @@ Parser* getParser(http_parser* parser)
 void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value)
 {
     Parser* p = getParser(parser);
-    char* n_p;
-    char* v_p;
+    char* n_p = NULL;
+    char* v_p = NULL;
     int n;
     n = sb_to_string(name, &n_p);
     n = sb_to_string(value,&v_p);

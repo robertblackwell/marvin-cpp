@@ -1,11 +1,4 @@
-//#include <iostream>
-//#include <sstream>
-//#include "rb_logger.hpp"
-//RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-//#include "UriParser.hpp"
-//#include "request.hpp"
-//#include "http_header.hpp"
-//#include "forwarding_handler.hpp"
+
 
 void response403Forbidden(boost::asio::streambuf& sbuf);
 void response200OKConnected(boost::asio::streambuf& sbuf);
@@ -48,6 +41,7 @@ void ForwardingHandler<TCollector>::handleRequest(
     _req = req;
     _resp = resp;
     _doneCallback = done;
+    _collector = TCollector::getInstance(_io);
     //
     // Parse the url to determine were we have to send the "upstream" request
     //
@@ -124,6 +118,7 @@ void ForwardingHandler<TCollector>::handleUpstreamResponseReceived(Marvin::Error
     _upStreamRequestUPtr->end();
     LogTrace("send to client", traceWriter(*_resp));
     auto hf = std::bind(&ForwardingHandler<TCollector>::onComplete, this, std::placeholders::_1);
+    _collector->collect(_req, _resp);
     _resp->asyncWrite(hf);
 }
 
