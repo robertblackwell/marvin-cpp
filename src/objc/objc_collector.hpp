@@ -17,20 +17,20 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "request.hpp"
 #include "forwarding_handler.hpp"
 
-class PipeCollector
+class ObjcCollector
 {
     public:
         static bool             _firstTime;
-        static PipeCollector*   _instance;
-        static std::string      _pipePath;
+        static ObjcCollector*   _instance;
+        static void*            _anonDelegate;
     
-        static PipeCollector* getInstance(boost::asio::io_service& io);
-        static void setPipePath(std::string path);
+        static ObjcCollector* getInstance(boost::asio::io_service& io);
+        static void setDelegate(void* delegate);
         /**
         ** Delete copy constructors
         **/
-        PipeCollector(PipeCollector const&)   = delete;
-        void operator=(PipeCollector const&)  = delete;
+        ObjcCollector(ObjcCollector const&)   = delete;
+        void operator=(ObjcCollector const&)  = delete;
     
         /**
         ** This method actually implements the collect function but run on a dedicated
@@ -45,12 +45,10 @@ class PipeCollector
         void collect(MessageReaderSPtr req, MessageWriterSPtr resp);
     
     private:
-        PipeCollector(boost::asio::io_service& io);
+        ObjcCollector(boost::asio::io_service& io);
 
         boost::asio::strand         _myStrand;
         boost::asio::io_service&    _ioLoop;
-        std::ofstream               _outPipe;
-        bool                        _pipeOpen;
 };
 
 

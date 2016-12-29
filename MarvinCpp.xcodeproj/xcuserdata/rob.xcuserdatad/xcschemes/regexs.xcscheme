@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D470B3191E0FE51F00AEF135"
-               BuildableName = "proxy"
-               BlueprintName = "proxy"
+               BlueprintIdentifier = "D445DB571E14B57400418D6B"
+               BuildableName = "regexs"
+               BlueprintName = "regexs"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D470B3191E0FE51F00AEF135"
-            BuildableName = "proxy"
-            BlueprintName = "proxy"
+            BlueprintIdentifier = "D445DB571E14B57400418D6B"
+            BuildableName = "regexs"
+            BlueprintName = "regexs"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -55,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D470B3191E0FE51F00AEF135"
-            BuildableName = "proxy"
-            BlueprintName = "proxy"
+            BlueprintIdentifier = "D445DB571E14B57400418D6B"
+            BuildableName = "regexs"
+            BlueprintName = "regexs"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D470B3191E0FE51F00AEF135"
-            BuildableName = "proxy"
-            BlueprintName = "proxy"
+            BlueprintIdentifier = "D445DB571E14B57400418D6B"
+            BuildableName = "regexs"
+            BlueprintName = "regexs"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

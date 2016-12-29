@@ -56,6 +56,7 @@ namespace HttpHeader
         static const std::string Host = "HOST";
         static const std::string Connection = "CONNECTION";
         static const std::string ContentLength = "CONTENT-LENGHTH";
+        static const std::string ContentType = "CONTENT-TYPE";
         static const std::string AcceptEncoding = "ACCEPT-ENCODING";
         static const std::string ProxyConnection = "PROXY-CONNECTION";
         static const std::string TransferEncoding = "TRANSFER-ENCODING";

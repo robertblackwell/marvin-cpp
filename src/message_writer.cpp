@@ -43,6 +43,12 @@ MessageWriter::setContent(std::string& contentStr)
     setHeader("Content-length", std::to_string(contentStr.size()));
     LogDebug("");
 }
+std::string&
+MessageWriter::getBody()
+{
+    if( ! _haveContent ) _bodyContent = "";
+    return _bodyContent;
+}
 void MessageWriter::putHeadersStuffInBuffer()
 {
     

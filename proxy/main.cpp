@@ -16,10 +16,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "forwarding_handler.hpp"
-
-class NullCollector{
-    NullCollector(){}
-};
+#include "pipe_collector.hpp"
 
 int main(int argc, const char * argv[])
 {
@@ -28,7 +25,8 @@ int main(int argc, const char * argv[])
     LogTrace(std::string("hello"), std::string("this"), std::string("is"), std::string("a"), std::string("test"));
     try
     {
-        Server<ForwardingHandler<NullCollector>> server;
+        PipeCollector::setPipePath("/Users/rob/marvin_collect");
+        Server<ForwardingHandler<PipeCollector>> server;
         server.listen(9991);
     }
     catch (std::exception& e)

@@ -26,7 +26,7 @@ public:
     ~MessageWriter();
     
     void setContent(std::string& contentStr);
-    
+    std::string&  getBody();
     void asyncWrite(WriteMessageCallbackType cb);
     void asyncWriteHeaders(WriteHeadersCallbackType cb);
     void asyncWriteBodyData(WriteBodyDataCallbackType cb);

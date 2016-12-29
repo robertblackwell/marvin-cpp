@@ -47,17 +47,27 @@
 		<key>proxy-objc.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>22</integer>
+			<integer>21</integer>
 		</dict>
-		<key>proxy.xcscheme</key>
+		<key>proxy-pipe.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>19</integer>
+		</dict>
+		<key>proxy_cocoa.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>22</integer>
 		</dict>
 		<key>reader_test.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
+		</dict>
+		<key>regexs.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>23</integer>
 		</dict>
 		<key>server_alone.xcscheme</key>
 		<dict>
@@ -152,6 +162,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>D445DB571E14B57400418D6B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>D458EA141DF62C7F00E820A9</key>
 		<dict>
 			<key>primary</key>
@@ -228,6 +243,11 @@
 			<true/>
 		</dict>
 		<key>D4A6E9D91E0477710096441E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D4A7D3511E1459C200748973</key>
 		<dict>
 			<key>primary</key>
 			<true/>
