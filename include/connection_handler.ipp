@@ -53,7 +53,7 @@ long ConnectionHandler<TRequestHandler>::nativeSocketFD()
 * Come here when a the CONNECT handler calls its "done" callback
 */
 template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::handleConnectComplete(Marvin::ErrorType& err, bool hijacked)
+void ConnectionHandler<TRequestHandler>::handleConnectComplete(bool hijacked)
 {
     // do not want the connction closed unless !hijacked
     LogInfo(" fd:", nativeSocketFD());
@@ -128,8 +128,8 @@ void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType& e
     } else{
         if(_reader->method() == HttpMethod::CONNECT ){
             LogWarn("CONNECT request");
-             _requestHandlerUnPtr->handleConnect(_reader, _connection, [this](Marvin::ErrorType& err, bool hijack){
-                this->handleConnectComplete(err, hijack);
+             _requestHandlerUnPtr->handleConnect(_reader, _connection, [this](bool hijack){
+                this->handleConnectComplete(hijack);
              });
         } else {
             LogTrace(traceMessage(*_reader));

@@ -1,4 +1,5 @@
 ## TODO
+-	need to do something easy for config options
 ### need test harness
 ### message body
 -	clean up how message bodies are handled and how EOF is handled by readers
@@ -62,5 +63,11 @@ __experiments__, a series of targets that build executables that I have used for
 __external_src__, source files that come from various repos that I have found convenient to use.
 
 __include__, contains the `.h`, `.hpp`, `.ipp` and perhaps some `.cpp` files for this project that are either standalione header files (that do not have a matching `.cpp` file), or define a template class. Note `.ipp` files are the implementation parts of templates and hence are like `.cpp` but must be included inside their corresponding `.hpp`.
+
+__src__, contains C++ source code and includes that go with an `.cpp`.
+
+__collector__, a sub folder of source contains various "collector" classes. These are the vehicle by which the monitoring process is delivers output. Have two implementations to date. On for `objc/cocoa` and another that delivers output to a named pipe. 
+
+__objc__, contains `objc++` code for wrappers that enable us to use __Marvin__ in a cocoa app
 
 __packages__, this is a folder where the `makefile` clones git repos that are used as external components in this project. Once `cloned` into this folder the necessary source files are copied (by the makefile) into __external_src__. 

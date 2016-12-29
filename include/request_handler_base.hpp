@@ -10,6 +10,7 @@
 #include "message_writer.hpp"
 
 typedef std::function<void(Marvin::ErrorType& err, bool keepAlive)> HandlerDoneCallbackType;
+typedef std::function<void(bool hijackConnectioin)> ConnectHandlerHijackCallbackType;
 
 class RequestHandlerBase
 {
@@ -37,13 +38,13 @@ public:
     virtual void handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
-        HandlerDoneCallbackType done)
-        { auto err = Marvin::make_error_ok(); done(err, false);}
+        ConnectHandlerHijackCallbackType hijackConnection)
+        { auto err = Marvin::make_error_ok(); hijackConnection(false);}
     
     virtual void handleRequest(
         MessageReaderSPtr           req,
         MessageWriterSPtr           rep,
-        HandlerDoneCallbackType done) = 0;
+        HandlerDoneCallbackType hijackConnection) = 0;
     
     protected:
         boost::asio::io_service&    _io;

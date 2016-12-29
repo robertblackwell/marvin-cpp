@@ -13,12 +13,29 @@ ForwardingHandler<TCollector>::ForwardingHandler(
 template<class TCollector>
 ForwardingHandler<TCollector>::~ForwardingHandler(){}
 
+/// @description Handles a CONNECT request.
+///
+/// If the request is a HTTPS tunnel request then test to see
+/// if this is a host of interest and in that case
+/// try for a mitm/https link (more on this elsewhere).
+///
+/// Other wise try to establish a tunnel. First try to establish a connection with the
+/// intended destination host, if successful reply to client with a 200 else reply with a
+/// 502. If target host is connected that hand off to a tunnel class.
+///
+/// NOTE !!! If it looks like a tunnel will be established MUST call done(true)
+///
+/// BEFORE this method returns so that the server does not close the client connection.
+///
+/// done(true) signals to the server that this method is "hijacking" the connection
 template<class TCollector>
 void ForwardingHandler<TCollector>::handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
-        HandlerDoneCallbackType done
+        ConnectHandlerHijackCallbackType hijackConnection
 ){
+    _collector = TCollector::getInstance(_io);
+
     LogInfo("");
 };
 

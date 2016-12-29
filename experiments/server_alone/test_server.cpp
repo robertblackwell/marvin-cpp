@@ -41,11 +41,11 @@ public:
     void handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
-        HandlerDoneCallbackType     hijack_connection)
+        ConnectHandlerHijackCallbackType    hijack_connection)
     {
         LogDebug("");
         auto er = Marvin::make_error_ok();
-        hijack_connection(er, true);
+        hijack_connection(true);
         
         boost::asio::streambuf b;
         std::ostream strm(&b);

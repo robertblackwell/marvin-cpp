@@ -44,7 +44,7 @@ template<class TRequestHandler> class ConnectionHandler
         void readMessageHandler(Marvin::ErrorType& err);
         void requestComplete(Marvin::ErrorType& err, bool keepAlive);
         void handlerComplete(Marvin::ErrorType& err);
-        void handleConnectComplete(Marvin::ErrorType& err, bool hijack);
+        void handleConnectComplete(bool hijack);
 
     
         boost::asio::io_service&                            _io;
