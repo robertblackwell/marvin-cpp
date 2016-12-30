@@ -20,6 +20,7 @@
 * NSOutlineView delegate methods
 */
 
+- (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 
 /// returns the cell to display
 - (NSCell *)outlineView:(NSOutlineView *)outlineView

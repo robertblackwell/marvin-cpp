@@ -42,6 +42,7 @@
     marvinDelegate = [[MarvinDelegateObjc alloc]init];
     
     _viewController.capturedTraffic = _capturedTraffic;
+    _capturedTraffic.viewController = _viewController;
     
     [marvinDelegate setCapturedTraffic:_capturedTraffic];
     

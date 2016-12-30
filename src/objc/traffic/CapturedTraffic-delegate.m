@@ -11,6 +11,34 @@
 
 @implementation CapturedTraffic(Delegate)
 
+
+- (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+    NSTableCellView* tcv;
+    if( [item isKindOfClass:[TrafficForHost class]] ){
+        TrafficForHost* trf = (TrafficForHost*)item;
+        tcv = [outlineView makeViewWithIdentifier: @"HostCell" owner:self];
+        tcv.textField.stringValue = trf.hostName;//item[@"label"];
+    }else if([item isKindOfClass:[SingleTransaction class]]){
+        
+        tcv = [outlineView makeViewWithIdentifier:@"TransactionCell" owner:self];
+        tcv.textField.stringValue = @"GET somejunk.com/fred";//item[@"label"];
+    }else if([item isKindOfClass:[HttpNotification class]]){
+        HttpNotification* n = (HttpNotification*)item;
+        NSString* s = [NSString stringWithFormat:
+            @"HTTP/1.%@ %@ %@",
+            n.request.minorVersion,
+            n.request.methodStr,
+            n.request.uri ];
+        tcv = [outlineView makeViewWithIdentifier:@"TransactionCell" owner:self];
+        tcv.textField.maximumNumberOfLines = 3;
+        [[tcv.textField cell] setWraps:TRUE];
+        tcv.textField.stringValue = s;//item[@"label"];
+    }
+    
+    return tcv;
+}
+
 /// returns the cell to display
 - (NSCell *)outlineView:(NSOutlineView *)outlineView
  dataCellForTableColumn:(NSTableColumn *)tableColumn 
@@ -61,7 +89,16 @@ shouldShowOutlineCellForItem:(id)item
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
-    NSLog(@"selectioin changed");
+    NSOutlineView* obj = (NSTableView*)notification.object;
+    NSInteger r = obj.selectedRow;
+    id selectedItem = [obj itemAtRow:[obj selectedRow]];
+    
+     if ( (r != -1) && [selectedItem isKindOfClass:[TrafficForHost class]] ){
+//          display the request and response in the TextViews
+        
+    }
+    
+    NSLog(@"selectioin changed ");
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView 

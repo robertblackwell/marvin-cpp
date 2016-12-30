@@ -18,12 +18,15 @@
 }
 
 - (id) init{
+    static id _instance;
     if ( self = [super init] ) {
+        _instance = self;
         _hosts = [[NSMutableDictionary alloc]init];
-        SingleTransaction* t1 = [[SingleTransaction alloc]init];
-        SingleTransaction* t2 = [[SingleTransaction alloc]init];
-        [self addTrafficForHost:@"myhost" transaction:t1 ];
-        [self addTrafficForHost:@"myhost" transaction:t2];
+        _hostsArray = [[NSMutableArray alloc]init];
+//        SingleTransaction* t1 = [[SingleTransaction alloc]init];
+//        SingleTransaction* t2 = [[SingleTransaction alloc]init];
+//        [self addTrafficForHost:@"myhost" transaction:t1 ];
+//        [self addTrafficForHost:@"myhost" transaction:t2];
     }
     return self;
 }
@@ -34,11 +37,24 @@
 
 -(NSInteger) numberOfHosts
 {
-    return [_hostArray count];
+    return [_hostsArray count];
 }
 - (TrafficForHost*) hostAtIndex:(NSInteger) index
 {
-    return [_hostsArray objectAtIndex:index];
+    NSString* hn = [_hostsArray objectAtIndex:index];
+    return [_hosts objectForKey:hn];
+}
+
+- (NSInteger) indexForHost:(NSString*) host
+{
+    if( [_hosts objectForKey:host] == nil )
+        return -1;
+    for( int i = 0; i < [_hostsArray count]; i++ ){
+        if( [host isEqualToString:[_hostsArray objectAtIndex:i]] ){
+            return i;
+        }
+    }
+    return -1;
 }
 
 - (bool) hasHost:(NSString*) host
@@ -50,8 +66,9 @@
 {
     id h = [_hosts objectForKey:host];
     if( h == nil ){
-        TrafficForHost* tmp = [[TrafficForHost alloc]init];
+        TrafficForHost* tmp = [[TrafficForHost alloc]initForHost:host];
         [_hosts setObject:tmp forKey:host];
+        [_hostsArray addObject:host];
     }else{
         /// nothing
     }
@@ -60,6 +77,7 @@
 - (void) addTrafficForHost:(NSString*) host transaction:(SingleTransaction*) aTransaction
 {
     [[self addHost:host] add:aTransaction];
+    [_viewController updateView];
 }
 
 - (void) clear

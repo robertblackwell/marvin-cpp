@@ -14,12 +14,44 @@
 @end
 
 @implementation ViewController
+{
+NSInteger _expandedRow;
+}
 
+- (void)awakeFromNib {
+    _expandedRow = -1;
+    [_outlineView setTarget:self];
+    [_outlineView setDoubleAction:@selector(doubleClick:)];
+//    [_outlineView setIndentationPerLevel:0.0];
+    [_outlineView setAction:@selector(doClick:)];
+    [_outlineView setTarget:self];
+}
+
+- (void)doubleClick:(id)object {
+  // This gets called after following steps 1-3.
+  id s = [object subviews];
+  NSInteger previousExpandedRow;
+  _expandedRow = [_outlineView clickedRow];
+  // Do something...
+}
+
+
+-(IBAction) doClick:(id)sender;
+{
+    if ([_outlineView clickedRow] == -1) {
+        [_outlineView deselectAll:nil];
+    }
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSLog(@"viewController");
     // Do view setup here.
+}
+
+-(void) updateView
+{
+    [_outlineView reloadItem:nil];
 }
 
 @end

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
+#import "ViewController.h"
 #import "http_notification.h"
 #import "SingleTransaction.h"
 #import "TrafficForHost.h"
@@ -15,7 +16,6 @@
 
 
 @interface CapturedTraffic (DataSource)
-
 
 /**
 * NOutlineView dataSource methods

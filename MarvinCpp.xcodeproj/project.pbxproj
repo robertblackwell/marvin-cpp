@@ -129,6 +129,8 @@
 		D44EFE721E15EE4800D27281 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44EFE701E15EE4800D27281 /* MainMenu.xib */; };
 		D458EA331DF6413600E820A9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D458EA321DF6413600E820A9 /* main.cpp */; };
 		D458EA371DF644B700E820A9 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
+		D45BFD2F1E16EFE000C000F1 /* OutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = D45BFD2E1E16EFE000C000F1 /* OutlineView.m */; };
+		D45BFD321E16F7BC00C000F1 /* CustomTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D45BFD311E16F7BC00C000F1 /* CustomTableView.m */; };
 		D45F5A191E12E61A0032F943 /* http_header.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D407D5191E113FE7003E5F8E /* http_header.cpp */; };
 		D45F5A1B1E12E61A0032F943 /* connection_interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B759D1E0B69B700431E06 /* connection_interface.cpp */; };
 		D45F5A1C1E12E61A0032F943 /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
@@ -637,6 +639,10 @@
 		D44EFE731E15EE4800D27281 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D458EA301DF6413600E820A9 /* error_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = error_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D458EA321DF6413600E820A9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D45BFD2D1E16EFE000C000F1 /* OutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlineView.h; sourceTree = "<group>"; };
+		D45BFD2E1E16EFE000C000F1 /* OutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlineView.m; sourceTree = "<group>"; };
+		D45BFD301E16F7BC00C000F1 /* CustomTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableView.h; sourceTree = "<group>"; };
+		D45BFD311E16F7BC00C000F1 /* CustomTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableView.m; sourceTree = "<group>"; };
 		D45F5A121E12E5CA0032F943 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		D45F5A391E12E61A0032F943 /* proxy-objc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "proxy-objc"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D466141D1DF854DB00E3FAB0 /* nullstream */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nullstream; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1284,12 +1290,12 @@
 		D47B43471E16BE1600B0254A /* traffic */ = {
 			isa = PBXGroup;
 			children = (
+				D47B433E1E16BD9D00B0254A /* CapturedTraffic.h */,
+				D47B433F1E16BD9D00B0254A /* CapturedTraffic.m */,
 				D47B43481E16BEDA00B0254A /* CapturedTraffic-datasource.h */,
 				D47B43491E16BEDA00B0254A /* CapturedTraffic-datasource.m */,
 				D47B434A1E16BEDA00B0254A /* CapturedTraffic-delegate.h */,
 				D47B434B1E16BEDA00B0254A /* CapturedTraffic-delegate.m */,
-				D47B433E1E16BD9D00B0254A /* CapturedTraffic.h */,
-				D47B433F1E16BD9D00B0254A /* CapturedTraffic.m */,
 				D47B43401E16BD9D00B0254A /* SingleTransaction.h */,
 				D47B43411E16BD9D00B0254A /* SingleTransaction.m */,
 				D47B43421E16BD9D00B0254A /* TrafficForHost.h */,
@@ -1325,6 +1331,10 @@
 				D47B43251E15F1E300B0254A /* ViewController.m */,
 				D4A7D35A1E1459C200748973 /* Assets.xcassets */,
 				D4A7D35C1E1459C200748973 /* MainMenu.xib */,
+				D45BFD301E16F7BC00C000F1 /* CustomTableView.h */,
+				D45BFD311E16F7BC00C000F1 /* CustomTableView.m */,
+				D45BFD2D1E16EFE000C000F1 /* OutlineView.h */,
+				D45BFD2E1E16EFE000C000F1 /* OutlineView.m */,
 				D4A7D35F1E1459C200748973 /* Info.plist */,
 				D4A7D3571E1459C200748973 /* Supporting Files */,
 			);
@@ -2336,6 +2346,7 @@
 				D47B43451E16BD9D00B0254A /* SingleTransaction.m in Sources */,
 				D47B43461E16BD9D00B0254A /* TrafficForHost.m in Sources */,
 				D4A7D36B1E145BD000748973 /* connection_pool.cpp in Sources */,
+				D45BFD2F1E16EFE000C000F1 /* OutlineView.m in Sources */,
 				D4A7D3821E146C1300748973 /* objc__collector.mm in Sources */,
 				D4A7D36C1E145BD000748973 /* http_connection.cpp in Sources */,
 				D4A7D36D1E145BD000748973 /* http_header.cpp in Sources */,
@@ -2344,6 +2355,7 @@
 				D4A7D3701E145BD000748973 /* message_reader.cpp in Sources */,
 				D47B434D1E16BEDA00B0254A /* CapturedTraffic-delegate.m in Sources */,
 				D4A7D3711E145BD000748973 /* message_writer.cpp in Sources */,
+				D45BFD321E16F7BC00C000F1 /* CustomTableView.m in Sources */,
 				D4A7D3721E145BD000748973 /* parser.cpp in Sources */,
 				D4A7D3731E145BD000748973 /* request_handler_base.cpp in Sources */,
 				D4A7D3741E145BD000748973 /* request.cpp in Sources */,

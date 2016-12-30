@@ -16,6 +16,8 @@
 @property (strong, nonatomic) IBOutlet NSTextView*      responseView;
 @property  CapturedTraffic*    capturedTraffic;
 
-
+-(void) updateView;
+- (void)awakeFromNib;
+- (void)doubleClick:(id)object;
 
 @end

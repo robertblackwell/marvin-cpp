@@ -45,7 +45,7 @@
 {
     id ans;
     if( [item isKindOfClass:[CapturedTraffic class]] || (item == nil) ){
-        ans = [_hosts obj]
+        ans = [self hostAtIndex:index];
     }else if( [item isKindOfClass:[TrafficForHost class]] ){
         if( [[item transactions] count] > index ){
             ans = [[item transactions] objectAtIndex:index];
@@ -63,6 +63,6 @@
 objectValueForTableColumn:(NSTableColumn *)tableColumn
                    byItem:(id)item
 {
-    return nil;
+    return item;
 }
 @end
