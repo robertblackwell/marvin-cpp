@@ -18,7 +18,7 @@
 
 void RunMitmServer()
 {
-        
+    
     MarvinDelegateObjc *delegate = [[MarvinDelegateObjc alloc]init];
     ObjcCollector::setDelegate((__bridge void*)delegate);
     
@@ -38,10 +38,6 @@ void RunMitmServer()
 
 - (void) run
 {
-//    RunMitmServer();
-//    ObjcDelegate *delegate = [[ObjcDelegate alloc]init];
-//    PipeCollector::setDelegate((__bridge void*)delegate);
-
     ObjcCollector::setDelegate((__bridge void*)_delegateObj);
     Server<ForwardingHandler<ObjcCollector>> server;
     server.listen(9991);

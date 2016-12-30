@@ -123,6 +123,10 @@
 		D445DB601E14B5FD00418D6B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D445DB5F1E14B5FD00418D6B /* main.cpp */; };
 		D445DB611E14B68000418D6B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D445DB5F1E14B5FD00418D6B /* main.cpp */; };
 		D448890C1DF74E57000E9F07 /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
+		D44EFE6A1E15EE4800D27281 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EFE691E15EE4800D27281 /* AppDelegate.m */; };
+		D44EFE6D1E15EE4800D27281 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EFE6C1E15EE4800D27281 /* main.m */; };
+		D44EFE6F1E15EE4800D27281 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D44EFE6E1E15EE4800D27281 /* Assets.xcassets */; };
+		D44EFE721E15EE4800D27281 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44EFE701E15EE4800D27281 /* MainMenu.xib */; };
 		D458EA331DF6413600E820A9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D458EA321DF6413600E820A9 /* main.cpp */; };
 		D458EA371DF644B700E820A9 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D45F5A191E12E61A0032F943 /* http_header.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D407D5191E113FE7003E5F8E /* http_header.cpp */; };
@@ -227,6 +231,12 @@
 		D47923141DFF7E400077B91A /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D47923151DFF7E400077B91A /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
 		D47923181DFF7E400077B91A /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
+		D47B43261E15F1E300B0254A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B43251E15F1E300B0254A /* ViewController.m */; };
+		D47B43441E16BD9D00B0254A /* CapturedTraffic.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B433F1E16BD9D00B0254A /* CapturedTraffic.m */; };
+		D47B43451E16BD9D00B0254A /* SingleTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B43411E16BD9D00B0254A /* SingleTransaction.m */; };
+		D47B43461E16BD9D00B0254A /* TrafficForHost.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B43431E16BD9D00B0254A /* TrafficForHost.m */; };
+		D47B434C1E16BEDA00B0254A /* CapturedTraffic-datasource.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B43491E16BEDA00B0254A /* CapturedTraffic-datasource.m */; };
+		D47B434D1E16BEDA00B0254A /* CapturedTraffic-delegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B434B1E16BEDA00B0254A /* CapturedTraffic-delegate.m */; };
 		D491232C1E0C28CF006C3A8A /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
 		D491232D1E0C28CF006C3A8A /* connection_interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B759D1E0B69B700431E06 /* connection_interface.cpp */; };
 		D491232E1E0C28CF006C3A8A /* http_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* http_connection.cpp */; };
@@ -618,6 +628,13 @@
 		D44889071DF74D36000E9F07 /* libboost_log.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_log.a; path = deps/lib/libboost_log.a; sourceTree = "<group>"; };
 		D44889091DF74D86000E9F07 /* libboost_log_setup.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_log_setup.a; path = deps/lib/libboost_log_setup.a; sourceTree = "<group>"; };
 		D448890B1DF74E57000E9F07 /* libboost_log.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_log.dylib; path = deps/lib/libboost_log.dylib; sourceTree = "<group>"; };
+		D44EFE661E15EE4800D27281 /* ui-test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ui-test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D44EFE681E15EE4800D27281 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D44EFE691E15EE4800D27281 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D44EFE6C1E15EE4800D27281 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D44EFE6E1E15EE4800D27281 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D44EFE711E15EE4800D27281 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		D44EFE731E15EE4800D27281 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D458EA301DF6413600E820A9 /* error_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = error_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D458EA321DF6413600E820A9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D45F5A121E12E5CA0032F943 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
@@ -667,6 +684,18 @@
 		D47923001DFE3EFB0077B91A /* UriParser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UriParser.hpp; sourceTree = "<group>"; };
 		D47923061DFF0A7C0077B91A /* smart_ptr */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smart_ptr; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47923081DFF0A7C0077B91A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D47B43241E15F1E300B0254A /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		D47B43251E15F1E300B0254A /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		D47B433E1E16BD9D00B0254A /* CapturedTraffic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CapturedTraffic.h; path = traffic/CapturedTraffic.h; sourceTree = "<group>"; };
+		D47B433F1E16BD9D00B0254A /* CapturedTraffic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CapturedTraffic.m; path = traffic/CapturedTraffic.m; sourceTree = "<group>"; };
+		D47B43401E16BD9D00B0254A /* SingleTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleTransaction.h; path = traffic/SingleTransaction.h; sourceTree = "<group>"; };
+		D47B43411E16BD9D00B0254A /* SingleTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SingleTransaction.m; path = traffic/SingleTransaction.m; sourceTree = "<group>"; };
+		D47B43421E16BD9D00B0254A /* TrafficForHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrafficForHost.h; path = traffic/TrafficForHost.h; sourceTree = "<group>"; };
+		D47B43431E16BD9D00B0254A /* TrafficForHost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TrafficForHost.m; path = traffic/TrafficForHost.m; sourceTree = "<group>"; };
+		D47B43481E16BEDA00B0254A /* CapturedTraffic-datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CapturedTraffic-datasource.h"; path = "traffic/CapturedTraffic-datasource.h"; sourceTree = "<group>"; };
+		D47B43491E16BEDA00B0254A /* CapturedTraffic-datasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CapturedTraffic-datasource.m"; path = "traffic/CapturedTraffic-datasource.m"; sourceTree = "<group>"; };
+		D47B434A1E16BEDA00B0254A /* CapturedTraffic-delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CapturedTraffic-delegate.h"; path = "traffic/CapturedTraffic-delegate.h"; sourceTree = "<group>"; };
+		D47B434B1E16BEDA00B0254A /* CapturedTraffic-delegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CapturedTraffic-delegate.m"; path = "traffic/CapturedTraffic-delegate.m"; sourceTree = "<group>"; };
 		D49123281E0C27BA006C3A8A /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D49123471E0C28CF006C3A8A /* ssl_client_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ssl_client_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4A09B691E12B9950011ACC4 /* libboost_thread.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_thread.a; path = deps/lib/libboost_thread.a; sourceTree = "<group>"; };
@@ -775,6 +804,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D445DB551E14B57400418D6B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D44EFE631E15EE4800D27281 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1059,6 +1095,27 @@
 			path = regexs;
 			sourceTree = "<group>";
 		};
+		D44EFE671E15EE4800D27281 /* ui-test */ = {
+			isa = PBXGroup;
+			children = (
+				D44EFE681E15EE4800D27281 /* AppDelegate.h */,
+				D44EFE691E15EE4800D27281 /* AppDelegate.m */,
+				D44EFE6E1E15EE4800D27281 /* Assets.xcassets */,
+				D44EFE701E15EE4800D27281 /* MainMenu.xib */,
+				D44EFE731E15EE4800D27281 /* Info.plist */,
+				D44EFE6B1E15EE4800D27281 /* Supporting Files */,
+			);
+			path = "ui-test";
+			sourceTree = "<group>";
+		};
+		D44EFE6B1E15EE4800D27281 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D44EFE6C1E15EE4800D27281 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		D458EA311DF6413600E820A9 /* error_test */ = {
 			isa = PBXGroup;
 			children = (
@@ -1224,6 +1281,23 @@
 			path = experiments/smart_ptr;
 			sourceTree = "<group>";
 		};
+		D47B43471E16BE1600B0254A /* traffic */ = {
+			isa = PBXGroup;
+			children = (
+				D47B43481E16BEDA00B0254A /* CapturedTraffic-datasource.h */,
+				D47B43491E16BEDA00B0254A /* CapturedTraffic-datasource.m */,
+				D47B434A1E16BEDA00B0254A /* CapturedTraffic-delegate.h */,
+				D47B434B1E16BEDA00B0254A /* CapturedTraffic-delegate.m */,
+				D47B433E1E16BD9D00B0254A /* CapturedTraffic.h */,
+				D47B433F1E16BD9D00B0254A /* CapturedTraffic.m */,
+				D47B43401E16BD9D00B0254A /* SingleTransaction.h */,
+				D47B43411E16BD9D00B0254A /* SingleTransaction.m */,
+				D47B43421E16BD9D00B0254A /* TrafficForHost.h */,
+				D47B43431E16BD9D00B0254A /* TrafficForHost.m */,
+			);
+			name = traffic;
+			sourceTree = "<group>";
+		};
 		D49123271E0C27BA006C3A8A /* ssl_client_test */ = {
 			isa = PBXGroup;
 			children = (
@@ -1244,8 +1318,11 @@
 		D4A7D3531E1459C200748973 /* proxy_cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				D4A7D3581E1459C200748973 /* main.m */,
 				D4A7D3541E1459C200748973 /* AppDelegate.h */,
 				D4A7D3551E1459C200748973 /* AppDelegate.mm */,
+				D47B43241E15F1E300B0254A /* ViewController.h */,
+				D47B43251E15F1E300B0254A /* ViewController.m */,
 				D4A7D35A1E1459C200748973 /* Assets.xcassets */,
 				D4A7D35C1E1459C200748973 /* MainMenu.xib */,
 				D4A7D35F1E1459C200748973 /* Info.plist */,
@@ -1257,7 +1334,6 @@
 		D4A7D3571E1459C200748973 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				D4A7D3581E1459C200748973 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1265,6 +1341,7 @@
 		D4A7D37D1E146C1300748973 /* objc */ = {
 			isa = PBXGroup;
 			children = (
+				D47B43471E16BE1600B0254A /* traffic */,
 				D4A7D3841E146D5E00748973 /* marvin_objc.h */,
 				D4A7D3851E146D5E00748973 /* marvin_objc.mm */,
 				D4A7D37F1E146C1300748973 /* objc_collector.hpp */,
@@ -1314,6 +1391,7 @@
 				D4A6E9DB1E0477710096441E /* all */,
 				D470B33D1E0FE5F100AEF135 /* libs */,
 				D407D5131E103480003E5F8E /* hdoc-test */,
+				D44EFE671E15EE4800D27281 /* ui-test */,
 				D4EA1EF61D1217E600D1EABC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -1344,6 +1422,7 @@
 				D45F5A391E12E61A0032F943 /* proxy-objc */,
 				D4A7D3521E1459C200748973 /* proxy_cocoa.app */,
 				D445DB581E14B57400418D6B /* regexs */,
+				D44EFE661E15EE4800D27281 /* ui-test.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1486,6 +1565,23 @@
 			productName = regexs;
 			productReference = D445DB581E14B57400418D6B /* regexs */;
 			productType = "com.apple.product-type.tool";
+		};
+		D44EFE651E15EE4800D27281 /* ui-test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D44EFE761E15EE4900D27281 /* Build configuration list for PBXNativeTarget "ui-test" */;
+			buildPhases = (
+				D44EFE621E15EE4800D27281 /* Sources */,
+				D44EFE631E15EE4800D27281 /* Frameworks */,
+				D44EFE641E15EE4800D27281 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ui-test";
+			productName = "ui-test";
+			productReference = D44EFE661E15EE4800D27281 /* ui-test.app */;
+			productType = "com.apple.product-type.application";
 		};
 		D458EA2F1DF6413600E820A9 /* error_test */ = {
 			isa = PBXNativeTarget;
@@ -1766,6 +1862,10 @@
 					D445DB571E14B57400418D6B = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
+					D44EFE651E15EE4800D27281 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
 					D458EA2F1DF6413600E820A9 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
@@ -1834,11 +1934,21 @@
 				D45F5A171E12E61A0032F943 /* proxy-objc */,
 				D4A7D3511E1459C200748973 /* proxy_cocoa */,
 				D445DB571E14B57400418D6B /* regexs */,
+				D44EFE651E15EE4800D27281 /* ui-test */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D44EFE641E15EE4800D27281 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D44EFE6F1E15EE4800D27281 /* Assets.xcassets in Resources */,
+				D44EFE721E15EE4800D27281 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4A7D3501E1459C200748973 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1971,6 +2081,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				D445DB611E14B68000418D6B /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D44EFE621E15EE4800D27281 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D44EFE6D1E15EE4800D27281 /* main.m in Sources */,
+				D44EFE6A1E15EE4800D27281 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2201,10 +2320,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4A7D3901E14926F00748973 /* http_notification.mm in Sources */,
+				D47B43261E15F1E300B0254A /* ViewController.m in Sources */,
 				D4A7D3911E14926F00748973 /* http_request_model.mm in Sources */,
 				D4A7D3921E14926F00748973 /* http_response_model.mm in Sources */,
 				D4A7D37C1E145D7500748973 /* marvin_delegate_objc.mm in Sources */,
 				D4A7D3631E145BD000748973 /* url.cpp in Sources */,
+				D47B434C1E16BEDA00B0254A /* CapturedTraffic-datasource.m in Sources */,
 				D4A7D3651E145BD000748973 /* http_parser.c in Sources */,
 				D4A7D3661E145BD000748973 /* rb_logger.cpp in Sources */,
 				D4A7D3671E145BD000748973 /* simple_buffer.c in Sources */,
@@ -2212,6 +2333,8 @@
 				D4A7D3691E145BD000748973 /* buffer.cpp in Sources */,
 				D4A7D36A1E145BD000748973 /* connection_interface.cpp in Sources */,
 				D4A7D3861E146D5E00748973 /* marvin_objc.mm in Sources */,
+				D47B43451E16BD9D00B0254A /* SingleTransaction.m in Sources */,
+				D47B43461E16BD9D00B0254A /* TrafficForHost.m in Sources */,
 				D4A7D36B1E145BD000748973 /* connection_pool.cpp in Sources */,
 				D4A7D3821E146C1300748973 /* objc__collector.mm in Sources */,
 				D4A7D36C1E145BD000748973 /* http_connection.cpp in Sources */,
@@ -2219,12 +2342,14 @@
 				D4A7D36E1E145BD000748973 /* marvin_error.cpp in Sources */,
 				D4A7D36F1E145BD000748973 /* message.cpp in Sources */,
 				D4A7D3701E145BD000748973 /* message_reader.cpp in Sources */,
+				D47B434D1E16BEDA00B0254A /* CapturedTraffic-delegate.m in Sources */,
 				D4A7D3711E145BD000748973 /* message_writer.cpp in Sources */,
 				D4A7D3721E145BD000748973 /* parser.cpp in Sources */,
 				D4A7D3731E145BD000748973 /* request_handler_base.cpp in Sources */,
 				D4A7D3741E145BD000748973 /* request.cpp in Sources */,
 				D4A7D3751E145BD000748973 /* tls_connection.cpp in Sources */,
 				D4A7D3761E145BD000748973 /* uri_query.cpp in Sources */,
+				D47B43441E16BD9D00B0254A /* CapturedTraffic.m in Sources */,
 				D4A7D3591E1459C200748973 /* main.m in Sources */,
 				D4A7D3561E1459C200748973 /* AppDelegate.mm in Sources */,
 			);
@@ -2285,6 +2410,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		D44EFE701E15EE4800D27281 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D44EFE711E15EE4800D27281 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 		D4A7D35C1E1459C200748973 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2457,6 +2590,36 @@
 		D445DB5E1E14B57400418D6B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D44EFE741E15EE4800D27281 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "ui-test/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Blackwellapps.ui-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D44EFE751E15EE4800D27281 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "ui-test/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Blackwellapps.ui-test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -2949,6 +3112,16 @@
 				D445DB5E1E14B57400418D6B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D44EFE761E15EE4900D27281 /* Build configuration list for PBXNativeTarget "ui-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D44EFE741E15EE4800D27281 /* Debug */,
+				D44EFE751E15EE4800D27281 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D458EA341DF6413600E820A9 /* Build configuration list for PBXNativeTarget "error_test" */ = {
 			isa = XCConfigurationList;

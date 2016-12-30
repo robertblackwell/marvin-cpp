@@ -30,20 +30,24 @@ class CollectorBase
         NullCollector(NullCollector const&)   = delete;
         void operator=(NullCollector const&)  = delete;
     
+
+        /**
+        ** Interface method for client code to call collect
+        **/
+        void collect(std::string& host, MessageReaderSPtr req, MessageWriterSPtr resp);
+    
+    private:
+        NullCollector(boost::asio::io_service& io): _ioLoop(io), _myStrand(io);
         /**
         ** This method actually implements the collect function but run on a dedicated
         ** strand. Even if this method does IO-wait operations the other thread will
         ** keep going
         **/
-        void postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp);
-
-        /**
-        ** Interface method for client code to call collect
-        **/
-        void collect(MessageReaderSPtr req, MessageWriterSPtr resp);
-    
-    private:
-        NullCollector(boost::asio::io_service& io): _ioLoop(io), _myStrand(io);
+        void postedCollect(
+            std::string& scheme,
+            std::string& host,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp);
 
         boost::asio::strand         _myStrand;
         boost::asio::io_service&    _ioLoop;

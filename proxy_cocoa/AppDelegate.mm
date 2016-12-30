@@ -16,6 +16,16 @@
 
 #import "marvin_objc.h"
 #import "marvin_delegate_objc.h" //this is only a simple minded sample - provide a real one
+#import "CapturedTraffic.h"
+#import "ViewController.h"
+
+@interface AppDelegate ()
+
+@property (weak) IBOutlet NSWindow *window;
+@property (strong, nonatomic) IBOutlet CapturedTraffic* capturedTraffic;
+@property (strong, nonatomic) IBOutlet ViewController* viewController;
+
+@end
 
 
 @implementation AppDelegate
@@ -30,6 +40,10 @@
     /// When the rest of the app is started fire off the proxi
     mitm = [[MarvinObjc alloc]init];
     marvinDelegate = [[MarvinDelegateObjc alloc]init];
+    
+    _viewController.capturedTraffic = _capturedTraffic;
+    
+    [marvinDelegate setCapturedTraffic:_capturedTraffic];
     
     [mitm setPort:9991];
     

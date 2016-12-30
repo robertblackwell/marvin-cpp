@@ -32,20 +32,28 @@ class PipeCollector
         PipeCollector(PipeCollector const&)   = delete;
         void operator=(PipeCollector const&)  = delete;
     
+
+        /**
+        ** Interface method for client code to call collect
+        **/
+        void collect(
+            std::string& scheme,
+            std::string& host,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp);
+    
+    private:
+        PipeCollector(boost::asio::io_service& io);
         /**
         ** This method actually implements the collect function but run on a dedicated
         ** strand. Even if this method does IO-wait operations the other thread will
         ** keep going
         **/
-        void postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp);
-
-        /**
-        ** Interface method for client code to call collect
-        **/
-        void collect(MessageReaderSPtr req, MessageWriterSPtr resp);
-    
-    private:
-        PipeCollector(boost::asio::io_service& io);
+        void postedCollect(
+            std::string& scheme,
+            std::string& host,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp);
 
         boost::asio::strand         _myStrand;
         boost::asio::io_service&    _ioLoop;

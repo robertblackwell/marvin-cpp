@@ -41,15 +41,19 @@ void ObjcCollector::setDelegate(void* delegate)
 ** strand. Even if this method does IO-wait operations the other thread will
 ** keep going
 **/
-void ObjcCollector::postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp)
+void ObjcCollector::postedCollect(
+            std::string& scheme,
+            std::string& host,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp)
 {
     
     /**
     ** Here implement the transmission of any data using sync or async IO
     **/
     HttpNotification* notification = [[HttpNotification alloc]init];
-    notification.host = @"host";
-    notification.scheme= @"scheme";
+    notification.host = [NSString stringWithUTF8String:host.c_str()];
+    notification.scheme= [NSString stringWithUTF8String:scheme.c_str()];
     
     std::string req_uri = req->uri();
     notification.request.uri = [NSString stringWithUTF8String:req_uri.c_str()];
@@ -84,7 +88,11 @@ void ObjcCollector::postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp)
 /**
 ** Interface method for client code to call collect
 **/
-void ObjcCollector::collect(MessageReaderSPtr req, MessageWriterSPtr resp)
+void ObjcCollector::collect(
+            std::string& scheme,
+            std::string& host,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp)
 {
     std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
 
@@ -93,7 +101,7 @@ void ObjcCollector::collect(MessageReaderSPtr req, MessageWriterSPtr resp)
     ** leave that for postedCollect
     **/
 
-    auto pf = _myStrand.wrap(std::bind(&ObjcCollector::postedCollect, this, req, resp));
+    auto pf = _myStrand.wrap(std::bind(&ObjcCollector::postedCollect, this, scheme, host, req, resp));
     _ioLoop.post(pf);
 }
     

@@ -85,7 +85,11 @@ void PipeCollector::setPipePath(std::string path)
 ** strand. Even if this method does IO-wait operations the other thread will
 ** keep going
 **/
-void PipeCollector::postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp)
+void PipeCollector::postedCollect(
+    std::string& scheme,
+    std::string& host,
+    MessageReaderSPtr req,
+    MessageWriterSPtr resp)
 {
     
     std::vector<std::regex> regexs;
@@ -97,7 +101,7 @@ void PipeCollector::postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp)
     std::stringstream temp;
     
     temp << "------------------------------------------------" << std::endl;
-    
+    temp << "HOST: " << scheme << "://" << host << std::endl;
     temp << "REQUEST : =========" << std::endl;
     temp << req->getMethodAsString() << " " << req->uri() << " ";
     temp << "HTTP/" << req->httpVersMajor() << "." << req->httpVersMinor() << std::endl;
@@ -129,7 +133,11 @@ void PipeCollector::postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp)
 /**
 ** Interface method for client code to call collect
 **/
-void PipeCollector::collect(MessageReaderSPtr req, MessageWriterSPtr resp)
+void PipeCollector::collect(
+    std::string& scheme,
+    std::string& host,
+    MessageReaderSPtr req,
+    MessageWriterSPtr resp)
 {
     std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
 
@@ -138,7 +146,7 @@ void PipeCollector::collect(MessageReaderSPtr req, MessageWriterSPtr resp)
     ** leave that for postedCollect
     **/
 
-    auto pf = _myStrand.wrap(std::bind(&PipeCollector::postedCollect, this, req, resp));
+    auto pf = _myStrand.wrap(std::bind(&PipeCollector::postedCollect, this, scheme, host, req, resp));
     _ioLoop.post(pf);
 }
     

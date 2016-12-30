@@ -119,6 +119,11 @@
 			<key>orderHint</key>
 			<integer>7</integer>
 		</dict>
+		<key>ui-test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>24</integer>
+		</dict>
 		<key>unit-test.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -163,6 +168,11 @@
 			<true/>
 		</dict>
 		<key>D445DB571E14B57400418D6B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D44EFE651E15EE4800D27281</key>
 		<dict>
 			<key>primary</key>
 			<true/>

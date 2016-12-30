@@ -71,6 +71,9 @@ void ForwardingHandler<TCollector>::handleRequest(
     LogDebug(" path:", _u.path);
     LogDebug(" query:", _u.search);
     
+    _host = _u.host;
+    _scheme = _u.protocol;
+    
     _upStreamRequestUPtr = RequestUPtr(new Request(_io));
     LogInfo("",traceReader(*_req));
     
@@ -135,7 +138,7 @@ void ForwardingHandler<TCollector>::handleUpstreamResponseReceived(Marvin::Error
     _upStreamRequestUPtr->end();
     LogTrace("send to client", traceWriter(*_resp));
     auto hf = std::bind(&ForwardingHandler<TCollector>::onComplete, this, std::placeholders::_1);
-    _collector->collect(_req, _resp);
+    _collector->collect(_scheme, _host, _req, _resp);
     _resp->asyncWrite(hf);
 }
 

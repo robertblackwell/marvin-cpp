@@ -43,7 +43,11 @@ static CollectorBase::CollectorBase* getInstance(boost::asio::io_service& io)
 ** strand. Even if this method does IO-wait operations the other thread will
 ** keep going
 **/
-void CollectorBase::postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp)
+void CollectorBase::postedCollect(
+        std::string& scheme,
+        std::string& host,
+        MessageReaderSPtr req,
+        MessageWriterSPtr resp)
 {
     
     /**
@@ -54,7 +58,11 @@ void CollectorBase::postedCollect(MessageReaderSPtr req, MessageWriterSPtr resp)
 /**
 ** Interface method for client code to call collect
 **/
-void CollectorBase::collect(MessageReaderSPtr req, MessageWriterSPtr resp)
+void CollectorBase::collect(
+        std::string& scheme,
+        std::string& host,
+        MessageReaderSPtr req,
+        MessageWriterSPtr resp)
 {
     std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
     if(! _pipeOpen )
@@ -63,7 +71,7 @@ void CollectorBase::collect(MessageReaderSPtr req, MessageWriterSPtr resp)
     ** In here implement the creation the summary records but dont do any IO or sending
     ** leave that for postedCollect
     **/
-    auto pf = _myStrand.wrap(std::bind(&NullCollector::postedCollect, this, req, resp));
+    auto pf = _myStrand.wrap(std::bind(&NullCollector::postedCollect, this, scheme, host, req, resp));
     _ioLoop.post(pf);
 }
     

@@ -1,4 +1,10 @@
+## major steps
+<!-- this is an html comment -->
+
+-	tunnel
+-	ui - like this [example - https://www.raywenderlich.com/123463/nsoutlineview-macos-tutorial](https://www.raywenderlich.com/123463/nsoutlineview-macos-tutorial)
 ## TODO
+
 -	need to do something easy for config options
 ### need test harness
 ### message body

@@ -56,6 +56,8 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
         RequestUPtr                 _upStreamRequestUPtr;
         HandlerDoneCallbackType     _doneCallback;
         /// this will collect summaries of the req and resp
+        std::string                 _scheme;
+        std::string                 _host;
         TCollector*                 _collector;
 };
 
