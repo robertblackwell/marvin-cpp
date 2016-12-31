@@ -17,6 +17,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "request.hpp"
 #include "forwarding_handlerV2.hpp"
 
+///
+/// This class is a singleton, but it must be given a reference to the servers io_service object
+/// so that it can schedule callbacks. Have decided to pass the io_service in the static getInstance
+/// method so that this cannot be forgotten
+///
 class ObjcCollector
 {
     public:

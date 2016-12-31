@@ -25,7 +25,13 @@ int main(int argc, const char * argv[])
     LogTrace(std::string("hello"), std::string("this"), std::string("is"), std::string("a"), std::string("test"));
     try
     {
-        PipeCollector::setPipePath("/Users/rob/marvin_collect");
+        PipeCollector::configSet_PipePath("/Users/rob/marvin_collect");
+        
+        std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
+        std::vector<int> ports{443, 9443};
+        ForwardingHandlerV2<PipeCollector>::configSet_HttpsPorts(ports);
+        ForwardingHandlerV2<PipeCollector>::configSet_HttpsHosts(re);
+        
         Server<ForwardingHandlerV2<PipeCollector>> server;
         server.listen(9991);
     }

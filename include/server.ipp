@@ -21,6 +21,18 @@
 #include "message_writer.hpp"
 */
 #include <thread>
+
+template<class TRequestHandler>
+int Server<TRequestHandler>::__numberOfThreads = 4;
+
+template<class TRequestHandler>
+void Server<TRequestHandler>::configSet_NumberOfThreads(int n)
+{
+    __numberOfThreads = n;
+}
+
+
+
 template<class TRequestHandler>
 Server<TRequestHandler>::Server()
   : _io(5),
@@ -54,6 +66,10 @@ Server<TRequestHandler>::Server()
 */
 template<class TRequestHandler> void Server<TRequestHandler>::initialize()
 {
+    ///
+    /// !! make sure this is big enough to handle the components with dedicated strands
+    ///
+    _numberOfThreads = __numberOfThreads;
     // Register to handle the signals that indicate when the Server should exit.
     // It is safe to register for the same signal multiple times in a program,
     // provided all registration for the specified signal is made through Asio.
@@ -89,8 +105,8 @@ template<class TRequestHandler> void Server<TRequestHandler>::listen(long port)
 #ifndef MULTI_THREAD
     _io.run();
 #else
-    long numThreads = 2;
-    std::thread threads[5];
+    long numThreads = _numberOfThreads;
+    std::thread threads[15];
     
     boost::asio::io_service& tmp_io = _io;
     for(int t_count = 0; t_count < numThreads - 1; t_count++)

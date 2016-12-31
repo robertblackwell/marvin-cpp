@@ -76,7 +76,7 @@ PipeCollector* PipeCollector::getInstance(boost::asio::io_service& io)
     }
     return _instance;
 }
-void PipeCollector::setPipePath(std::string path)
+void PipeCollector::configSet_PipePath(std::string path)
 {
     _pipePath = path;
 }

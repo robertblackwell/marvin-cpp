@@ -61,6 +61,10 @@ typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
 class MessageReader : public Parser, public MessageBase
 {
 public:
+
+    static void configSet_HeaderBufferSize(long bsize);
+    static void configSet_BodyBufferSize(long bsize);
+
     MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io);
     ~MessageReader();
     /*!
@@ -103,6 +107,8 @@ public:
     friend std::string traceReader(MessageReader& rdr);
     
 private:
+    static std::size_t     __headerBufferSize;
+    static std::size_t     __bodyBufferSize;
     //----------------------------------------------------------------------------------------------------
     // private methods
     //----------------------------------------------------------------------------------------------------

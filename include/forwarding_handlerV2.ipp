@@ -10,6 +10,24 @@ enum class ConnectAction{
     REJECT
 };
 
+template<class TCollector>
+std::vector<std::regex> ForwardingHandlerV2<TCollector>::__httpsHosts = std::vector<std::regex>();
+
+template<class TCollector>
+std::vector<int> ForwardingHandlerV2<TCollector>::__httpsPorts = std::vector<int>();
+
+
+template<class TCollector>
+void ForwardingHandlerV2<TCollector>::configSet_HttpsHosts(std::vector<std::regex> re)
+{
+    __httpsHosts = re;
+}
+
+template<class TCollector>
+void ForwardingHandlerV2<TCollector>::configSet_HttpsPorts(std::vector<int> ports)
+{
+    __httpsPorts = ports;
+}
 
 #pragma mark - Forward handler class
 template<class TCollector>
@@ -17,6 +35,8 @@ ForwardingHandlerV2<TCollector>::ForwardingHandlerV2(
     boost::asio::io_service& io
 ): RequestHandlerBase(io)
 {
+    _httpsHosts = __httpsHosts;
+    _httpsPorts = __httpsPorts;
 }
 
 template<class TCollector>
@@ -69,8 +89,6 @@ void ForwardingHandlerV2<TCollector>::handleConnect(
     //
     // Parse the url to determine were we have to send the "upstream" request
     //
-    std::cout << "Got here" << std::hex <<  " reader:smartPtr: " << &(_req) << " inner: " << (long)_req.get()  << std::endl;
-    std::cout << "Got here" << std::hex <<  " conn:smartPtr: " << &(_req) << " inner: " << (long)_req.get()  << std::endl;
     
     std::string __url = _req->uri();
     http::url _u = http::ParseHttpUrl(__url);

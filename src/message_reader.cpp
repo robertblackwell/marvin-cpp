@@ -27,11 +27,26 @@ std::string traceReader(MessageReader& rdr)
     return ss.str();
 }
 
+std::size_t MessageReader::__headerBufferSize = 10000;
+std::size_t MessageReader::__bodyBufferSize = 20000;
+
+void MessageReader::configSet_BodyBufferSize(long bsize)
+{
+    __headerBufferSize = bsize;
+}
+
+void MessageReader::configSet_HeaderBufferSize(long bsize)
+{
+    __bodyBufferSize = bsize;
+}
+
+
 MessageReader::MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io): _io(io), _readSock(readSock)
 {
     LogDebug("");
-    _body_buffer_size   = 10000;
-    _header_buffer_size = 10000;
+    _body_buffer_size   = __bodyBufferSize;
+    _header_buffer_size = __headerBufferSize;
+    
     _readBodyStarted    = false;
     clearBodyBuffer();
 }

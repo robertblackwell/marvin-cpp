@@ -37,6 +37,10 @@ enum class ConnectAction;
 template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
 {
     public:
+        // these are configuration settings
+        static void configSet_HttpsHosts(std::vector<std::regex> re);
+        static void configSet_HttpsPorts(std::vector<int> ports);
+    
         ForwardingHandlerV2(boost::asio::io_service& io);
         ~ForwardingHandlerV2();
     
@@ -51,6 +55,10 @@ template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
             HandlerDoneCallbackType done);
     
     private:
+    
+        static std::vector<std::regex>  __httpsHosts;
+        static std::vector<int>         __httpsPorts;
+    
         // methods that are used in handleRequest
         void handleRequest_Upstream(
             MessageReaderSPtr req,

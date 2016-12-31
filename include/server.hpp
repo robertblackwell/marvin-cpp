@@ -26,6 +26,9 @@
 template<class TRequestHandler> class Server
 {
 public:
+
+    static void configSet_NumberOfThreads(int num);
+
     Server(const Server&) = delete;
     Server& operator=(const Server&) = delete;
 
@@ -42,6 +45,9 @@ public:
     void listen(long port = 9991);
     
 private:
+
+    static int __numberOfThreads;
+
     /**
     ** @brief just as it says - init the server ready to list
     */
@@ -75,6 +81,7 @@ private:
     */
     void doStop(const Marvin::ErrorType& err);
     
+    int                                             _numberOfThreads;
     long                                            _port;
     boost::asio::io_service                         _io;
     boost::asio::strand                             _serverStrand;

@@ -39,7 +39,7 @@ void RunMitmServer()
 - (void) run
 {
     ObjcCollector::setDelegate((__bridge void*)_delegateObj);
-    Server<ForwardingHandler<ObjcCollector>> server;
+    Server<ForwardingHandlerV2<ObjcCollector>> server;
     server.listen(9991);
     NSLog(@"Done with RunMitmServer");
 }
