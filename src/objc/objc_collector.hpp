@@ -15,7 +15,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handler.hpp"
+#include "forwarding_handlerV2.hpp"
 
 class ObjcCollector
 {

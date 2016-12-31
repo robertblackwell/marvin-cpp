@@ -11,7 +11,7 @@
 #include "server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handler.hpp"
+#include "forwarding_handlerV2.hpp"
 #include "objc_collector.hpp"
 
 #import "marvin_delegate_objc.h"

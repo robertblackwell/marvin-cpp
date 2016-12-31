@@ -428,7 +428,7 @@
             startingLineNumber = "54"
             endingLineNumber = "54"
             landmarkName = "ObjcCollector::postedCollect( std::string&amp; scheme, std::string&amp; host, MessageReaderSPtr req, MessageWriterSPtr resp)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -444,7 +444,7 @@
             startingLineNumber = "58"
             endingLineNumber = "58"
             landmarkName = "ObjcCollector::postedCollect( std::string&amp; scheme, std::string&amp; host, MessageReaderSPtr req, MessageWriterSPtr resp)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -936,7 +936,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/objc/traffic/CapturedTraffic-delegate.m"
@@ -1112,7 +1112,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "proxy_cocoa/ViewController.m"

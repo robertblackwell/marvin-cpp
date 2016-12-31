@@ -31,8 +31,8 @@
             n.request.methodStr,
             n.request.uri ];
         tcv = [outlineView makeViewWithIdentifier:@"TransactionCell" owner:self];
-        tcv.textField.maximumNumberOfLines = 3;
-        [[tcv.textField cell] setWraps:TRUE];
+//        tcv.textField.maximumNumberOfLines = 3;
+//        [[tcv.textField cell] setWraps:TRUE];
         tcv.textField.stringValue = s;//item[@"label"];
     }
     

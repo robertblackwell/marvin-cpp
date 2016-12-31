@@ -15,7 +15,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handler.hpp"
+#include "forwarding_handlerV2.hpp"
 #include "pipe_collector.hpp"
 
 int main(int argc, const char * argv[])
@@ -26,7 +26,7 @@ int main(int argc, const char * argv[])
     try
     {
         PipeCollector::setPipePath("/Users/rob/marvin_collect");
-        Server<ForwardingHandler<PipeCollector>> server;
+        Server<ForwardingHandlerV2<PipeCollector>> server;
         server.listen(9991);
     }
     catch (std::exception& e)

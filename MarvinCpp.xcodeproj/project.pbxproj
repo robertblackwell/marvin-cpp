@@ -625,6 +625,8 @@
 		D42DB9B21E00F6DF00B2AF60 /* test_server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_server.hpp; sourceTree = "<group>"; };
 		D42DB9CE1E00F93000B2AF60 /* test_server_client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_server_client; sourceTree = BUILT_PRODUCTS_DIR; };
 		D42DB9D01E00F99E00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D4300B581E17E7720063FA82 /* forwarding_handlerV2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = forwarding_handlerV2.hpp; sourceTree = "<group>"; };
+		D4300B591E17E7720063FA82 /* forwarding_handlerV2.ipp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = forwarding_handlerV2.ipp; sourceTree = "<group>"; };
 		D445DB581E14B57400418D6B /* regexs */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = regexs; sourceTree = BUILT_PRODUCTS_DIR; };
 		D445DB5F1E14B5FD00418D6B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = experiments/regexs/main.cpp; sourceTree = SOURCE_ROOT; };
 		D44889071DF74D36000E9F07 /* libboost_log.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_log.a; path = deps/lib/libboost_log.a; sourceTree = "<group>"; };
@@ -1025,6 +1027,8 @@
 				D407D50B1E1013DA003E5F8E /* boost_stuff.hpp */,
 				D407D5031E0FE877003E5F8E /* forwarding_handler.hpp */,
 				D407D5021E0FE877003E5F8E /* forwarding_handler.ipp */,
+				D4300B581E17E7720063FA82 /* forwarding_handlerV2.hpp */,
+				D4300B591E17E7720063FA82 /* forwarding_handlerV2.ipp */,
 			);
 			path = include;
 			sourceTree = "<group>";
