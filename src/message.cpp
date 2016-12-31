@@ -71,7 +71,9 @@ void
 MessageBase::setUri(std::string u){ _uri = u;}
 
 std::string
-MessageBase::uri(){ return _uri; }
+MessageBase::uri(){
+return _uri;
+}
 
 void
 MessageBase::setHttpVersMajor(int major){ _http_major = major; }

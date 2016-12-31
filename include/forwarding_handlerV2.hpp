@@ -11,12 +11,17 @@
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
+#include <regex>
 #include "request.hpp"
 #include "request_handler_base.hpp"
 #include "rb_logger.hpp"
 #include "UriParser.hpp"
 #include "request.hpp"
+#include "http_connection.hpp"
 #include "http_header.hpp"
+#include "tunnel_handler.hpp"
+
+enum class ConnectAction;
 
 /**
 *  @brief This class implements the proxy forwarding process for http/https protocols.
@@ -38,7 +43,7 @@ template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
         void handleConnect(
             MessageReaderSPtr           req,
             ConnectionInterfaceSPtr     connPtr,
-            ConnectHandlerHijackCallbackType   hijackConnection);
+            HandlerDoneCallbackType     done);
 
         void handleRequest(
             MessageReaderSPtr           req,
@@ -46,16 +51,26 @@ template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
             HandlerDoneCallbackType done);
     
     private:
+        // methods that are used in handleRequest
         void handleRequest_Upstream(
             MessageReaderSPtr req,
             std::function<void(Marvin::ErrorType& err)> upstreamCb
         );
-        
         void handleUpstreamResponseReceived(Marvin::ErrorType& err);
         void makeDownstreamResponse();
         void makeDownstreamErrorResponse(Marvin::ErrorType& err);
         void handleUpgrade();
         void onComplete(Marvin::ErrorType& err);
+    
+        // methods that are used in handleConnect
+        ConnectAction determineConnecAction(std::string host, int port);
+        void initiateTunnel();
+    
+        // utility methods
+        void response403Forbidden(MBuffer& sbuf);
+        void response200OKConnected(MBuffer& sbuf);
+        void response502Badgateway(MBuffer& sbuf);
+
 
         /// @brief Only used by the handleConnect method
         ConnectionInterfaceSPtr     _conn;
@@ -66,7 +81,21 @@ template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
         /// this will collect summaries of the req and resp
         std::string                 _scheme;
         std::string                 _host;
+        int                         _port;
         TCollector*                 _collector;
+    
+        /// used for handleConnect - tunnel
+        MBufferUPtr                 _initialResponseBuf;
+        TunnelHandlerSPtr           _tunnelHandler;
+        ConnectionInterfaceSPtr     _downStreamConnection; // used only for tunnel
+        HttpConnectionSPtr          _upstreamConnection; // used only for tunnels
+    
+        /// regexs to define hosts that require mitm not tunnel
+        std::vector<std::regex>     _httpsHosts;
+    
+        /// list of port numbers that can be https mitm'd rather than tunneled
+        std::vector<int>            _httpsPorts;
+
 };
 
 #include "forwarding_handlerV2.ipp"

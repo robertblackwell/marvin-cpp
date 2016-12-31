@@ -185,8 +185,9 @@ void HttpConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
     //
     auto b = boost::asio::buffer(buffer.data(), buffer.capacity());
 //    auto opn = _boost_socket.is_open();
-    _boost_socket.async_read_some(b, [this, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered){
+    _boost_socket.async_read_some(b, [this, cb, &buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered){
         Marvin::ErrorType m_err = err;
+        buffer.setSize(bytes_transfered);
         cb(m_err, bytes_transfered);
     });
     
@@ -194,6 +195,32 @@ void HttpConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
 /**
  * write
  */
+void HttpConnection::asyncWrite(MBuffer& buf, AsyncWriteCallbackType cb)
+{
+    LogDebug("");
+    void* bp = buf.data();
+    char* cp = (char*) bp;
+    std::size_t len = buf.size();
+    auto bb = boost::asio::buffer(bp, len);
+    
+    boost::asio::async_write(
+        (this->_boost_socket),
+        bb,
+        [this, cb](
+            const Marvin::ErrorType& err,
+            std::size_t bytes_transfered
+            )
+        {
+        LogDebug("");
+        if( !err ){
+            Marvin::ErrorType m_err = Marvin::make_error_ok();
+            cb(m_err, bytes_transfered);
+        }else{
+            Marvin::ErrorType m_err = err;
+            cb(m_err, bytes_transfered);
+        }
+    });
+}
 void HttpConnection::asyncWrite(FBuffer& buffer, AsyncWriteCallbackType cb)
 {
     LogDebug("buffer size: ");

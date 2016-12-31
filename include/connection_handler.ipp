@@ -128,8 +128,9 @@ void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType& e
     } else{
         if(_reader->method() == HttpMethod::CONNECT ){
             LogWarn("CONNECT request");
-             _requestHandlerUnPtr->handleConnect(_reader, _connection, [this](bool hijack){
-                this->handleConnectComplete(hijack);
+            std::cout << std:: hex << &_reader << " " << (long)_reader.get() << std::endl;
+             _requestHandlerUnPtr->handleConnect(_reader, _connection, [this](Marvin::ErrorType& err, bool keepAlive){
+                this->requestComplete(err, false);
              });
         } else {
             LogTrace(traceMessage(*_reader));

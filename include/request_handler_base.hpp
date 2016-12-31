@@ -38,13 +38,13 @@ public:
     virtual void handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
-        ConnectHandlerHijackCallbackType hijackConnection)
-        { auto err = Marvin::make_error_ok(); hijackConnection(false);}
+        HandlerDoneCallbackType     done)
+        { auto err = Marvin::make_error_ok(); done(err,false);}
     
     virtual void handleRequest(
         MessageReaderSPtr           req,
         MessageWriterSPtr           rep,
-        HandlerDoneCallbackType hijackConnection) = 0;
+        HandlerDoneCallbackType done) = 0;
     
     protected:
         boost::asio::io_service&    _io;

@@ -53,6 +53,7 @@ class TLSConnection : public ConnectionInterface
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     
+    void asyncWrite(MBuffer& fb, AsyncWriteCallbackType cb);
     void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb);
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 

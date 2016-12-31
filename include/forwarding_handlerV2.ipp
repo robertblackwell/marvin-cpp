@@ -1,17 +1,43 @@
 
+//#pragma mark - some utility functions forward declares
+//void response403Forbidden(boost::asio::streambuf& sbuf);
+//void response200OKConnected(boost::asio::streambuf& sbuf);
+//void response502Badgateway(boost::asio::streambuf& sbuf);
 
-void response403Forbidden(boost::asio::streambuf& sbuf);
-void response200OKConnected(boost::asio::streambuf& sbuf);
-void response502Badgateway(boost::asio::streambuf& sbuf);
+enum class ConnectAction{
+    TUNNEL=11,
+    MITM,
+    REJECT
+};
 
+
+#pragma mark - Forward handler class
 template<class TCollector>
 ForwardingHandlerV2<TCollector>::ForwardingHandlerV2(
     boost::asio::io_service& io
 ): RequestHandlerBase(io)
-{}
+{
+}
 
 template<class TCollector>
 ForwardingHandlerV2<TCollector>::~ForwardingHandlerV2(){}
+
+#pragma mark - handle upgrade request
+
+template<class TCollector>
+void ForwardingHandlerV2<TCollector>::handleUpgrade()
+{
+    // deny the upgrade
+    _resp->setStatus("Forbidden");
+    _resp->setStatusCode(403);
+    std::string n("");
+    _resp->setContent(n);
+    _resp->asyncWrite([this](Marvin::ErrorType& err){
+        _doneCallback(err, false);
+    });
+}
+
+#pragma mark - handle connect request
 
 /// @description Handles a CONNECT request.
 ///
@@ -32,13 +58,92 @@ template<class TCollector>
 void ForwardingHandlerV2<TCollector>::handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
-        ConnectHandlerHijackCallbackType hijackConnection
+        HandlerDoneCallbackType     done
 ){
-    _collector = TCollector::getInstance(_io);
-
     LogInfo("");
-};
+    _req = req;
+    _downStreamConnection  = connPtr;
+    _doneCallback = done;
+    _initialResponseBuf = std::unique_ptr<MBuffer>(new MBuffer(1000));
+    int x = 2;
+    //
+    // Parse the url to determine were we have to send the "upstream" request
+    //
+    std::cout << "Got here" << std::hex <<  " reader:smartPtr: " << &(_req) << " inner: " << (long)_req.get()  << std::endl;
+    std::cout << "Got here" << std::hex <<  " conn:smartPtr: " << &(_req) << " inner: " << (long)_req.get()  << std::endl;
+    
+    std::string __url = _req->uri();
+    http::url _u = http::ParseHttpUrl(__url);
+    LogDebug(" uri:", _req->uri());
+    LogDebug(" scheme:", _u.protocol);
+    LogDebug(" host:", _u.host);
+    LogDebug(" port:", _u.port);
+    LogDebug(" path:", _u.path);
+    LogDebug(" query:", _u.search);
+    
+    _scheme = _u.protocol;
+    _host = _u.host;
+    _port = _u.port;
+    _doneCallback = done;
+    _collector = TCollector::getInstance(_io);
+    ConnectAction action = determineConnecAction(_host, _port);
 
+    switch(action){
+        case ConnectAction::TUNNEL :
+            initiateTunnel();
+            break;
+        case ConnectAction::MITM :
+            assert(false);
+            break;
+        case ConnectAction::REJECT :
+            assert(false);
+            break;
+    };
+    
+};
+template<class TCollector>
+void ForwardingHandlerV2<TCollector>::initiateTunnel()
+{
+    // first lets try and connect to the upstream host
+    // to do that we need an upstream connection
+#ifdef UUUU
+    _resp = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
+    _resp->setWriteSock(_downStreamConnection.get());
+    _resp->setStatus("OK");
+    _resp->setStatusCode(200);
+    std::string n("");
+    _resp->setContent(n);
+    _resp->asyncWrite([this](Marvin::ErrorType& err){
+        _doneCallback(err, false);
+    });
+
+    return;
+#endif
+    LogInfo("scheme:", _scheme, " host:", _host, " port:", _port);
+    _upstreamConnection =
+        std::shared_ptr<HttpConnection>(new HttpConnection(_io, _scheme, _host, std::to_string(_port)));
+    
+    _upstreamConnection->asyncConnect([this](Marvin::ErrorType& err, ConnectionInterface* conn){
+        if( err ){
+            LogWarn("initiateTunnel: FAILED scheme:", this->_scheme, " host:", this->_host, " port:", this->_port);
+            response502Badgateway(*_initialResponseBuf);
+            _downStreamConnection->asyncWrite(*_initialResponseBuf, [this](Marvin::ErrorType& err, std::size_t bytes_transfered){
+                _doneCallback(err, false);
+            });
+        }else{
+            response200OKConnected(*_initialResponseBuf);
+            _downStreamConnection->asyncWrite(*_initialResponseBuf, [this](Marvin::ErrorType& err, std::size_t bytes_transfered){
+                // we are connected up stream and have told the downstream about it - lets tunnel
+                _tunnelHandler = std::shared_ptr<TunnelHandler>(new TunnelHandler(_downStreamConnection, _upstreamConnection));
+                _tunnelHandler->start([this](Marvin::ErrorType& err){
+                    _doneCallback(err, false);
+                });
+            });
+        }
+    });
+    
+}
+#pragma mark - handle a "normal" request
 ///
 /// @description Handles a normal (not CONNECT) http request contained in req of type MessageReaderSPtr
 /// (a shared_ptr to a messageReader).
@@ -60,9 +165,11 @@ void ForwardingHandlerV2<TCollector>::handleRequest(
     _doneCallback = done;
     _collector = TCollector::getInstance(_io);
     handleRequest_Upstream(req, [this, req, resp](Marvin::ErrorType& err){
+
         handleUpstreamResponseReceived(err);
-        auto hf = std::bind(&ForwardingHandlerV2<TCollector>::onComplete, this, std::placeholders::_1);
+
         _collector->collect(_scheme, _host, _req, _resp);
+
         _resp->asyncWrite([this](Marvin::ErrorType& err){
             LogInfo("");
             if( err ){
@@ -78,18 +185,13 @@ void ForwardingHandlerV2<TCollector>::handleRequest(
 
     });
 }
+/// This method kicks off the forwarding process by pasing the request upstream
 template<class TCollector>
 void ForwardingHandlerV2<TCollector>::handleRequest_Upstream(
         MessageReaderSPtr req,
         std::function<void(Marvin::ErrorType& err)> upstreamCb
-        // MessageWriterSPtr resp,
-        // HandlerDoneCallbackType done
 ){
     LogInfo("");
-    // _req = req;
-    // _resp = resp;
-    // _doneCallback = done;
-    // _collector = TCollector::getInstance(_io);
     //
     // Parse the url to determine were we have to send the "upstream" request
     //
@@ -144,11 +246,7 @@ void ForwardingHandlerV2<TCollector>::handleRequest_Upstream(
     _upStreamRequestUPtr->setHttpVersMinor(_req->httpVersMinor());
     // now attach the body
     _upStreamRequestUPtr->setContent(_req->getBody());
-    // set up the callback on response received and GO
-    // auto hf = std::bind(&ForwardingHandlerV2<TCollector>::handleUpstreamResponseReceived, this, std::placeholders::_1);
-    // _upStreamRequestUPtr->go(hf);
     _upStreamRequestUPtr->go([this, upstreamCb](Marvin::ErrorType& err){
-        handleUpstreamResponseReceived(err);
         upstreamCb(err);
     });
     
@@ -157,13 +255,12 @@ void ForwardingHandlerV2<TCollector>::handleRequest_Upstream(
 template<class TCollector>
 void ForwardingHandlerV2<TCollector>::handleUpstreamResponseReceived(Marvin::ErrorType& err)
 {
-    LogInfo("");
     LogInfo("",traceRequest(*_upStreamRequestUPtr));
 
     if( err ){
-        LogWarn("");
         // this means we got an error NOT a response wit an error status code
         // so we have to consttruct a response
+        makeDownstreamErrorResponse(err);
         LogTrace(Marvin::make_error_description(err));
     }else{
         // Got a response from the upstream server
@@ -171,12 +268,6 @@ void ForwardingHandlerV2<TCollector>::handleUpstreamResponseReceived(Marvin::Err
         makeDownstreamResponse();
     }
     _upStreamRequestUPtr->end(); ///!!!
-    return;
-
-    LogTrace("send to client", traceWriter(*_resp));
-    auto hf = std::bind(&ForwardingHandlerV2<TCollector>::onComplete, this, std::placeholders::_1);
-    _collector->collect(_scheme, _host, _req, _resp);
-    _resp->asyncWrite(hf);
 }
 
 template<class TCollector>
@@ -230,18 +321,6 @@ void ForwardingHandlerV2<TCollector>::makeDownstreamErrorResponse(Marvin::ErrorT
     _resp->setContent(n);
 }
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::handleUpgrade()
-{
-    // deny the upgrade
-    _resp->setStatus("Forbidden");
-    _resp->setStatusCode(403);
-    std::string n("");
-    _resp->setContent(n);
-    _resp->asyncWrite([this](Marvin::ErrorType& err){
-        _doneCallback(err, false);
-    });
-}
-template<class TCollector>
 void ForwardingHandlerV2<TCollector>::onComplete(Marvin::ErrorType& err)
 {
     LogInfo("");
@@ -255,22 +334,43 @@ void ForwardingHandlerV2<TCollector>::onComplete(Marvin::ErrorType& err)
         _io.post(pf);
     }
 }
+#pragma mark - bodies of utility functions
 
 template<class TCollector>
-void response403Forbidden(boost::asio::streambuf& sbuf)
+ConnectAction ForwardingHandlerV2<TCollector>::determineConnecAction(std::string host, int port)
 {
-    std::ostream   os(&sbuf);
-    os << "Http/1.1 401 Forbidden\r\n\r\b";
+    std::vector<std::regex>  regexs = this->_httpsHosts;
+    std::vector<int>         ports  = this->_httpsPorts;
+    /// !!! this needs to be upgraded
+    return ConnectAction::TUNNEL;
+}
+
+
+template<class TCollector>
+void ForwardingHandlerV2<TCollector>::response403Forbidden(MBuffer& sbuf)
+{
+    std::string s = "HTTP/1.1 401 Forbidden\r\n\r\n";
+    void* p = (void*) s.c_str();
+    long len = strlen(s.c_str());
+    sbuf.setSize(0);
+    sbuf.append(p, len);
+    return;
 }
 template<class TCollector>
-void response200OKConnected(boost::asio::streambuf& sbuf)
+void ForwardingHandlerV2<TCollector>::response200OKConnected(MBuffer& sbuf)
 {
-    std::ostream   os(&sbuf);
-    os << "Http/1.1 200 OK\r\n\r\b";
+    std::string s = "HTTP/1.1 200 OK\r\n\r\n";
+    void* p = (void*) s.c_str();
+    long len = strlen(s.c_str());
+    sbuf.setSize(0);
+    sbuf.append(p, len);
 }
 template<class TCollector>
-void response502Badgateway(boost::asio::streambuf& sbuf)
+void ForwardingHandlerV2<TCollector>::response502Badgateway(MBuffer& sbuf)
 {
-    std::ostream   os(&sbuf);
-    os << "Http/1.1 502 Bad Gateway\r\n\r\b";
+    std::string s = "HTTP/1.1 502 Bad Gateway\r\n\r\n";
+    void* p = (void*) s.c_str();
+    long len = strlen(s.c_str());
+    sbuf.setSize(0);
+    sbuf.append(p, len);
 }

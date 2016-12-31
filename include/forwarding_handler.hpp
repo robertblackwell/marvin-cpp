@@ -35,7 +35,7 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
         void handleConnect(
             MessageReaderSPtr           req,
             ConnectionInterfaceSPtr     connPtr,
-            ConnectHandlerHijackCallbackType   hijackConnection);
+            HandlerDoneCallbackType done);
 
         void handleRequest(
             MessageReaderSPtr           req,

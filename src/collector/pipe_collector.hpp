@@ -10,7 +10,6 @@
 #include <boost/asio.hpp>
 #include <pthread.h>
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "server.hpp"
 #include "request_handler_base.hpp"

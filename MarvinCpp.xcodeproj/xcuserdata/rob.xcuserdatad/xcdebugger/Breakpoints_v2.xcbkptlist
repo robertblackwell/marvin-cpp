@@ -96,7 +96,7 @@
             startingLineNumber = "102"
             endingLineNumber = "102"
             landmarkName = "MessageReader::OnBodyData(void* buf, int len)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -188,7 +188,7 @@
             startingLineNumber = "44"
             endingLineNumber = "44"
             landmarkName = "testPipeReaderExists(char* pipeName)"
-            landmarkType = "7">
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -204,7 +204,7 @@
             startingLineNumber = "62"
             endingLineNumber = "62"
             landmarkName = "PipeCollector::PipeCollector(boost::asio::io_service&amp; io)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -460,7 +460,7 @@
             startingLineNumber = "127"
             endingLineNumber = "127"
             landmarkName = "PipeCollector::postedCollect( std::string&amp; scheme, std::string&amp; host, MessageReaderSPtr req, MessageWriterSPtr resp)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -476,7 +476,7 @@
             startingLineNumber = "63"
             endingLineNumber = "63"
             landmarkName = "PipeCollector::PipeCollector(boost::asio::io_service&amp; io)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -492,7 +492,7 @@
             startingLineNumber = "126"
             endingLineNumber = "126"
             landmarkName = "PipeCollector::postedCollect( std::string&amp; scheme, std::string&amp; host, MessageReaderSPtr req, MessageWriterSPtr resp)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -508,7 +508,7 @@
             startingLineNumber = "108"
             endingLineNumber = "108"
             landmarkName = "PipeCollector::postedCollect( std::string&amp; scheme, std::string&amp; host, MessageReaderSPtr req, MessageWriterSPtr resp)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -524,7 +524,7 @@
             startingLineNumber = "119"
             endingLineNumber = "119"
             landmarkName = "PipeCollector::postedCollect( std::string&amp; scheme, std::string&amp; host, MessageReaderSPtr req, MessageWriterSPtr resp)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1154,6 +1154,292 @@
             startingLineNumber = "33"
             endingLineNumber = "33"
             landmarkName = "-outlineView:viewForTableColumn:item:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504903902.276613"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "handleConnect( MessageReaderSPtr req, ConnectionInterfaceSPtr connPtr, HandlerDoneCallbackType done )"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504898804.29826"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "handleConnect( MessageReaderSPtr req, ConnectionInterfaceSPtr connPtr, HandlerDoneCallbackType done )"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/connection_handler.ipp"
+            timestampString = "504898870.863615"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "readMessageHandler(Marvin::ErrorType&amp; err)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ConnectionHandler&lt;ForwardingHandlerV2&lt;PipeCollector&gt; &gt;::readMessageHandler(boost::system::error_code&amp;)"
+                  moduleName = "proxy-pipe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/include/connection_handler.ipp"
+                  timestampString = "504901190.257586"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "129"
+                  endingLineNumber = "129"
+                  offsetFromSymbolStart = "718">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ConnectionHandler&lt;MyRequestHandler&gt;::readMessageHandler(boost::system::error_code&amp;)"
+                  moduleName = "proxy-pipe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/include/connection_handler.ipp"
+                  timestampString = "504901190.258785"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "129"
+                  endingLineNumber = "129"
+                  offsetFromSymbolStart = "718">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/message.cpp"
+            timestampString = "504899261.436383"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "MessageBase::uri()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handler.ipp"
+            timestampString = "504900336.642719"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "37"
+            endingLineNumber = "37">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504904683.542398"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
+            landmarkName = "initiateTunnel()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504904683.542398"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
+            landmarkName = "initiateTunnel()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504904683.542398"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
+            landmarkName = "initiateTunnel()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ForwardingHandlerV2&lt;PipeCollector&gt;::initiateTunnel()::&apos;lambda&apos;(boost::system::error_code&amp;, ConnectionInterface*)::operator()(boost::system::error_code&amp;, ConnectionInterface*) const"
+                  moduleName = "proxy-pipe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/include/forwarding_handlerV2.ipp"
+                  timestampString = "504904862.882174"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "135"
+                  endingLineNumber = "135"
+                  offsetFromSymbolStart = "546">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ForwardingHandlerV2&lt;PipeCollector&gt;::initiateTunnel()::&apos;lambda&apos;(boost::system::error_code&amp;, ConnectionInterface*)::operator()(boost::system::error_code&amp;, ConnectionInterface*) const::&apos;lambda0&apos;(boost::system::error_code&amp;, unsigned long)::operator()(boost::system::error_code&amp;, unsigned long) const"
+                  moduleName = "proxy-pipe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/include/forwarding_handlerV2.ipp"
+                  timestampString = "504904862.883366"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "137"
+                  endingLineNumber = "137"
+                  offsetFromSymbolStart = "63">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504904683.542398"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
+            landmarkName = "initiateTunnel()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/http_connection.cpp"
+            timestampString = "504904765.418241"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
+            landmarkName = "HttpConnection::asyncWriteStreamBuf(boost::asio::streambuf&amp; sb, AsyncWriteCallback cb)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504904683.542398"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "362"
+            endingLineNumber = "362"
+            landmarkName = "response200OKConnected(MBuffer&amp; sbuf)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504904683.542398"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "initiateTunnel()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "include/forwarding_handlerV2.ipp"
+            timestampString = "504904683.542398"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "initiateTunnel()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/http_connection.cpp"
+            timestampString = "504904765.418241"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
+            landmarkName = "HttpConnection::asyncWrite(MBuffer&amp; buf, AsyncWriteCallbackType cb)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -72,6 +72,7 @@ class ConnectionInterface : public ReadSocketInterface, public WriteSocketInterf
         std::function<void(const boost::system::error_code& err)> cb
     ) = 0;
     
+    virtual void asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb) = 0;
     virtual void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb) = 0;
     virtual void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
 

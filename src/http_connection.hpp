@@ -29,6 +29,9 @@ using system::error_code;
 
 //class Connection;
 //typedef std::shared_ptr<Connection> ConnectionPtr;
+class HttpConnection;
+typedef std::shared_ptr<HttpConnection> HttpConnectionSPtr;
+typedef std::unique_ptr<HttpConnection> HttpConnectionUPtr;
 
 //--------------------------------------------------------------------------------------------------
 // NON SSL/TLS Connection
@@ -53,6 +56,7 @@ class HttpConnection : public ConnectionInterface //public ReadSocketInterface, 
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     
+    void asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb);
     void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb);
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 

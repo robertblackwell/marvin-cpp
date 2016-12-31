@@ -277,8 +277,9 @@ void TLSConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
     //
     auto b = boost::asio::buffer(buffer.data(), buffer.capacity());
 //    auto opn = _boostSslSocketUPtr->lowest_layer().is_open();
-    _boostSslSocketUPtr->async_read_some(b, [this, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered){
+    _boostSslSocketUPtr->async_read_some(b, [this, cb, &buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered){
         Marvin::ErrorType m_err = err;
+        buffer.setSize(bytes_transfered);
         cb(m_err, bytes_transfered);
     });
     
@@ -286,6 +287,10 @@ void TLSConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
 /**
  * write
  */
+//----------------------------------------------------------------------------
+void TLSConnection::asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb)
+{
+}
 //----------------------------------------------------------------------------
 void TLSConnection::asyncWrite(FBuffer& buffer, AsyncWriteCallbackType cb)
 {

@@ -12,7 +12,7 @@
 #include "parser.hpp"
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 //#include "repeating_timer.hpp"
 //#include "mock_rsockection.hpp"

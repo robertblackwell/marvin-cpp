@@ -41,17 +41,18 @@ public:
     void handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
-        ConnectHandlerHijackCallbackType    hijack_connection)
+        HandlerDoneCallbackType    done)
     {
         LogDebug("");
         auto er = Marvin::make_error_ok();
-        hijack_connection(true);
         
         boost::asio::streambuf b;
         std::ostream strm(&b);
         strm << "HTTP/1.1 200 OK\r\nContent-length:5\r\n\r\n12345" << std::endl;
-        connPtr->asyncWriteStreamBuf(b, [this, &connPtr](Marvin::ErrorType& err, std::size_t bytes_transfered){
+        connPtr->asyncWriteStreamBuf(b, [this, done, &connPtr](Marvin::ErrorType& err, std::size_t bytes_transfered){
+            auto er = Marvin::make_error_ok();
             LogDebug(" callback");
+            done(er, true);
         });
     }
 

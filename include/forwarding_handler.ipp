@@ -32,7 +32,7 @@ template<class TCollector>
 void ForwardingHandler<TCollector>::handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
-        ConnectHandlerHijackCallbackType hijackConnection
+            HandlerDoneCallbackType done);
 ){
     _collector = TCollector::getInstance(_io);
 

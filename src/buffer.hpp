@@ -10,6 +10,10 @@
 //#include <boost/date_time/posix_time/posix_time.hpp>
 #include <cassert>
 #include <vector>
+class MBuffer;
+
+typedef std::shared_ptr<MBuffer> MBufferSPtr;
+typedef std::unique_ptr<MBuffer> MBufferUPtr;
 
 //=========================================================================================================
 //

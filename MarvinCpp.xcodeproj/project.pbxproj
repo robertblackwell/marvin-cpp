@@ -314,6 +314,12 @@
 		D4AF58E41DE6F8F1001AC0A1 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D4AF58E51DE6F8F1001AC0A1 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
 		D4AF58E71DE6F8F1001AC0A1 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F227B1D12188B007F8F72 /* parser.cpp */; };
+		D4E104B41E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
+		D4E104B51E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
+		D4E104B61E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
+		D4E104B91E1811AD00BB6066 /* half_tunnel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B71E1811AD00BB6066 /* half_tunnel.cpp */; };
+		D4E104BA1E1811AD00BB6066 /* half_tunnel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B71E1811AD00BB6066 /* half_tunnel.cpp */; };
+		D4E104BB1E1811AD00BB6066 /* half_tunnel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B71E1811AD00BB6066 /* half_tunnel.cpp */; };
 		D4EB1AEA1E04704400DDD929 /* http_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* http_connection.cpp */; };
 		D4EB1AEB1E04706700DDD929 /* connection_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E21E0222BB00831883 /* connection_pool.cpp */; };
 		D4EB1AEC1E0470A700DDD929 /* connection_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E21E0222BB00831883 /* connection_pool.cpp */; };
@@ -736,6 +742,10 @@
 		D4BEE9F91DE7BB7500F61432 /* tcase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tcase.hpp; sourceTree = "<group>"; };
 		D4BEE9FB1DE7BC5300F61432 /* error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = error.hpp; sourceTree = "<group>"; };
 		D4BEEA011DE82FC800F61432 /* message.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = message.hpp; sourceTree = "<group>"; };
+		D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tunnel_handler.cpp; sourceTree = "<group>"; };
+		D4E104B31E17FCB200BB6066 /* tunnel_handler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tunnel_handler.hpp; sourceTree = "<group>"; };
+		D4E104B71E1811AD00BB6066 /* half_tunnel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = half_tunnel.cpp; sourceTree = "<group>"; };
+		D4E104B81E1811AD00BB6066 /* half_tunnel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = half_tunnel.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1235,6 +1245,10 @@
 				D46614B91DFCEAAA00E3FAB0 /* request.cpp */,
 				D40B759A1E0B502A00431E06 /* tls_connection.hpp */,
 				D40B75991E0B502A00431E06 /* tls_connection.cpp */,
+				D4E104B81E1811AD00BB6066 /* half_tunnel.hpp */,
+				D4E104B71E1811AD00BB6066 /* half_tunnel.cpp */,
+				D4E104B31E17FCB200BB6066 /* tunnel_handler.hpp */,
+				D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */,
 				D421D0D31E01CE2A00831883 /* uri_query.hpp */,
 				D421D0D21E01CE2A00831883 /* uri_query.cpp */,
 			);
@@ -2120,7 +2134,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4E104B51E17FCB200BB6066 /* tunnel_handler.cpp in Sources */,
 				D4A7D34D1E14305700748973 /* marvin_delegate_objc.mm in Sources */,
+				D4E104BA1E1811AD00BB6066 /* half_tunnel.cpp in Sources */,
 				D407A0F61E1404CB00A8A312 /* pipe_collector.cpp in Sources */,
 				D45F5A3A1E12E6550032F943 /* main.mm in Sources */,
 				D45F5A191E12E61A0032F943 /* http_header.cpp in Sources */,
@@ -2267,12 +2283,14 @@
 				D407D5061E100B67003E5F8E /* request_handler_base.cpp in Sources */,
 				D470B31E1E0FE51F00AEF135 /* url.cpp in Sources */,
 				D470B31F1E0FE51F00AEF135 /* http_connection.cpp in Sources */,
+				D4E104B41E17FCB200BB6066 /* tunnel_handler.cpp in Sources */,
 				D470B3201E0FE51F00AEF135 /* connection_pool.cpp in Sources */,
 				D470B3211E0FE51F00AEF135 /* test_client.cpp in Sources */,
 				D470B3221E0FE51F00AEF135 /* test_server.cpp in Sources */,
 				D470B3241E0FE51F00AEF135 /* http_parser.c in Sources */,
 				D470B3251E0FE51F00AEF135 /* simple_buffer.c in Sources */,
 				D470B3261E0FE51F00AEF135 /* request.cpp in Sources */,
+				D4E104B91E1811AD00BB6066 /* half_tunnel.cpp in Sources */,
 				D470B3271E0FE51F00AEF135 /* buffer.cpp in Sources */,
 				D470B3281E0FE51F00AEF135 /* marvin_error.cpp in Sources */,
 				D470B3291E0FE51F00AEF135 /* message.cpp in Sources */,
@@ -2354,6 +2372,7 @@
 				D4A7D3821E146C1300748973 /* objc__collector.mm in Sources */,
 				D4A7D36C1E145BD000748973 /* http_connection.cpp in Sources */,
 				D4A7D36D1E145BD000748973 /* http_header.cpp in Sources */,
+				D4E104BB1E1811AD00BB6066 /* half_tunnel.cpp in Sources */,
 				D4A7D36E1E145BD000748973 /* marvin_error.cpp in Sources */,
 				D4A7D36F1E145BD000748973 /* message.cpp in Sources */,
 				D4A7D3701E145BD000748973 /* message_reader.cpp in Sources */,
@@ -2367,6 +2386,7 @@
 				D4A7D3761E145BD000748973 /* uri_query.cpp in Sources */,
 				D47B43441E16BD9D00B0254A /* CapturedTraffic.m in Sources */,
 				D4A7D3591E1459C200748973 /* main.m in Sources */,
+				D4E104B61E17FCB200BB6066 /* tunnel_handler.cpp in Sources */,
 				D4A7D3561E1459C200748973 /* AppDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2852,7 +2872,6 @@
 		D470B3371E0FE51F00AEF135 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRC_ROOT)/deps/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
