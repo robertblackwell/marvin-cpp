@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <memory>
 #include "marvin_error.hpp"
-#include "http_connection.hpp"
+#include "tcp_connection.hpp"
 #include "half_tunnel.hpp"
 
 class TunnelHandler;
@@ -24,7 +24,7 @@ class TunnelHandler
     public:
         TunnelHandler(
             ConnectionInterfaceSPtr  downStreamConnection,
-            HttpConnectionSPtr      upstreamConnection
+            TCPConnectionSPtr      upstreamConnection
         );
         ~TunnelHandler();
         void start(std::function<void(Marvin::ErrorType& err)> cb);
@@ -33,7 +33,7 @@ class TunnelHandler
         void tryDone();
         std::function<void(Marvin::ErrorType& err)> _callback;
         ConnectionInterfaceSPtr     _downstreamConnection;
-//        HttpConnectionSPtr          _upstreamConnection;
+//        TCPConnectionSPtr          _upstreamConnection;
         ConnectionInterfaceSPtr     _upstreamConnection;
     
         HalfTunnelUPtr              _upstreamHalfTunnel;

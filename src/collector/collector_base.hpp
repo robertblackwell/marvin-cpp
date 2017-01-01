@@ -57,9 +57,4 @@ class CollectorBase
 bool NullCollector::_firstTime = true;
 NullCollector* NullCollector::_instance = NULL;
 
-void RunMitmServer()
-{
-    Server<ForwardingHandler<NullCollector>> server;
-    server.listen(9991);
-}
 

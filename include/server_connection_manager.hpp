@@ -13,37 +13,37 @@
 template<class TConnectionHandler>
 class ServerConnectionManager
 {
-public:
-    ServerConnectionManager(const ServerConnectionManager&) = delete;
-    ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
+    public:
+        ServerConnectionManager(const ServerConnectionManager&) = delete;
+        ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
 
-    /**
-    ** Construct a connection manager.
-    */
-    ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand);
+        /**
+        ** Construct a connection manager.
+        */
+        ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand);
 
-    /**
-    ** Register a connection handler in a table so that it stays around to process request/response
-    */
-    void registerConnectionHandler(TConnectionHandler* connHandler);
- 
-    /**
-    ** deregister the specified connection.
-    */
-    void deregister(TConnectionHandler* ch);
+        /**
+        ** Register a connection handler in a table so that it stays around to process request/response
+        */
+        void registerConnectionHandler(TConnectionHandler* connHandler);
+     
+        /**
+        ** deregister the specified connection.
+        */
+        void deregister(TConnectionHandler* ch);
 
-    /**
-    ** Stop all connections.
-    */
-    void stop_all();
+        /**
+        ** Stop all connections.
+        */
+        void stop_all();
 
-private:
-    void _deregister(TConnectionHandler* ch);
+    private:
+        void _deregister(TConnectionHandler* ch);
 
-    boost::asio::io_service&    _io;
-    boost::asio::strand&        _serverStrand;
-    
-    std::map<TConnectionHandler*, std::unique_ptr<TConnectionHandler>> _connections;
+        boost::asio::io_service&    _io;
+        boost::asio::strand&        _serverStrand;
+        
+        std::map<TConnectionHandler*, std::unique_ptr<TConnectionHandler>> _connections;
 };
 
 #include "server_connection_manager.ipp"

@@ -11,7 +11,7 @@
 #include "server_connection_manager.hpp"
 #include "request_handler_base.hpp"
 #include "connection_interface.hpp"
-#include "http_connection.hpp"
+#include "tcp_connection.hpp"
 #include "tls_connection.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"

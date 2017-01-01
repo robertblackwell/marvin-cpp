@@ -1,0 +1,9 @@
+{
+    "key1" : "value1",
+    "key2" :
+    {
+        "sub1" : "val1",
+        "sub2" : "val2"
+    },
+    "array" : ["item1", "item2"]
+}

@@ -17,7 +17,7 @@
 #include "rb_logger.hpp"
 #include "UriParser.hpp"
 #include "request.hpp"
-#include "http_connection.hpp"
+#include "tcp_connection.hpp"
 #include "http_header.hpp"
 #include "tunnel_handler.hpp"
 
@@ -75,9 +75,9 @@ template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
         void initiateTunnel();
     
         // utility methods
-        void response403Forbidden(MBuffer& sbuf);
-        void response200OKConnected(MBuffer& sbuf);
-        void response502Badgateway(MBuffer& sbuf);
+        void response403Forbidden(MessageWriter& writer);
+        void response200OKConnected(MessageWriter& writer);
+        void response502Badgateway(MessageWriter& writer);
 
 
         /// @brief Only used by the handleConnect method
@@ -96,7 +96,7 @@ template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
         MBufferUPtr                 _initialResponseBuf;
         TunnelHandlerSPtr           _tunnelHandler;
         ConnectionInterfaceSPtr     _downStreamConnection; // used only for tunnel
-        HttpConnectionSPtr          _upstreamConnection; // used only for tunnels
+        TCPConnectionSPtr          _upstreamConnection; // used only for tunnels
     
         /// regexs to define hosts that require mitm not tunnel
         std::vector<std::regex>     _httpsHosts;

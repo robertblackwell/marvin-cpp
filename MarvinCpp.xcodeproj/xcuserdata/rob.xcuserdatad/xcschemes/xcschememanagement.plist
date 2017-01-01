@@ -34,6 +34,11 @@
 			<key>orderHint</key>
 			<integer>20</integer>
 		</dict>
+		<key>ini-test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>25</integer>
+		</dict>
 		<key>logger.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -263,6 +268,11 @@
 			<true/>
 		</dict>
 		<key>D4AF58DB1DE6F6AD001AC0A1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D4E104BF1E18A3E200BB6066</key>
 		<dict>
 			<key>primary</key>
 			<true/>

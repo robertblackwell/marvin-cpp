@@ -1,8 +1,4 @@
 #include "rb_logger.hpp"
-//RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-/*#include "connection_handler.hpp"
-#include "server_connection_manager.hpp"
-*/
 
 #define TMPL template<class TConnectionHandler>
 #define TCLASS ServerConnectionManager<TConnectionHandler>
@@ -14,7 +10,6 @@ ServerConnectionManager<TConnectionHandler>::ServerConnectionManager(boost::asio
 template<class TConnectionHandler>
 void ServerConnectionManager<TConnectionHandler>::registerConnectionHandler(TConnectionHandler* connHandler)
 {
-//    std::unique_ptr<ConnectionHandler> hp = std::unique_ptr<ConnectionHandler>(connHandler);
     _connections[connHandler] = std::unique_ptr<TConnectionHandler>(connHandler);
 }
 

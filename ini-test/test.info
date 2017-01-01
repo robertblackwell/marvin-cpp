@@ -1,0 +1,14 @@
+key1 value1
+key2
+{
+   key3 value3
+   {
+      key4 "value4 with spaces"
+   }
+   array
+   {
+        mem1
+        mem2
+   }
+   key5 value5
+}

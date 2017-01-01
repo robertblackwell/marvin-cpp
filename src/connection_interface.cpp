@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <cassert>
 #include "connection_interface.hpp"
-#include "http_connection.hpp"
+#include "tcp_connection.hpp"
 #include "tls_connection.hpp"
 
 ConnectionInterface* connectionFactory(
@@ -20,7 +20,7 @@ ConnectionInterface* connectionFactory(
 ){
     ConnectionInterface* ptr;
     if( boost::to_lower_copy(scheme) == "http" ){
-        ptr = new HttpConnection(io_service, scheme, server, port);
+        ptr = new TCPConnection(io_service, scheme, server, port);
     }else if( boost::to_lower_copy(scheme) == "https" ){
         ptr = new TLSConnection(io_service, scheme, server, port);
     } else{
@@ -34,7 +34,7 @@ ConnectionInterface* connectionFactory(
 ){
     ConnectionInterface* ptr;
     if( scheme == "http" ){
-        ptr = new HttpConnection(io_service);
+        ptr = new TCPConnection(io_service);
     }else if( scheme == "https" ){
         ptr = new TLSConnection(io_service);
     } else{

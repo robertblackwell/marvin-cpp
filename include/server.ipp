@@ -130,7 +130,7 @@ template<class TRequestHandler> void Server<TRequestHandler>::listen(long port)
 template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
 {
     LogInfo("");
-    ConnectionInterface* conptr = new HttpConnection(_io);
+    ConnectionInterface* conptr = new TCPConnection(_io);
     
     RequestHandlerBase* hi = new TRequestHandler(_io);
     

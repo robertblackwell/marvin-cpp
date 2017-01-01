@@ -12,7 +12,7 @@
 
 TunnelHandler::TunnelHandler(
     ConnectionInterfaceSPtr     downstreamConnection,
-    HttpConnectionSPtr          upstreamConnection
+    TCPConnectionSPtr          upstreamConnection
 )
 {
     _downstreamConnection   = downstreamConnection;

@@ -1,9 +1,4 @@
 
-//#pragma mark - some utility functions forward declares
-//void response403Forbidden(boost::asio::streambuf& sbuf);
-//void response200OKConnected(boost::asio::streambuf& sbuf);
-//void response502Badgateway(boost::asio::streambuf& sbuf);
-
 enum class ConnectAction{
     TUNNEL=11,
     MITM,
@@ -124,38 +119,44 @@ void ForwardingHandlerV2<TCollector>::initiateTunnel()
 {
     // first lets try and connect to the upstream host
     // to do that we need an upstream connection
-#ifdef UUUU
     _resp = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
     _resp->setWriteSock(_downStreamConnection.get());
-    _resp->setStatus("OK");
-    _resp->setStatusCode(200);
-    std::string n("");
-    _resp->setContent(n);
-    _resp->asyncWrite([this](Marvin::ErrorType& err){
-        _doneCallback(err, false);
-    });
-
-    return;
-#endif
+    
     LogInfo("scheme:", _scheme, " host:", _host, " port:", _port);
     _upstreamConnection =
-        std::shared_ptr<HttpConnection>(new HttpConnection(_io, _scheme, _host, std::to_string(_port)));
+        std::shared_ptr<TCPConnection>(new TCPConnection(_io, _scheme, _host, std::to_string(_port)));
     
     _upstreamConnection->asyncConnect([this](Marvin::ErrorType& err, ConnectionInterface* conn){
         if( err ){
             LogWarn("initiateTunnel: FAILED scheme:", this->_scheme, " host:", this->_host, " port:", this->_port);
-            response502Badgateway(*_initialResponseBuf);
-            _downStreamConnection->asyncWrite(*_initialResponseBuf, [this](Marvin::ErrorType& err, std::size_t bytes_transfered){
-                _doneCallback(err, false);
+            response502Badgateway(*_resp);
+            _resp->asyncWrite([this](Marvin::ErrorType& err){
+                LogInfo("");
+                if( err ){
+                    LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+                    // got an error sending response to downstream client - what can we do ? Nothing
+                    auto pf = std::bind(_doneCallback, err, false);
+                    _io.post(pf);
+                }else{
+                    auto pf = std::bind(_doneCallback, err, true);
+                    _io.post(pf);
+                }
             });
         }else{
-            response200OKConnected(*_initialResponseBuf);
-            _downStreamConnection->asyncWrite(*_initialResponseBuf, [this](Marvin::ErrorType& err, std::size_t bytes_transfered){
-                // we are connected up stream and have told the downstream about it - lets tunnel
-                _tunnelHandler = std::shared_ptr<TunnelHandler>(new TunnelHandler(_downStreamConnection, _upstreamConnection));
-                _tunnelHandler->start([this](Marvin::ErrorType& err){
-                    _doneCallback(err, false);
-                });
+            response200OKConnected(*_resp);
+            _resp->asyncWrite([this](Marvin::ErrorType& err){
+                LogInfo("");
+                if( err ){
+                    LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+                    // got an error sending response to downstream client - what can we do ? Nothing
+                    auto pf = std::bind(_doneCallback, err, false);
+                    _io.post(pf);
+                }else{
+                    _tunnelHandler = std::shared_ptr<TunnelHandler>(new TunnelHandler(_downStreamConnection, _upstreamConnection));
+                    _tunnelHandler->start([this](Marvin::ErrorType& err){
+                        _doneCallback(err, false);
+                    });
+                }
             });
         }
     });
@@ -365,30 +366,26 @@ ConnectAction ForwardingHandlerV2<TCollector>::determineConnecAction(std::string
 
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::response403Forbidden(MBuffer& sbuf)
+void ForwardingHandlerV2<TCollector>::response403Forbidden(MessageWriter& writer)
 {
-    std::string s = "HTTP/1.1 401 Forbidden\r\n\r\n";
-    void* p = (void*) s.c_str();
-    long len = strlen(s.c_str());
-    sbuf.setSize(0);
-    sbuf.append(p, len);
-    return;
+    writer.setStatus("Forbidden");
+    writer.setStatusCode(403);
+    std::string n("");
+    writer.setContent(n);
 }
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::response200OKConnected(MBuffer& sbuf)
+void ForwardingHandlerV2<TCollector>::response200OKConnected(MessageWriter& writer)
 {
-    std::string s = "HTTP/1.1 200 OK\r\n\r\n";
-    void* p = (void*) s.c_str();
-    long len = strlen(s.c_str());
-    sbuf.setSize(0);
-    sbuf.append(p, len);
+    writer.setStatus("OK");
+    writer.setStatusCode(200);
+    std::string n("");
+    writer.setContent(n);
 }
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::response502Badgateway(MBuffer& sbuf)
+void ForwardingHandlerV2<TCollector>::response502Badgateway(MessageWriter& writer)
 {
-    std::string s = "HTTP/1.1 502 Bad Gateway\r\n\r\n";
-    void* p = (void*) s.c_str();
-    long len = strlen(s.c_str());
-    sbuf.setSize(0);
-    sbuf.append(p, len);
+    writer.setStatus("BAD GATEWAY");
+    writer.setStatusCode(503);
+    std::string n("");
+    writer.setContent(n);
 }

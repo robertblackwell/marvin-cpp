@@ -138,8 +138,8 @@ private:
 
 
 // want to default to "ON" - disable by #define RBLOGGER_OFF
-#define RBLOGGER_OFF
-#define NO_TRACE
+//#define RBLOGGER_OFF
+//#define NO_TRACE
 #if !defined(RBLOGGER_OFF) || defined(RBLOGGER_ON) || defined(RBLOGGER_ENABLED)
     #define RBLOGGER_ENABLED
 #else

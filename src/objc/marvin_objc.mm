@@ -22,7 +22,7 @@ void RunMitmServer()
     MarvinDelegateObjc *delegate = [[MarvinDelegateObjc alloc]init];
     ObjcCollector::setDelegate((__bridge void*)delegate);
     
-    Server<ForwardingHandler<ObjcCollector>> server;
+    Server<ForwardingHandlerV2<ObjcCollector>> server;
     server.listen(9991);
     NSLog(@"Done with RunMitmServer");
 }

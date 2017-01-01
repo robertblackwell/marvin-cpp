@@ -1,6 +1,6 @@
 
-#ifndef http_connection_hpp
-#define http_connection_hpp
+#ifndef tcp_connection_hpp
+#define tcp_connection_hpp
 
 #include <iostream>
 #include <istream>
@@ -29,29 +29,29 @@ using system::error_code;
 
 //class Connection;
 //typedef std::shared_ptr<Connection> ConnectionPtr;
-class HttpConnection;
-typedef std::shared_ptr<HttpConnection> HttpConnectionSPtr;
-typedef std::unique_ptr<HttpConnection> HttpConnectionUPtr;
+class TCPConnection;
+typedef std::shared_ptr<TCPConnection> TCPConnectionSPtr;
+typedef std::unique_ptr<TCPConnection> TCPConnectionUPtr;
 
 //--------------------------------------------------------------------------------------------------
 // NON SSL/TLS Connection
 //--------------------------------------------------------------------------------------------------
-class HttpConnection : public ConnectionInterface //public ReadSocketInterface, public WriteSocketInterface
+class TCPConnection : public ConnectionInterface //public ReadSocketInterface, public WriteSocketInterface
 {
     public:
     // client socket needs to know who to connect to
-    HttpConnection(
+    TCPConnection(
             boost::asio::io_service& io_service,
             const std::string& scheme,
             const std::string& server,
             const std::string& port
                );
     // server socket will be connected via listen/accept
-    HttpConnection(
+    TCPConnection(
         boost::asio::io_service& io_service
     );
     
-    ~HttpConnection();
+    ~TCPConnection();
     
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
