@@ -6,6 +6,7 @@
 template<class TConnectionHandler>
 ServerConnectionManager<TConnectionHandler>::ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand)    : _io(io), _serverStrand(serverStrand)
 {
+    LogTorTrace();
 }
 template<class TConnectionHandler>
 void ServerConnectionManager<TConnectionHandler>::registerConnectionHandler(TConnectionHandler* connHandler)

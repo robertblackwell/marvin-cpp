@@ -9,7 +9,7 @@
 
 RBLogging::LogLevel  rbLogLevel = RBLogging::LogLevel::debug;
 
-#include "server.hpp"
+#include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #ifdef GHDF
@@ -57,7 +57,7 @@ public:
 };
 
 #endif
-#include "test_server.hpp"
+#include "test_http_server.hpp"
 int main(int argc, char* argv[])
 {
     runTestServer();

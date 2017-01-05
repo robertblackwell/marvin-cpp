@@ -27,13 +27,17 @@ std::string traceWriter(MessageWriter& writer)
 
 MessageWriter::MessageWriter(boost::asio::io_service& io, bool is_request):_io(io)
 {
+    LogTorTrace();
     _isRequest = is_request;
     // set default version
     setHttpVersMajor(1);
     setHttpVersMinor(1);
 
 }
-MessageWriter::~MessageWriter(){ LogDebug("");}
+MessageWriter::~MessageWriter()
+{
+    LogTorTrace();
+}
 
 void
 MessageWriter::setContent(std::string& contentStr)

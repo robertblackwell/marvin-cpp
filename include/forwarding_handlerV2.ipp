@@ -30,12 +30,16 @@ ForwardingHandlerV2<TCollector>::ForwardingHandlerV2(
     boost::asio::io_service& io
 ): RequestHandlerBase(io)
 {
+    LogTorTrace();
     _httpsHosts = __httpsHosts;
     _httpsPorts = __httpsPorts;
 }
 
 template<class TCollector>
-ForwardingHandlerV2<TCollector>::~ForwardingHandlerV2(){}
+ForwardingHandlerV2<TCollector>::~ForwardingHandlerV2()
+{
+    LogTorTrace();
+}
 
 #pragma mark - handle upgrade request
 

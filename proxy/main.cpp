@@ -12,7 +12,7 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "server.hpp"
+#include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "forwarding_handlerV2.hpp"
@@ -32,7 +32,7 @@ int main(int argc, const char * argv[])
         ForwardingHandlerV2<PipeCollector>::configSet_HttpsPorts(ports);
         ForwardingHandlerV2<PipeCollector>::configSet_HttpsHosts(re);
         
-        Server<ForwardingHandlerV2<PipeCollector>> server;
+        HTTPServer<ForwardingHandlerV2<PipeCollector>> server;
         server.listen(9991);
     }
     catch (std::exception& e)

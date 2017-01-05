@@ -20,7 +20,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "UriParser.hpp"
 #include "url.hpp"
-#include "server.hpp"
+#include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "uri_query.hpp"
@@ -159,7 +159,7 @@ runTestServer()
 {
     try
     {
-        Server<MyRequestHandler> server;
+        HTTPServer<MyRequestHandler> server;
         server.listen();
     }
     catch (std::exception& e)

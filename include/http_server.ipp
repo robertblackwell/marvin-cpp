@@ -9,7 +9,7 @@
 //
 /*
 #include <iostream>
-#include "server.hpp"
+#include "http_server.hpp"
 #include <signal.h>
 #include <utility>
 #include "rb_logger.hpp"
@@ -23,10 +23,10 @@
 #include <thread>
 
 template<class TRequestHandler>
-int Server<TRequestHandler>::__numberOfThreads = 4;
+int HTTPServer<TRequestHandler>::__numberOfThreads = 4;
 
 template<class TRequestHandler>
-void Server<TRequestHandler>::configSet_NumberOfThreads(int n)
+void HTTPServer<TRequestHandler>::configSet_NumberOfThreads(int n)
 {
     __numberOfThreads = n;
 }
@@ -34,13 +34,15 @@ void Server<TRequestHandler>::configSet_NumberOfThreads(int n)
 
 
 template<class TRequestHandler>
-Server<TRequestHandler>::Server()
+HTTPServer<TRequestHandler>::HTTPServer()
   : _io(5),
     _signals(_io),
     _acceptor(_io),
     _serverStrand(_io),
     _connectionManager(_io, _serverStrand)
 {
+    LogTorTrace();
+
 //    _port = port;
 //    initialize();
     // Register to handle the signals that indicate when the Server should exit.
@@ -64,7 +66,7 @@ Server<TRequestHandler>::Server()
 /**
 ** init
 */
-template<class TRequestHandler> void Server<TRequestHandler>::initialize()
+template<class TRequestHandler> void HTTPServer<TRequestHandler>::initialize()
 {
     ///
     /// !! make sure this is big enough to handle the components with dedicated strands
@@ -87,18 +89,23 @@ template<class TRequestHandler> void Server<TRequestHandler>::initialize()
     _acceptor.bind(endpoint);
 
 }
+template<class TRequesstHandler>
+HTTPServer<TRequesstHandler>::~HTTPServer()
+{
+    LogTorTrace();
+}
 #pragma mark - listen, accept processing
 //-------------------------------------------------------------------------------------
 // listen - starts the accept cycle
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::listen(long port)
+template<class TRequestHandler> void HTTPServer<TRequestHandler>::listen(long port)
 {
     _port = port;
     initialize();
     _acceptor.listen();
     
     // start the accept process on the _serverStrand
-    auto hf = std::bind(&Server<TRequestHandler>::startAccept, this);
+    auto hf = std::bind(&HTTPServer<TRequestHandler>::startAccept, this);
     postOnStrand(hf);
     
 #define MULTI_THREAD
@@ -127,7 +134,7 @@ template<class TRequestHandler> void Server<TRequestHandler>::listen(long port)
 //-------------------------------------------------------------------------------------
 // startAccept
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
+template<class TRequestHandler> void HTTPServer<TRequestHandler>::startAccept()
 {
     LogInfo("");
     ConnectionInterface* conptr = new TCPConnection(_io);
@@ -138,7 +145,7 @@ template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
         new ConnectionHandler<TRequestHandler>(_io, _connectionManager, conptr);
 
     auto hf = _serverStrand.wrap(
-                    std::bind(&Server::handleAccept, this, connectionHandler, std::placeholders::_1)
+                    std::bind(&HTTPServer::handleAccept, this, connectionHandler, std::placeholders::_1)
                     );
     conptr->asyncAccept(_acceptor, hf);
 }
@@ -146,7 +153,7 @@ template<class TRequestHandler> void Server<TRequestHandler>::startAccept()
 //-------------------------------------------------------------------------------------
 // handleAccept - called on _strand to handle a new client connection
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
+template<class TRequestHandler> void HTTPServer<TRequestHandler>::handleAccept(
                                                                 ConnectionHandler<TRequestHandler>* connHandler,
                                                                 const boost::system::error_code& err)
 {
@@ -177,7 +184,7 @@ template<class TRequestHandler> void Server<TRequestHandler>::handleAccept(
 //-------------------------------------------------------------------------------------
 // postOnStrand - wraps a parameterless function in _strand and posts to _io
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::postOnStrand(std::function<void()> fn)
+template<class TRequestHandler> void HTTPServer<TRequestHandler>::postOnStrand(std::function<void()> fn)
 {
     auto wrappedFn = _serverStrand.wrap(fn);
     _io.post(wrappedFn);
@@ -186,16 +193,16 @@ template<class TRequestHandler> void Server<TRequestHandler>::postOnStrand(std::
 //-------------------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void Server<TRequestHandler>::waitForStop()
+template<class TRequestHandler> void HTTPServer<TRequestHandler>::waitForStop()
 {
     LogDebug("");
     auto hf = _serverStrand.wrap(
-                    std::bind(&Server::doStop, this, std::placeholders::_1)
+                    std::bind(&HTTPServer::doStop, this, std::placeholders::_1)
                     );
 
   _signals.async_wait(hf);
 }
-template<class TRequestHandler> void Server<TRequestHandler>::doStop(const Marvin::ErrorType& err)
+template<class TRequestHandler> void HTTPServer<TRequestHandler>::doStop(const Marvin::ErrorType& err)
 {
     LogDebug("");
     _acceptor.close();

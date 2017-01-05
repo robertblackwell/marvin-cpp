@@ -12,6 +12,7 @@ ConnectionHandler<TRequestHandler>::ConnectionHandler(
     ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
     ConnectionInterface*                                            conn):  _io(io), _connectionManager(connectionManager)
 {
+    LogTorTrace();
     _requestHandlerPtr  = new TRequestHandler(_io);
     _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
     
@@ -26,6 +27,7 @@ ConnectionHandler<TRequestHandler>::ConnectionHandler(
 template<class TRequestHandler>
 ConnectionHandler<TRequestHandler>::~ConnectionHandler()
 {
+    LogTorTrace();
 #ifdef CON_SMARTPOINTER
 #else
     delete _connection;

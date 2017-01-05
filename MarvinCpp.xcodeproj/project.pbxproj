@@ -22,7 +22,7 @@
 		D407D51C1E11FDA4003E5F8E /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
 		D40B755B1E0A0D6B00431E06 /* connection_handler.ipp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75531E0A0D6B00431E06 /* connection_handler.ipp */; };
 		D40B755C1E0A0D6B00431E06 /* server_connection_manager.ipp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75571E0A0D6B00431E06 /* server_connection_manager.ipp */; };
-		D40B755D1E0A0D6B00431E06 /* server.ipp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75591E0A0D6B00431E06 /* server.ipp */; };
+		D40B755D1E0A0D6B00431E06 /* http_server.ipp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75591E0A0D6B00431E06 /* http_server.ipp */; };
 		D40B755E1E0A0E1400431E06 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A6E9DC1E0477710096441E /* main.cpp */; };
 		D40B75601E0A100100431E06 /* readme.md in Sources */ = {isa = PBXBuildFile; fileRef = D40B755F1E0A100100431E06 /* readme.md */; };
 		D40B75691E0AC5BA00431E06 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75641E0AC5BA00431E06 /* client.cpp */; };
@@ -585,9 +585,9 @@
 
 /* Begin PBXFileReference section */
 		D407A0F01E13FD9700A8A312 /* collector_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = collector_base.cpp; sourceTree = "<group>"; };
-		D407A0F11E13FD9700A8A312 /* collector_base.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = collector_base.hpp; sourceTree = "<group>"; };
+		D407A0F11E13FD9700A8A312 /* collector_base.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = collector_base.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D407A0F21E13FD9700A8A312 /* pipe_collector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pipe_collector.cpp; sourceTree = "<group>"; };
-		D407A0F31E13FD9700A8A312 /* pipe_collector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pipe_collector.hpp; sourceTree = "<group>"; };
+		D407A0F31E13FD9700A8A312 /* pipe_collector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = pipe_collector.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D407D5051E100B67003E5F8E /* request_handler_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = request_handler_base.cpp; sourceTree = "<group>"; };
 		D407D50B1E1013DA003E5F8E /* boost_stuff.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = boost_stuff.hpp; sourceTree = "<group>"; };
 		D407D5121E103480003E5F8E /* hdoc-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "hdoc-test"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -601,8 +601,8 @@
 		D40B75561E0A0D6B00431E06 /* request_handler_base.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = request_handler_base.hpp; sourceTree = "<group>"; };
 		D40B75571E0A0D6B00431E06 /* server_connection_manager.ipp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = server_connection_manager.ipp; sourceTree = "<group>"; };
 		D40B75581E0A0D6B00431E06 /* server_connection_manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = server_connection_manager.hpp; sourceTree = "<group>"; };
-		D40B75591E0A0D6B00431E06 /* server.ipp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = server.ipp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		D40B755A1E0A0D6B00431E06 /* server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = server.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		D40B75591E0A0D6B00431E06 /* http_server.ipp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = http_server.ipp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		D40B755A1E0A0D6B00431E06 /* http_server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = http_server.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D40B755F1E0A100100431E06 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		D40B75621E0AC5BA00431E06 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		D40B75631E0AC5BA00431E06 /* ca.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ca.pem; sourceTree = "<group>"; };
@@ -633,14 +633,14 @@
 		D421D0E61E043DFF00831883 /* tcp_connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = tcp_connection.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D42DB98B1E00DD3200B2AF60 /* server_alone */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = server_alone; sourceTree = BUILT_PRODUCTS_DIR; };
 		D42DB98D1E00DD9B00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		D42DB98F1E00DD9B00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D42DB98F1E00DD9B00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D42DB9AC1E00DEA100B2AF60 /* client_alone */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = client_alone; sourceTree = BUILT_PRODUCTS_DIR; };
 		D42DB9AE1E00F65D00B2AF60 /* test_client.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_client.cpp; sourceTree = "<group>"; };
 		D42DB9AF1E00F65D00B2AF60 /* test_client.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_client.hpp; sourceTree = "<group>"; };
-		D42DB9B11E00F6DF00B2AF60 /* test_server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_server.cpp; sourceTree = "<group>"; };
+		D42DB9B11E00F6DF00B2AF60 /* test_server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = test_server.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D42DB9B21E00F6DF00B2AF60 /* test_server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_server.hpp; sourceTree = "<group>"; };
 		D42DB9CE1E00F93000B2AF60 /* test_server_client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_server_client; sourceTree = BUILT_PRODUCTS_DIR; };
-		D42DB9D01E00F99E00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D42DB9D01E00F99E00B2AF60 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D4300B581E17E7720063FA82 /* forwarding_handlerV2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = forwarding_handlerV2.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D4300B591E17E7720063FA82 /* forwarding_handlerV2.ipp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = forwarding_handlerV2.ipp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D445DB581E14B57400418D6B /* regexs */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = regexs; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -685,7 +685,7 @@
 		D46614681DFB24DD00E3FAB0 /* message_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = message_reader.cpp; sourceTree = "<group>"; };
 		D46614691DFB24DD00E3FAB0 /* message_reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = message_reader.hpp; sourceTree = "<group>"; };
 		D46614831DFB2A5F00E3FAB0 /* server_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = server_test; sourceTree = BUILT_PRODUCTS_DIR; };
-		D466148A1DFB2ADD00E3FAB0 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D466148A1DFB2ADD00E3FAB0 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D46614AE1DFCE18700E3FAB0 /* message_writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = message_writer.cpp; sourceTree = "<group>"; };
 		D46614AF1DFCE18700E3FAB0 /* message_writer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = message_writer.hpp; sourceTree = "<group>"; };
 		D46614B71DFCEAAA00E3FAB0 /* client_connection_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client_connection_manager.cpp; sourceTree = "<group>"; };
@@ -703,7 +703,7 @@
 		D46F227C1D12188B007F8F72 /* parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parser.hpp; sourceTree = "<group>"; };
 		D46F228D1D1218D2007F8F72 /* unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D470B3381E0FE51F00AEF135 /* proxy-pipe */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "proxy-pipe"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D470B33A1E0FE58E00AEF135 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D470B33A1E0FE58E00AEF135 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D47922FF1DFE3EFB0077B91A /* UriCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UriCodec.cpp; sourceTree = "<group>"; };
 		D47923001DFE3EFB0077B91A /* UriParser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UriParser.hpp; sourceTree = "<group>"; };
 		D47923061DFF0A7C0077B91A /* smart_ptr */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smart_ptr; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -730,15 +730,15 @@
 		D4A7D34B1E142DF700748973 /* marvin_delegate_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = marvin_delegate_objc.mm; sourceTree = "<group>"; };
 		D4A7D3521E1459C200748973 /* proxy_cocoa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proxy_cocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4A7D3541E1459C200748973 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		D4A7D3551E1459C200748973 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		D4A7D3551E1459C200748973 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = AppDelegate.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D4A7D3581E1459C200748973 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D4A7D35A1E1459C200748973 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D4A7D35D1E1459C200748973 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		D4A7D35F1E1459C200748973 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D4A7D37E1E146C1300748973 /* objc__collector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = objc__collector.mm; sourceTree = "<group>"; };
-		D4A7D37F1E146C1300748973 /* objc_collector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = objc_collector.hpp; sourceTree = "<group>"; };
+		D4A7D37F1E146C1300748973 /* objc_collector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = objc_collector.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D4A7D3841E146D5E00748973 /* marvin_objc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = marvin_objc.h; sourceTree = "<group>"; };
-		D4A7D3851E146D5E00748973 /* marvin_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = marvin_objc.mm; sourceTree = "<group>"; };
+		D4A7D3851E146D5E00748973 /* marvin_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = marvin_objc.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D4A7D3871E147E4000748973 /* http_notification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_notification.h; sourceTree = "<group>"; };
 		D4A7D3881E147E4000748973 /* http_notification.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = http_notification.mm; sourceTree = "<group>"; };
 		D4A7D3891E147E4000748973 /* http_request_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_request_model.h; sourceTree = "<group>"; };
@@ -1055,8 +1055,8 @@
 				D40B75531E0A0D6B00431E06 /* connection_handler.ipp */,
 				D40B75581E0A0D6B00431E06 /* server_connection_manager.hpp */,
 				D40B75571E0A0D6B00431E06 /* server_connection_manager.ipp */,
-				D40B755A1E0A0D6B00431E06 /* server.hpp */,
-				D40B75591E0A0D6B00431E06 /* server.ipp */,
+				D40B755A1E0A0D6B00431E06 /* http_server.hpp */,
+				D40B75591E0A0D6B00431E06 /* http_server.ipp */,
 				D407D50B1E1013DA003E5F8E /* boost_stuff.hpp */,
 				D4300B581E17E7720063FA82 /* forwarding_handlerV2.hpp */,
 				D4300B591E17E7720063FA82 /* forwarding_handlerV2.ipp */,
@@ -2316,7 +2316,7 @@
 				D40B755C1E0A0D6B00431E06 /* server_connection_manager.ipp in Sources */,
 				D42DB9901E00DD9B00B2AF60 /* main.cpp in Sources */,
 				D40B756A1E0AC5BA00431E06 /* server.cpp in Sources */,
-				D40B755D1E0A0D6B00431E06 /* server.ipp in Sources */,
+				D40B755D1E0A0D6B00431E06 /* http_server.ipp in Sources */,
 				D47923011DFE3EFB0077B91A /* UriCodec.cpp in Sources */,
 				D40B75691E0AC5BA00431E06 /* client.cpp in Sources */,
 				D421D0E71E043DFF00831883 /* tcp_connection.cpp in Sources */,
@@ -3387,6 +3387,7 @@
 				D4E104C61E18A3E200BB6066 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D4EA1EF01D1217E600D1EABC /* Build configuration list for PBXProject "MarvinCpp" */ = {
 			isa = XCConfigurationList;

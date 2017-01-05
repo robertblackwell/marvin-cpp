@@ -55,6 +55,7 @@ static bool testPipeReaderExists(char* pipeName)
 
 PipeCollector::PipeCollector(boost::asio::io_service& io): _ioLoop(io), _myStrand(io)
 {
+    LogTorTrace();
     std::string& tmpPath = _pipePath;
     int fdw = open(_pipePath.c_str(), O_WRONLY | O_NONBLOCK);
     

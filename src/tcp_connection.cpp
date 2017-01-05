@@ -55,6 +55,7 @@ TCPConnection::TCPConnection(
             _server(server),
             _port(port)
 {
+    LogTorTrace();
 }
 TCPConnection::TCPConnection(
     boost::asio::io_service& io_service
@@ -63,10 +64,11 @@ TCPConnection::TCPConnection(
          _boost_socket(io_service)
 
 {
+    LogTorTrace();
 }
 TCPConnection::~TCPConnection()
 {
-    LogDebug("");
+    LogTorTrace();
 }
 std::string TCPConnection::scheme(){return _scheme;}
 std::string TCPConnection::server(){return _server;}

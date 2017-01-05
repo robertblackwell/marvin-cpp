@@ -43,7 +43,7 @@ void MessageReader::configSet_HeaderBufferSize(long bsize)
 
 MessageReader::MessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io): _io(io), _readSock(readSock)
 {
-    LogDebug("");
+    LogTorTrace();
     _body_buffer_size   = __bodyBufferSize;
     _header_buffer_size = __headerBufferSize;
     
@@ -52,7 +52,7 @@ MessageReader::MessageReader(ReadSocketInterface* readSock, boost::asio::io_serv
 }
 MessageReader::~MessageReader()
 {
-    LogDebug("");
+    LogTorTrace();
     // how to know what to get rid of
     // delete _readBuffer;
 }

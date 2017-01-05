@@ -8,6 +8,8 @@
 #include <cassert>
 #include <vector>
 #include "buffer.hpp"
+#include "rb_logger.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
 //
 // Buffer class is used as a standard opaque container to pass data between the layers/objects
 // Under the covers this is a slab of memory and associated indexes.
@@ -17,10 +19,12 @@
 
 MBuffer::MBuffer(void* mem, std::size_t length): memPtr(mem), length_(length), cPtr((char*)mem)
 {
-    
+    LogTorTrace();
+
 }
 MBuffer::~MBuffer()
 {
+    LogTorTrace();
     if( (memPtr != nullptr) && (capacity_ > 0) ){
         free(memPtr);
     }

@@ -23,21 +23,21 @@
 ** @discussion TRequestHandler is a template argument that must conform to RequestHandlerBase
 ** for a class that will handle an http request and send the necessary response
 */
-template<class TRequestHandler> class Server
+template<class TRequestHandler> class HTTPServer
 {
 public:
 
     static void configSet_NumberOfThreads(int num);
 
-    Server(const Server&) = delete;
-    Server& operator=(const Server&) = delete;
+    HTTPServer(const HTTPServer&) = delete;
+    HTTPServer& operator=(const HTTPServer&) = delete;
 
     /**
     ** @brief Construct the server to listen on the specified TCP address and port.
     ** @param long port defaults to 9991
     */
-    explicit Server();
-    
+    explicit HTTPServer();
+    ~HTTPServer();
     /**
     ** @brief starts the listen process on the servers port, and from there
     ** dispatches instances of TRequestHandler to service the connection
@@ -91,7 +91,7 @@ private:
 
 };
 template <class TRequestHandler>
-using Server_Template =  typename Server<TRequestHandler>::Server;
+using Server_Template =  typename HTTPServer<TRequestHandler>::Server;
 
-#include "server.ipp"
+#include "http_server.ipp"
 #endif // HTTP_SERVER_HPP

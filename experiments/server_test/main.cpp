@@ -9,7 +9,7 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "server.hpp"
+#include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
 
@@ -57,7 +57,7 @@ runAServerProdItWithBrowser()
 {
     try
     {
-        Server<MyHandler> server;
+        HTTPServer<MyHandler> server;
         server.listen();
     }
     catch (std::exception& e)
@@ -109,7 +109,7 @@ serverFunction(void* arg)
     tid = (long)arg;
     printf("Hello World! This is server\n");
 
-    Server<MyHandler> server;
+    HTTPServer<MyHandler> server;
     server.listen();
 
     return (void*)0;

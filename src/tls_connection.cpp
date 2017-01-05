@@ -53,6 +53,7 @@ TLSConnection::TLSConnection(
             _server(server),
             _port(port)
 {
+    LogTorTrace();
 //        boost::asio::ssl::context ctx(boost::asio::ssl::context::sslv23);
 
     _sslContextUPtr = std::unique_ptr<ssl::context>(new ssl::context(boost::asio::ssl::context::tlsv12));
@@ -90,11 +91,12 @@ TLSConnection::TLSConnection(
          _resolver(io_service)
 
 {
+    LogTorTrace();
 }
 //----------------------------------------------------------------------------
 TLSConnection::~TLSConnection()
 {
-    LogDebug("");
+    LogTorTrace();
 }
 
 std::string TLSConnection::scheme(){return _scheme;}

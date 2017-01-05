@@ -8,11 +8,11 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "server.hpp"
+#include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "test_client.hpp"
-#include "test_server.hpp"
+#include "test_http_server.hpp"
 
 
 
