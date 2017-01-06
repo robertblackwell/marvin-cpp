@@ -75,7 +75,7 @@ std::shared_ptr<Request> connect_request(boost::asio::io_service& io)
         LogDebug("");
     });
     std::cout << "exit use: " << req.use_count() << std::endl;;
-    return std::move(req);
+    return req;
 }
 
 
@@ -114,7 +114,7 @@ std::shared_ptr<Request> do_request1(std::string code, boost::asio::io_service& 
         LogDebug("");
     });
     std::cout << "exit use: " << req.use_count() << std::endl;;
-    return std::move(req);
+    return req;
 }
 
 

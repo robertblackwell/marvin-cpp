@@ -14,10 +14,6 @@
 #include <string>
 #include <cassert>
 
-//#include <boost/asio.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/function.hpp>
-
 #include "boost_stuff.hpp"
 
 #include "marvin_error.hpp"
@@ -201,7 +197,7 @@ void TCPConnection::asyncWrite(MBuffer& buf, AsyncWriteCallbackType cb)
 {
     LogDebug("");
     void* bp = buf.data();
-    char* cp = (char*) bp;
+//    char* cp = (char*) bp;
     std::size_t len = buf.size();
     auto bb = boost::asio::buffer(bp, len);
     
@@ -253,6 +249,3 @@ void TCPConnection::asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCa
         }
     });
 }
-
-
-
