@@ -1,3 +1,10 @@
+## So what is this
+MarvinCpp is a project that is aimed at being a man-in-the-middle proxy. Another attempt at a __Charles__ equivalent.
+
+Unlike __marvin__. This one is more ambitious and is written in C++ using BOOST/ASIO with the intent that eventually it will hook into a front end in Obj-C or Swift and provide a fully compiled native OSX replacement for Charles.
+
+Circumstances have forced me to suspend work on this project for the moment - life and other projects happen. But at the point in time that I stopped this was working but without a GUI interface. IIt simply streams traffic to a terminal session in raw text.
+
 ## major steps
 <!-- this is an html comment -->
 
