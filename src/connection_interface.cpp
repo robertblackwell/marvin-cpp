@@ -42,4 +42,4 @@ ConnectionInterface* connectionFactory(
     }
     return ptr;
 }
-ConnectionInterface::~ConnectionInterface(){}
+//ConnectionInterface::~ConnectionInterface(){}

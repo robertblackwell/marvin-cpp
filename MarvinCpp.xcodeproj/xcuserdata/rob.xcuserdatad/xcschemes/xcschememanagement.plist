@@ -84,6 +84,11 @@
 			<key>orderHint</key>
 			<integer>8</integer>
 		</dict>
+		<key>sl_raw_client.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>27</integer>
+		</dict>
 		<key>smart_ptr.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -99,10 +104,20 @@
 			<key>orderHint</key>
 			<integer>17</integer>
 		</dict>
+		<key>ssl_client_test copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>28</integer>
+		</dict>
 		<key>ssl_client_test.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>18</integer>
+		</dict>
+		<key>ssl_server_test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>26</integer>
 		</dict>
 		<key>streamtest.xcscheme</key>
 		<dict>
@@ -168,6 +183,16 @@
 			<true/>
 		</dict>
 		<key>D42DB9B41E00F93000B2AF60</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D43768011F983F1B003549AC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D437680A1F984E39003549AC</key>
 		<dict>
 			<key>primary</key>
 			<true/>

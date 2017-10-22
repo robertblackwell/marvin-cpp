@@ -64,7 +64,7 @@ class ConnectionInterface : public ReadSocketInterface, public WriteSocketInterf
     
     
 #endif
-    virtual ~ConnectionInterface()=0;
+//    virtual ~ConnectionInterface()=0;
 
     virtual void asyncConnect(ConnectCallbackType cb) = 0;
     virtual void asyncAccept(

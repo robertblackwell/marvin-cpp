@@ -12,7 +12,7 @@
 #include "url.hpp"
 #include "UriParser.hpp"
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "message_reader.hpp"
 
 #include "request.hpp"
@@ -155,7 +155,7 @@ void Request::defaultHeaders()
 //--------------------------------------------------------------------------------
 void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
 {
-    LogInfo("");
+    LogInfo("", (long)this);
     _goCb = cb;
     defaultHeaders();
     

@@ -119,7 +119,7 @@ class Logger{
 
 
 // want to default to "ON" - disable Log by #define RBLOGGER_OFF
-#define RBLOGGER_OFF
+//#define RBLOGGER_OFF
 
 ///
 /// These trun off/on tracing of special attributes
