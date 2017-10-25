@@ -222,6 +222,8 @@
 		D470B3311E0FE51F00AEF135 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
 		D470B3331E0FE51F00AEF135 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D470B33C1E0FE5B500AEF135 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D470B33A1E0FE58E00AEF135 /* main.cpp */; };
+		D476FBB81FA05259008BA5F8 /* x509_ext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D476FBB61FA05259008BA5F8 /* x509_ext.cpp */; };
+		D476FBB91FA055B8008BA5F8 /* x509_ext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D476FBB61FA05259008BA5F8 /* x509_ext.cpp */; };
 		D47923011DFE3EFB0077B91A /* UriCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47922FF1DFE3EFB0077B91A /* UriCodec.cpp */; };
 		D47923091DFF0A7C0077B91A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47923081DFF0A7C0077B91A /* main.cpp */; };
 		D479230D1DFF7E0A0077B91A /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
@@ -762,6 +764,8 @@
 		D46F228D1D1218D2007F8F72 /* unit-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "unit-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D470B3381E0FE51F00AEF135 /* proxy-pipe */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "proxy-pipe"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D470B33A1E0FE58E00AEF135 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		D476FBB61FA05259008BA5F8 /* x509_ext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_ext.cpp; sourceTree = "<group>"; };
+		D476FBB71FA05259008BA5F8 /* x509_ext.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = x509_ext.hpp; sourceTree = "<group>"; };
 		D47922FF1DFE3EFB0077B91A /* UriCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UriCodec.cpp; sourceTree = "<group>"; };
 		D47923001DFE3EFB0077B91A /* UriParser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UriParser.hpp; sourceTree = "<group>"; };
 		D47923061DFF0A7C0077B91A /* smart_ptr */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smart_ptr; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1491,6 +1495,8 @@
 				D4883E061F9EACF000009D37 /* EX10-5.cpp */,
 				D4883E071F9EACF000009D37 /* EX10-4.cpp */,
 				D4883E081F9EACF000009D37 /* EX10-6.cpp */,
+				D476FBB61FA05259008BA5F8 /* x509_ext.cpp */,
+				D476FBB71FA05259008BA5F8 /* x509_ext.hpp */,
 			);
 			name = "openssl-exs";
 			path = "experiments/openssl-exs";
@@ -2650,6 +2656,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D476FBB91FA055B8008BA5F8 /* x509_ext.cpp in Sources */,
 				D4883E341F9F07BE00009D37 /* EX10-6.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2690,6 +2697,7 @@
 				D4A7D34C1E142DF700748973 /* marvin_delegate_objc.mm in Sources */,
 				D4883E0D1F9EAD5100009D37 /* EX10-3.cpp in Sources */,
 				D4883E091F9EACF000009D37 /* EX10-5.cpp in Sources */,
+				D476FBB81FA05259008BA5F8 /* x509_ext.cpp in Sources */,
 				D40B755E1E0A0E1400431E06 /* main.cpp in Sources */,
 				D445DB601E14B5FD00418D6B /* main.cpp in Sources */,
 				D4883E0A1F9EACF000009D37 /* EX10-4.cpp in Sources */,
