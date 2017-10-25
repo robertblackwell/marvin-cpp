@@ -241,6 +241,23 @@
 		D47B434C1E16BEDA00B0254A /* CapturedTraffic-datasource.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B43491E16BEDA00B0254A /* CapturedTraffic-datasource.m */; };
 		D47B434D1E16BEDA00B0254A /* CapturedTraffic-delegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B434B1E16BEDA00B0254A /* CapturedTraffic-delegate.m */; };
 		D4883DF01F9AE29800009D37 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75641E0AC5BA00431E06 /* client.cpp */; };
+		D4883DF51F9D8AED00009D37 /* cert_auth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883DF41F9D8AED00009D37 /* cert_auth.cpp */; };
+		D4883E011F9D8C3200009D37 /* cert_auth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883DF41F9D8AED00009D37 /* cert_auth.cpp */; };
+		D4883E031F9D8C5900009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
+		D4883E041F9D8C6800009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
+		D4883E091F9EACF000009D37 /* EX10-5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E061F9EACF000009D37 /* EX10-5.cpp */; };
+		D4883E0A1F9EACF000009D37 /* EX10-4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E071F9EACF000009D37 /* EX10-4.cpp */; };
+		D4883E0B1F9EACF000009D37 /* EX10-6.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E081F9EACF000009D37 /* EX10-6.cpp */; };
+		D4883E0D1F9EAD5100009D37 /* EX10-3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E0C1F9EAD5100009D37 /* EX10-3.cpp */; };
+		D4883E141F9EB0BD00009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
+		D4883E151F9EB0BD00009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
+		D4883E201F9EB19300009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
+		D4883E211F9EB19300009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
+		D4883E271F9EB1E000009D37 /* EX10-3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E0C1F9EAD5100009D37 /* EX10-3.cpp */; };
+		D4883E281F9EDE7C00009D37 /* EX10-5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E061F9EACF000009D37 /* EX10-5.cpp */; };
+		D4883E2D1F9F079400009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
+		D4883E2E1F9F079400009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
+		D4883E341F9F07BE00009D37 /* EX10-6.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E081F9EACF000009D37 /* EX10-6.cpp */; };
 		D491232C1E0C28CF006C3A8A /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
 		D491232D1E0C28CF006C3A8A /* connection_interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B759D1E0B69B700431E06 /* connection_interface.cpp */; };
 		D491232E1E0C28CF006C3A8A /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
@@ -548,6 +565,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		D4883DF81F9D8C2000009D37 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		D4883E161F9EB0BD00009D37 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		D4883E221F9EB19300009D37 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		D4883E2F1F9F079400009D37 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		D49123431E0C28CF006C3A8A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -728,6 +781,17 @@
 		D4883DF11F9AE5AF00009D37 /* cacert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cacert.pem; sourceTree = "<group>"; };
 		D4883DF21F9AE5B000009D37 /* empty.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = empty.pem; sourceTree = "<group>"; };
 		D4883DF31F9AE5B000009D37 /* x_cacert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = x_cacert.pem; sourceTree = "<group>"; };
+		D4883DF41F9D8AED00009D37 /* cert_auth.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cert_auth.cpp; sourceTree = "<group>"; };
+		D4883DFA1F9D8C2000009D37 /* cert_auth */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cert_auth; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4883DFC1F9D8C2000009D37 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D4883E061F9EACF000009D37 /* EX10-5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "EX10-5.cpp"; sourceTree = "<group>"; };
+		D4883E071F9EACF000009D37 /* EX10-4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "EX10-4.cpp"; sourceTree = "<group>"; };
+		D4883E081F9EACF000009D37 /* EX10-6.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "EX10-6.cpp"; sourceTree = "<group>"; };
+		D4883E0C1F9EAD5100009D37 /* EX10-3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "EX10-3.cpp"; sourceTree = "<group>"; };
+		D4883E0F1F9EAFEF00009D37 /* test_1.cnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_1.cnf; sourceTree = "<group>"; };
+		D4883E1A1F9EB0BD00009D37 /* openssl_10_5 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openssl_10_5; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4883E261F9EB19300009D37 /* openssl_10_3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openssl_10_3; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4883E331F9F079400009D37 /* openssl_10_6 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openssl_10_6; sourceTree = BUILT_PRODUCTS_DIR; };
 		D49123471E0C28CF006C3A8A /* ssl_client_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ssl_client_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4A09B691E12B9950011ACC4 /* libboost_thread.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_thread.a; path = deps/lib/libboost_thread.a; sourceTree = "<group>"; };
 		D4A09B6B1E12B9D80011ACC4 /* libboost_thread.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_thread.dylib; path = deps/lib/libboost_thread.dylib; sourceTree = "<group>"; };
@@ -959,6 +1023,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4883DF71F9D8C2000009D37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E041F9D8C6800009D37 /* libssl.a in Frameworks */,
+				D4883E031F9D8C5900009D37 /* libcrypto.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4883E131F9EB0BD00009D37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E141F9EB0BD00009D37 /* libssl.a in Frameworks */,
+				D4883E151F9EB0BD00009D37 /* libcrypto.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4883E1F1F9EB19300009D37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E201F9EB19300009D37 /* libssl.a in Frameworks */,
+				D4883E211F9EB19300009D37 /* libcrypto.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4883E2C1F9F079400009D37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E2D1F9F079400009D37 /* libssl.a in Frameworks */,
+				D4883E2E1F9F079400009D37 /* libcrypto.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D491233D1E0C28CF006C3A8A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1033,6 +1133,7 @@
 		D40B75501E0A097C00431E06 /* experiments */ = {
 			isa = PBXGroup;
 			children = (
+				D4883E051F9EACF000009D37 /* openssl-exs */,
 				D4E104C11E18A3E200BB6066 /* ini-test */,
 				D445DB591E14B57400418D6B /* regexs */,
 				D49123271E0C27BA006C3A8A /* ssl_client_test */,
@@ -1089,6 +1190,7 @@
 				D40B75661E0AC5BA00431E06 /* README */,
 				D40B75671E0AC5BA00431E06 /* server.cpp */,
 				D40B75681E0AC5BA00431E06 /* server.pem */,
+				D4883DF41F9D8AED00009D37 /* cert_auth.cpp */,
 			);
 			name = ssl;
 			path = experiments/ssl;
@@ -1366,6 +1468,42 @@
 			name = traffic;
 			sourceTree = "<group>";
 		};
+		D4883DFB1F9D8C2000009D37 /* cert_auth */ = {
+			isa = PBXGroup;
+			children = (
+				D4883DFC1F9D8C2000009D37 /* main.cpp */,
+			);
+			path = cert_auth;
+			sourceTree = "<group>";
+		};
+		D4883E021F9D8C5900009D37 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D4883E051F9EACF000009D37 /* openssl-exs */ = {
+			isa = PBXGroup;
+			children = (
+				D4883E0C1F9EAD5100009D37 /* EX10-3.cpp */,
+				D4883E0E1F9EAFEF00009D37 /* fixtures */,
+				D4883E061F9EACF000009D37 /* EX10-5.cpp */,
+				D4883E071F9EACF000009D37 /* EX10-4.cpp */,
+				D4883E081F9EACF000009D37 /* EX10-6.cpp */,
+			);
+			name = "openssl-exs";
+			path = "experiments/openssl-exs";
+			sourceTree = "<group>";
+		};
+		D4883E0E1F9EAFEF00009D37 /* fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				D4883E0F1F9EAFEF00009D37 /* test_1.cnf */,
+			);
+			path = fixtures;
+			sourceTree = "<group>";
+		};
 		D49123271E0C27BA006C3A8A /* ssl_client_test */ = {
 			isa = PBXGroup;
 			children = (
@@ -1475,7 +1613,9 @@
 				D407D5131E103480003E5F8E /* hdoc-test */,
 				D44EFE671E15EE4800D27281 /* ui-test */,
 				D43768031F983F1B003549AC /* sl_raw_client */,
+				D4883DFB1F9D8C2000009D37 /* cert_auth */,
 				D4EA1EF61D1217E600D1EABC /* Products */,
+				D4883E021F9D8C5900009D37 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1507,6 +1647,10 @@
 				D445DB581E14B57400418D6B /* regexs */,
 				D44EFE661E15EE4800D27281 /* ui-test.app */,
 				D4E104C01E18A3E200BB6066 /* ini-test */,
+				D4883DFA1F9D8C2000009D37 /* cert_auth */,
+				D4883E1A1F9EB0BD00009D37 /* openssl_10_5 */,
+				D4883E261F9EB19300009D37 /* openssl_10_3 */,
+				D4883E331F9F079400009D37 /* openssl_10_6 */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1854,6 +1998,74 @@
 			productReference = D47923061DFF0A7C0077B91A /* smart_ptr */;
 			productType = "com.apple.product-type.tool";
 		};
+		D4883DF91F9D8C2000009D37 /* cert_auth */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4883DFE1F9D8C2000009D37 /* Build configuration list for PBXNativeTarget "cert_auth" */;
+			buildPhases = (
+				D4883DF61F9D8C2000009D37 /* Sources */,
+				D4883DF71F9D8C2000009D37 /* Frameworks */,
+				D4883DF81F9D8C2000009D37 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = cert_auth;
+			productName = cert_auth;
+			productReference = D4883DFA1F9D8C2000009D37 /* cert_auth */;
+			productType = "com.apple.product-type.tool";
+		};
+		D4883E101F9EB0BD00009D37 /* openssl_10_5 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4883E171F9EB0BD00009D37 /* Build configuration list for PBXNativeTarget "openssl_10_5" */;
+			buildPhases = (
+				D4883E111F9EB0BD00009D37 /* Sources */,
+				D4883E131F9EB0BD00009D37 /* Frameworks */,
+				D4883E161F9EB0BD00009D37 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = openssl_10_5;
+			productName = cert_auth;
+			productReference = D4883E1A1F9EB0BD00009D37 /* openssl_10_5 */;
+			productType = "com.apple.product-type.tool";
+		};
+		D4883E1C1F9EB19300009D37 /* openssl_10_3 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4883E231F9EB19300009D37 /* Build configuration list for PBXNativeTarget "openssl_10_3" */;
+			buildPhases = (
+				D4883E1D1F9EB19300009D37 /* Sources */,
+				D4883E1F1F9EB19300009D37 /* Frameworks */,
+				D4883E221F9EB19300009D37 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = openssl_10_3;
+			productName = cert_auth;
+			productReference = D4883E261F9EB19300009D37 /* openssl_10_3 */;
+			productType = "com.apple.product-type.tool";
+		};
+		D4883E291F9F079400009D37 /* openssl_10_6 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4883E301F9F079400009D37 /* Build configuration list for PBXNativeTarget "openssl_10_6" */;
+			buildPhases = (
+				D4883E2A1F9F079400009D37 /* Sources */,
+				D4883E2C1F9F079400009D37 /* Frameworks */,
+				D4883E2F1F9F079400009D37 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = openssl_10_6;
+			productName = cert_auth;
+			productReference = D4883E331F9F079400009D37 /* openssl_10_6 */;
+			productType = "com.apple.product-type.tool";
+		};
 		D491232A1E0C28CF006C3A8A /* ssl_client_test */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D49123441E0C28CF006C3A8A /* Build configuration list for PBXNativeTarget "ssl_client_test" */;
@@ -1988,6 +2200,23 @@
 					D47923051DFF0A7C0077B91A = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
+					D4883DF91F9D8C2000009D37 = {
+						CreatedOnToolsVersion = 9.0.1;
+						DevelopmentTeam = 53V9JBRS5T;
+						ProvisioningStyle = Automatic;
+					};
+					D4883E101F9EB0BD00009D37 = {
+						DevelopmentTeam = 53V9JBRS5T;
+						ProvisioningStyle = Automatic;
+					};
+					D4883E1C1F9EB19300009D37 = {
+						DevelopmentTeam = 53V9JBRS5T;
+						ProvisioningStyle = Automatic;
+					};
+					D4883E291F9F079400009D37 = {
+						DevelopmentTeam = 53V9JBRS5T;
+						ProvisioningStyle = Automatic;
+					};
 					D4A6E9D91E0477710096441E = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
@@ -2041,6 +2270,10 @@
 				D445DB571E14B57400418D6B /* regexs */,
 				D44EFE651E15EE4800D27281 /* ui-test */,
 				D4E104BF1E18A3E200BB6066 /* ini-test */,
+				D4883DF91F9D8C2000009D37 /* cert_auth */,
+				D4883E101F9EB0BD00009D37 /* openssl_10_5 */,
+				D4883E1C1F9EB19300009D37 /* openssl_10_3 */,
+				D4883E291F9F079400009D37 /* openssl_10_6 */,
 			);
 		};
 /* End PBXProject section */
@@ -2389,6 +2622,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4883DF61F9D8C2000009D37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E011F9D8C3200009D37 /* cert_auth.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4883E111F9EB0BD00009D37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E281F9EDE7C00009D37 /* EX10-5.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4883E1D1F9EB19300009D37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E271F9EB1E000009D37 /* EX10-3.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4883E2A1F9F079400009D37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4883E341F9F07BE00009D37 /* EX10-6.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D491232B1E0C28CF006C3A8A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2421,10 +2686,15 @@
 				D407A0F51E13FD9700A8A312 /* pipe_collector.cpp in Sources */,
 				D4A7D38E1E147E4000748973 /* http_request_model.mm in Sources */,
 				D407A0F41E13FD9700A8A312 /* collector_base.cpp in Sources */,
+				D4883DF51F9D8AED00009D37 /* cert_auth.cpp in Sources */,
 				D4A7D34C1E142DF700748973 /* marvin_delegate_objc.mm in Sources */,
+				D4883E0D1F9EAD5100009D37 /* EX10-3.cpp in Sources */,
+				D4883E091F9EACF000009D37 /* EX10-5.cpp in Sources */,
 				D40B755E1E0A0E1400431E06 /* main.cpp in Sources */,
 				D445DB601E14B5FD00418D6B /* main.cpp in Sources */,
+				D4883E0A1F9EACF000009D37 /* EX10-4.cpp in Sources */,
 				D4A7D38D1E147E4000748973 /* http_notification.mm in Sources */,
+				D4883E0B1F9EACF000009D37 /* EX10-6.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2995,6 +3265,198 @@
 			};
 			name = Release;
 		};
+		D4883DFF1F9D8C2000009D37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D4883E001F9D8C2000009D37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D4883E181F9EB0BD00009D37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D4883E191F9EB0BD00009D37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D4883E241F9EB19300009D37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D4883E251F9EB19300009D37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D4883E311F9F079400009D37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D4883E321F9F079400009D37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53V9JBRS5T;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		D49123451E0C28CF006C3A8A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3382,6 +3844,42 @@
 			buildConfigurations = (
 				D479230B1DFF0A7C0077B91A /* Debug */,
 				D479230C1DFF0A7C0077B91A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4883DFE1F9D8C2000009D37 /* Build configuration list for PBXNativeTarget "cert_auth" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4883DFF1F9D8C2000009D37 /* Debug */,
+				D4883E001F9D8C2000009D37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4883E171F9EB0BD00009D37 /* Build configuration list for PBXNativeTarget "openssl_10_5" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4883E181F9EB0BD00009D37 /* Debug */,
+				D4883E191F9EB0BD00009D37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4883E231F9EB19300009D37 /* Build configuration list for PBXNativeTarget "openssl_10_3" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4883E241F9EB19300009D37 /* Debug */,
+				D4883E251F9EB19300009D37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4883E301F9F079400009D37 /* Build configuration list for PBXNativeTarget "openssl_10_6" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4883E311F9F079400009D37 /* Debug */,
+				D4883E321F9F079400009D37 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

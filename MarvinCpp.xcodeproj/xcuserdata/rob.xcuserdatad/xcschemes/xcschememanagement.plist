@@ -14,6 +14,11 @@
 			<key>orderHint</key>
 			<integer>15</integer>
 		</dict>
+		<key>cert_auth.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>32</integer>
+		</dict>
 		<key>client_alone.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -48,6 +53,21 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>4</integer>
+		</dict>
+		<key>openssl_10_3.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>30</integer>
+		</dict>
+		<key>openssl_10_5.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>29</integer>
+		</dict>
+		<key>openssl_10_6.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>31</integer>
 		</dict>
 		<key>proxy-objc.xcscheme</key>
 		<dict>
@@ -273,6 +293,11 @@
 			<true/>
 		</dict>
 		<key>D47923051DFF0A7C0077B91A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D4883E101F9EB0BD00009D37</key>
 		<dict>
 			<key>primary</key>
 			<true/>
