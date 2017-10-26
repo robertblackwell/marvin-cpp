@@ -335,6 +335,7 @@
 		D4AF58E41DE6F8F1001AC0A1 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D4AF58E51DE6F8F1001AC0A1 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
 		D4AF58E71DE6F8F1001AC0A1 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F227B1D12188B007F8F72 /* parser.cpp */; };
+		D4D8FB091FA1A54B00649365 /* CertificateBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4D8FB071FA1A54B00649365 /* CertificateBuilder.cpp */; };
 		D4E104B41E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
 		D4E104B51E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
 		D4E104B61E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
@@ -345,6 +346,8 @@
 		D4E104CA1E18AA5800BB6066 /* test.info in Resources */ = {isa = PBXBuildFile; fileRef = D4E104C71E18AA5800BB6066 /* test.info */; };
 		D4E104CB1E18AA5800BB6066 /* test.ini in Resources */ = {isa = PBXBuildFile; fileRef = D4E104C81E18AA5800BB6066 /* test.ini */; };
 		D4E104CC1E18AA5800BB6066 /* test.json in Resources */ = {isa = PBXBuildFile; fileRef = D4E104C91E18AA5800BB6066 /* test.json */; };
+		D4E285231FA1AFCC0094190F /* CertificateAuthority.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E285211FA1AFCC0094190F /* CertificateAuthority.cpp */; };
+		D4E285241FA1AFCC0094190F /* CertificateAuthority.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E285211FA1AFCC0094190F /* CertificateAuthority.cpp */; };
 		D4EB1AEA1E04704400DDD929 /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
 		D4EB1AEB1E04706700DDD929 /* connection_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E21E0222BB00831883 /* connection_pool.cpp */; };
 		D4EB1AEC1E0470A700DDD929 /* connection_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E21E0222BB00831883 /* connection_pool.cpp */; };
@@ -828,6 +831,8 @@
 		D4BEE9F91DE7BB7500F61432 /* tcase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tcase.hpp; sourceTree = "<group>"; };
 		D4BEE9FB1DE7BC5300F61432 /* error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = error.hpp; sourceTree = "<group>"; };
 		D4BEEA011DE82FC800F61432 /* message.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = message.hpp; sourceTree = "<group>"; };
+		D4D8FB071FA1A54B00649365 /* CertificateBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CertificateBuilder.cpp; sourceTree = "<group>"; };
+		D4D8FB081FA1A54B00649365 /* CertificateBuilder.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CertificateBuilder.hpp; sourceTree = "<group>"; };
 		D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tunnel_handler.cpp; sourceTree = "<group>"; };
 		D4E104B31E17FCB200BB6066 /* tunnel_handler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = tunnel_handler.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D4E104B71E1811AD00BB6066 /* half_tunnel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = half_tunnel.cpp; sourceTree = "<group>"; };
@@ -837,6 +842,8 @@
 		D4E104C71E18AA5800BB6066 /* test.info */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.info; sourceTree = "<group>"; };
 		D4E104C81E18AA5800BB6066 /* test.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.ini; sourceTree = "<group>"; };
 		D4E104C91E18AA5800BB6066 /* test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = test.json; sourceTree = "<group>"; };
+		D4E285211FA1AFCC0094190F /* CertificateAuthority.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CertificateAuthority.cpp; sourceTree = "<group>"; };
+		D4E285221FA1AFCC0094190F /* CertificateAuthority.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CertificateAuthority.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1497,6 +1504,10 @@
 				D4883E081F9EACF000009D37 /* EX10-6.cpp */,
 				D476FBB61FA05259008BA5F8 /* x509_ext.cpp */,
 				D476FBB71FA05259008BA5F8 /* x509_ext.hpp */,
+				D4E285221FA1AFCC0094190F /* CertificateAuthority.hpp */,
+				D4E285211FA1AFCC0094190F /* CertificateAuthority.cpp */,
+				D4D8FB081FA1A54B00649365 /* CertificateBuilder.hpp */,
+				D4D8FB071FA1A54B00649365 /* CertificateBuilder.cpp */,
 			);
 			name = "openssl-exs";
 			path = "experiments/openssl-exs";
@@ -2656,6 +2667,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4D8FB091FA1A54B00649365 /* CertificateBuilder.cpp in Sources */,
+				D4E285241FA1AFCC0094190F /* CertificateAuthority.cpp in Sources */,
 				D476FBB91FA055B8008BA5F8 /* x509_ext.cpp in Sources */,
 				D4883E341F9F07BE00009D37 /* EX10-6.cpp in Sources */,
 			);
@@ -2693,6 +2706,7 @@
 				D407A0F51E13FD9700A8A312 /* pipe_collector.cpp in Sources */,
 				D4A7D38E1E147E4000748973 /* http_request_model.mm in Sources */,
 				D407A0F41E13FD9700A8A312 /* collector_base.cpp in Sources */,
+				D4E285231FA1AFCC0094190F /* CertificateAuthority.cpp in Sources */,
 				D4883DF51F9D8AED00009D37 /* cert_auth.cpp in Sources */,
 				D4A7D34C1E142DF700748973 /* marvin_delegate_objc.mm in Sources */,
 				D4883E0D1F9EAD5100009D37 /* EX10-3.cpp in Sources */,

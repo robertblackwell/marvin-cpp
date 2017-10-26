@@ -194,7 +194,6 @@ void
 x509Cert_Add_ExtensionsFromTable(X509* CAcert, X509* cert, std::map<std::string, std::string> table)
 {
     X509V3_CTX ctx;
-    int i;
     X509V3_set_ctx (&ctx, CAcert, cert, NULL, NULL, 0);
     for( auto & x : table) {
         auto k = (char*)x.first.c_str();
@@ -253,6 +252,7 @@ x509Req_ReadFromFile(std::string fileName)
     if (!(req = PEM_read_X509_REQ (fp, NULL, NULL, NULL)))
         int_error ("Error reading request in file");
     fclose (fp);
+    x509Req_VerifySignature(req);
     return req;
 }
 
