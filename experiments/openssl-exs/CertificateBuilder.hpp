@@ -18,7 +18,7 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
-#include "x509_ext.hpp"
+
 #include "CertificateAuthority.hpp"
 
 typedef std::map<std::string, std::string> AdditionalExtensions;

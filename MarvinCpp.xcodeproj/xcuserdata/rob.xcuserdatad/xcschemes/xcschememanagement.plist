@@ -29,6 +29,11 @@
 			<key>orderHint</key>
 			<integer>9</integer>
 		</dict>
+		<key>conf_test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>30</integer>
+		</dict>
 		<key>error_test.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -53,16 +58,6 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>4</integer>
-		</dict>
-		<key>openssl_10_3.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>30</integer>
-		</dict>
-		<key>openssl_10_5.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>29</integer>
 		</dict>
 		<key>openssl_10_6.xcscheme</key>
 		<dict>
@@ -93,6 +88,11 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>23</integer>
+		</dict>
+		<key>req_test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>29</integer>
 		</dict>
 		<key>server_alone.xcscheme</key>
 		<dict>

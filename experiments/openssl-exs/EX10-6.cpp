@@ -8,7 +8,7 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
-#include "x509_ext.hpp"
+
 #include "CertificateAuthority.hpp"
 #include "CertificateBuilder.hpp"
 
@@ -45,16 +45,24 @@ main (int argc, char *argv[])
     X509* cert;
     X509* original_cert;
     X509_REQ *req;
+    try
+    {
+        OpenSSL_add_all_algorithms ();
+        ERR_load_crypto_strings ();
+        ERR_load_BIO_strings();
+        ERR_load_ERR_strings();
+        
+        CertificateAuthority certAuth("/Users/rob/CA/private");
+        auto builder = new CertificateBuilder(certAuth);
+        req = x509Req_ReadFromFile(REQ_FILE);
+        cert = builder->buildFromReq(req, extensions);
 
-    OpenSSL_add_all_algorithms ();
-    ERR_load_crypto_strings ();
-    
-    CertificateAuthority certAuth("/Users/rob/CA/private");
-    auto builder = new CertificateBuilder(certAuth);
-    req = x509Req_ReadFromFile(REQ_FILE);
-    cert = builder->buildFromReq(req, extensions);
-
-    x509Cert_WriteToFile(cert, CERT_FILE);
+        x509Cert_WriteToFile(cert, CERT_FILE);
+    }
+    catch( std::exception& e)
+    {
+        std::cout << e.what() ;
+    }
     
 
     return 0;

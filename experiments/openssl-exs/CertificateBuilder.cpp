@@ -5,7 +5,7 @@
 //  Created by ROBERT BLACKWELL on 10/25/17.
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
-
+#include "x509_error.hpp"
 #include "CertificateBuilder.hpp"
 
 X509*
@@ -30,7 +30,7 @@ buildCertificate(X509* CAcert, EVP_PKEY* CApkey, int serial, X509_REQ* req, X509
     ERR_load_crypto_strings ();
     /* open stdout */
     if (!(out = BIO_new_fp (stdout, BIO_NOCLOSE)))
-        int_error ("Error creating stdout BIO");
+        X509_TRIGGER_ERROR ("Error creating stdout BIO");
 
 //    req = x509Req_ReadFromFile(REQ_FILE);
 //    x509Req_VerifySignature(req);
@@ -49,7 +49,7 @@ buildCertificate(X509* CAcert, EVP_PKEY* CApkey, int serial, X509_REQ* req, X509
 
     pubkey = X509_REQ_get_pubkey (req);
     if (!(cert = X509_new ()))
-        int_error ("Error creating X509 object");
+        X509_TRIGGER_ERROR ("Error creating X509 object");
 
     x509Cert_SetVersion(cert, 2L);
     x509Cert_SetSerialNumber(cert, serial);
@@ -73,7 +73,7 @@ buildCertificate(X509* CAcert, EVP_PKEY* CApkey, int serial, X509_REQ* req, X509
         if ( additionalExtensions ) {
             x509Cert_Add_ExtensionsFromTable(CAcert, cert, extensions);
         } else /*take extensions from req*/{
-            STACK_OF(X509_EXTENSION*) stack = X509_REQ_get_extensions(req);
+            STACK_OF(X509_EXTENSION)* stack = X509_REQ_get_extensions(req);
             x509Cert_Add_ExtensionsFromStack(CAcert, cert, stack);
         }
     } else { // get extensions from original cert
@@ -94,13 +94,13 @@ buildCertificate(X509* CAcert, EVP_PKEY* CApkey, int serial, X509_REQ* req, X509
     if (EVP_PKEY_type (CApkey->type) == EVP_PKEY_RSA)
         digest = EVP_sha1();
     else
-        int_error ("Error  CA private key is NOT RSA");
+        X509_TRIGGER_ERROR ("Error  CA private key is NOT RSA");
     /*
     ** The big moment sign the cert
     ** sign the certificate with the CA private key
     */
     if (!(X509_sign (cert, CApkey, digest)))
-        int_error ("Error signing certificate");
+        X509_TRIGGER_ERROR ("Error signing certificate");
 
     return cert;
 }

@@ -1,13 +1,13 @@
 //
-//  x509_ext.hpp
-//  all
+//  x509_cert.hpp
+//  openssl_10_6
 //
-//  Created by ROBERT BLACKWELL on 10/24/17.
+//  Created by ROBERT BLACKWELL on 10/26/17.
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
 
-#ifndef x509_ext_hpp
-#define x509_ext_hpp
+#ifndef x509_cert_hpp
+#define x509_cert_hpp
 
 #include <cstdlib>
 #include <iostream>
@@ -19,17 +19,6 @@
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 
-#define int_error(msg) handle_error(__FILE__, __LINE__, msg)
-void
-handle_error (const char *file, int lineno, const char *msg);
-
-
-EVP_PKEY*
-x509PKey_ReadPrivateKeyFrom(std::string fileName, std::string password);
-
-EVP_PKEY* x509PKey_ReadPrivateKeyFrom(std::string fileName);
-
-#pragma mark - x509Cert funuctions
 X509*
 x509Cert_ReadFromFile(std::string fileName);
 
@@ -78,22 +67,7 @@ x509Cert_Add_ExtensionsFromTable(X509* CAcert, X509* cert, std::map<std::string,
 void
 x509Cert_Add_ExtensionsFromStack(X509* CAcert, X509* cert, STACK_OF(X509_EXTENSION*) stack);
 
-#pragma mark x509Req functions
-
-void
-x509Req_VerifySignature(X509_REQ* req);
-
-X509_REQ*
-x509Req_ReadFromFile(std::string fileName);
-
-X509_NAME*
-x509Req_GetSubjectName(X509_REQ* req);
-
-X509_EXTENSION*
-x509Req_GetSubjectAltName(X509_REQ* req);
-
-void x509Req_PrintNames(BIO* out, X509_REQ* req);
 
 
 
-#endif /* x509_ext_hpp */
+#endif /* x509_cert_hpp */

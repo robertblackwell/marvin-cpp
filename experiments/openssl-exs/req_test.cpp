@@ -7,17 +7,11 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
+#include "x509_error.hpp"
+#include "x509_pkey.hpp"
+#include "x509_req.hpp"
+#include "x509_extension.hpp"
 
-
-void
-handle_error (const char *file, int lineno, const char *msg)
-{
-  fprintf (stderr, "** %s:%i %s\n", file, lineno, msg);
-  ERR_print_errors_fp (stderr);
-  exit (-1);
-}
-
-#define int_error(msg) handle_error(__FILE__, __LINE__, msg)
 
 #define PKEY_FILE "privkey.pem"
 #define REQ_FILE "newreq.pem"
@@ -81,13 +75,6 @@ struct entry entries[ENTRY_COUNT] = {
   {"commonName", "Server 36, Engineering"},
 };
 
-int password_cb(char *buf, int size, int rwflag, void *u)
-{
-    std::string s("secret");
-    const char* c_s = s.c_str();
-    std::strcpy(buf, c_s);
-    return (int)s.length();
-}
 /* Add extension using V3 code: we can set the config file as NULL
  * because we wont reference any other sections.
  */
@@ -116,12 +103,27 @@ main (int argc, char *argv[])
 
     OpenSSL_add_all_algorithms ();
     ERR_load_crypto_strings ();
-//    seed_prng (); - dont need this on a osx
 
-    RSA* rsaKey = RSA_generate_key(1024, RSA_3, NULL, NULL);
-    EVP_PKEY* tmp_pkey = EVP_PKEY_new();
-    EVP_PKEY_assign_RSA(tmp_pkey, rsaKey);
-    pkey = tmp_pkey;
+    pkey = x509Rsa_Generate();
+    req = x509Req_New();
+    x509Req_SetPublicKey(req, pkey);
+    x509Req_SetSubjectName(req, subjectValues);
+    ExtensionStack stk = x509ExtensionStack_New();
+    
+    x509ExtensionStack_AddBySN(stk, SN_subject_alt_name, "api.blackwell.com" );
+    x509ExtensionStack_AddByNID(stk, NID_subject_alt_name, "another.blackwell.com");
+    
+    
+    
+    char *name = (char*) std::string("subjectAltName").c_str();
+    char *value = (char*) std::string("DNS:splat.zork.org").c_str();
+    char *value2 = (char*) std::string("DNS:2222.splat.zork.org").c_str();
+
+#ifdef TTTTTT
+//    RSA* rsaKey = RSA_generate_key(1024, RSA_3, NULL, NULL);
+//    EVP_PKEY* tmp_pkey = EVP_PKEY_new();
+//    EVP_PKEY_assign_RSA(tmp_pkey, rsaKey);
+//    pkey = tmp_pkey;
 
 #ifdef PKEY_EXTERNAL
     pem_password_cb* pcb = NULL;
@@ -252,17 +254,17 @@ main (int argc, char *argv[])
     fclose (fp);
     if (!(fp = fopen(pkey_file.c_str(), "w")))
         int_error ("Error openning to key file for write");
-    if ( ! PEM_write_PrivateKey(
-        fp,
-        pkey,
-        EVP_aes_128_cbc(),
-        (unsigned char*) pkeyPassphrase.c_str(),
-        (int)pkeyPassphrase.length(),
-        password_cb, NULL)) {
-        int_error("Error writing to key file");
-    }
+//    if ( ! PEM_write_PrivateKey(
+//        fp,
+//        pkey,
+//        EVP_aes_128_cbc(),
+//        (unsigned char*) pkeyPassphrase.c_str(),
+//        (int)pkeyPassphrase.length(),
+//        password_cb, NULL)) {
+//        int_error("Error writing to key file");
+//    }
     fclose (fp);
-
+#endif
     EVP_PKEY_free (pkey);
     X509_REQ_free (req);
     return 0;

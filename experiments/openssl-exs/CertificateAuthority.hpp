@@ -19,7 +19,9 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
-#include "x509_ext.hpp"
+
+#include "x509.hpp"
+
 class CertificateAuthority
 {
     public:
