@@ -64,3 +64,26 @@ EVP_PKEY* x509PKey_ReadPrivateKeyFrom(std::string fileName)
     throw "not implemented";
     return x509PKey_ReadPrivateKeyFrom(fileName, const_password);
 }
+void x509PKey_WritePrivateKey(EVP_PKEY* pkey, std::string filename, std::string password)
+{
+    FILE * fp;
+    std::string passphrase = password;
+    char* fn_cstr = (char*)filename.c_str();
+    if (!(fp = fopen(fn_cstr, "w")) )
+        X509_TRIGGER_ERROR("Error openning to key file for write");
+//    void* pw = (void*) password.c_str();
+    unsigned char* passphrase_cstr = (unsigned char*)passphrase.c_str();
+    int passphraseLength = (int)passphrase.size();
+    if ( ! PEM_write_PrivateKey(
+            fp,
+            pkey,
+            EVP_aes_128_cbc(),
+            passphrase_cstr, passphraseLength, //send password in as passphrase
+            nullptr, nullptr //ignore password cb and arg
+        )
+    ) {
+        X509_TRIGGER_ERROR("Error writing to key file");
+    }
+    fclose (fp);
+}
+

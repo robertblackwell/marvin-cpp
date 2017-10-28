@@ -22,6 +22,11 @@
 
 int main (int argc, char *argv[])
 {
+    OpenSSL_add_all_algorithms ();
+    ERR_load_crypto_strings ();
+    ERR_load_BIO_strings();
+    ERR_load_ERR_strings();
+
     std::string filename(CONFFILE);
     x509Conf    conf(filename);
     std::string res = conf.getGlobalString(std::string(GLOB_VAR) );

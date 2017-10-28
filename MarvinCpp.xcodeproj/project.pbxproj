@@ -256,8 +256,7 @@
 		D4883E031F9D8C5900009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D4883E041F9D8C6800009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D4883E091F9EACF000009D37 /* req_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E061F9EACF000009D37 /* req_test.cpp */; };
-		D4883E0A1F9EACF000009D37 /* EX10-4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E071F9EACF000009D37 /* EX10-4.cpp */; };
-		D4883E0B1F9EACF000009D37 /* EX10-6.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E081F9EACF000009D37 /* EX10-6.cpp */; };
+		D4883E0B1F9EACF000009D37 /* cert_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E081F9EACF000009D37 /* cert_test.cpp */; };
 		D4883E0D1F9EAD5100009D37 /* conf_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E0C1F9EAD5100009D37 /* conf_test.cpp */; };
 		D4883E141F9EB0BD00009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D4883E151F9EB0BD00009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
@@ -267,7 +266,7 @@
 		D4883E281F9EDE7C00009D37 /* req_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E061F9EACF000009D37 /* req_test.cpp */; };
 		D4883E2D1F9F079400009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D4883E2E1F9F079400009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
-		D4883E341F9F07BE00009D37 /* EX10-6.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E081F9EACF000009D37 /* EX10-6.cpp */; };
+		D4883E341F9F07BE00009D37 /* cert_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E081F9EACF000009D37 /* cert_test.cpp */; };
 		D491232C1E0C28CF006C3A8A /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
 		D491232D1E0C28CF006C3A8A /* connection_interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B759D1E0B69B700431E06 /* connection_interface.cpp */; };
 		D491232E1E0C28CF006C3A8A /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
@@ -813,8 +812,7 @@
 		D4883DFA1F9D8C2000009D37 /* cert_auth */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cert_auth; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4883DFC1F9D8C2000009D37 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D4883E061F9EACF000009D37 /* req_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = req_test.cpp; sourceTree = "<group>"; };
-		D4883E071F9EACF000009D37 /* EX10-4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "EX10-4.cpp"; sourceTree = "<group>"; };
-		D4883E081F9EACF000009D37 /* EX10-6.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "EX10-6.cpp"; sourceTree = "<group>"; };
+		D4883E081F9EACF000009D37 /* cert_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cert_test.cpp; sourceTree = "<group>"; };
 		D4883E0C1F9EAD5100009D37 /* conf_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = conf_test.cpp; sourceTree = "<group>"; };
 		D4883E0F1F9EAFEF00009D37 /* test_1.cnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_1.cnf; sourceTree = "<group>"; };
 		D4883E1A1F9EB0BD00009D37 /* req_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = req_test; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1521,8 +1519,7 @@
 				D4883E0C1F9EAD5100009D37 /* conf_test.cpp */,
 				D4883E0E1F9EAFEF00009D37 /* fixtures */,
 				D4883E061F9EACF000009D37 /* req_test.cpp */,
-				D4883E071F9EACF000009D37 /* EX10-4.cpp */,
-				D4883E081F9EACF000009D37 /* EX10-6.cpp */,
+				D4883E081F9EACF000009D37 /* cert_test.cpp */,
 				D4439C7C1FA2658B00EF9D41 /* x509.hpp */,
 				D40EDC211FA2F4D000F0A976 /* x509_extension.hpp */,
 				D40EDC201FA2F4D000F0A976 /* x509_extension.cpp */,
@@ -2712,7 +2709,7 @@
 				D4439C7B1FA2646A00EF9D41 /* x509_conf.cpp in Sources */,
 				D476FBB91FA055B8008BA5F8 /* x509_req.cpp in Sources */,
 				D4439C7F1FA267DE00EF9D41 /* x509_error.cpp in Sources */,
-				D4883E341F9F07BE00009D37 /* EX10-6.cpp in Sources */,
+				D4883E341F9F07BE00009D37 /* cert_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2756,9 +2753,8 @@
 				D476FBB81FA05259008BA5F8 /* x509_req.cpp in Sources */,
 				D40B755E1E0A0E1400431E06 /* main.cpp in Sources */,
 				D445DB601E14B5FD00418D6B /* main.cpp in Sources */,
-				D4883E0A1F9EACF000009D37 /* EX10-4.cpp in Sources */,
 				D4A7D38D1E147E4000748973 /* http_notification.mm in Sources */,
-				D4883E0B1F9EACF000009D37 /* EX10-6.cpp in Sources */,
+				D4883E0B1F9EACF000009D37 /* cert_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

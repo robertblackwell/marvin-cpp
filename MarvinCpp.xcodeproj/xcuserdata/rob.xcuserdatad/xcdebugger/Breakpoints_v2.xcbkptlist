@@ -362,7 +362,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.775372"
+            timestampString = "530844002.896575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
@@ -376,7 +376,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.775411"
+            timestampString = "530844002.896673"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
@@ -390,7 +390,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.775447"
+            timestampString = "530844002.896744"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
@@ -404,7 +404,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.775482"
+            timestampString = "530844002.896814"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
@@ -418,7 +418,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.775518"
+            timestampString = "530844002.896897"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
@@ -432,7 +432,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.775558"
+            timestampString = "530844002.896964"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
@@ -446,7 +446,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.775594"
+            timestampString = "530844002.897029"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "55"
@@ -462,7 +462,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "experiments/openssl-exs/EX10-6.cpp"
-            timestampString = "530771281.77563"
+            timestampString = "530844002.897101"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "64"
@@ -497,6 +497,38 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "214"
             endingLineNumber = "214">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "experiments/openssl-exs/x509_extension.cpp"
+            timestampString = "530851896.00654"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "x509ExtensionStack_AddBySN(STACK_OF(X509_EXTENSION)* stack, std::string sn_string, std::string inValue)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "experiments/openssl-exs/req_test.cpp"
+            timestampString = "530851896.007203"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
+            landmarkName = "main (int argc, char *argv[])"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

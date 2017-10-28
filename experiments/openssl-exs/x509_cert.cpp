@@ -148,6 +148,9 @@ x509Cert_Add_ExtensionsFromTable(X509* CAcert, X509* cert, std::map<std::string,
             fprintf (stderr, "Error on \"%s = %s\"\n", k, v);
             X509_TRIGGER_ERROR ("Error creating X509 extension object");
         }
+        //
+        // this call DOES NT take ownership of the ext (it copies it) so we have to dispose
+        //
         if (!X509_add_ext (cert, ext, -1))
         {
             fprintf (stderr, "Error on \"%s = %s\"\n",  k, v);

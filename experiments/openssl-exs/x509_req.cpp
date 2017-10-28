@@ -21,7 +21,7 @@ void x509Req_Free(X509_REQ* req)
 {
     X509_REQ_free (req);
 }
-void X508Req_AddExtensions(X509_REQ* req, ExtensionStack stack)
+void x508Req_AddExtensions(X509_REQ* req, STACK_OF(X509_EXTENSION)* stack)
 {
     if (!X509_REQ_add_extensions (req, stack))
         X509_TRIGGER_ERROR("Error adding subjectAltName to the request");
@@ -88,6 +88,14 @@ x509Req_VerifySignature(X509_REQ* req)
         X509_TRIGGER_ERROR ("Error verifying signature on certificate");
 }
 
+
+void   x509Req_Sign(X509_REQ* req, EVP_PKEY* pkey, EVP_MD* digest)
+{
+    if (!(X509_REQ_sign (req, pkey, digest)))
+        X509_TRIGGER_ERROR("Error signing request");
+}
+
+
 X509_REQ*
 x509Req_ReadFromFile(std::string fileName)
 {
@@ -101,6 +109,17 @@ x509Req_ReadFromFile(std::string fileName)
     fclose (fp);
     x509Req_VerifySignature(req);
     return req;
+}
+void x509Req_WriteToFile(X509_REQ* req, std::string filename)
+{
+    FILE* fp;
+    
+    /* write the completed request */
+    if (!(fp = fopen (filename.c_str(), "w")))
+        X509_TRIGGER_ERROR ("Error openning request file for write");
+    if (PEM_write_X509_REQ (fp, req) != 1)
+        X509_TRIGGER_ERROR("Error while writing request");
+    fclose (fp);
 }
 
 X509_NAME*

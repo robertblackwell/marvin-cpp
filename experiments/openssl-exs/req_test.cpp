@@ -94,30 +94,45 @@ int add_ext(STACK_OF(X509_EXTENSION) *sk, int nid, std::string value)
 int
 main (int argc, char *argv[])
 {
-    int i;
     X509_REQ *req;
-    X509_NAME *subj;
     EVP_PKEY *pkey;
-    EVP_MD *digest;
-    FILE *fp;
+    EVP_MD *digest = nullptr;
+    std::string password("blackwellapps");
 
     OpenSSL_add_all_algorithms ();
     ERR_load_crypto_strings ();
+    ERR_load_BIO_strings();
+    ERR_load_ERR_strings();
 
     pkey = x509Rsa_Generate();
     req = x509Req_New();
     x509Req_SetPublicKey(req, pkey);
     x509Req_SetSubjectName(req, subjectValues);
     ExtensionStack stk = x509ExtensionStack_New();
-    
-    x509ExtensionStack_AddBySN(stk, SN_subject_alt_name, "api.blackwell.com" );
-    x509ExtensionStack_AddByNID(stk, NID_subject_alt_name, "another.blackwell.com");
-    
-    
-    
-    char *name = (char*) std::string("subjectAltName").c_str();
-    char *value = (char*) std::string("DNS:splat.zork.org").c_str();
-    char *value2 = (char*) std::string("DNS:2222.splat.zork.org").c_str();
+
+#ifdef SN_EXT
+    x509ExtensionStack_AddBySN(stk, SN_subject_alt_name, std::string("DNS:another.blackwell.com,DNS:another2.blackwell.com") );
+#else
+    x509ExtensionStack_AddByNID(stk, NID_subject_alt_name, std::string("DNS:another.blackwell.com,DNS:another2.blackwell.com"));
+#endif
+
+    x508Req_AddExtensions(req, stk);
+
+    /*
+    ** pick the correct digest and sign the request
+    */
+    if (EVP_PKEY_type (pkey->type) == EVP_PKEY_DSA)
+        // this cast is for a, thankfully, pedantic C++ compiler
+        digest = (EVP_MD*)EVP_dss1 ();
+    else if (EVP_PKEY_type (pkey->type) == EVP_PKEY_RSA)
+        // this cast is for a, thankfully, pedantic C++ compiler
+        digest = (EVP_MD*)EVP_sha256();
+    else
+        X509_TRIGGER_ERROR("Error checking public key for a valid digest");
+   
+    x509Req_Sign(req, pkey, digest);
+    x509Req_WriteToFile(req, req_file);
+    x509PKey_WritePrivateKey(pkey,  pkey_file, password);
 
 #ifdef TTTTTT
 //    RSA* rsaKey = RSA_generate_key(1024, RSA_3, NULL, NULL);
@@ -222,10 +237,11 @@ main (int argc, char *argv[])
     if (!(X509_REQ_sign (req, pkey, digest)))
         int_error ("Error signing request");
 
+
     BIO *out;
     /* open stdout */
     if (!(out = BIO_new_fp (stdout, BIO_NOCLOSE)))
-        int_error ("Error creating stdout BIO");
+        X509_TRIGGER_ERROR("Error creating stdout BIO");
 
     int subjAltName_pos;
     X509_NAME *name;
@@ -234,11 +250,11 @@ main (int argc, char *argv[])
 
     /* print out the subject name and subject alt name extension */
     if (!(name = X509_REQ_get_subject_name (req)))
-        int_error ("Error getting subject name from request");
+        X509_TRIGGER_ERROR("Error getting subject name from request");
     X509_NAME_print (out, name, 0);
     fputc ('\n', stdout);
     if (!(req_exts = X509_REQ_get_extensions (req)))
-        int_error ("Error getting the request's extensions");
+        X509_TRIGGER_ERROR("Error getting the request's extensions");
     subjAltName_pos = X509v3_get_ext_by_NID (req_exts, OBJ_sn2nid ("subjectAltName"), -1);
     subjAltName = X509v3_get_ext (req_exts, subjAltName_pos);
     X509V3_EXT_print (out, subjAltName, 0, 0);
@@ -248,21 +264,22 @@ main (int argc, char *argv[])
 
     /* write the completed request */
     if (!(fp = fopen (req_file.c_str(), "w")))
-        int_error ("Error openning request file for write");
+        X509_TRIGGER_ERROR ("Error openning request file for write");
     if (PEM_write_X509_REQ (fp, req) != 1)
-        int_error ("Error while writing request");
+        X509_TRIGGER_ERROR("Error while writing request");
     fclose (fp);
     if (!(fp = fopen(pkey_file.c_str(), "w")))
-        int_error ("Error openning to key file for write");
-//    if ( ! PEM_write_PrivateKey(
-//        fp,
-//        pkey,
-//        EVP_aes_128_cbc(),
-//        (unsigned char*) pkeyPassphrase.c_str(),
-//        (int)pkeyPassphrase.length(),
-//        password_cb, NULL)) {
-//        int_error("Error writing to key file");
-//    }
+        X509_TRIGGER_ERROR("Error openning to key file for write");
+    char* pw = (char*) password.c_str();
+    if ( ! PEM_write_PrivateKey(
+        fp,
+        pkey,
+        EVP_aes_128_cbc(),
+        (unsigned char*) pkeyPassphrase.c_str(),
+        (int)pkeyPassphrase.length(),
+        nullptr, NULL)) {
+        X509_TRIGGER_ERROR("Error writing to key file");
+    }
     fclose (fp);
 #endif
     EVP_PKEY_free (pkey);

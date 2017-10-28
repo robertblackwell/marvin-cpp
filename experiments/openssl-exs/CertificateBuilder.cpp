@@ -19,15 +19,13 @@ buildCertificate(X509* CAcert, EVP_PKEY* CApkey, int serial, X509_REQ* req, X509
     BIO *out;
 
     if ( (original_cert == NULL) && (req == NULL))
-        throw "cannot have both req and original_cert as NULL";
+        throw x509Exception("cannot have both req and original_cert as NULL");
     
     if ( (original_cert != NULL) && (req != NULL))
-        throw "cannot have both req and original_cert as NOT NULL";
+        throw x509Exception("cannot have both req and original_cert as NOT NULL");
 
     bool additionalExtensions = (extensions.size() > 0);
     
-    OpenSSL_add_all_algorithms ();
-    ERR_load_crypto_strings ();
     /* open stdout */
     if (!(out = BIO_new_fp (stdout, BIO_NOCLOSE)))
         X509_TRIGGER_ERROR ("Error creating stdout BIO");
@@ -39,6 +37,7 @@ buildCertificate(X509* CAcert, EVP_PKEY* CApkey, int serial, X509_REQ* req, X509
 //    original_cert = x509Cert_ReadFromFile(ORIGINAL_CERT_FILE);
     
     x509Req_PrintNames(out, req);
+    
     name = x509Req_GetSubjectName(req);
     subjAltName = x509Req_GetSubjectAltName(req);
     

@@ -25,8 +25,8 @@ typedef STACK_OF(X509_EXTENSION)* ExtensionStack;
 ExtensionStack x509ExtensionStack_New();
 void x509ExtensionStack_Free();
 
-void x509ExtensionStack_AddByNID(STACK_OF(X509_EXTENSION) *sk, int nid, std::string value);
-void x509ExtensionStack_AddBySN(ExtensionStack stack, std::string sn_string, std::string value );
+void x509ExtensionStack_AddByNID(STACK_OF(X509_EXTENSION) *stack, int nid, std::string value);
+void x509ExtensionStack_AddBySN(STACK_OF(X509_EXTENSION) *stack, std::string sn_string, std::string value );
 
 
 #endif /* x509_extension_hpp */

@@ -29,14 +29,24 @@ void x509ExtensionStack_AddByNID(STACK_OF(X509_EXTENSION) *sk, int nid, std::str
     sk_X509_EXTENSION_push(sk, ex);
 }
 
-void x509ExtensionStack_AddBySN(ExtensionStack stack, std::string sn_string, std::string value)
+void x509ExtensionStack_AddBySN(STACK_OF(X509_EXTENSION)* stack, std::string sn_string, std::string inValue)
 {
-    char* sn_name_c = (char*)sn_string.c_str();
-    char* value_c = (char*) value.c_str();
+    char* name_cstr = (char*)sn_string.c_str();
+
+    char* value_cstr = (char*) inValue.c_str();
+
     X509_EXTENSION* ext;
-    
-    if (!(ext = X509V3_EXT_conf (NULL, NULL, sn_name_c, value_c)))
-        X509_TRIGGER_ERROR("Error creating extension name : " + sn_string + " value: " + value);
+//    char *name = (char*) std::string("subjectAltName").c_str();
+//    char *value = (char*) std::string("DNS:splat.zork.org").c_str();
+//    if (!(ext = X509V3_EXT_conf (NULL, NULL, name, value)))
+//        X509_TRIGGER_ERROR("Error creating subjectAltName extension");
+
+    //
+    // please note : is sn_string = "subjectAltName" then value MUST be of the form "DNS:xxxxxx" or
+    // some other acceptable for -- see openssl/
+    //
+    if (!(ext = X509V3_EXT_conf (NULL, NULL, name_cstr, value_cstr)))
+        X509_TRIGGER_ERROR("Error creating extension name : " + sn_string + " value: " + value_cstr);
 
     sk_X509_EXTENSION_push (stack, ext);
 }

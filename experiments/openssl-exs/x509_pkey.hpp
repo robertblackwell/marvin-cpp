@@ -25,5 +25,7 @@ EVP_PKEY* x509PKey_ReadPrivateKeyFrom(std::string fileName, std::string password
 
 EVP_PKEY* x509PKey_ReadPrivateKeyFrom(std::string fileName);
 
+void x509PKey_WritePrivateKey(EVP_PKEY* pkey, std::string filename, std::string password);
+
 
 #endif /* x509_pkey_hpp */
