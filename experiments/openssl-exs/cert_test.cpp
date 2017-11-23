@@ -8,7 +8,6 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
-
 #include "CertificateAuthority.hpp"
 #include "CertificateBuilder.hpp"
 

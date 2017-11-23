@@ -36,10 +36,6 @@
 		D40B75931E0AC64500431E06 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75671E0AC5BA00431E06 /* server.cpp */; };
 		D40B75961E0AD31000431E06 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D40B75971E0AD31000431E06 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
-		D40B759C1E0B567C00431E06 /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
-		D40B759F1E0B6A9A00431E06 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
-		D40B75A01E0B6AAA00431E06 /* buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614651DFB24B200E3FAB0 /* buffer.cpp */; };
-		D40B75A11E0B6AAA00431E06 /* marvin_error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614531DFA526100E3FAB0 /* marvin_error.cpp */; };
 		D40B75A21E0B6DE100431E06 /* connection_interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B759D1E0B69B700431E06 /* connection_interface.cpp */; };
 		D40B75A31E0B70D200431E06 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D40B75A41E0B70D200431E06 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
@@ -2362,10 +2358,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4883DF01F9AE29800009D37 /* client.cpp in Sources */,
-				D40B75A01E0B6AAA00431E06 /* buffer.cpp in Sources */,
-				D40B75A11E0B6AAA00431E06 /* marvin_error.cpp in Sources */,
-				D40B759F1E0B6A9A00431E06 /* rb_logger.cpp in Sources */,
-				D40B759C1E0B567C00431E06 /* tls_connection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3376,6 +3368,7 @@
 		D4883E181F9EB0BD00009D37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -3400,6 +3393,7 @@
 		D4883E191F9EB0BD00009D37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;

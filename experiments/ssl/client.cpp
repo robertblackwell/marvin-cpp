@@ -28,7 +28,7 @@
 ** the stuff below is only a reference regardin how to use X509_STORE
 **
 */
-#ifdef HGHGHGHG
+#if 0
 
 #include <boost/asio/ssl/context.hpp>
 #include <wincrypt.h>
@@ -87,8 +87,6 @@ ssl::stream<boost::asio::ip::tcp::socket> socket(io, ctx);
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/unordered_set.hpp>
-#include "connection_interface.hpp"
-#include "tls_connection.hpp"
 
 const int max_read_buffer_length = 1024;
 const bool debug_trace = false;
@@ -430,8 +428,14 @@ namespace TestCase {
         ctx.set_verify_mode(boost::asio::ssl::verify_peer);
         if(useDefaultCertPath) {
             if( ! viaX509Store) {
+                //
+                // use the default root certificate location and load them from the file system
+                //
                 ctx.set_default_verify_paths();
             } else {
+                //
+                // use the default root certificate location BUT load them into a custom X509_STORE
+                //
                 X509_STORE *store = X509_STORE_new();
                 X509_STORE_set_default_paths(store);
                 // attach X509_STORE to boost ssl context
@@ -439,8 +443,14 @@ namespace TestCase {
             }
         } else {
             if( ! viaX509Store) {
+                //
+                // use a non standard location for the CAfile and then load the root certs from the filesystem
+                //
                 ctx.load_verify_file(certFilePath);
             } else {
+                //
+                // use a non default root certificate location, AND load them into a custom X509_STORE
+                //
                 X509_STORE *store = X509_STORE_new();
                 X509_STORE_load_locations(store, (const char*)certFilePath.c_str(), NULL);
                 // attach X509_STORE to boost ssl context

@@ -129,7 +129,8 @@ void testType1CallbackBinding()
 }
 
 //
-// This one fails
+// This one fails- nothing holds the rquest ref returnbed by do_rerquest
+// and hence it is pulled out from under the callbacks setup insode do_request
 //
 void testType2CallbackBinding()
 {

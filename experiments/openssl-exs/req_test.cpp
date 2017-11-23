@@ -12,7 +12,6 @@
 #include "x509_req.hpp"
 #include "x509_extension.hpp"
 
-
 #define PKEY_FILE "privkey.pem"
 #define REQ_FILE "newreq.pem"
 #define ENTRY_COUNT 6
