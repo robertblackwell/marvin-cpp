@@ -19,16 +19,6 @@
 			<key>orderHint</key>
 			<integer>32</integer>
 		</dict>
-		<key>client_alone.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>12</integer>
-		</dict>
-		<key>client_test.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>9</integer>
-		</dict>
 		<key>conf_test.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -143,6 +133,16 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>6</integer>
+		</dict>
+		<key>test_client_request.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>12</integer>
+		</dict>
+		<key>test_client_request_01.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>9</integer>
 		</dict>
 		<key>test_query.xcscheme</key>
 		<dict>
