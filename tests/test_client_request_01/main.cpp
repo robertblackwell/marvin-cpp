@@ -18,6 +18,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <gtest/gtest.h>
 
 #include "boost_stuff.hpp"
 
@@ -81,16 +82,14 @@ std::shared_ptr<Client> do_client_rt_fragbuffer(std::string code, boost::asio::i
 }
 
 
-int main(){
-    const char* d1 = (const char*) malloc(100);
-    const char* d2 = (const char*) malloc(100);
-    int l = 100;
-    std::vector<boost::asio::const_buffer> v;
-    auto buf1 = boost::asio::const_buffer(d1, l); v.push_back(buf1);
-    auto buf2 = boost::asio::const_buffer(d2, l); v.push_back(buf2);
+int main(int argc, char* argv[]){
+    RBLogging::setEnabled(false);
+//    testcase_pipeline();
+
+    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    int _argc = 2;
+    testing::InitGoogleTest(&_argc, _argv);
+    return RUN_ALL_TESTS();
     
-    auto vb = boost::asio::buffer(v);
-//    testcase_roundtrip();
-    testcase_pipeline();
     return 0;
 }

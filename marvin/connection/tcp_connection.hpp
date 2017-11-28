@@ -66,6 +66,7 @@ class TCPConnection : public ConnectionInterface //public ReadSocketInterface, p
     
     void asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb);
     void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb);
+    void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb);
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 
     void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb);

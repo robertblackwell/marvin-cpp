@@ -76,7 +76,17 @@ int main()
     // and assigning eof to boost::system::error_code
     boost::system::error_code erc = Marvin::errc::end_of_message;
     boost::system::error_code erc2 = boost::asio::error::misc_errors::eof;
+    auto erc3 = boost::system::error_code(boost::system::errc::success, boost::system::system_category());
+    auto mrc3 = erc3.message();
     
+    auto e1 = (Marvin::make_error_ok());
+    auto m1 = e1.message();
+    bool flg = (!e1);
+    auto e2 = (Marvin::make_error_eof());
+    auto m2 = e2.message();
+    auto e3 = (Marvin::make_error_eom());
+    auto m3 = e3.message();
+
     print_error(FError::ok());
     print_error(FError::eof());
     print_error(FError::eom());

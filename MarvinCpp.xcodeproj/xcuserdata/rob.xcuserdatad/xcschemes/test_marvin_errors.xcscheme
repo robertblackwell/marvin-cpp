@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-               BuildableName = "reader_test"
-               BlueprintName = "reader_test"
+               BlueprintIdentifier = "D458EA2F1DF6413600E820A9"
+               BuildableName = "test_marvin_errors"
+               BlueprintName = "test_marvin_errors"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,15 +26,16 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-            BuildableName = "reader_test"
-            BlueprintName = "reader_test"
+            BlueprintIdentifier = "D458EA2F1DF6413600E820A9"
+            BuildableName = "test_marvin_errors"
+            BlueprintName = "test_marvin_errors"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -45,6 +46,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -55,9 +57,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-            BuildableName = "reader_test"
-            BlueprintName = "reader_test"
+            BlueprintIdentifier = "D458EA2F1DF6413600E820A9"
+            BuildableName = "test_marvin_errors"
+            BlueprintName = "test_marvin_errors"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +76,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
-            BuildableName = "reader_test"
-            BlueprintName = "reader_test"
+            BlueprintIdentifier = "D458EA2F1DF6413600E820A9"
+            BuildableName = "test_marvin_errors"
+            BlueprintName = "test_marvin_errors"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

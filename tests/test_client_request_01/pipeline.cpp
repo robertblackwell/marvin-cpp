@@ -39,8 +39,14 @@ void Pipeline::handler(Marvin::ErrorType& err, MessageReaderV2SPtr rdr)
     if(!err) {
         MessageReaderV2SPtr b = _client_sptr->getResponse();
         std::string bdy = b->getBody();
+        auto sss = err.message();
 //        std::cout << bdy << std::endl;
-        std::cout << "Successful message roundtrip counter: " << _counter << "http status: " << b->status() << " err: " << err.message() << std::endl;
+#if 0
+        std::cout << "Successful message roundtrip counter: " << _counter << "http status: "
+            << b->status() << " err: "
+            << err.message() << std::endl;
+#endif
+        ASSERT_TRUE(b->statusCode() == 200 );
         if (_counter++ > 5)
             return;
         this->setup();
@@ -51,7 +57,7 @@ void Pipeline::handler(Marvin::ErrorType& err, MessageReaderV2SPtr rdr)
 /**
 * The test case
 */
-void testcase_pipeline()
+TEST(ClientPipeline, Test01)
 {
     boost::asio::io_service io;
     std::shared_ptr<Pipeline> pipeline_sptr = std::make_shared<Pipeline>(io);

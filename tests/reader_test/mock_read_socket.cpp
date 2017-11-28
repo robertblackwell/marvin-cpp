@@ -10,17 +10,17 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "tcase.hpp"
 #include "mock_read_socket.hpp"
 
-MockReadSocket::MockReadSocket(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc))
+MockReadSocket::MockReadSocket(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.get_case(tc))
 {
     index = 0;
     _tc = tc;
     _rdBuf = (char*)malloc(100000);
-    st = new SingleTimer(io_, 500);
+    st = new SingleTimer(io_, 100);
 }
 MockReadSocket::~MockReadSocket()
 {
     delete st;
-    std::cout << __FUNCTION__ << std::endl;
+    LogDebug(""); 
     free((void*)_rdBuf);
 }
 long MockReadSocket::nativeSocketFD(){ return 9876; };

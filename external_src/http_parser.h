@@ -88,6 +88,7 @@ typedef struct http_parser_settings http_parser_settings;
  */
 typedef int (*http_data_cb) (http_parser*, const char *at, size_t length);
 typedef int (*http_cb) (http_parser*);
+typedef int (*http_ptr_cb) (http_parser*, const char* at);
 
 
 /* Request Methods */
@@ -256,12 +257,13 @@ struct http_parser_settings {
   http_data_cb on_status;
   http_data_cb on_header_field;
   http_data_cb on_header_value;
-  http_cb      on_headers_complete;
+  http_data_cb  on_headers_complete;
   http_data_cb on_body;
   http_cb      on_message_complete;
   /* When on_chunk_header is called, the current chunk length is stored
    * in parser->content_length.
    */
+  http_data_cb on_chunk_size_start;
   http_cb      on_chunk_header;
   http_cb      on_chunk_complete;
 };

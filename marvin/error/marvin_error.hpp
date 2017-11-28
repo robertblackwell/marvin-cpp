@@ -25,6 +25,11 @@
 namespace Marvin{
     
     typedef boost::system::error_code ErrorType;
+    
+//    class ErrorType :: boost::system::error_code
+//    {
+//        
+//    }
 
     enum class errc {
         ok = 0,

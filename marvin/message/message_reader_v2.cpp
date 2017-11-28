@@ -87,6 +87,27 @@ bool MessageReaderV2::hasBodyData()
 }
 
 #pragma mark - Parser virtual overrides
+    void MessageReaderV2::OnChunkBegin(int chunkLength)
+    {
+        LogDebug("");
+    }
+    void MessageReaderV2::OnChunkData(void* buf, int len)
+    {
+        LogDebug("");
+    }
+    void MessageReaderV2::OnChunkEnd()
+    {
+        LogDebug("");
+    }
+    void MessageReaderV2::OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder)
+    {
+        LogDebug("");
+    }
+    void MessageReaderV2::OnMessageComplete(MessageInterface* msg)
+    {
+        LogDebug("");
+    }
+
 /*!
 *
 * Overrides a virtual method in Parser.hpp/cpp 
@@ -157,8 +178,6 @@ void MessageReaderV2::handleReadError(Marvin::ErrorType& er){
     "error.value :", er.value(),
     "error.cat:", er.category().name(),
     "error.message", er.category().message(er.value()));
-
-    
 }
 /// !!! do something with this
 void MessageReaderV2::handleParseError()
@@ -295,6 +314,108 @@ void MessageReaderV2::startRead()
     auto h = std::bind(&MessageReaderV2::asyncReadHandler, this, std::placeholders::_1, std::placeholders::_2);
     _readSock->asyncRead(*_readBuffer, h);
 }
+#pragma mark - new methods for reading headers
+/*
+* called by client code to get just the headers (and maybe have some
+* of the body in the hopper waiting for a read body call)
+*/
+void MessageReaderV2::read_headers(std::function<void(Marvin::ErrorType err)> cb)
+{
+    _reading_full_message = false;
+    _read_message_cb = cb;
+    this->_read_some_headers();
+}
+
+/**
+* Called by client code to read a complete message
+*/
+void MessageReaderV2::read_message(std::function<void(Marvin::ErrorType err)> cb)
+{
+    _reading_full_message = true;
+    _read_message_cb = cb;
+    this->_read_some_headers();
+}
+void MessageReaderV2::_read_some_headers()
+{
+    LogDebug(" fd: ", _readSock->nativeSocketFD());
+    auto h = std::bind(&MessageReaderV2::_handle_header_read, this, std::placeholders::_1, std::placeholders::_2);
+    _readSock->asyncRead(*_readBuffer, h);
+}
+void MessageReaderV2::_handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered)
+{
+    LogDebug("entry fd: ", _readSock->nativeSocketFD());
+    _readBuffer->setSize(bytes_transfered);
+    MBuffer& mb = *_readBuffer;
+    bool saved_EOH = isFinishedHeaders();
+    bool saved_EOM = isFinishedMessage();
+    int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
+    bool ee = Parser::isError();
+
+    if (ee){
+    }
+    if( isFinishedMessage() ) {
+        er = Marvin::make_error_eom();
+        // link body to message first
+        MessageInterface* m = currentMessage();
+        auto pf = std::bind(_read_message_cb, er);
+        delete _readBuffer; _readBuffer = nullptr;// finished with headers
+        _io.post(pf);
+    }
+    if( isFinishedHeaders()) {
+        if( _reading_full_message ) {
+            _read_all_body();
+        } else {
+            er = Marvin::make_error_ok();
+            MessageInterface* m = currentMessage();
+            auto pf = std::bind(_read_message_cb, er);
+            delete _readBuffer; _readBuffer = nullptr;// finished with headers
+            _io.post(pf);
+        }
+    }
+    if( ! isFinishedHeaders() ) {
+        _read_some_headers();
+    }
+}
+#pragma mark - new methods for reading body data
+void MessageReaderV2::_read_all_body()
+{
+    _read_some_body();
+}
+void MessageReaderV2::_read_some_body()
+{
+    LogDebug(" fd: ", _readSock->nativeSocketFD());
+    auto h = std::bind(&MessageReaderV2::_handle_header_read, this, std::placeholders::_1, std::placeholders::_2);
+    _readSock->asyncRead(*_readBuffer, h);
+}
+void MessageReaderV2::_handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered)
+{
+    LogDebug("entry fd: ", _readSock->nativeSocketFD());
+    _readBuffer->setSize(bytes_transfered);
+    MBuffer& mb = *_readBuffer;
+    bool saved_EOH = isFinishedHeaders();
+    bool saved_EOM = isFinishedMessage();
+    int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
+    bool ee = Parser::isError();
+
+    if (ee){
+    }
+    if( isFinishedMessage()) {
+        _read_message_cb(Marvin::make_error_eom());
+    } else {
+        _make_new_body_buffer();
+        _read_some_body();
+    }
+}
+#pragma mark - new buffer management methods
+void MessageReaderV2::_make_body_buffer_from_header_buffer()
+{
+
+}
+void MessageReaderV2::_make_new_body_buffer()
+{
+
+}
+#pragma 
 #pragma mark - the main internal method that is the socket read callback
 /*!
 * The main read handler. Handles reading data for headers and body data.
@@ -328,7 +449,22 @@ void MessageReaderV2::asyncReadHandler(Marvin::ErrorType& er, std::size_t bytes_
             return;
         }
     }else{
+#if 0
+        char* p = (char*) mb.data();
+        for( int i = 0; i < (int)mb.size(); i++) {
+            void* p2 = (void*) &(p[i]);
+            char* p2_ch = (char*) p2;
+            int np = this->appendBytes(p2, 1);
+            bool b1 = this->headersCompleteFlag;
+            if( this->headersCompleteFlag && (i < (int)mb.size() - 1) && (p2_ch[0] == '\n') ) {
+                char* start_of_data = &p2_ch[1];
+                int j = i;
+            }
+            bool b2 = this->messageCompleteFlag;
+        }
+#else
         nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
+#endif
     }
     bool ee = Parser::isError();
     

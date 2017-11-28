@@ -37,26 +37,16 @@ std::shared_ptr<Request> do_get_request(std::string code, boost::asio::io_servic
         //
         // Here is where we check the result
         //
-        bool x = (t == resp.getBody());
-        std::cout << "test for :" << code;
-        if( x )
-        {
-            std::cout << " OK";
-        }
-        else
-        {
-            std::cout << " FAIL";
-        }
-        std::cout << std::endl;
+        std::string b = resp.getBody();
+        auto st = resp.statusCode();
+        ASSERT_TRUE(st == 200);
+        ASSERT_TRUE(b == t);
         LogDebug("");
     });
-#ifdef VERBOSE
-    std::cout << "exit use: " << req.use_count() << std::endl;
-#endif
     return req;
 }
 
-void testcase_multiple()
+TEST(Request, MultipleConsecutiveTimes)
 {
     boost::asio::io_service io_service;
     {
@@ -72,6 +62,5 @@ void testcase_multiple()
         io_service.run();
         rt.clear();
     }
-    std::cout << "after io_service.run() " << std::endl;
 }
 

@@ -32,9 +32,10 @@ int url_data_cb(http_parser* parser, const char* at, size_t length);
 int status_data_cb(http_parser* parser, const char* at, size_t length);
 int header_field_data_cb(http_parser* parser, const char* at, size_t length);
 int header_value_data_cb(http_parser* parser, const char* at, size_t length);
-int headers_complete_cb(http_parser* parser);
+int headers_complete_cb(http_parser* parser, const char* aptr, size_t remainder);
 int body_data_cb(http_parser* parser, const char* at, size_t length);
 int message_complete_cb(http_parser* parser);
+int chunk_size_start(http_parser* parser, const char* at, size_t length);
 
 /******************************************************************************/
 
@@ -121,7 +122,7 @@ void Parser::OnParseBegin()
 {
     LogVerbose("");
 };
-void Parser::OnHeadersComplete(MessageInterface* msg)
+void Parser::OnHeadersComplete(MessageInterface* msg, void* body_start, std::size_t remainder)
 {
     // This is the virtual method in parser.hpp
     headersCompleteFlag = true;
@@ -209,6 +210,7 @@ void Parser::setUpParserCallbacks()
     settings->on_message_complete = message_complete_cb;
     settings->on_chunk_header = chunk_header_cb;
     settings->on_chunk_complete = chunk_complete_cb;
+    settings->on_chunk_size_start = chunk_size_start;
     
 }
 
@@ -335,7 +337,7 @@ header_value_data_cb(http_parser* parser, const char* at, size_t length)
 }
 
 int
-headers_complete_cb(http_parser* parser)
+headers_complete_cb(http_parser* parser, const char* aptr, size_t remainder)
 {
     Parser* p = getParser(parser);
 
@@ -360,7 +362,7 @@ headers_complete_cb(http_parser* parser)
     }
     
     p->headersCompleteFlag = true;
-    p->OnHeadersComplete(message);
+    p->OnHeadersComplete(message, (void*) aptr, remainder);
     return 0;
 }
 
@@ -376,10 +378,16 @@ body_data_cb(http_parser* parser, const char* at, size_t length)
     return 0;
 
 }
+int chunk_size_start(http_parser* parser, const char* at, size_t length)
+{
+    Parser* p =  getParser(parser);
+    
+}
 int chunk_header_cb(http_parser* parser)
 {
     Parser* p = getParser(parser);
     p->OnChunkBegin((int)parser->content_length);
+    char* d = (char*)parser->data;
     return 0;
 }
 

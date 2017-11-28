@@ -269,3 +269,7 @@ void TCPConnection::asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCa
         }
     });
 }
+void TCPConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback cb)
+{
+
+}

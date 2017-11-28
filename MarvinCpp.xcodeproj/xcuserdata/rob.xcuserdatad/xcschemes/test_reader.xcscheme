@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
-               BuildableName = "logger"
-               BlueprintName = "logger"
+               BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
+               BuildableName = "test_reader"
+               BlueprintName = "test_reader"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,15 +26,16 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
-            BuildableName = "logger"
-            BlueprintName = "logger"
+            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
+            BuildableName = "test_reader"
+            BlueprintName = "test_reader"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -45,6 +46,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -55,9 +57,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
-            BuildableName = "logger"
-            BlueprintName = "logger"
+            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
+            BuildableName = "test_reader"
+            BlueprintName = "test_reader"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +76,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
-            BuildableName = "logger"
-            BlueprintName = "logger"
+            BlueprintIdentifier = "D4AF58DB1DE6F6AD001AC0A1"
+            BuildableName = "test_reader"
+            BlueprintName = "test_reader"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

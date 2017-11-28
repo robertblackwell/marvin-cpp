@@ -26,14 +26,14 @@ std::string traceWriterV2(MessageWriterV2& writer)
     return ss.str();
 }
 
-MessageWriterV2::MessageWriterV2(boost::asio::io_service& io, TCPConnection& conn):_io(io), _conn(conn)
+MessageWriterV2::MessageWriterV2(boost::asio::io_service& io, TCPConnection& conn):_io(io), _conn(conn), _m_header_buf(1000)
 {
     LogTorTrace();
 //    _isRequest = is_request;
     // set default version
 //    setHttpVersMajor(1);
 //    setHttpVersMinor(1);
-    _m_header_buf = new MBuffer(1000);
+//    _m_header_buf = new MBuffer(1000);
 
 }
 #if 0
@@ -49,15 +49,15 @@ MessageWriterV2::MessageWriterV2(boost::asio::io_service& io, bool is_request):_
 #endif
 MessageWriterV2::~MessageWriterV2()
 {
-    delete _m_header_buf;
+//    delete _m_header_buf;
     LogTorTrace();
 }
 
 void MessageWriterV2::putHeadersStuffInBuffer()
 {
     MessageBaseSPtr msg = _currentMessage;
-    _m_header_buf->empty();
-    serializeHeaders(*msg, *_m_header_buf);
+    _m_header_buf.empty();
+    serializeHeaders(*msg, _m_header_buf);
     LogDebug("request size: ");
 }
 void MessageWriterV2::onWriteHeaders(Marvin::ErrorType& ec)
@@ -100,7 +100,7 @@ MessageWriterV2::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackTyp
 //    MBuffer* mb = new MBuffer(h.size()+10);
 //    mb->append((void*)buf, h.size());
     
-    _conn.asyncWrite(*_m_header_buf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+    _conn.asyncWrite(_m_header_buf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
 
 //    _conn.asyncWriteStreamBuf(_headerBuf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
         LogDebug("");
@@ -141,17 +141,39 @@ void MessageWriterV2::asyncWriteFullBody(WriteMessageCallbackType cb)
     }
     
 }
-void
-MessageWriterV2::asyncWriteBodyData(void* data, WriteBodyDataCallbackType cb)
+void MessageWriterV2::asyncWriteBodyData(void* data, WriteBodyDataCallbackType cb)
+{
+}
+void MessageWriterV2::asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb)
+{
+    auto bf = boost::asio::buffer(data);
+    _conn.asyncWrite(bf, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+        cb(err);
+    });
+}
+void MessageWriterV2::asyncWriteBodyData(MBuffer& data, WriteBodyDataCallbackType cb)
+{
+    _conn.asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+        cb(err);
+    });
+}
+void MessageWriterV2::asyncWriteBodyData(FBuffer& data, WriteBodyDataCallbackType cb)
+{
+    _conn.asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+        cb(err);
+    });
+}
+void MessageWriterV2::asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb)
+{
+    _conn.asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+        cb(err);
+    });
+}
+
+void MessageWriterV2::asyncWriteTrailers(MessageBaseSPtr msg,  AsyncWriteCallbackType cb)
 {
 }
 
-void
-MessageWriterV2::asyncWriteTrailers(MessageBaseSPtr msg,  AsyncWriteCallbackType cb)
-{
-}
-
-void
-MessageWriterV2::end()
+void MessageWriterV2::end()
 {
 }

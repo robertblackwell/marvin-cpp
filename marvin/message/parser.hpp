@@ -147,7 +147,7 @@ public:
      */
     
     virtual void OnParseBegin();
-    virtual void OnHeadersComplete(MessageInterface* msg);
+    virtual void OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
     virtual void OnMessageComplete(MessageInterface* msg);
     virtual void OnParseError();
     virtual void OnBodyData(void* buf, int len);
@@ -175,14 +175,15 @@ public:
     friend int status_data_cb(http_parser* parser, const char* at, size_t length);
     friend int header_field_data_cb(http_parser* parser, const char* at, size_t length);
     friend int header_value_data_cb(http_parser* parser, const char* at, size_t length);
-    friend int headers_complete_cb(http_parser* parser);
+    friend int headers_complete_cb(http_parser* parser, const char* aptr, size_t remainder);
 
+    friend int chunk_size_start(http_parser* parser, const char* at, size_t length);
     friend int chunk_header_cb(http_parser* parser);
     friend int body_data_cb(http_parser* parser, const char* at, size_t length);
     friend int chunk_complete_cb(http_parser* parser);
     friend int message_complete_cb(http_parser* parser);
 
-private:
+protected:
     /*
      * These are required to run the parser
      */

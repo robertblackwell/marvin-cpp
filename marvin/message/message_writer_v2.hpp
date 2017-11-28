@@ -26,6 +26,8 @@ public:
     /**
     * The message writer has the logic to output MessageBase objects to an allready
     * open connection.
+    * This is a one-shot object - once it has written a single message it should
+    * be discarded and a new one used for the next message on the same connection
     */
     MessageWriterV2(boost::asio::io_service& io, TCPConnection& conn);
     ~MessageWriterV2();
@@ -33,7 +35,14 @@ public:
     void asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb);
     
     void asyncWriteHeaders(MessageBaseSPtr msg, WriteHeadersCallbackType cb);
+    
     void asyncWriteBodyData(void* data, WriteBodyDataCallbackType cb);
+
+    void asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(MBuffer& data, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(FBuffer& data, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb);
+
     void asyncWriteTrailers(MessageBaseSPtr msg, AsyncWriteCallbackType cb);
     
     void end();
@@ -54,10 +63,9 @@ protected:
     /**
     * @todo - raw pointers for MBuffer and FBuffer are a problem
     */
-    MBuffer*                   _m_header_buf;
+    MBuffer                     _m_header_buf;
     boost::asio::streambuf      _bodyBuf;
     std::string                 _bodyContent;
-//    FBuffer*                    _currentBodyFBuffer;
     
 };
 

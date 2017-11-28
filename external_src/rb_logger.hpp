@@ -45,8 +45,8 @@ std::string LogLevelText(LogLevelType level);
 
 class Logger{
     public:
-        Logger(std::ostream& os = std::cerr): __outStream(os){
-        }
+        Logger(std::ostream& os = std::cerr);
+    
         void logWithFormat(
                            LogLevelType level,
                            LogLevelType threshold,
@@ -105,6 +105,8 @@ class Logger{
 
         std::ostream& __outStream;
         std::string className(std::string& func_name);
+    
+        bool enabled();
         bool levelIsActive(LogLevelType lvl, LogLevelType threshold);
         void myprint(std::ostringstream& os);
 
@@ -232,8 +234,16 @@ class Logger{
 #define  LogTorTrace(...)       RBLOGTORTRACE(this)
 #define  LogFDTrace(fd)         RBLOGFDTRACE(fd)
 
-static Logger activeLogger{};
+extern bool logger_enabled;
+    
+void setEnabled(bool on_off);
 
+#undef LOGGER_SINGLE
+#ifdef LOGGER_SINGLE
+extern Logger activeLogger;
+#else
+static Logger activeLogger{};
+#endif
 
 } // namespace RBLogging
 

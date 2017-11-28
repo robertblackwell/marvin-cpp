@@ -22,8 +22,9 @@ typedef std::function<void(Marvin::ErrorType& err, ConnectionInterface* conn)>  
 
 typedef std::function<void(Marvin::ErrorType& err)>                    WriteHeadersCallbackType;
 
-/// Callback when reading body data
-typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>  WriteBodyDataCallbackType;
+/// Callback when writing body data
+//typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>  WriteBodyDataCallbackType;
+typedef std::function<void(Marvin::ErrorType& err)>                     WriteBodyDataCallbackType;
 
 /// Call back when reading full message is complete
 typedef std::function<void(Marvin::ErrorType& err)>                    WriteMessageCallbackType;

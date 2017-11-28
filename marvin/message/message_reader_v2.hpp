@@ -114,13 +114,35 @@ public:
     
     friend std::string traceReader(MessageReaderV2& rdr);
     
-private:
+protected:
     static std::size_t     __headerBufferSize;
     static std::size_t     __bodyBufferSize;
     //----------------------------------------------------------------------------------------------------
     // private methods
     //----------------------------------------------------------------------------------------------------
-
+    void read_headers(std::function<void(Marvin::ErrorType err)> cb);
+    void read_message(std::function<void(Marvin::ErrorType err)> cb);
+    void _read_some_headers();
+    void _handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered);
+    
+    bool _reading_full_message;
+    std::function<void(Marvin::ErrorType err)> _read_message_cb;
+    MBufferSPtr _header_buffer_sptr;
+    
+    void read_body(std::function<void(Marvin::ErrorType err)> cb);
+    void _read_all_body();
+    void _read_some_body();
+    void _handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered);
+    // body buffer management
+    MBufferSPtr                     _body_buffer_sptr;
+    FBufferSharedPtr                _body_fragments_sptr;
+    std::vector<MBufferSPtr>        _body_buffer_chain;
+    std::vector<FBufferSharedPtr>   _body_fragments_chain;
+    
+    void _make_body_buffer_from_header_buffer();
+    void _make_new_body_buffer();
+    
+    
     /// not used as yet
     void readBodyHandler(MBuffer& mb);
     
@@ -130,7 +152,9 @@ private:
     // Called by the parser when a lump of (de-chunked) body data is available. Generally it Splices
     // the lump into a Fragmented buffer
     void OnBodyData(void* buf, int len);
-    
+    void OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
+    void OnMessageComplete(MessageInterface* msg);
+
     // These method starts all reading operations
     void startRead();
     void startReadBody();
@@ -157,7 +181,11 @@ private:
     // read results that have errors
     void handleReadError(Marvin::ErrorType& er);
     void handleParseError();
-    
+
+    void OnChunkBegin(int chunkLength);
+    void OnChunkData(void* buf, int len);
+    void OnChunkEnd();
+
     //----------------------------------------------------------------------------------------------------
     // private properties
     //----------------------------------------------------------------------------------------------------

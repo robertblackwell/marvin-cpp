@@ -1808,7 +1808,8 @@ reexecute:
          * we have to simulate it by handling a change in errno below.
          */
         if (settings->on_headers_complete) {
-          switch (settings->on_headers_complete(parser)) {
+          // modified to signal start of body data and ho much body is left in this call tp parser
+          switch (settings->on_headers_complete(parser, &p[1], len - (&p[1] - data))) {
             case 0:
               break;
 
@@ -1838,7 +1839,7 @@ reexecute:
         STRICT_CHECK(ch != LF);
 
         parser->nread = 0;
-
+        
         hasBody = parser->flags & F_CHUNKED ||
           (parser->content_length > 0 && parser->content_length != ULLONG_MAX);
         if (parser->upgrade && (parser->method == HTTP_CONNECT ||
@@ -1932,6 +1933,9 @@ reexecute:
 
       case s_chunk_size_start:
       {
+        if (settings->on_chunk_size_start) {
+            settings->on_chunk_size_start(parser, p, len - (p - data));
+        }
         assert(parser->nread == 1);
         assert(parser->flags & F_CHUNKED);
 

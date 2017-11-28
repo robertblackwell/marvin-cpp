@@ -35,7 +35,7 @@ namespace Marvin{
         return "error message ";
     }
 
-    static class category cat;
+    static class category cat{};
     
     const boost::system::error_category& category(){
         return cat;
@@ -71,7 +71,9 @@ namespace Marvin{
 namespace Marvin{
     
     ErrorType make_error_ok(){
-        boost::system::error_code r = boost::system::errc::make_error_code(boost::system::errc::success);
+//        boost::system::error_code r = boost::system::errc::make_error_code(boost::system::errc::success);
+        boost::system::error_code r = Marvin::errc::ok;
+
         return r;
     }
     ErrorType make_error_eof(){

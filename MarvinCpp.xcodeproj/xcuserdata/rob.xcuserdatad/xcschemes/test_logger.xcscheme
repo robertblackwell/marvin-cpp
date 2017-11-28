@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-               BuildableName = "test_server_client"
-               BlueprintName = "test_server_client"
+               BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
+               BuildableName = "test_logger"
+               BlueprintName = "test_logger"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,9 +33,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-            BuildableName = "test_server_client"
-            BlueprintName = "test_server_client"
+            BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
+            BuildableName = "test_logger"
+            BlueprintName = "test_logger"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -57,9 +57,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-            BuildableName = "test_server_client"
-            BlueprintName = "test_server_client"
+            BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
+            BuildableName = "test_logger"
+            BlueprintName = "test_logger"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -76,9 +76,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-            BuildableName = "test_server_client"
-            BlueprintName = "test_server_client"
+            BlueprintIdentifier = "D46614271DF86D4D00E3FAB0"
+            BuildableName = "test_logger"
+            BlueprintName = "test_logger"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

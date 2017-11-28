@@ -54,7 +54,9 @@ public:
     bool contains(char* ptr);
     
     friend std::ostream &operator<< (std::ostream &os, MBuffer const &b);
-private:
+    friend boost::asio::const_buffer asio_buffer(MBuffer& bm);
+
+protected:
     void*       memPtr;
     char*       cPtr;
     std::size_t length_;
@@ -81,14 +83,12 @@ public:
     
     void extendBy(std::size_t len);
 
-private:
+protected:
     void*       _ptr;
     // this is just for debugging so that the text in the buffer can be seen in xcode debugger
     char*       _cPtr;
     std::size_t _size;
 };
-
-
 //========================================================================================================
 //
 //  A fragemented buffer - made up of a list of {ptr, len} tuples all pointing into the same MBuffer
@@ -103,11 +103,17 @@ private:
 
 public:
     friend std::ostream &operator<< (std::ostream &os, FBuffer const &b);
+    friend boost::asio::const_buffer asio_buffer(FBuffer& bm);
 
     FBuffer(std::size_t capacity);
     FBuffer(MBuffer* mbuf);
     
     ~FBuffer();
+    
+    /**
+    * Returns the total size of all fragments
+    */
+    std::size_t size();
     
     // copies these bytes into the FBuffer so that they are continguous with
     // (that is added to) the last fragement
@@ -120,8 +126,10 @@ public:
     // if this fragment is contiguous with the "last" fragment consolidate the two
     //
     void addFragment(void* bytes, std::size_t len);
-private:
-    MBuffer*                _container; // where all the fragments reside
+    
+protected:
+    MBuffer*                    _container; // where all the fragments reside
     std::vector<Fragment>   _fragments; // a list of fragments
+    std::size_t                 _size;
 };
 #endif
