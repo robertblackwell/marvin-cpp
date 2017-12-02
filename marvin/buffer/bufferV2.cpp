@@ -56,7 +56,7 @@ MBuffer& MBuffer::empty()
 
 MBuffer& MBuffer::append(void* data, std::size_t len)
 {
-    assert( ( (length_ + len)< capacity_ )  );
+    assert( ( (length_ + len) <= capacity_ )  );
     void* na = nextAvailable();
     
     memcpy(na, data, len);
@@ -94,12 +94,13 @@ bool MBuffer::contains(char* ptr)
     return r;
 }
 #pragma mark - friend functions
-std::ostream &operator<< (std::ostream &os, MBuffer const &b)
+std::ostream &operator<< (std::ostream &os, MBuffer &b)
 {
     if(b.length_ == 0){
         os << "Empty ";
     }else{
-        std::string s((char*)b.memPtr);
+        const std::size_t sz = b.size();
+        std::string s((char*)b.memPtr, sz);
         os << "\r\nMBuffer{ length: " << b.length_ << "content: [" << s << "]}";
     }
     return os;
@@ -112,7 +113,46 @@ boost::asio::mutable_buffer mb_as_mutable_buffer(MBuffer& mb)
 {
     return boost::asio::mutable_buffer(mb.data(), mb.size());
 }
-
+#pragma mark - BufferChain
+BufferChain::BufferChain()
+{
+    _chain = std::vector<MBufferSPtr>();
+    _size = 0;
+}
+void BufferChain::push_back(MBufferSPtr mb)
+{
+    _size += mb->size();
+    _chain.push_back(mb);
+    _asio_chain.push_back(boost::asio::mutable_buffer(mb->data(), mb->size()));
+}
+void BufferChain::clear()
+{
+    _chain.clear();
+    _asio_chain.clear();
+    _size = 0;
+}
+std::size_t BufferChain::size()
+{
+    return _size;
+}
+std::string BufferChain::to_string()
+{
+    std::string s = "";
+    for(MBufferSPtr& mb : _chain) {
+        s += mb->toString();
+    }
+    return s;
+}
+std::ostream &operator<< (std::ostream &os, BufferChain &b)
+{
+    if(b.size() == 0){
+        os << "Empty ";
+    }else{
+        std::string s = b.to_string();
+        os << std::endl << "BufferChain{ length: " << b.size() << "content: [" << s << "]}";
+    }
+    return os;
+}
 
 #pragma mark - Fragment class
 Fragment::Fragment(void* ptr, std::size_t size){

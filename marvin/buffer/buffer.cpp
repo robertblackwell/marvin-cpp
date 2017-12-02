@@ -65,7 +65,7 @@ MBuffer& MBuffer::empty()
 // adds (by copying) data to the end of the buffer
 MBuffer& MBuffer::append(void* data, std::size_t len)
 {
-    assert( ( (length_ + len)< capacity_ )  );
+    assert( ( (length_ + len) <= capacity_ )  );
     void* na = nextAvailable();
     
     memcpy(na, data, len);

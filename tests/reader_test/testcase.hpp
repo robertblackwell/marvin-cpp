@@ -28,7 +28,7 @@ public:
 );
     std::string getDescription();
     std::string lineAt(std::size_t ix);
-    
+    std::vector<std::string> buffers();
     bool verify_first_line(std::string fl);
     
     bool verify_headers(std::map<std::string, std::string> h);
@@ -63,23 +63,5 @@ public:
     std::map<std::string, std::string>      _result_headers;
     std::string                             _result_body;
 };
-
-//-----------------------------------------------------------------------------------------------------
-class Testcases
-{
-public:
-    Testcases();
-    ~Testcases();
-    Testcase            get_case(int index);
-    TestcaseResultType  get_result(int index);
-    int                 number_of_testcases();
-private:
-    std::vector<Testcase> cases;
-    void add_case(TestcaseType aCase);
-    void add_case(Testcase aCase);
-};
-
-std::vector<std::string> make_header(std::string key, std::string value);
-
 
 #endif

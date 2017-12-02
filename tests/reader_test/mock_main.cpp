@@ -14,26 +14,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 
 #include "repeating_timer.hpp"
 #include "marvin_error.hpp"
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "mock_read_socket.hpp"
 
-#define MESSAGE_READER_V2
-#ifndef MESSAGE_READER_V2
-#include "message_reader.hpp"
-class MyMessageReader : public MessageReader
-{
-public:
-    MyMessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io)
-    : MessageReader(readSock, io)
-    {
-    
-    }
-    ~MyMessageReader()
-    {
-    
-    }
-};
-#else
 #include "message_reader_v2.hpp"
 class MyMessageReader : public MessageReaderV2
 {
@@ -49,8 +32,8 @@ public:
     }
 
 };
-#endif
-
+#include "testcase.hpp"
+#include "testcase_defs.hpp"
 #include "test_runner.cpp"
 
 void testRepeatTimer(){
@@ -78,44 +61,46 @@ void stringDiff(std::string s1, std::string s2){
 }
 
 
-void testFullMessageReader(int testcase)
+void testFullMessageReader(Testcase testcase)
 {
     boost::asio::io_service io_service;
-    auto tr = new TestRunner(io_service, testcase);
+    MockReadSocket* msock_ptr = new MockReadSocket(io_service, testcase);
+    auto tr = new Testrunner(io_service, msock_ptr, testcase);
     tr->run_FullMessageRead();
     io_service.run();
     delete tr;
-    std::cout << "testMessageReader" << std::endl;
 }
 
-void testStreamingReader(int testcase)
+void testStreamingReader(Testcase testcase)
 {
     boost::asio::io_service io_service;
-    auto tr = new TestRunner(io_service, testcase);
+    MockReadSocket* msock_ptr = new MockReadSocket(io_service, testcase);
+    auto tr = new Testrunner(io_service, msock_ptr, testcase);
     tr->run_StreamingBodyRead();
     io_service.run();
     delete tr;
-    std::cout << "testMessageReader" << std::endl;
 }
 
 int main(){
 //    TestBuffer();
     RBLogging::setEnabled(false);
+    TestcaseDefinitions tcs = makeTestcaseDefinitions_01();
+    
 #if 0
-    testFullMessageReader(1);
-    testFullMessageReader(2);
-    testFullMessageReader(3);
-    testFullMessageReader(4);
-    testFullMessageReader(5);
-    testFullMessageReader(6);
+    testFullMessageReader( tcs.get 1);
+    testFullMessageReader(tcs.get_case(2);
+    testFullMessageReader(tcs.get_case(3);
+    testFullMessageReader(tcs.get_case(4);
+    testFullMessageReader(tcs.get_case(5);
+    testFullMessageReader(tcs.get_case(6);
 #else
-    testStreamingReader(1);
-    testStreamingReader(2);
-    testStreamingReader(3);
-    testStreamingReader(4);
-    testStreamingReader(5);
-    testStreamingReader(6);
-    testStreamingReader(7);
+    testStreamingReader(tcs.get_case(1));
+    testStreamingReader(tcs.get_case(2));
+    testStreamingReader(tcs.get_case(3));
+    testStreamingReader(tcs.get_case(4));
+    testStreamingReader(tcs.get_case(5));
+    testStreamingReader(tcs.get_case(6));
+    testStreamingReader(tcs.get_case(7));
 #endif
 
 }

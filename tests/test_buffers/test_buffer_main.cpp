@@ -172,6 +172,7 @@ TEST( Buffer, FBuffer_02)
 #pragma mark - main
 int main(int argc, char * argv[]) {
     RBLogging::setEnabled(false);
+    BufferChain chain;
 //    void* p1 = malloc(100);
 //    void* p2 = malloc(200);
 //    boost::asio::mutable_buffer b1(p1, 100);

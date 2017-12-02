@@ -1,5 +1,5 @@
-#ifndef mock_buffer_hpp
-#define mock_buffer_hpp
+#ifndef mock_buffer_v2_hpp
+#define mock_buffer_v2_hpp
 
 
 #include <iostream>
@@ -92,9 +92,9 @@ public:
     friend boost::asio::mutable_buffer mb_as_mutable_buffer(MBuffer& bm);
 
     /**
-     * utputs the content to a stream
+     * outputs the content to a stream
      */
-    friend std::ostream &operator<< (std::ostream &os, MBuffer const &b);
+    friend std::ostream &operator<< (std::ostream &os, MBuffer &b);
 
 protected:
     
@@ -103,6 +103,27 @@ protected:
     std::size_t length_;    ///
     std::size_t capacity_;  /// the capacity of the buffer, the value used for the malloc call
     std::size_t size_;      /// size of the currently filled portion of the memory slab
+};
+
+class BufferChain;
+typedef std::shared_ptr<BufferChain> BufferChainSPtr;
+class BufferChain
+{
+    public:
+        BufferChain();
+        void            push_back(MBufferSPtr mb);
+        void            clear();
+        std::vector<boost::asio::mutable_buffer> asio_buffer_sequence();
+        std::size_t     size();
+        std::string     to_string();
+        /**
+         * outputs the content to a stream
+         */
+        friend std::ostream &operator<< (std::ostream &os, BufferChain const &b);
+    private:
+        std::vector<MBufferSPtr>                    _chain;
+        std::vector<boost::asio::mutable_buffer>    _asio_chain;
+        std::size_t                                 _size;
 };
 
 #pragma mark - Fragment class

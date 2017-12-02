@@ -19,6 +19,12 @@
 #define kHEADER_STATE_FIELD   11
 #define kHEADER_STATE_VALUE   12
 
+struct ParserError {
+    std::string         name;
+    std::string         description;
+    enum http_errno     err_number;
+};
+
 /*
  *  This ABSTRACT class parses streams of data into http Message objects 
  *  (or at least the first line + headers - message body is a little more complicated).
@@ -33,14 +39,14 @@
  *  buffers.
  *
  *  setStreamingOption - configures the parser to parse either a single message or a (continuous) stream
- *  of messages. The default is a single message.
+ *  of messages. The default is a single message. STREAMING has not been tested
  *
  *  Generally the parser can detect the end of a http messages as most messages formats have
  *  message length information in the message itself, or each "chunk" has a chunk length. 
  *
  *  However it is possible for a "server"
  *  to signal the end of a message by simple closing the connection. Hence in some cases the parser
- *  will only know that end-of-message has arrived unless it is told.  The way to tell the parse that
+ *  will only know that end-of-message has arrived when it is is told.  The way to tell the parse that
  *  the end of data has been hit is to call the method appendEOF.
  *
  *  It is therefore good practice to call appendEOF whenever the code using HTTPParser is able to detect
@@ -55,13 +61,13 @@
  *  -   it encountered a parse error
  *
  *  - IT DOES NOT RETURN ON COMPLETION OF PARSING A FULL MESSAGE
+ *  BUT WE HAVE FORCE THIS BY HAVING OUR MESSAGE COMPLETE CALLBACK
+ *  EXPLICITLY PAUSE THE PARSER.
  *
- *  In order to get a full parsed message the onMessagecB  .. see below ..must be provided.
+ *  The parser as we use it will not support reading multiple messages from the
+ *  the same buffer. Each message on a connection requires an new Parser.
  *
- *  This is important in a situation where multiple messages may be available at the input socket.
- *  Since the parser would move on to the next message without returning.
- *
- *  The following "callbacks" are provided in the form of virtual methods - NO PURE
+ *  The following "callbacks" are provided in the form of virtual methods - NOT PURE
  *  and they MAY be overridden by a derived class to capture the corresponding event
  *
  *          virtual void OnParseBegin()
@@ -127,9 +133,10 @@ public:
 	 */
 	bool isFinishedMessage();
     
-    bool isError();
+    bool            isError();
     enum http_errno getErrno();
-
+    ParserError     getError();
+    
 	/** 
 	 * Returns the the Message currently being parsed. When operating in non streaming mode
 	 * this also returns the most recently parsed message.

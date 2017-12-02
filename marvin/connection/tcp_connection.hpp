@@ -16,7 +16,7 @@
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "read_socket_interface.hpp"
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "connection_interface.hpp"
 
 using namespace boost;
@@ -66,6 +66,7 @@ class TCPConnection : public ConnectionInterface //public ReadSocketInterface, p
     
     void asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb);
     void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb);
+    void asyncWrite(std::string& str, AsyncWriteCallbackType cb);
     void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb);
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 

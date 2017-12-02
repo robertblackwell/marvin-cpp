@@ -20,7 +20,7 @@
 #include "callback_typedefs.hpp"
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "connection_interface.hpp"
 #include "tcp_connection.hpp"
@@ -110,6 +110,7 @@ void TCPConnection::asyncAccept(
     std::function<void(const boost::system::error_code& err)> cb
 )
 {
+//    _boost_socket.non_blocking(true);
     acceptor.async_accept(_boost_socket, cb);
 }
 
@@ -269,7 +270,48 @@ void TCPConnection::asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCa
         }
     });
 }
+void TCPConnection::asyncWrite(std::string& str, AsyncWriteCallback cb)
+{
+    LogDebug("");
+    boost::asio::async_write(
+        (this->_boost_socket),
+        boost::asio::buffer(str.c_str(), str.size()),
+        [this, cb](
+            const Marvin::ErrorType& err,
+            std::size_t bytes_transfered
+            )
+        {
+        LogDebug("");
+        if( !err ){
+            Marvin::ErrorType m_err = Marvin::make_error_ok();
+            cb(m_err, bytes_transfered);
+        }else{
+            Marvin::ErrorType m_err = err;
+            cb(m_err, bytes_transfered);
+        }
+    });
+
+}
 void TCPConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback cb)
 {
-
+#if 0
+    LogDebug("");
+    boost::asio::async_write(
+        (this->_boost_socket),
+        abuf,
+        [this, cb](
+            const Marvin::ErrorType& err,
+            std::size_t bytes_transfered
+            )
+        {
+        LogDebug("");
+        if( !err ){
+            Marvin::ErrorType m_err = Marvin::make_error_ok();
+            cb(m_err, bytes_transfered);
+        }else{
+            Marvin::ErrorType m_err = err;
+            cb(m_err, bytes_transfered);
+        }
+    });
+#endif
 }

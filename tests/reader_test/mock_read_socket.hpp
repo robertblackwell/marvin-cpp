@@ -6,10 +6,10 @@
 #include <algorithm>
 #include "catch.hpp"
 #include "boost_stuff.hpp"
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "repeating_timer.hpp"
 #include "error.hpp"
-#include "tcase.hpp"
+#include "testcase.hpp"
 #include "read_socket_interface.hpp"
 
 typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallback;
@@ -21,7 +21,8 @@ typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>
 class MockReadSocket : public ReadSocketInterface
 {
 public:
-    MockReadSocket(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
+//    MockReadSocket(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
+    MockReadSocket(boost::asio::io_service& io, Testcase tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
     ~MockReadSocket();
     void startRead();
     void asyncRead(MBuffer& mb, AsyncReadCallback cb);
@@ -32,7 +33,7 @@ private:
     RepeatingTimer*             rt;
     boost::asio::io_service&    io_;
     
-    Testcases                   _tcObjs;
+//    Testcases                   _tcObjs;
     Testcase                    _tcObj;
     int                         _tcLineIndex;
     // the test case - vector of strings

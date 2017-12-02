@@ -7,13 +7,13 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
-#include "tcase.hpp"
+#include "testcase.hpp"
 #include "mock_read_socket.hpp"
 
-MockReadSocket::MockReadSocket(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.get_case(tc))
+//MockReadSocket::MockReadSocket(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.get_case(tc))
+MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): io_(io), _tcObj(tcObj)
 {
     index = 0;
-    _tc = tc;
     _rdBuf = (char*)malloc(100000);
     st = new SingleTimer(io_, 100);
 }

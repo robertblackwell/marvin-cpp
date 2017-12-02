@@ -9,7 +9,7 @@
 #ifndef callback_typedefs_h
 #define callback_typedefs_h
 #include "marvin_error.hpp"
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 
 
 class ConnectionInterface;

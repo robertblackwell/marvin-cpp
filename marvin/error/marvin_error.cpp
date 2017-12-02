@@ -88,6 +88,10 @@ namespace Marvin{
         boost::system::error_code r = Marvin::errc::end_of_body;
         return r;
     };
+    ErrorType make_error_parse(){
+        boost::system::error_code r = Marvin::errc::parser_error;
+        return r;
+    };
 } // namespace Marvin
 
 namespace Marvin{
@@ -96,4 +100,5 @@ namespace Error{
         ErrorType  make_eof(){ return Marvin::make_error_eof();};
         ErrorType  make_eom(){ return Marvin::make_error_eom();};
         ErrorType  make_eob(){ return Marvin::make_error_eob();};
+        ErrorType  make_eparse(){ return Marvin::make_error_parse();};
 }} // namespace Marvin::Error

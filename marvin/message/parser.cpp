@@ -106,7 +106,22 @@ enum http_errno Parser::getErrno()
 {
     return (enum http_errno) this->parser->http_errno;
 }
+ParserError Parser::getError()
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wall"
+    enum http_errno x = (enum http_errno)this->parser->http_errno;
+    char* n = (char*)http_errno_name(x);
+    char* d = (char*)http_errno_description(x);
+    ParserError erst;
+    erst.err_number = x;
+    erst.name = std::string(n);
+    erst.description = std::string(d);
+#pragma clang diagnostic pops
+    FLogDebug(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
+    return erst;
 
+}
 bool Parser::isError(){
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wall"
@@ -124,8 +139,6 @@ void Parser::OnParseBegin()
 };
 void Parser::OnHeadersComplete(MessageInterface* msg, void* body_start, std::size_t remainder)
 {
-    // This is the virtual method in parser.hpp
-    headersCompleteFlag = true;
     LogVerbose("");
 };
 void Parser::OnMessageComplete(MessageInterface* msg)
@@ -407,6 +420,15 @@ message_complete_cb(http_parser* parser)
     
     MessageInterface* message = p->currentMessage();
     p->OnMessageComplete(message);
+    // force the parser to exit after this call
+    // so that we dont process any data in the read
+    // buffer beyond the end of the current message
+    // in our application that is not possible but lets be careful
+    // why not possible - only support one request on a connection
+    // at a time - but multiple consecutive requests on the
+    // same connection are possible. But a second request
+    // wont be accepted until the first one is complete
+    http_parser_pause(parser, 1);
     /*
      * Now get ready for the next message
      */

@@ -8,7 +8,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "message.hpp"
 #include "parser.hpp"
 #include "rb_logger.hpp"

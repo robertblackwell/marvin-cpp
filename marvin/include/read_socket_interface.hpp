@@ -8,7 +8,7 @@
 
 #ifndef read_socket_interface_h
 #define read_socket_interface_h
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 

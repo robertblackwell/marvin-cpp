@@ -34,7 +34,8 @@ namespace Marvin{
     enum class errc {
         ok = 0,
         end_of_message = 21,
-        end_of_body = 22
+        end_of_body = 22,
+        parser_error = 23
     };
 
     class category : public boost::system::error_category
@@ -66,6 +67,7 @@ namespace Marvin{
     ErrorType make_error_eof();
     ErrorType make_error_eom();
     ErrorType make_error_eob();
+    ErrorType make_error_parse();
     std::string make_error_description(Marvin::ErrorType& err);
 } // namespace Marvin
 
@@ -75,6 +77,7 @@ namespace Error{
         ErrorType  make_eof();
         ErrorType  make_eom();
         ErrorType  make_eob();
+        ErrorType  make_eparse();
 }} // namespace Marvin::Error
 
 
