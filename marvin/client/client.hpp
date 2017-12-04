@@ -16,7 +16,7 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "http_header.hpp"
 #include "message_writer_v2.hpp"
 #include "message_reader_v2.hpp"
@@ -36,7 +36,7 @@ typedef std::function<void(Marvin::ErrorType& err, MessageReaderV2SPtr msg)> Res
 /**
 * This is the type signature of callbacks that receive chunks of body data
 */
-typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>  DataHandlerCallbackType;
+typedef std::function<void(Marvin::ErrorType& err, BufferChain buf_chain)>  ClientDataHandlerCallbackType;
 
 /**
 * determines whether a new MessageReaderV2 and MessageWriterV2
@@ -129,7 +129,7 @@ public:
     *
     * optional
     */
-    void setOnData(DataHandlerCallbackType cb);
+    void setOnData(ClientDataHandlerCallbackType cb);
 
 #if 0 // these are not yet implemented
     /**
@@ -164,8 +164,9 @@ public:
     * a shared pointer to an MBuffer - these are contiguous buffers and can be sent with a single
     * asyncWrite
     */
-    void asyncWrite(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb);
-    void asyncWrite(MessageBaseSPtr requestMessage,  MBufferSPtr body, ResponseHandlerCallbackType cb);
+    void asyncWrite(MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandlerCallbackType cb);
+    void asyncWrite(MessageBaseSPtr requestMessage,  MBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
+    void asyncWrite(MessageBaseSPtr requestMessage,  BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb);
     /**
     * The FBuffer is fragmented and requires multiple asyncWrite operations to send it
     */
@@ -228,6 +229,7 @@ protected:
     void internalConnect();
     void internalWrite();
 
+    void _async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     void putHeadersStuffInBuffer();
     void setupUrl(std::string url);
     void defaultHeaders();
@@ -251,15 +253,14 @@ protected:
     std::shared_ptr<MessageWriterV2>                  _wrtr;
     std::shared_ptr<MessageReaderV2>                  _rdr;
     
-    TCPConnection*                                  _conn_ptr;
-    std::unique_ptr<TCPConnection>                  _conn_uniq_ptr;
+//    TCPConnection*                                  _conn_ptr;
+    std::shared_ptr<TCPConnection>                  _conn_shared_ptr;
     ReadSocketInterface*                            _readSock;
     
-    std::function<void(Marvin::ErrorType& err)>      _goCb;
-//    std::function<void(Marvin::ErrorType& err)>     _responseHandler;
-    ResponseHandlerCallbackType                         _response_handler;
-    ResponseHandlerCallbackType                    _on_headers_handler;
-    DataHandlerCallbackType                     _on_data_handler;
+    std::function<void(Marvin::ErrorType& err)>     _goCb;
+    ResponseHandlerCallbackType                     _response_handler;
+    ResponseHandlerCallbackType                     _on_headers_handler;
+    ClientDataHandlerCallbackType                   _on_data_handler;
 //    bool        _oneTripOnly;
 //    
 //    std::string _service;   //used by boost for resolve and connnect http/https or a port number

@@ -13,7 +13,7 @@
 #include "UriParser.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "message_reader.hpp"
+#include "message_reader_v2.hpp"
 
 #include "request.hpp"
 #include "tcp_connection.hpp"
@@ -42,7 +42,7 @@ Request::~Request()
     LogInfo("");
 }
 
-Request::Request(boost::asio::io_service& io): _io(io), MessageWriter(io, true)
+Request::Request(boost::asio::io_service& io): _io(io), MessageWriterV2(io, true)
 {
     LogInfo("");
     _writeSock = nullptr;
@@ -237,7 +237,7 @@ void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
         LogInfo("", (long)this, " connection: ", (long)_connection, " FD:",_connection->nativeSocketFD());
 
         // create a MessageReader with a read socket
-        this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(conn, _io));
+        this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, conn));
         // set up read also
         LogInfo("", traceRequest(*this), traceWriter(*this));
         auto cf = std::bind(&Request::fullWriteHandler, this, std::placeholders::_1);

@@ -20,7 +20,8 @@ class MessageWriterV2;
 typedef std::shared_ptr<MessageWriterV2> MessageWriterV2SPtr;
 typedef std::unique_ptr<MessageWriterV2> MessageWriterV2UPtr;
 
-class MessageWriterV2{
+class MessageWriterV2
+{
 public:
 
     /**
@@ -29,18 +30,20 @@ public:
     * This is a one-shot object - once it has written a single message it should
     * be discarded and a new one used for the next message on the same connection
     */
-    MessageWriterV2(boost::asio::io_service& io, TCPConnection& conn);
+//    MessageWriterV2(boost::asio::io_service& io, TCPConnection& conn);
+    MessageWriterV2(boost::asio::io_service& io, ConnectionInterfaceSPtr conn);
     ~MessageWriterV2();
     
     void asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb);
-    
+    void asyncWrite(MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb);
+    void asyncWrite(MessageBaseSPtr msg, MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb);
+    void asyncWrite(MessageBaseSPtr msg, BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb);
+
     void asyncWriteHeaders(MessageBaseSPtr msg, WriteHeadersCallbackType cb);
-    
-    void asyncWriteBodyData(void* data, WriteBodyDataCallbackType cb);
 
     void asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(MBuffer& data, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(FBuffer& data, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(BufferChainSPtr chain_ptr, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb);
 
     void asyncWriteTrailers(MessageBaseSPtr msg, AsyncWriteCallbackType cb);
@@ -56,16 +59,20 @@ protected:
     void putHeadersStuffInBuffer();
 
     boost::asio::io_service&    _io;
-    TCPConnection&              _conn;
-    
+    ConnectionInterfaceSPtr     _conn;
     MessageBaseSPtr             _currentMessage;
-    bool                        _haveContent;
     /**
     * @todo - raw pointers for MBuffer and FBuffer are a problem
     */
     MBuffer                     _m_header_buf;
+    
+    bool                        _haveContent;
     boost::asio::streambuf      _bodyBuf;
-    std::string                 _bodyContent;
+    
+    MBufferSPtr                 _body_mbuffer_sptr;
+    std::string                 _body_buffer_string;
+//    BufferChain                 _body_buffer_chain;
+    BufferChainSPtr             _body_buffer_chain_sptr;
     
 };
 

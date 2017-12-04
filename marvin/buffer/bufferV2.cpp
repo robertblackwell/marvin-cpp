@@ -93,6 +93,32 @@ bool MBuffer::contains(char* ptr)
     bool r = ( ptr <= endPtr && ptr >= sPtr);
     return r;
 }
+MBufferSPtr m_buffer(std::size_t capacity)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(capacity));
+    return mbp;
+}
+MBufferSPtr m_buffer(std::string s)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(s.size()));
+    mbp->append((void*) s.c_str(), s.size());
+    return mbp;
+}
+MBufferSPtr m_buffer(void* mem, std::size_t size)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(size));
+    mbp->append(mem, size);
+    return mbp;
+
+}
+MBufferSPtr m_buffer(MBuffer& mb)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(mb.capacity()));
+    mbp->append(mb.data(), mb.size());
+    return mbp;
+
+}
+
 #pragma mark - friend functions
 std::ostream &operator<< (std::ostream &os, MBuffer &b)
 {
@@ -123,7 +149,7 @@ void BufferChain::push_back(MBufferSPtr mb)
 {
     _size += mb->size();
     _chain.push_back(mb);
-    _asio_chain.push_back(boost::asio::mutable_buffer(mb->data(), mb->size()));
+    _asio_chain.push_back(boost::asio::buffer(mb->data(), mb->size()));
 }
 void BufferChain::clear()
 {
@@ -143,6 +169,50 @@ std::string BufferChain::to_string()
     }
     return s;
 }
+MBufferSPtr BufferChain::amalgamate()
+{
+    MBufferSPtr mb_final = std::shared_ptr<MBuffer>(new MBuffer(this->size()));
+    for(MBufferSPtr& mb : _chain) {
+        mb_final->append(mb->data(), mb->size());
+    }
+    return mb_final;
+}
+
+BufferChainSPtr buffer_chain(std::string& s)
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    sp->push_back(m_buffer(s));
+    return sp;
+}
+BufferChainSPtr buffer_chain(MBuffer& mb)
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    sp->push_back(m_buffer(mb));
+    return sp;
+}
+BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr)
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    sp->push_back(mb_sptr);
+    return sp;
+}
+
+std::vector<boost::asio::mutable_buffer> BufferChain::asio_buffer_sequence()
+{
+    return this->_asio_chain;
+}
+
+std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(BufferChain& bchain)
+{
+    assert(false);
+//    return bchain._asio_chain;
+}
+std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain)
+{
+    return bchain._asio_chain;
+}
+
+
 std::ostream &operator<< (std::ostream &os, BufferChain &b)
 {
     if(b.size() == 0){

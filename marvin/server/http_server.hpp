@@ -13,8 +13,8 @@
 #include "connection_interface.hpp"
 #include "tcp_connection.hpp"
 #include "tls_connection.hpp"
-#include "message_reader.hpp"
-#include "message_writer.hpp"
+#include "message_reader_v2.hpp"
+#include "message_writer_v2.hpp"
 #include "rb_logger.hpp"
 #include "connection_handler.hpp"
 

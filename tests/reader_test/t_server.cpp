@@ -66,8 +66,8 @@ void TServer::startAccept()
 {
     LogInfo("");
     _conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(_io));
-    ReadSocketInterface* rd_sock_ifce = _conn_sptr.get();
-    _rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(rd_sock_ifce, _io));
+//    ReadSocketInterface* rd_sock_ifce = _conn_sptr.get();
+    _rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _conn_sptr));
     auto hf = std::bind(&TServer::handleAccept, this, std::placeholders::_1);
     _conn_sptr->asyncAccept(_acceptor, hf);
 }
@@ -84,8 +84,7 @@ void TServer::handleAccept(const boost::system::error_code& err)
     }
     if (!err){
         LogInfo("got a client - start reading");
-        ReadSocketInterface* rd_sock_ifce = _conn_sptr.get();
-        _runner_sptr = std::shared_ptr<Testrunner>(new Testrunner(_io, rd_sock_ifce, _tc));
+        _runner_sptr = std::shared_ptr<Testrunner>(new Testrunner(_io, _conn_sptr, _tc));
         if( true )
             _runner_sptr->run_FullMessageRead();
         else

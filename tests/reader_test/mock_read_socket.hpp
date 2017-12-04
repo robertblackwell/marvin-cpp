@@ -17,7 +17,9 @@ typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>
 /**
  * This class simulates an async/non-blocking sockt connection
  */
- 
+class MockReadSocket;
+typedef std::shared_ptr<MockReadSocket> MockReadSocketSPtr;
+
 class MockReadSocket : public ReadSocketInterface
 {
 public:

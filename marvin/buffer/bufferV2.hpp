@@ -90,6 +90,7 @@ public:
      * converts an MBuffer to a boost::asio::mutable_buffer
      */
     friend boost::asio::mutable_buffer mb_as_mutable_buffer(MBuffer& bm);
+//    friend boost::asio::const_buffer_1 mb_as_asio_const_buffer(MBuffer& mb);
 
     /**
      * outputs the content to a stream
@@ -104,6 +105,10 @@ protected:
     std::size_t capacity_;  /// the capacity of the buffer, the value used for the malloc call
     std::size_t size_;      /// size of the currently filled portion of the memory slab
 };
+MBufferSPtr m_buffer(std::size_t capacity);
+MBufferSPtr m_buffer(std::string s);
+MBufferSPtr m_buffer(void* mem, std::size_t size);
+MBufferSPtr m_buffer(MBuffer& mb);
 
 class BufferChain;
 typedef std::shared_ptr<BufferChain> BufferChainSPtr;
@@ -116,15 +121,24 @@ class BufferChain
         std::vector<boost::asio::mutable_buffer> asio_buffer_sequence();
         std::size_t     size();
         std::string     to_string();
+        MBufferSPtr     amalgamate();
         /**
          * outputs the content to a stream
          */
         friend std::ostream &operator<< (std::ostream &os, BufferChain const &b);
+    
+        friend std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(BufferChain& bchain);
+        friend std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
+
     private:
         std::vector<MBufferSPtr>                    _chain;
         std::vector<boost::asio::mutable_buffer>    _asio_chain;
         std::size_t                                 _size;
 };
+BufferChainSPtr buffer_chain(std::string& s);
+BufferChainSPtr buffer_chain(MBuffer& mb);
+BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr);
+
 
 #pragma mark - Fragment class
 /**
@@ -243,5 +257,4 @@ protected:
     std::vector<Fragment>       _fragments; /// a list of fragments
     std::size_t                 _size;      /// cumulative size of all fragments
 };
-
 #endif

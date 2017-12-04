@@ -21,8 +21,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 class MyMessageReader : public MessageReaderV2
 {
 public:
-    MyMessageReader(ReadSocketInterface* readSock, boost::asio::io_service& io)
-    : MessageReaderV2(readSock, io)
+    MyMessageReader(ReadSocketInterfaceSPtr readSock, boost::asio::io_service& io)
+    : MessageReaderV2(io, readSock)
     {
     
     }
@@ -64,7 +64,7 @@ void stringDiff(std::string s1, std::string s2){
 void testFullMessageReader(Testcase testcase)
 {
     boost::asio::io_service io_service;
-    MockReadSocket* msock_ptr = new MockReadSocket(io_service, testcase);
+    MockReadSocketSPtr msock_ptr = std::shared_ptr<MockReadSocket>(new MockReadSocket(io_service, testcase));
     auto tr = new Testrunner(io_service, msock_ptr, testcase);
     tr->run_FullMessageRead();
     io_service.run();
@@ -74,7 +74,7 @@ void testFullMessageReader(Testcase testcase)
 void testStreamingReader(Testcase testcase)
 {
     boost::asio::io_service io_service;
-    MockReadSocket* msock_ptr = new MockReadSocket(io_service, testcase);
+    MockReadSocketSPtr msock_ptr = std::shared_ptr<MockReadSocket>(new MockReadSocket(io_service, testcase));
     auto tr = new Testrunner(io_service, msock_ptr, testcase);
     tr->run_StreamingBodyRead();
     io_service.run();

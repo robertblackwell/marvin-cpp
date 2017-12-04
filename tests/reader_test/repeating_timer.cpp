@@ -26,7 +26,6 @@ SingleTimer::start(std::function<void(const boost::system::error_code& ec)> cb){
     auto ds = boost::bind(&SingleTimer::doSomething, this, boost::asio::placeholders::error);
     t_->async_wait(ds);
 }
-
 void
 SingleTimer::doSomething(const boost::system::error_code& ec){
     callBack(ec);

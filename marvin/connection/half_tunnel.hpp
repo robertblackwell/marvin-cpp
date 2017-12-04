@@ -10,7 +10,7 @@
 #define half_tunnel_hpp
 
 #include <stdio.h>
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "connection_interface.hpp"
 
 class HalfTunnel;

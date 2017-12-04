@@ -76,7 +76,6 @@ void runTestcase(Testcase tcase)
     LogDebug("");
 }
 
-
 int main(int argc, char* argv[])
 {
 //    twoProcesses();
@@ -88,6 +87,5 @@ int main(int argc, char* argv[])
         runTestcase(tcs.get_case(i));
     }
     printf("Progrm exit");
-    return 0;
-    
 }
+

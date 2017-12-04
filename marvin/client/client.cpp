@@ -6,8 +6,6 @@
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
 
-#include "client.hpp"
-
 
 #include <iostream>
 #include <istream>
@@ -62,19 +60,19 @@ Client::~Client()
 void Client::asyncConnect(ErrorOnlyCallbackType cb)
 {
     LogInfo("", (long)this);
-    if (_conn_uniq_ptr != nullptr ) {
+    if (_conn_shared_ptr != nullptr ) {
         throw "should not have a connection at this point";
     }
     
     TCPConnection* ptr = new TCPConnection(_io, _scheme, _server, _port);
-    _conn_ptr = ptr;
-    _conn_uniq_ptr = std::unique_ptr<TCPConnection>(ptr);
+    
+    _conn_shared_ptr = std::shared_ptr<TCPConnection>(ptr);
     auto f = [this, cb](Marvin::ErrorType& ec, ConnectionInterface* c) {
         std::string er_s = Marvin::make_error_description(ec);
-        LogInfo(" conn", (long)_conn_ptr, " er: ", er_s);
+        LogInfo(" conn", (long)_conn_shared_ptr.get(), " er: ", er_s);
         cb(ec);
     };
-    _conn_uniq_ptr->asyncConnect(f);
+    _conn_shared_ptr->asyncConnect(f);
 }
 
 
@@ -85,29 +83,32 @@ void Client::asyncConnect(ErrorOnlyCallbackType cb)
 //--------------------------------------------------------------------------------
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb)
 {
-    std::size_t sz = body.size();
-    _body_mbuffer_sptr = std::make_shared<MBuffer>(sz);
-    _body_mbuffer_sptr->append((void*) body.c_str(), body.size());
-    asyncWrite(requestMessage, cb);
+    _body_mbuffer_sptr = m_buffer(body);
+    _async_write(requestMessage, cb);
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  MBufferSPtr body, ResponseHandlerCallbackType cb)
 {
     _body_mbuffer_sptr = body;
-    asyncWrite(requestMessage, cb);
+    _async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  FBufferSharedPtr body, ResponseHandlerCallbackType cb)
+void Client::asyncWrite(MessageBaseSPtr requestMessage,  BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb)
 {
-    _body_fbuffer_sptr = body;
+    _body_mbuffer_sptr = chain_sptr->amalgamate();
+    _async_write(requestMessage, cb);
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
-    // check we are connected
+    _body_mbuffer_sptr  = m_buffer(""); // no body
+    _async_write(requestMessage, cb);
+}
+void Client::_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
+{
     LogInfo("", (long)this);
     _response_handler = cb;
     _current_request = requestMessage;
     defaultHeaders();
     
-    bool already_connected = (_conn_uniq_ptr != nullptr);
+    bool already_connected = (_conn_shared_ptr != nullptr);
     
     if ( ! already_connected ) {
         internalConnect();
@@ -145,19 +146,18 @@ void Client::internalWrite()
 #ifdef RDR_WRTR_ONESHOT
     // set up the read of the response
     // create a MessageReader with a read socket
-    this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_conn_ptr, _io));
+    this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _conn_shared_ptr));
     // get a writer
-    TCPConnection& conRef = *_conn_uniq_ptr;
-    this->_wrtr = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, conRef));
+    this->_wrtr = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _conn_shared_ptr));
 #endif
 
     if( _on_headers_handler != nullptr ) {
-        this->_rdr->readHeaders([this](Marvin::ErrorType& ec){
+        this->_rdr->readHeaders([this](Marvin::ErrorType ec){
             if (!ec) {
                 this->_on_headers_handler(ec, _rdr);
                 if( _on_data_handler != nullptr ) {
-                    this->_rdr->readBody([this](Marvin::ErrorType& err, FBuffer* fb){
-                        _on_data_handler(err, fb);
+                    this->_rdr->readBody([this](Marvin::ErrorType err, BufferChain buf_chain){
+                        _on_data_handler(err, buf_chain);
                     });
                 }
             } else {
@@ -166,7 +166,7 @@ void Client::internalWrite()
         });
 
     } else {
-        this->_rdr->readMessage([this](Marvin::ErrorType& ec){
+        this->_rdr->readMessage([this](Marvin::ErrorType ec){
             if (!ec) {
                 this->_response_handler(ec, _rdr);
             } else {
@@ -175,11 +175,13 @@ void Client::internalWrite()
         });
     }
     
-    // we are about to write the entri request message
+    // we are about to write the entire request message
     // so make sure we have the content-length correct
     setContentLength();
     LogInfo("",traceWriterV2(*_wrtr));
-    _wrtr->asyncWrite(_current_request, [this](Marvin::ErrorType& ec){
+    
+    assert(_body_mbuffer_sptr != nullptr);
+    _wrtr->asyncWrite(_current_request, _body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {
             // do nothing - let the read happen
             LogDebug("do nothing");
@@ -313,7 +315,7 @@ void Client::setOnHeaders(ResponseHandlerCallbackType cb)
     _on_headers_handler = cb;
 }
 
-void Client::setOnData(DataHandlerCallbackType cb)
+void Client::setOnData(ClientDataHandlerCallbackType cb)
 {
     _on_data_handler = cb;
 }

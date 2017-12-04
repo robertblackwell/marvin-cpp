@@ -240,36 +240,7 @@ void TCPConnection::asyncWrite(MBuffer& buf, AsyncWriteCallbackType cb)
         }
     });
 }
-void TCPConnection::asyncWrite(FBuffer& buffer, AsyncWriteCallbackType cb)
-{
-    LogDebug("buffer size: ");
-//    auto wcb2 = boost::bind(&TCPConnection::handle_write_request,this,_1, _2);
-    /// use the boost function that ONLY returns when the write is DONE
 
-    assert(false);
-//    boost::asio::async_write(_boost_socket, boost::asio::buffer(x, 0), cb);
-}
-void TCPConnection::asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback cb)
-{
-    LogDebug("");
-    boost::asio::async_write(
-        (this->_boost_socket),
-        sb,
-        [this, cb](
-            const Marvin::ErrorType& err,
-            std::size_t bytes_transfered
-            )
-        {
-        LogDebug("");
-        if( !err ){
-            Marvin::ErrorType m_err = Marvin::make_error_ok();
-            cb(m_err, bytes_transfered);
-        }else{
-            Marvin::ErrorType m_err = err;
-            cb(m_err, bytes_transfered);
-        }
-    });
-}
 void TCPConnection::asyncWrite(std::string& str, AsyncWriteCallback cb)
 {
     LogDebug("");
@@ -292,6 +263,32 @@ void TCPConnection::asyncWrite(std::string& str, AsyncWriteCallback cb)
     });
 
 }
+void TCPConnection::asyncWrite(BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb)
+{
+    /// this took a while to work out - change buffer code at your peril
+    auto tmp = buf_chain_sptr->asio_buffer_sequence();
+    
+    LogDebug("");
+    boost::asio::async_write(
+        (this->_boost_socket),
+        tmp,
+        [this, &tmp, cb](
+            const Marvin::ErrorType& err,
+            std::size_t bytes_transfered
+            )
+        {
+        LogDebug("");
+        if( !err ){
+            Marvin::ErrorType m_err = Marvin::make_error_ok();
+            cb(m_err, bytes_transfered);
+        }else{
+            Marvin::ErrorType m_err = err;
+            cb(m_err, bytes_transfered);
+        }
+    });
+
+}
+#if 1
 void TCPConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback cb)
 {
 #if 0
@@ -315,3 +312,26 @@ void TCPConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallbac
     });
 #endif
 }
+void TCPConnection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
+{
+    LogDebug("");
+    boost::asio::async_write(
+        (this->_boost_socket),
+        sb,
+        [this, cb](
+            const Marvin::ErrorType& err,
+            std::size_t bytes_transfered
+            )
+        {
+        LogDebug("");
+        if( !err ){
+            Marvin::ErrorType m_err = Marvin::make_error_ok();
+            cb(m_err, bytes_transfered);
+        }else{
+            Marvin::ErrorType m_err = err;
+            cb(m_err, bytes_transfered);
+        }
+    });
+}
+
+#endif

@@ -84,10 +84,10 @@ void
 MessageBase::setIsRequest(bool flag){ _is_request = flag;}
 
 void
-MessageBase::setStatusCode(int sc){ _status_code = sc;}
+MessageBase::setStatusCode(int sc){ _status_code = sc; _is_request = false; }
 
 void
-MessageBase::setStatus(std::string st){ _status = st;}
+MessageBase::setStatus(std::string st){ _status = st; _is_request = false; }
 
 int
 MessageBase::statusCode() {return _status_code; };
@@ -96,11 +96,11 @@ std::string
 MessageBase::status() {return _status;};
 
 void
-MessageBase::setMethod(HttpMethod m){ _method = (enum http_method)m;}
+MessageBase::setMethod(HttpMethod m){ _method = (enum http_method)m;  _is_request = true; }
 void
-MessageBase::setMethod(enum http_method m){ _method = m;}
+MessageBase::setMethod(enum http_method m){ _method = m; _is_request = true; }
 void
-MessageBase::setMethod(std::string m){ _methodStr = m;}
+MessageBase::setMethod(std::string m){ _methodStr = m; _is_request = true; }
 
 std::string
 MessageBase::getMethodAsString(){return httpMethodString((HttpMethod) _method);};

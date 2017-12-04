@@ -14,15 +14,15 @@
 
 ConnectionInterface* connectionFactory(
             boost::asio::io_service& io_service,
-            const std::string& scheme,
-            const std::string& server,
-            const std::string& port
+            const std::string scheme,
+            const std::string server,
+            const std::string port
 ){
     ConnectionInterface* ptr;
     if( boost::to_lower_copy(scheme) == "http" ){
         ptr = new TCPConnection(io_service, scheme, server, port);
     }else if( boost::to_lower_copy(scheme) == "https" ){
-        ptr = new TLSConnection(io_service, scheme, server, port);
+//        ptr = new TLSConnection(io_service, scheme, server, port);
     } else{
         assert(false);
     }
@@ -30,13 +30,13 @@ ConnectionInterface* connectionFactory(
 }
 ConnectionInterface* connectionFactory(
             boost::asio::io_service& io_service,
-            const std::string& scheme
+            const std::string scheme
 ){
     ConnectionInterface* ptr;
     if( scheme == "http" ){
         ptr = new TCPConnection(io_service);
     }else if( scheme == "https" ){
-        ptr = new TLSConnection(io_service);
+//        ptr = new TLSConnection(io_service);
     } else{
         assert(false);
     }

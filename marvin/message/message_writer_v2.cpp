@@ -5,7 +5,7 @@
 //  Created by ROBERT BLACKWELL on 12/10/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
-#include "buffer.hpp"
+#include "bufferV2.hpp"
 #include "message_writer_v2.hpp"
 #include "marvin_error.hpp"
 #include <exception>
@@ -26,7 +26,8 @@ std::string traceWriterV2(MessageWriterV2& writer)
     return ss.str();
 }
 
-MessageWriterV2::MessageWriterV2(boost::asio::io_service& io, TCPConnection& conn):_io(io), _conn(conn), _m_header_buf(1000)
+//MessageWriterV2::MessageWriterV2(boost::asio::io_service& io, TCPConnection& conn):_io(io), _conn(conn), _m_header_buf(1000)
+MessageWriterV2::MessageWriterV2(boost::asio::io_service& io, ConnectionInterfaceSPtr conn):_io(io), _conn(conn), _m_header_buf(1000)
 {
     LogTorTrace();
 //    _isRequest = is_request;
@@ -66,6 +67,30 @@ void MessageWriterV2::onWriteHeaders(Marvin::ErrorType& ec)
 //    WriteSocketInterface* wsock = getWriteSocket();
 //    wsock.asyncWrite();
 }
+void MessageWriterV2::asyncWrite(MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb)
+{
+   
+    if(body_string.size() == 0 ) {
+        asyncWrite(msg, cb);
+    } else {
+//        std:: cout << std::endl << "body buffer write: " << body_string << std::endl;
+        _body_buffer_string = body_string;
+        _body_buffer_chain_sptr = buffer_chain(body_string);
+        asyncWrite(msg, cb);
+    }
+}
+void MessageWriterV2::asyncWrite(MessageBaseSPtr msg, MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb)
+{
+    assert(body_mb_sptr != nullptr);
+    _body_buffer_chain_sptr = buffer_chain(body_mb_sptr);
+    asyncWrite(msg, cb);
+}
+
+void MessageWriterV2::asyncWrite(MessageBaseSPtr msg, BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb)
+{
+    _body_buffer_chain_sptr = body_chain_sptr;
+    asyncWrite(msg, cb);
+}
 
 void
 MessageWriterV2::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
@@ -93,16 +118,9 @@ void
 MessageWriterV2::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType cb)
 {
     putHeadersStuffInBuffer();
-//    boost::asio::streambuf::const_buffers_type bufs = _headerBuf.data();
-//    std::string ss(boost::asio::buffers_begin(bufs), boost::asio::buffers_begin(bufs) + _headerBuf.size() );
-//    std::string h = "GET / HTTP/1.1\r\nHost : whiteacorn.com\r\n\r\n";
-//    const char* buf = h.c_str();
-//    MBuffer* mb = new MBuffer(h.size()+10);
-//    mb->append((void*)buf, h.size());
     
-    _conn.asyncWrite(_m_header_buf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+    _conn->asyncWrite(_m_header_buf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
 
-//    _conn.asyncWriteStreamBuf(_headerBuf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
         LogDebug("");
         // need to check and do something about insufficient write
             auto pf = std::bind(cb, ec);
@@ -118,22 +136,26 @@ void MessageWriterV2::asyncWriteFullBody(WriteMessageCallbackType cb)
 {
     LogDebug(" cb: ", (long) &cb);
     // if body not set throw exception
-    if( ! _haveContent ){
+    if( ( ! _body_buffer_chain_sptr) || ( _body_buffer_chain_sptr->size() == 0) ) {
         LogWarn("writing empty body");
-//        throw std::invalid_argument("asyncWriteFullBody:: no content");
-    } else if( _bodyContent.size() == 0 ){
         Marvin::ErrorType ee = Marvin::make_error_ok();
-        cb(ee);
-//        auto pf = std::bind(cb, ee);
-//        _io.post(pf);
+        auto pf = std::bind(cb, ee);
+        _io.post(pf);
     } else{
-        //
-        // PROBLEM - this copies the body - find a better way
-        //
-        std::ostream _bodyStream(&_bodyBuf);
-        _bodyStream << _bodyContent;
-        
-        _conn.asyncWriteStreamBuf(_bodyBuf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+#if 0
+        /**
+        * PROBLEM - this copies the body - find a better way
+        * @todo - there is a bug here when using buffer chains
+        */
+        std::cout << std::endl << __FUNCTION__ << " "<< _body_buffer_chain_sptr->to_string() << std::endl;
+        /**
+        * This is a hack to overcome some bug in BufferChain usage
+        */
+        _body_mbuffer_sptr = _body_buffer_chain_sptr->amalgamate();
+        _conn->asyncWrite(*_body_mbuffer_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+#else
+        _conn->asyncWrite(_body_buffer_chain_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+#endif
             LogDebug("");
             auto pf = std::bind(cb, ec);
             _io.post(pf);
@@ -141,31 +163,30 @@ void MessageWriterV2::asyncWriteFullBody(WriteMessageCallbackType cb)
     }
     
 }
-void MessageWriterV2::asyncWriteBodyData(void* data, WriteBodyDataCallbackType cb)
-{
-}
+
 void MessageWriterV2::asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb)
 {
     auto bf = boost::asio::buffer(data);
-    _conn.asyncWrite(bf, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    _conn->asyncWrite(bf, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }
 void MessageWriterV2::asyncWriteBodyData(MBuffer& data, WriteBodyDataCallbackType cb)
 {
-    _conn.asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    _conn->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }
-void MessageWriterV2::asyncWriteBodyData(FBuffer& data, WriteBodyDataCallbackType cb)
-{
-    _conn.asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
-        cb(err);
-    });
-}
+
+//void MessageWriterV2::asyncWriteBodyData(FBuffer& data, WriteBodyDataCallbackType cb)
+//{
+//    _conn->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+//        cb(err);
+//    });
+//}
 void MessageWriterV2::asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb)
 {
-    _conn.asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    _conn->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }

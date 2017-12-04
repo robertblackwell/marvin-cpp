@@ -26,13 +26,13 @@ using system::error_code;
 
 ConnectionInterface* connectionFactory(
             boost::asio::io_service& io_service,
-            const std::string& scheme,
-            const std::string& server,
-            const std::string& port
+            const std::string scheme,
+            const std::string server,
+            const std::string port
 );
 ConnectionInterface* connectionFactory(
             boost::asio::io_service& io_service,
-            const std::string& scheme
+            const std::string scheme
 );
 
 //--------------------------------------------------------------------------------------------------
@@ -48,42 +48,45 @@ typedef std::unique_ptr<ConnectionInterface> ConnectionInterfaceUPtr;
 class ConnectionInterface : public ReadSocketInterface, public WriteSocketInterface
 {
     public:
-#ifdef CONN_IF_NOCONTRUCT
-    // client socket needs to know who to connect to
-    ConnectionInterface(
-            boost::asio::io_service& io_service,
-            const std::string& scheme,
-            const std::string& server,
-            const std::string& port
-    );
-    
-    // server socket will be connected via listen/accept
-    virtual ConnectionInterface(
-        boost::asio::io_service& io_service
-    );
-    
-    
-#endif
-//    virtual ~ConnectionInterface()=0;
-
+//#ifdef CONN_IF_NOCONTRUCT
+//    // client socket needs to know who to connect to
+//    ConnectionInterface(
+//            boost::asio::io_service& io_service,
+//            const std::string scheme,
+//            const std::string server,
+//            const std::string port
+//    );
+//    
+//    // server socket will be connected via listen/accept
+//    virtual ConnectionInterface(
+//        boost::asio::io_service& io_service
+//    );
+//    
+//    
+//#endif
+//#if 0
+////    virtual ~ConnectionInterface()=0;
+//
     virtual void asyncConnect(ConnectCallbackType cb) = 0;
     virtual void asyncAccept(
         boost::asio::ip::tcp::acceptor& acceptor,
         std::function<void(const boost::system::error_code& err)> cb
     ) = 0;
-    
     virtual void asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb) = 0;
-    virtual void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb) = 0;
-    virtual void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
-
-    virtual void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb) = 0;
+    virtual void asyncWrite(BufferChainSPtr buf_chain_sptr, AsyncWriteCallbackType cb) = 0;
+    virtual void asyncWrite(std::string& str, AsyncWriteCallbackType cb) = 0;
+    virtual void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb) = 0;
+    virtual void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
+//
+//    virtual void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb) = 0;
     virtual void shutdown() = 0;
     virtual void close() = 0;
-    
+//
     virtual long nativeSocketFD() = 0;
-    
-    virtual std::string scheme() = 0;
-    virtual std::string server() = 0;
-    virtual std::string service() = 0;
+//
+//    virtual std::string scheme() = 0;
+//    virtual std::string server() = 0;
+//    virtual std::string service() = 0;
+//#endif
 };
 #endif

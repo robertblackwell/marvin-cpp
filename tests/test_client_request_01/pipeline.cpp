@@ -1,22 +1,5 @@
-/**
-* this file tests a single client performing multiple consecutive requests
-* class implements multiple consecutive requests through the same client
-*/
+#include "pipeline.hpp"
 
-/**
-* The Pipeline class is the mechanism for managing mutipe async operations.
-*/
-class Pipeline
-{
-    public:
-    int _counter;
-    boost::asio::io_service& _io;
-    std::shared_ptr<Client> _client_sptr;
-    MessageBaseSPtr _msg_sptr;
-    Pipeline(boost::asio::io_service& io);
-    void setup();
-    void handler(Marvin::ErrorType& err, MessageReaderV2SPtr rdr);
-};
 Pipeline::Pipeline(boost::asio::io_service& io) : _io(io)
 {
         _counter = 0;
@@ -34,12 +17,13 @@ void Pipeline::setup()
     _client_sptr->asyncWrite(_msg_sptr, f);
 
 }
-void Pipeline::handler(Marvin::ErrorType& err, MessageReaderV2SPtr rdr)
+void Pipeline::handler(Marvin::ErrorType err, MessageReaderV2SPtr rdr)
 {
     if(!err) {
         MessageReaderV2SPtr b = _client_sptr->getResponse();
-        std::string bdy = b->getBody();
-        auto sss = err.message();
+        BufferChain buf_chain = b->get_body_chain();
+        std::string bdy = buf_chain.to_string();
+        std::string sss = err.message();
 //        std::cout << bdy << std::endl;
 #if 0
         std::cout << "Successful message roundtrip counter: " << _counter << "http status: "

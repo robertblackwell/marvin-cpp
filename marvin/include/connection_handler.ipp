@@ -71,7 +71,7 @@ void ConnectionHandler<TRequestHandler>::handleConnectComplete(bool hijacked)
 * close the connection
 */
 template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::requestComplete(Marvin::ErrorType& err, bool keepAlive)
+void ConnectionHandler<TRequestHandler>::requestComplete(Marvin::ErrorType err, bool keepAlive)
 {
     /*!
     * start serving the next request/response cycle
@@ -95,7 +95,7 @@ void ConnectionHandler<TRequestHandler>::requestComplete(Marvin::ErrorType& err,
 * the client has indicated no more requests/
 */
 template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::handlerComplete(Marvin::ErrorType& err)
+void ConnectionHandler<TRequestHandler>::handlerComplete(Marvin::ErrorType err)
 {
     LogInfo(" fd:", nativeSocketFD());
     if(!err)
@@ -112,7 +112,7 @@ void ConnectionHandler<TRequestHandler>::handlerComplete(Marvin::ErrorType& err)
 * this is the first step in the request/response cycle
 */
 template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType& err)
+void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType err)
 {
     LogInfo(" fd:", nativeSocketFD());
     LogInfo("", Marvin::make_error_description(err));
@@ -152,16 +152,16 @@ void ConnectionHandler<TRequestHandler>::serve()
 {
     LogInfo(" fd:", nativeSocketFD());
     ConnectionInterface* cptr = _connection.get();
-    _reader = std::shared_ptr<MessageReader>(new MessageReader(cptr, _io));
-    _writer = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
-    _writer->setWriteSock(cptr);
+    
+    _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
+    _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));
 
     auto rmh = std::bind(&ConnectionHandler::readMessageHandler, this, std::placeholders::_1 );
     _reader->readMessage(rmh);
     
 }
 /*!
-* Serve the enxt request/response cycle - deliberately DO NOT create new MessageReader
+* Serve the next request/response cycle - deliberately DO NOT create new MessageReader
 * and MessageWriter objects - this is a effort to keep the same connection/socket open
 * for the next request
 */
@@ -171,9 +171,11 @@ void ConnectionHandler<TRequestHandler>::serveAnother()
     LogInfo(" fd:", nativeSocketFD());
     /// get a new request object
     ConnectionInterface* cptr = _connection.get();
-    _reader = std::shared_ptr<MessageReader>(new MessageReader(cptr, _io));
-    _writer = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
-    _writer->setWriteSock(cptr);
+    
+    _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
+    _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));
+//    _writer->setWriteSock(cptr);
+    
     _requestHandlerPtr  = new TRequestHandler(_io);
     _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
 

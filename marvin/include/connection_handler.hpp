@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <boost/asio.hpp>
 
-#include "message_reader.hpp"
-#include "message_writer.hpp"
+#include "message_reader_v2.hpp"
+#include "message_writer_v2.hpp"
 #include "connection_interface.hpp"
 #include "server_connection_manager.hpp"
 
@@ -28,9 +28,9 @@ template<class TRequestHandler> class ConnectionHandler
 {
     public:
         ConnectionHandler(
-            boost::asio::io_service&                        io,
-            ServerConnectionManager<ConnectionHandler<TRequestHandler>>&     connectionManager,
-            ConnectionInterface*                                     conn
+            boost::asio::io_service&                                        io,
+            ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
+            ConnectionInterface*                                            conn
         );
     
         ~ConnectionHandler();
@@ -41,15 +41,15 @@ template<class TRequestHandler> class ConnectionHandler
     private:
     
         void serveAnother();
-        void readMessageHandler(Marvin::ErrorType& err);
-        void requestComplete(Marvin::ErrorType& err, bool keepAlive);
-        void handlerComplete(Marvin::ErrorType& err);
+        void readMessageHandler(Marvin::ErrorType err);
+        void requestComplete(Marvin::ErrorType err, bool keepAlive);
+        void handlerComplete(Marvin::ErrorType err);
         void handleConnectComplete(bool hijack);
 
     
         boost::asio::io_service&                            _io;
 //        boost::asio::strand&                                _serverStrand;
-        ConnectionInterface*                                _conn;
+//        ConnectionInterface*                                _conn;
         ServerConnectionManager<ConnectionHandler>&         _connectionManager;
         TRequestHandler*                                    _requestHandlerPtr;
         std::unique_ptr<TRequestHandler>                    _requestHandlerUnPtr;
@@ -61,11 +61,11 @@ template<class TRequestHandler> class ConnectionHandler
 #endif
 
 #ifdef CH_SMARTPOINTER
-        MessageReaderSPtr   _reader;
-        MessageWriterSPtr   _writer;
+        MessageReaderV2SPtr   _reader;
+        MessageWriterV2SPtr   _writer;
 #else
-        MessageReader*      _reader;
-        MessageWriter*      _writer;
+        MessageReaderV2*      _reader;
+        MessageWriterV2*      _writer;
 #endif
 };
 

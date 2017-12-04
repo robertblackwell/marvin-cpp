@@ -36,7 +36,7 @@ typedef std::unique_ptr<TCPConnection> TCPConnectionUPtr;
 //--------------------------------------------------------------------------------------------------
 // NON SSL/TLS Connection
 //--------------------------------------------------------------------------------------------------
-class TCPConnection : public ConnectionInterface //public ReadSocketInterface, public WriteSocketInterface
+class TCPConnection : public ConnectionInterface
 {
     public:
     // client socket needs to know who to connect to
@@ -65,10 +65,10 @@ class TCPConnection : public ConnectionInterface //public ReadSocketInterface, p
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     
     void asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb);
-    void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb);
     void asyncWrite(std::string& str, AsyncWriteCallbackType cb);
+    void asyncWrite(BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb);
     void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb);
-    void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
+    void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback);
 
     void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb);
     void shutdown();

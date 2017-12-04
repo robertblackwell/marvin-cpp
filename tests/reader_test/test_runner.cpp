@@ -9,21 +9,20 @@ std::string chain_to_string(BufferChain chain)
 
 void Testrunner::makeReader()
 {
-    delete rdr_;
-    rdr_ = new MessageReaderV2(conn_, io_);
-    auto rr = new MessageReaderV2(conn_, io_);
+    rdr_ = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(io_, conn_));
+    auto rr = new MessageReaderV2(io_, conn_);
 }
 /**
 * Constructor - tcIndex is an index into the set of testcases
 * that the class TestCases knows about
 */
-Testrunner::Testrunner(boost::asio::io_service& io, ReadSocketInterface* rd_sock, Testcase tcObj)
+Testrunner::Testrunner(boost::asio::io_service& io, ReadSocketInterfaceSPtr rd_sock, Testcase tcObj)
     : io_(io),
     _tcObj(tcObj)
 {
     LogDebug("");
     conn_ = rd_sock;
-    rdr_ = new MessageReaderV2(conn_, io_);
+    rdr_ = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(io_, conn_));
     body = std::string("");
     bodyStream.str(body);
     body_accumulator = "";
@@ -31,7 +30,6 @@ Testrunner::Testrunner(boost::asio::io_service& io, ReadSocketInterface* rd_sock
 Testrunner::~Testrunner()
 {
     LogDebug("");
-    delete rdr_;
 }
 void Testrunner::onMessage(Marvin::ErrorType er)
 {

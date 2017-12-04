@@ -61,7 +61,7 @@ public:
     static void configSet_HeaderBufferSize(long bsize);
     static void configSet_BodyBufferSize(long bsize);
 
-    MessageReaderV2(ReadSocketInterface* readSock, boost::asio::io_service& io);
+    MessageReaderV2( boost::asio::io_service& io, ReadSocketInterfaceSPtr readSock);
     ~MessageReaderV2();
     /*!
     *
@@ -167,7 +167,7 @@ protected:
     //----------------------------------------------------------------------------------------------------
     // private properties and methods
     //----------------------------------------------------------------------------------------------------
-    ReadSocketInterface*        _readSock;
+    ReadSocketInterfaceSPtr     _readSock;
     boost::asio::io_service&    _io;
     std::size_t                 _body_buffer_size;
     std::size_t                 _header_buffer_size;

@@ -6,17 +6,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "marvin/buffer/bufferV2.cpp"
-            timestampString = "533888665.961239"
+            filePath = "marvin/message/message_reader_v2.cpp"
+            timestampString = "534047037.467004"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "operator&lt;&lt; (std::ostream &amp;os, MBuffer &amp;b)"
-            landmarkType = "9">
+            startingLineNumber = "257"
+            endingLineNumber = "257"
+            landmarkName = "MessageReaderV2::_read_some_body()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -26,11 +26,231 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "marvin/message/message_reader_v2.cpp"
-            timestampString = "533888665.961572"
+            timestampString = "534047037.467302"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "230"
-            endingLineNumber = "230"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
+            landmarkName = "MessageReaderV2::_handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "534047037.467377"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
+            landmarkName = "TCPConnection::asyncRead(MBuffer&amp; buffer, AsyncReadCallbackType cb)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "534047037.467599"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
+            landmarkName = "TCPConnection::asyncRead(MBuffer&amp; buffer, AsyncReadCallbackType cb)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TCPConnection::asyncRead(MBuffer&amp;, std::__1::function&lt;void (boost::system::error_code&amp;, unsigned long)&gt;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tcp_connection.cpp"
+                  timestampString = "533972418.066839"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "207"
+                  endingLineNumber = "207"
+                  offsetFromSymbolStart = "99">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TCPConnection::asyncRead(MBuffer&amp;, std::__1::function&lt;void (boost::system::error_code&amp;, unsigned long)&gt;)::$_1::~$_1()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tcp_connection.cpp"
+                  timestampString = "533972418.068675"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "207"
+                  endingLineNumber = "207"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TCPConnection::asyncRead(MBuffer&amp;, std::__1::function&lt;void (boost::system::error_code&amp;, unsigned long)&gt;)::$_1::~$_1()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tcp_connection.cpp"
+                  timestampString = "533972418.070152"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "207"
+                  endingLineNumber = "207"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TCPConnection::asyncRead(MBuffer&amp;, std::__1::function&lt;void (boost::system::error_code&amp;, unsigned long)&gt;)::$_1::$_1($_1&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tcp_connection.cpp"
+                  timestampString = "533972418.071906"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "207"
+                  endingLineNumber = "207"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TCPConnection::asyncRead(MBuffer&amp;, std::__1::function&lt;void (boost::system::error_code&amp;, unsigned long)&gt;)::$_1::$_1($_1&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tcp_connection.cpp"
+                  timestampString = "533972418.074892"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "207"
+                  endingLineNumber = "207"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TCPConnection::asyncRead(MBuffer&amp;, std::__1::function&lt;void (boost::system::error_code&amp;, unsigned long)&gt;)::$_1::operator()(boost::system::error_code const&amp;, unsigned long) const"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tcp_connection.cpp"
+                  timestampString = "533972418.078082"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "208"
+                  endingLineNumber = "208"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/message/message_reader_v2.cpp"
+            timestampString = "534047037.467672"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
+            landmarkName = "MessageReaderV2::_handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "534047037.46773"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
+            landmarkName = "TCPConnection::asyncRead(MBuffer&amp; buffer, AsyncReadCallbackType cb)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_server.cpp"
+            timestampString = "534047037.467797"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
+            landmarkName = "handleRequest( MessageReaderV2SPtr req, MessageWriterV2SPtr resp, HandlerDoneCallbackType done )"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "534047037.468006"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "211"
+            endingLineNumber = "211"
+            landmarkName = "TCPConnection::asyncRead(MBuffer&amp; buffer, AsyncReadCallbackType cb)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/message/message_reader_v2.cpp"
+            timestampString = "534047037.468072"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
+            landmarkName = "MessageReaderV2::OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/message/message_reader_v2.cpp"
+            timestampString = "534047037.468127"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "227"
+            endingLineNumber = "227"
             landmarkName = "MessageReaderV2::_handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered)"
             landmarkType = "7">
          </BreakpointContent>
@@ -41,13 +261,167 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "tests/reader_test/test_runner.cpp"
-            timestampString = "533888665.961829"
+            filePath = "marvin/message/message_writer_v2.cpp"
+            timestampString = "534047037.468182"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "Testrunner::onMessage(Marvin::ErrorType er)"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "MessageWriterV2::asyncWrite(MessageBaseSPtr msg, std::string&amp; body_string, WriteMessageCallbackType cb)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/message/message_writer_v2.cpp"
+            timestampString = "534047037.468399"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "MessageWriterV2::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.818751"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "516">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const::&apos;lambda&apos;(boost::system::error_code&amp;)::~error_code&amp;)()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.820319"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;)&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.822156"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;)&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.824369"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;) const&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.826032"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;) const&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.827519"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const::&apos;lambda&apos;(boost::system::error_code&amp;)::operator()(boost::system::error_code&amp;) const"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.829213"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101"
+                  offsetFromSymbolStart = "46">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWrite(std::__1::shared_ptr&lt;MessageBase&gt;, std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_0::operator()(boost::system::error_code&amp;) const::&apos;lambda&apos;(boost::system::error_code&amp;)::~error_code&amp;)()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "533974527.831138"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/message/message_writer_v2.cpp"
+            timestampString = "534047037.468475"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "MessageWriterV2::asyncWriteFullBody(WriteMessageCallbackType cb)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +431,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "marvin/message/parser.cpp"
-            timestampString = "533888665.962077"
+            filePath = "tests/test_buffers/test_buffer_main.cpp"
+            timestampString = "534063452.826772"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
-            landmarkName = "getErrno()"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "TEST( BufferChain, makeboostbuffer)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_buffers/test_buffer_main.cpp"
+            timestampString = "534063452.826838"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "TEST( BufferChain, assignment)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -73,14 +463,498 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "marvin/message/parser.cpp"
-            timestampString = "533888665.962287"
+            filePath = "tests/test_server_client/tsc_client.cpp"
+            timestampString = "534047037.468782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "431"
-            endingLineNumber = "431"
-            landmarkName = "message_complete_cb(http_parser* parser)"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
+            landmarkName = "get_testcase(std::string code, boost::asio::io_service&amp; io)"
             landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_buffers/test_buffer_main.cpp"
+            timestampString = "534063452.826903"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "TEST( BufferChain, assignment)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/message/message_writer_v2.cpp"
+            timestampString = "534047037.469033"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
+            landmarkName = "MessageWriterV2::asyncWriteFullBody(WriteMessageCallbackType cb)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.305568"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "1053">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_2::~$_2()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.307178"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_2::~$_2()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.308778"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_2::$_2($_2&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.31038"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_2::$_2($_2&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.311756"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_2::$_2($_2 const&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.313146"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_2::$_2($_2 const&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.314663"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MessageWriterV2::asyncWriteFullBody(std::__1::function&lt;void (boost::system::error_code&amp;)&gt;)::$_2::operator()(boost::system::error_code&amp;, unsigned long) const"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/message/message_writer_v2.cpp"
+                  timestampString = "534011370.31613"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "161"
+                  endingLineNumber = "161"
+                  offsetFromSymbolStart = "56">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_server.cpp"
+            timestampString = "534047037.469094"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "handleRequest( MessageReaderV2SPtr req, MessageWriterV2SPtr resp, HandlerDoneCallbackType done )"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/client/client.cpp"
+            timestampString = "534047037.469144"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
+            landmarkName = "Client::_async_write(MessageBaseSPtr requestMessage, ResponseHandlerCallbackType cb)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/client/client.cpp"
+            timestampString = "534047037.469327"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
+            landmarkName = "Client::internalWrite()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/client/client.cpp"
+            timestampString = "534047037.469377"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "180"
+            endingLineNumber = "180"
+            landmarkName = "Client::internalWrite()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_client.cpp"
+            timestampString = "534047037.469441"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "runTestClient()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_server.cpp"
+            timestampString = "534047037.469501"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
+            landmarkName = "handleRequest( MessageReaderV2SPtr req, MessageWriterV2SPtr resp, HandlerDoneCallbackType done )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.747833"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "8411">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)::&apos;lambda&apos;(boost::system::error_code&amp;)::~error_code&amp;)()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.74924"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;)&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.750899"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;)&amp;&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.752542"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;) const&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.755408"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)::&apos;lambda&apos;(boost::system::error_code&amp;)::error_code&amp;)(&apos;lambda&apos;(boost::system::error_code&amp;) const&amp;)"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.758335"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)::&apos;lambda&apos;(boost::system::error_code&amp;)::operator()(boost::system::error_code&amp;) const"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.760408"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "139"
+                  endingLineNumber = "139"
+                  offsetFromSymbolStart = "37">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyRequestHandler::handleRequest(std::__1::shared_ptr&lt;MessageReaderV2&gt;, std::__1::shared_ptr&lt;MessageWriterV2&gt;, std::__1::function&lt;void (boost::system::error_code&amp;, bool)&gt;)::&apos;lambda&apos;(boost::system::error_code&amp;)::~error_code&amp;)()"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_server.cpp"
+                  timestampString = "534035433.763404"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_server.cpp"
+            timestampString = "534047037.469549"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
+            landmarkName = "handleRequest( MessageReaderV2SPtr req, MessageWriterV2SPtr resp, HandlerDoneCallbackType done )"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_get.cpp"
+            timestampString = "534047037.470633"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "get_testcase(std::string code, boost::asio::io_service&amp; io)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_get.cpp"
+            timestampString = "534047037.47083"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "get_testcase(std::string code, boost::asio::io_service&amp; io)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_client.cpp"
+            timestampString = "534054107.801969"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "runTestClient()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_server_client/tsc_post.cpp"
+            timestampString = "534063452.82708"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "post_body_testcase(EchoTestcase&amp; testcase, boost::asio::io_service&amp; io)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "post_body_testcase(EchoTestcase&amp;, boost::asio::io_service&amp;)::$_0::operator()(boost::system::error_code&amp;, std::__1::shared_ptr&lt;MessageReaderV2&gt;) const"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_post.cpp"
+                  timestampString = "534054956.767143"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "1647">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "post_body_testcase(EchoTestcase&amp;, boost::asio::io_service&amp;)::$_0::operator()(boost::system::error_code&amp;, std::__1::shared_ptr&lt;MessageReaderV2&gt;) const"
+                  moduleName = "test_server_client"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/tests/test_server_client/tsc_post.cpp"
+                  timestampString = "534054956.768771"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "1652">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

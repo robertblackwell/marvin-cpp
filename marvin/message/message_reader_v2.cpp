@@ -4,9 +4,6 @@
 #include <algorithm>
 #include "catch.hpp"
 #include "boost_stuff.hpp"
-//#include <boost/asio.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/date_time/posix_time/posix_time.hpp>
 #include "bufferV2.hpp"
 #include "message.hpp"
 #include "parser.hpp"
@@ -14,8 +11,6 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-//#include "repeating_timer.hpp"
-//#include "mock_rsockection.hpp"
 #include "read_socket_interface.hpp"
 #include "message_reader_v2.hpp"
 
@@ -51,7 +46,7 @@ void MessageReaderV2::configSet_HeaderBufferSize(long bsize)
 }
 #pragma mark - constructor
 
-MessageReaderV2::MessageReaderV2(ReadSocketInterface* readSock, boost::asio::io_service& io): _io(io), _readSock(readSock)
+MessageReaderV2::MessageReaderV2( boost::asio::io_service& io, ReadSocketInterfaceSPtr readSock): _io(io), _readSock(readSock)
 {
     LogTorTrace();
     _body_buffer_size   = __bodyBufferSize;
@@ -220,6 +215,7 @@ void MessageReaderV2::_handle_header_read(Marvin::ErrorType er, std::size_t byte
     }
 
     _header_buffer_sptr->setSize(bytes_transfered);
+//    std::cout << *_header_buffer_sptr << std::endl;
     MBuffer& mb = *_header_buffer_sptr;
     int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
     if( ! parser_ok(nparsed, mb)) {
@@ -277,6 +273,8 @@ void MessageReaderV2::_handle_body_read(Marvin::ErrorType er, std::size_t bytes_
     }
     _body_buffer_sptr->setSize(bytes_transfered);
     MBufferSPtr tmp = std::shared_ptr<MBuffer>(new MBuffer(bytes_transfered));
+    tmp->append(_body_buffer_sptr->data(), _body_buffer_sptr->size());
+//    std::cout << std::endl << __FUNCTION__ << ": " << tmp->toString() << std::endl;
     _raw_body_buffer_chain.push_back(tmp);
     
     MBuffer& mb = *_body_buffer_sptr;
