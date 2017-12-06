@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <boost/asio.hpp>
 #include <pthread.h>
+#include <gtest/gtest.h>
 #include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
@@ -72,20 +73,31 @@ void runTestcase(Testcase tcase)
     boost::asio::io_service io;
     TServerSPtr sp = serverFunction(io, tcase);
     TClientSPtr cp = clientFunction(io, tcase);
+    ASSERT_TRUE(true);
     io.run();
     LogDebug("");
 }
 
-int main(int argc, char* argv[])
+//int main(int argc, char* argv[])
+TEST(MessageReader, Socket)
 {
 //    twoProcesses();
-    RBLogging::setEnabled(false);
+//    RBLogging::setEnabled(false);
 //    TestcaseDefinitions tcs = makeTestcaseDefinitions_01();
     TestcaseDefinitions tcs = makeTCS_eof();
 
     for(int i = 0; i < tcs.number_of_testcases(); i++) {
         runTestcase(tcs.get_case(i));
     }
-    printf("Progrm exit");
 }
 
+#pragma mark - main
+int main(int argc, char * argv[]) {
+    RBLogging::setEnabled(false);
+    BufferChain chain;
+    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    int _argc = 2;
+    testing::InitGoogleTest(&_argc, _argv);
+    printf("Progrm exit");
+    return RUN_ALL_TESTS();
+}

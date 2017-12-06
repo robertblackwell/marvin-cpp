@@ -94,18 +94,49 @@ std::shared_ptr<Client> get_testcase(std::string code, boost::asio::io_service& 
 }
 #endif
 
+//template<class TESTEXEC, class TESTCASE>
+//void test_one(TESTCASE testcase)
+//{
+//    boost::asio::io_service io_service;
+//    TESTEXEC tst(io_service, testcase);
+//    tst.exec();
+//    io_service.run();
+//
+//}
+
+void test_one(EchoTestcase& testcase)
+{
+    boost::asio::io_service io_service;
+    PostTest pt(io_service, testcase);
+    pt.exec();
+    io_service.run();
+}
+
+void test_multiple(std::vector<EchoTestcase> cases)
+{
+    boost::asio::io_service io_service;
+    
+    std::vector<std::shared_ptr<PostTest>> saved;
+    for(EchoTestcase& c : cases) {
+        std::shared_ptr<PostTest> post = std::shared_ptr<PostTest>(new PostTest(io_service, c));
+        saved.push_back(post);
+        post->exec();
+    }
+    io_service.run();
+}
 void runTestClient()
 {
     boost::asio::io_service io_service;
     {
         RBLogging::setEnabled(false);
         std::vector<std::shared_ptr<Client>> rt;
-
+        PostTest pt(io_service, tcase1);
+        pt.exec();
+        #if 0
         rt.push_back(post_body_testcase(tcase1, io_service));
         rt.push_back(post_body_testcase(tcase2, io_service));
         rt.push_back(post_body_testcase(tcase3, io_service));
         rt.push_back(get_testcase("1", io_service));
-        #if 0
         rt.push_back(do_get_request("1", io_service));
         rt.push_back(do_get_request("A", io_service));
         rt.push_back(do_get_request("B", io_service));
@@ -126,7 +157,7 @@ void runTestClient()
         io_service.run();
         rt.clear();
     }
-    std::cout << "after io_service.run() " << std::endl;
+//    std::cout << "after io_service.run() " << std::endl;
     pthread_exit(NULL);
 }
 

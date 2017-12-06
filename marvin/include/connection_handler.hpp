@@ -11,6 +11,9 @@
 
 #include <stdio.h>
 #include <boost/asio.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "message_reader_v2.hpp"
 #include "message_writer_v2.hpp"
@@ -46,7 +49,7 @@ template<class TRequestHandler> class ConnectionHandler
         void handlerComplete(Marvin::ErrorType err);
         void handleConnectComplete(bool hijack);
 
-    
+        boost::uuids::uuid                                  _uuid;
         boost::asio::io_service&                            _io;
 //        boost::asio::strand&                                _serverStrand;
 //        ConnectionInterface*                                _conn;

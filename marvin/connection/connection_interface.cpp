@@ -22,6 +22,7 @@ ConnectionInterface* connectionFactory(
     if( boost::to_lower_copy(scheme) == "http" ){
         ptr = new TCPConnection(io_service, scheme, server, port);
     }else if( boost::to_lower_copy(scheme) == "https" ){
+        ptr = new TCPConnection(io_service, scheme, server, port);
 //        ptr = new TLSConnection(io_service, scheme, server, port);
     } else{
         assert(false);

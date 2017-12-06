@@ -1,6 +1,5 @@
 #ifndef tsc_testcase_hpp
 #define tsc_testcase_hpp
-#include "tsc_client.hpp"
 //
 //  main.cpp
 //  asio-mitm

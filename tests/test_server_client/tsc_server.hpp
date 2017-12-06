@@ -12,5 +12,5 @@
 #include <stdio.h>
 void
 runTestServer();
-
+void tsc_server_stop();
 #endif /* test_server_h */

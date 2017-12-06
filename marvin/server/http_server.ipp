@@ -158,6 +158,7 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::handleAccept(
         // at this point we are running on _serveStrand start the connectionHandler with a post to
         // liberate it from the strand
         //
+        std::cout << "Server handleAccept " << std::hex << (long) this << " " << (long)connHandler << std::endl;
         auto hf = std::bind(&ConnectionHandler<TRequestHandler>::serve, connHandler);
         _io.post(hf);
     }else{

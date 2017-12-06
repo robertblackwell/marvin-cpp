@@ -5,12 +5,15 @@
 //  Created by ROBERT BLACKWELL on 12/12/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
+#include "http_header.hpp"
 
 template<class TRequestHandler>
 ConnectionHandler<TRequestHandler>::ConnectionHandler(
     boost::asio::io_service&                                        io,
     ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
-    ConnectionInterface*                                            conn):  _io(io), _connectionManager(connectionManager)
+    ConnectionInterface*                                            conn
+):  _io(io), _connectionManager(connectionManager),
+    _uuid(boost::uuids::random_generator()())
 {
     LogTorTrace();
     _requestHandlerPtr  = new TRequestHandler(_io);
@@ -119,6 +122,7 @@ void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType er
 //    LogError("error value: ", err.value(),
 //        " category: ", err.category().name(),
 //        " msg: ", err.category().message(err.value()));
+    std::string uuid_str = boost::uuids::to_string(_uuid);
     if( err ){
         LogError("error value: ", err.value(),
             " category: ", err.category().name(),
@@ -136,6 +140,10 @@ void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType er
              });
         } else {
             LogTrace(traceMessage(*_reader));
+            
+            // this is a testing aid
+            _reader->setHeader(HttpHeader::Name::ConnectionHandlerId, uuid_str);
+            
             _requestHandlerUnPtr->handleRequest(_reader, _writer, [this](Marvin::ErrorType& err, bool keepAlive){
                 LogInfo("");
                 this->requestComplete(err, keepAlive);
@@ -151,6 +159,7 @@ template<class TRequestHandler>
 void ConnectionHandler<TRequestHandler>::serve()
 {
     LogInfo(" fd:", nativeSocketFD());
+    std::cout << "connection_handler::serve " << std::hex << (long) this << std::endl;
     ConnectionInterface* cptr = _connection.get();
     
     _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
@@ -171,7 +180,8 @@ void ConnectionHandler<TRequestHandler>::serveAnother()
     LogInfo(" fd:", nativeSocketFD());
     /// get a new request object
     ConnectionInterface* cptr = _connection.get();
-    
+    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
+
     _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
     _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));
 //    _writer->setWriteSock(cptr);

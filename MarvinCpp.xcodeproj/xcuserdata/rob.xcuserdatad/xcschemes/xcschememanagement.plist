@@ -129,11 +129,6 @@
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
-		<key>test_client_request_01.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>3</integer>
-		</dict>
 		<key>test_logger.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -163,6 +158,11 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>5</integer>
+		</dict>
+		<key>test_signal.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
 		</dict>
 		<key>testcase.xcscheme</key>
 		<dict>

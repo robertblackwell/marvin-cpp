@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
-               BuildableName = "test_client_request_01"
-               BlueprintName = "test_client_request_01"
+               BuildableName = "test_signal"
+               BlueprintName = "test_signal"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -34,8 +34,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
-            BuildableName = "test_client_request_01"
-            BlueprintName = "test_client_request_01"
+            BuildableName = "test_signal"
+            BlueprintName = "test_signal"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -58,8 +58,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
-            BuildableName = "test_client_request_01"
-            BlueprintName = "test_client_request_01"
+            BuildableName = "test_signal"
+            BlueprintName = "test_signal"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -77,8 +77,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D46614C11DFCF46400E3FAB0"
-            BuildableName = "test_client_request_01"
-            BlueprintName = "test_client_request_01"
+            BuildableName = "test_signal"
+            BlueprintName = "test_signal"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -1,5 +1,5 @@
-#ifndef tsc_post_hpp
-#define tsc_post_hpp
+#ifndef tsc_pipeline_test_hpp
+#define tsc_pipeline_test_hpp
 
 #include <iostream>
 #include <istream>
@@ -13,22 +13,22 @@
 #include "client.hpp"
 #include "tsc_testcase.hpp"
 
-/**
-* This function runs a post request based on a testcase and checks the response is as expected
-*/
-std::shared_ptr<Client> post_body_testcase(EchoTestcase& testcase, boost::asio::io_service& io);
+class PipelineTest;
+typedef std::shared_ptr<PipelineTest> PipelineTestSPtr;
 
-class PostTest
+class PipelineTest
 {
     public:
-        PostTest(boost::asio::io_service& io, EchoTestcase& testcase);
+        PipelineTest(boost::asio::io_service& io, std::vector<EchoTestcase>& testcase);
         void handler(Marvin::ErrorType& er, MessageReaderV2SPtr rdr);
         void exec();
     protected:
         boost::asio::io_service&    _io;
         MessageBaseSPtr             _msg;
         ClientSPtr                  _client;
-        EchoTestcase&               _testcase;
+        std::vector<EchoTestcase>&  _testcase;
+        int                         _msg_index;
+        std::string                 _uuid;
 };
 
 

@@ -62,7 +62,12 @@ namespace HttpHeader
         static const std::string ProxyConnection = "PROXY-CONNECTION";
         static const std::string TransferEncoding = "TRANSFER-ENCODING";
         static const std::string ETag = "ETAG";
+        static const std::string ConnectionHandlerId = "CONNECT-HANDLER-ID";
     };
+    namespace Value{
+        static const std::string ConnectionClose = "CLOSE";
+        static const std::string ConnectionKeepAlive = "KEEP-ALIVE";
+    }
     typedef std::string SchemeType;
     namespace Scheme {
         static const std::string https = "https";

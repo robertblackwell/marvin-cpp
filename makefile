@@ -29,9 +29,11 @@ $(CXXURL_DIR):
 $(URLPARSER_DIR):	
 	mkdir $(URLPARSER_DIR)
 
-cpp-catch:
-	git clone $(LOCAL_REPO_DIR)/cpp-catch $(CLONE_DIR)/cpp-catch
-	cp $(CLONE_DIR)/cpp-catch/*.hpp  $(SRC)/
+catch2:
+	rm -rfv $(CLONE_DIR)/Catch2
+	# git clone https://github.com/catchorg/Catch2.git $(CLONE_DIR)/cpp_catch
+	git clone $(LOCAL_REPO_DIR)/Catch2 $(CLONE_DIR)/Catch2
+	cp $(CLONE_DIR)/Catch2/single_include/catch.hpp  $(SRC)/
 
 
 simple_buffer:
@@ -70,7 +72,7 @@ openssl_libs:
 openssl: openssl_include openssl_libs
 
 
-install_deps: $(CLONE_DIR)  $(SRC) simple_buffer http_parser cpp-catch cxxurl urlparser
+install_deps: $(CLONE_DIR)  $(SRC) simple_buffer http_parser catch2 cxxurl urlparser
 	
 	
 clean_CLONE_DIR:	

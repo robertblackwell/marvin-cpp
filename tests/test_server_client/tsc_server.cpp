@@ -17,7 +17,7 @@
 
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-
+#include "http_header.hpp"
 #include "UriParser.hpp"
 #include "url.hpp"
 #include "http_server.hpp"
@@ -107,7 +107,8 @@ public:
         HandlerDoneCallbackType done
     ){
         int local_counter = counter++;
-        std::cout << "got to a new handler counter: " << local_counter << std::endl;
+//        std::cout << "got to a new handler counter: " << local_counter << " " << std::hex << (long)this << std::endl;
+//        std::cout << "connection handler id " << req->getHeader("Connection_Handler_Id") << std::endl;
         std::ostringstream os;
         std::string uri = req->uri();
         LogDebug("uri:", uri);
@@ -133,31 +134,48 @@ public:
         msg->setHttpVersMinor(1);
 
         BufferChainSPtr bchain_sptr = buffer_chain(bodyString);
-        msg->setHeader("Content-length", std::to_string(bodyString.length() ));
-        msg->setHeader("Connection","close");
-        resp->asyncWrite(msg, bchain_sptr, [this, done, local_counter](Marvin::ErrorType& err){;
-            done(err, true);
-//            std::cout << "handler done local_counter : " << local_counter << std::endl;
-            // have not yet done a write of the body data
-//            _timer.expires_from_now(boost::posix_time::milliseconds(5000));
-//            _timer.async_wait([](const boost::system::error_code& err){
-//                printf("Request handler timer done");
-//            });
-//
-////            done(err, true);
+        msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(bodyString.length() ));
+        
+        std::string uuid = req->getHeader(HttpHeader::Name::ConnectionHandlerId);
+        msg->setHeader(HttpHeader::Name::ConnectionHandlerId, uuid);
+        
+        bool keep_alive;
+        
+        if(req->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {
+            keep_alive = false;
+            msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+        } else {
+            keep_alive = true;
+            msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionKeepAlive);
+        }
+        
+        msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+        keep_alive = true;
+        
+        resp->asyncWrite(msg, bchain_sptr, [this, done, keep_alive](Marvin::ErrorType& err){;
+            done(err, keep_alive);
         });
     }
 };
 int
 MyRequestHandler::counter;
-
+/**
+* This is a hack to stop the server while in debug mode
+*/
+static boost::asio::io_service* server_io;
+void tsc_server_stop()
+{
+    server_io->stop();
+}
 void
 runTestServer()
 {
     try
     {
         HTTPServer<MyRequestHandler> server;
+//        server_io = server.get_io_service();
         server.listen();
+        printf( "server finished \n");
     }
     catch (std::exception& e)
     {
