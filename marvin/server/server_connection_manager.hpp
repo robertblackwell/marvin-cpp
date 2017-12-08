@@ -8,6 +8,10 @@
 
 /// Manages open connection handlers so that they may be cleanly stopped when the server
 /// needs to shut down.
+///
+/// And (TODO) limit the number so the server cannot get swamped. This will require  change
+/// to the interface
+///
 
 /// TConnectionHandler must be an instantiation of the template ConnectionHandler
 template<class TConnectionHandler>

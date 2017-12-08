@@ -8,7 +8,9 @@
 #include <unistd.h>
 #include <boost/asio.hpp>
 #include <pthread.h>
-#include <gtest/gtest.h>
+#define CATCH_CONFIG_RUNNER
+#include "catch.hpp"
+
 #include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
@@ -37,55 +39,45 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 *   -   the server is the reader of messages and the verofier of the results
 *
 */
-TServerSPtr
-serverFunction(boost::asio::io_service& io, Testcase tc)
-{
-    LogDebug("");
-    TServerSPtr srv = std::shared_ptr<TServer>(new TServer(io, tc));
-    srv->listen(9991, [](MessageReaderV2SPtr rdr) {
-//        printf("server got a message reader");
-        /// get here with a connected reader
-        /// start reading messages and test to see if they conform to th expected Tescase results
-    });
-    return srv;
-}
-
-/**
-* Just send all the buffers privided in the Testcase. Maybe leave a little room between them so that
-* they dont get merged by lower layers
-*/
-TClientSPtr clientFunction(boost::asio::io_service& io, Testcase tc)
- {
-    LogDebug("");
-    TClientSPtr client = std::shared_ptr<TClient>(new TClient(io, "http", "localhost", "9991", tc));
-    client->send_testcase_buffers([](Marvin::ErrorType err){
-//         printf("all buffers have been sent\n");
-    });
-    LogDebug("");
-    return client;
- }
 /**  --------------------------------------------------------------------------------------
-* run client and server the same thread
+* run client and server the same thread to test MessageReaderV2
 *---------------------------------------------------------------------------------------*/
-void runTestcase(Testcase tcase)
+static void runTestcase(Testcase tc)
 {
     LogDebug("");
     boost::asio::io_service io;
-    TServerSPtr sp = serverFunction(io, tcase);
-    TClientSPtr cp = clientFunction(io, tcase);
-    ASSERT_TRUE(true);
+    /**
+    * The server reads and verifies the message. NOte the server needs
+    * the testcase object to verify the message is received correctly
+    */
+    TServerSPtr srv = std::shared_ptr<TServer>(new TServer(io, tc));
+    srv->listen(9991, [](MessageReaderV2SPtr rdr) {
+        //go here is a win
+    });
+    /**
+    * The client sends the message
+    */
+    TClientSPtr client = std::shared_ptr<TClient>(new TClient(io, "http", "localhost", "9991", tc));
+    client->send_testcase_buffers([](Marvin::ErrorType err){
+        //printf("all buffers have been sent\n");
+    });
     io.run();
     LogDebug("");
 }
-
-//int main(int argc, char* argv[])
-TEST(MessageReader, Socket)
+// tests ending a message with out chunked encoding or content-length
+TEST_CASE("MessageReader_Socket_test_end_of_message")
 {
-//    twoProcesses();
-//    RBLogging::setEnabled(false);
-//    TestcaseDefinitions tcs = makeTestcaseDefinitions_01();
     TestcaseDefinitions tcs = makeTCS_eof();
-
+    for(int i = 0; i < tcs.number_of_testcases(); i++) {
+        runTestcase(tcs.get_case(i));
+    }
+}
+// tests reading messages with all kinds of buffering
+// to ensure parse crosses from heading to body correctly
+// and that chunked encoding works correctly
+TEST_CASE("MessageReader_Socket_test_buffering")
+{
+    TestcaseDefinitions tcs = makeTestcaseDefinitions_01();
     for(int i = 0; i < tcs.number_of_testcases(); i++) {
         runTestcase(tcs.get_case(i));
     }
@@ -94,10 +86,5 @@ TEST(MessageReader, Socket)
 #pragma mark - main
 int main(int argc, char * argv[]) {
     RBLogging::setEnabled(false);
-    BufferChain chain;
-    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    testing::InitGoogleTest(&_argc, _argv);
-    printf("Progrm exit");
-    return RUN_ALL_TESTS();
+    int result = Catch::Session().run( argc, argv );
 }

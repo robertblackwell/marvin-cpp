@@ -1,4 +1,4 @@
-
+#include "catch.hpp"
 #include "tsc_pipeline.hpp"
 
 PipelineTest::PipelineTest(boost::asio::io_service& io, std::vector<EchoTestcase>& testcase): _io(io), _testcase(testcase)
@@ -20,25 +20,26 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderV2SPtr rdr)
         _uuid = uuid;
     } else {
         assert(uuid == _uuid);
+        REQUIRE(uuid == _uuid);
     }
-    std::cout << __FUNCTION__ << " uuid: " << uuid << std::endl;
     
     std::string sx = rdr->get_body_chain().to_string();
     std::string sy = _testcase[_msg_index].buffers_as_string();
+
 #ifdef _VERBOSE
 //        std::cout << "echo'ed body " << sx << std::endl;
 //        std::cout << "testcasebody " << testcase.buffers_as_string() << std::endl;
-#endif
     assert(rdr->statusCode() == 200);
     assert(sx == sy);
-//    ASSERT_EQ(rdr->statusCode(), 200);
-//    ASSERT_EQ(sx, sy);
-    std::cout << "SUCCESS: " << _testcase[_msg_index]._description <<  std::endl;
+#endif
+    REQUIRE(rdr->statusCode() == 200);
+    REQUIRE(sx == sy);
+
     _msg_index++;
     if (_msg_index < _testcase.size()) {
         exec();
     } else {
-        std::cout << "SUCCESS: " << _testcase[_msg_index]._description <<  std::endl;
+//        std::cout << "SUCCESS: " << _testcase[_msg_index]._description <<  std::endl;
     }
     
 }

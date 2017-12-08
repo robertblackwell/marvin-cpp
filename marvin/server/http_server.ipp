@@ -67,9 +67,18 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::initialize()
     #if defined(SIGQUIT)
     _signals.add(SIGQUIT);
     #endif // defined(SIGQUIT)
-
-    waitForStop();
     
+#if 0
+    auto handler = [this]( const boost::system::error_code& error, int signal_number)
+    {
+      std::cout << "Handler Got signal " << signal_number << "; "
+                   "stopping io_service." << std::endl;
+      this->_io.stop();
+    };
+    _signals.async_wait(handler);
+#endif
+    
+    waitForStop();
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), _port);
     _acceptor.open(endpoint.protocol());
     _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
@@ -158,7 +167,7 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::handleAccept(
         // at this point we are running on _serveStrand start the connectionHandler with a post to
         // liberate it from the strand
         //
-        std::cout << "Server handleAccept " << std::hex << (long) this << " " << (long)connHandler << std::endl;
+//        std::cout << "Server handleAccept " << std::hex << (long) this << " " << (long)connHandler << std::endl;
         auto hf = std::bind(&ConnectionHandler<TRequestHandler>::serve, connHandler);
         _io.post(hf);
     }else{
@@ -193,6 +202,8 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::waitForStop()
 template<class TRequestHandler> void HTTPServer<TRequestHandler>::doStop(const Marvin::ErrorType& err)
 {
     LogDebug("");
+    std::cout << "doStop" << std::endl;
+    _io.stop();
     _acceptor.close();
 //  connection_manager_.stop_all();
 }

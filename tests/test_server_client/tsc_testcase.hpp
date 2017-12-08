@@ -43,4 +43,4 @@ class EchoTestcase
     BufferChainSPtr chunk_as_buffer_chain(std::size_t index);
 
 };
-#endif;
+#endif

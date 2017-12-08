@@ -89,7 +89,7 @@ void ConnectionHandler<TRequestHandler>::requestComplete(Marvin::ErrorType err, 
                 LogError("exception: ", e.what());
             }
     }else{
-        _connection->close();
+        _connection->close(); //TODO - this is wrong I think
     }
 }
 
@@ -134,7 +134,7 @@ void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType er
     } else{
         if(_reader->method() == HttpMethod::CONNECT ){
             LogWarn("CONNECT request");
-            std::cout << std:: hex << &_reader << " " << (long)_reader.get() << std::endl;
+//            std::cout << std:: hex << &_reader << " " << (long)_reader.get() << std::endl;
              _requestHandlerUnPtr->handleConnect(_reader, _connection, [this](Marvin::ErrorType& err, bool keepAlive){
                 this->requestComplete(err, false);
              });
@@ -159,7 +159,7 @@ template<class TRequestHandler>
 void ConnectionHandler<TRequestHandler>::serve()
 {
     LogInfo(" fd:", nativeSocketFD());
-    std::cout << "connection_handler::serve " << std::hex << (long) this << std::endl;
+//    std::cout << "connection_handler::serve " << std::hex << (long) this << std::endl;
     ConnectionInterface* cptr = _connection.get();
     
     _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
@@ -180,7 +180,7 @@ void ConnectionHandler<TRequestHandler>::serveAnother()
     LogInfo(" fd:", nativeSocketFD());
     /// get a new request object
     ConnectionInterface* cptr = _connection.get();
-    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
+//    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
 
     _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
     _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));

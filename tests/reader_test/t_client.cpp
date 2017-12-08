@@ -86,7 +86,7 @@ void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_tr
 void TClient::wait_before_write()
 {
     LogDebug("");
-    _timer.expires_from_now(boost::posix_time::milliseconds(1000));
+    _timer.expires_from_now(boost::posix_time::milliseconds(100));
 //    auto ds = boost::bind(&TClient::write_line, this, std::placeholders::_1);
     _timer.async_wait([this](const boost::system::error_code& err) {
         write_line();

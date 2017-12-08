@@ -60,7 +60,7 @@ Client::~Client()
 void Client::asyncConnect(ErrorOnlyCallbackType cb)
 {
     LogInfo("", (long)this);
-    std::cout << "client asyncConnect " << std::hex << (long) this << std::endl;
+//    std::cout << "client asyncConnect " << std::hex << (long) this << std::endl;
     if (_conn_shared_ptr != nullptr ) {
         throw "should not have a connection at this point";
     }
