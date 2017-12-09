@@ -45,9 +45,35 @@ static EchoTestcase tcase03(
             "HGYTRESAWQ"
         }
     );
+void runTestClient();
+void test_one(EchoTestcase& testcase);
+void test_multiple(std::vector<EchoTestcase> cases);
+
+template<class TESTEXEC, class TESTCASE>
+void test_one(TESTCASE testcase)
+{
+    boost::asio::io_service io_service;
+    TESTEXEC tst(io_service, testcase);
+    tst.exec();
+    io_service.run();
+}
+template<class TESTEXEC, class TESTCASE>
+void test_multiple(std::vector<TESTCASE> cases)
+{
+    boost::asio::io_service io_service;
+    
+    std::vector<std::shared_ptr<TESTEXEC>> saved;
+    for(TESTCASE& c : cases) {
+        std::shared_ptr<TESTEXEC> texec = std::shared_ptr<TESTEXEC>(new TESTEXEC(io_service, c));
+        saved.push_back(texec);
+        texec->exec();
+    }
+    io_service.run();
+}
 
 // sends request with using different forms of body data structure
 // tests body parsing
+auto f1 = test_one<PostTest, EchoTestcase>;
 TEST_CASE("PostTest_consec", "[server, body, consecutive]")
 {
     std::vector<EchoTestcase> tcs = {tcase01, tcase02, tcase03};

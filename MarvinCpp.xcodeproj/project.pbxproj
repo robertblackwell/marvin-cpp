@@ -395,6 +395,7 @@
 		D4D389B91FD360A300EBA20E /* message_writer_v2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4069C441FC8D8AE00935F30 /* message_writer_v2.cpp */; };
 		D4D389BA1FD387E900EBA20E /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D427A64E1FC8A3AD00392DE0 /* client.cpp */; };
 		D4D8FB091FA1A54B00649365 /* CertificateBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4D8FB071FA1A54B00649365 /* CertificateBuilder.cpp */; };
+		D4DE14CB1FDB5CF30002D09A /* connection_handler_pool .cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE14C91FDB5CF20002D09A /* connection_handler_pool .cpp */; };
 		D4E104B41E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
 		D4E104B51E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
 		D4E104B61E17FCB200BB6066 /* tunnel_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */; };
@@ -1008,6 +1009,8 @@
 		D4D389B41FD35D7300EBA20E /* roundtrip.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = roundtrip.hpp; sourceTree = "<group>"; };
 		D4D8FB071FA1A54B00649365 /* CertificateBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CertificateBuilder.cpp; sourceTree = "<group>"; };
 		D4D8FB081FA1A54B00649365 /* CertificateBuilder.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CertificateBuilder.hpp; sourceTree = "<group>"; };
+		D4DE14C91FDB5CF20002D09A /* connection_handler_pool .cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "connection_handler_pool .cpp"; sourceTree = "<group>"; };
+		D4DE14CA1FDB5CF20002D09A /* connection_handler_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = connection_handler_pool.hpp; sourceTree = "<group>"; };
 		D4E104B21E17FCB200BB6066 /* tunnel_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tunnel_handler.cpp; sourceTree = "<group>"; };
 		D4E104B31E17FCB200BB6066 /* tunnel_handler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = tunnel_handler.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		D4E104B71E1811AD00BB6066 /* half_tunnel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = half_tunnel.cpp; sourceTree = "<group>"; };
@@ -1489,6 +1492,8 @@
 		D4487CAA1FC66A36006D4DB7 /* server */ = {
 			isa = PBXGroup;
 			children = (
+				D4DE14CA1FDB5CF20002D09A /* connection_handler_pool.hpp */,
+				D4DE14C91FDB5CF20002D09A /* connection_handler_pool .cpp */,
 				D40B75541E0A0D6B00431E06 /* connection_handler.hpp */,
 				D40B75531E0A0D6B00431E06 /* connection_handler.ipp */,
 				D40B75581E0A0D6B00431E06 /* server_connection_manager.hpp */,
@@ -2904,6 +2909,7 @@
 				D4B8313A1FD66DBD004C2B63 /* tsc_pipeline.cpp in Sources */,
 				D4C23E761FCBC78800F839C0 /* test_mbuffer.cpp in Sources */,
 				D4C23E751FCBC78800F839C0 /* test_fbuffer.cpp in Sources */,
+				D4DE14CB1FDB5CF30002D09A /* connection_handler_pool .cpp in Sources */,
 				D4273D391FD4CEA10060C374 /* tsc_testcase.cpp in Sources */,
 				D43778FB1FD24A2100057DCE /* testcase_defs.cpp in Sources */,
 				D46614E01DFDBCAE00E3FAB0 /* marvin_error.cpp in Sources */,

@@ -9,6 +9,11 @@
 #include "message_reader_v2.hpp"
 #include "message_writer_v2.hpp"
 
+class RequestHandlerBase;
+
+typedef std::shared_ptr<RequestHandlerBase> RequestHandlerBaseSPtr;
+typedef std::function<RequestHandlerBaseSPtr()> RequestHandlerFactory;
+
 typedef std::function<void(Marvin::ErrorType& err, bool keepAlive)> HandlerDoneCallbackType;
 typedef std::function<void(bool hijackConnectioin)> ConnectHandlerHijackCallbackType;
 

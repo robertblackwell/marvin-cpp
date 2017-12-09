@@ -18,10 +18,28 @@
 #include "rb_logger.hpp"
 #include "connection_handler.hpp"
 
-/*
-** @brief HTTP server class.
-** @discussion TRequestHandler is a template argument that must conform to RequestHandlerBase
-** for a class that will handle an http request and send the necessary response
+/**
+* @brief HTTP server class.
+* @discussion TRequestHandler is a template argument that must conform to RequestHandlerBase
+* for a class that will handle an http request and send the necessary response.
+*
+* Discussion of structure
+*
+*   TRequestHandler is a "user" provided class instance that actually handles a one or more request
+*   on a single connection.
+*
+*   connection_handler (ConnectionHandler) wraps a single instance of TRequestHandler and manages
+*   the life cycle of that TRequestHandler instance, and thus represents the life time of a single client
+*   connection.
+*
+*   server_connection_manager (ServerConnectionManager)
+*   -   only one of these exists. That instance
+*   -   keeps track of  a smart pointer to every active instane of ConnectionHandler
+*       thereby ensures they stay in existence while active and can be deleted en-mass if/when the
+*       server needs to close down
+*   -   limits the number of active ConnectionHandler instances at any point in time to ensure that
+*       the server does not get overloaded.
+*
 */
 template<class TRequestHandler> class HTTPServer
 {

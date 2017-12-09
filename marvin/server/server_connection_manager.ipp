@@ -9,6 +9,19 @@ ServerConnectionManager<TConnectionHandler>::ServerConnectionManager(boost::asio
     LogTorTrace();
 }
 template<class TConnectionHandler>
+void ServerConnectionManager<TConnectionHandler>::acquireConnectionHandler(TConnHandlerCallback cb)
+{
+//    _connections[connHandler] = std::unique_ptr<TConnectionHandler>(connHandler);
+}
+template<class TConnectionHandler>
+void ServerConnectionManager<TConnectionHandler>::releaseConnectionHandler(TConnectionHandlerSPtr conn_sptr)
+{
+//    _connections[conn_sptr] = std::unique_ptr<TConnectionHandler>(connHandler);
+}
+
+
+
+template<class TConnectionHandler>
 void ServerConnectionManager<TConnectionHandler>::registerConnectionHandler(TConnectionHandler* connHandler)
 {
     _connections[connHandler] = std::unique_ptr<TConnectionHandler>(connHandler);

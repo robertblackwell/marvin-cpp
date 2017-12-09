@@ -19,7 +19,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "request_handler_base.hpp"
 #include "tsc_post.hpp"
 #include "tsc_pipeline.hpp"
-#include "tsc_client.hpp"
 //#include "tsc_server.hpp"
 #include "tsc_testcase.hpp"
 #include "tsc_req_handler.hpp"
