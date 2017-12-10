@@ -151,7 +151,9 @@ void Client::internalWrite()
     // get a writer
     this->_wrtr = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _conn_shared_ptr));
 #endif
-
+#define NO_PRE_READ 
+#ifndef NO_PRE_READ
+    LogDebug("start pre read");
     if( _on_headers_handler != nullptr ) {
         this->_rdr->readHeaders([this](Marvin::ErrorType ec){
             if (!ec) {
@@ -175,7 +177,7 @@ void Client::internalWrite()
             }
         });
     }
-    
+#endif
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     setContentLength();
@@ -186,10 +188,29 @@ void Client::internalWrite()
         if (!ec) {
             // do nothing - let the read happen
             LogDebug("do nothing");
+            
+#ifdef NO_PRE_READ
+            LogDebug("start read");
+            
+            this->_rdr->readMessage([this](Marvin::ErrorType ec){
+                if (!ec) {
+                    this->_response_handler(ec, _rdr);
+                } else {
+                    this->_response_handler(ec, _rdr);
+                }
+            });
+#endif
         } else {
             this->_response_handler(ec, _rdr);
         }
     });
+}
+void Client::close()
+{
+    _conn_shared_ptr->close();
+    _rdr = nullptr;
+    _wrtr = nullptr;
+    _conn_shared_ptr = nullptr;
 }
 void Client::end()
 {
@@ -311,6 +332,7 @@ MessageReaderV2SPtr Client::getResponse()
     return _rdr;
 }
 
+#if 0
 void Client::setOnHeaders(ResponseHandlerCallbackType cb)
 {
     _on_headers_handler = cb;
@@ -320,3 +342,4 @@ void Client::setOnData(ClientDataHandlerCallbackType cb)
 {
     _on_data_handler = cb;
 }
+#endif

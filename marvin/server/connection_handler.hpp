@@ -17,23 +17,22 @@
 
 #include "message_reader_v2.hpp"
 #include "message_writer_v2.hpp"
+#include "request_handler_base.hpp"
+#include "connection_handler.hpp"
 #include "connection_interface.hpp"
-#include "server_connection_manager.hpp"
 
+class ServerConnectionManager;
+class ConnectionHandler;
+typedef std::shared_ptr<ConnectionHandler> ConnectionHandlerSPtr;
 
-//
-// If these are defined we use unique_ptr to hold Connection, MessageReader, MessageWriter
-//
-#define CH_SMARTPOINTER
-#define CON_SMARTPOINTER
-/// TRequestHandler must conform to RequestHandlerBase
-template<class TRequestHandler> class ConnectionHandler
+class ConnectionHandler
 {
     public:
         ConnectionHandler(
             boost::asio::io_service&                                        io,
-            ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
-            ConnectionInterface*                                            conn
+            ServerConnectionManager&                                        connectionManager,
+            ConnectionInterface*                                            conn,
+            RequestHandlerFactory                                           factory
         );
     
         ~ConnectionHandler();
@@ -51,27 +50,14 @@ template<class TRequestHandler> class ConnectionHandler
 
         boost::uuids::uuid                                  _uuid;
         boost::asio::io_service&                            _io;
-//        boost::asio::strand&                                _serverStrand;
-//        ConnectionInterface*                                _conn;
-        ServerConnectionManager<ConnectionHandler>&         _connectionManager;
-        TRequestHandler*                                    _requestHandlerPtr;
-        std::unique_ptr<TRequestHandler>                    _requestHandlerUnPtr;
+        ServerConnectionManager&                            _connectionManager;
+//        RequestHandlerBase*                                 _requestHandlerPtr;
+        std::unique_ptr<RequestHandlerBase>                 _requestHandlerUnPtr;
+        RequestHandlerFactory                               _factory;
     
-#ifdef CON_SMARTPOINTER
         ConnectionInterfaceSPtr                             _connection;
-#else
-        ConnectionInterface*                         _connection;
-#endif
-
-#ifdef CH_SMARTPOINTER
-        MessageReaderV2SPtr   _reader;
-        MessageWriterV2SPtr   _writer;
-#else
-        MessageReaderV2*      _reader;
-        MessageWriterV2*      _writer;
-#endif
+        MessageReaderV2SPtr                                 _reader;
+        MessageWriterV2SPtr                                 _writer;
 };
-
-#include "connection_handler.ipp"
 
 #endif /* ConnectionHandler_hpp */

@@ -5,23 +5,27 @@
 #include <set>
 #include <map>
 #include "marvin_error.hpp"
-
+#include "connection_handler.hpp"
 
 /** Manages open connection handlers so that they may be cleanly stopped when the server
 * needs to shut down.
 *
-* And (TODO) limit the number so the server cannot get swamped. This will require  change
-* to the interface
-*
+* And limits the number of connection handlers active at any time so the server cannot get swamped.
 */
-/// TConnectionHandler must be an instantiation of the template ConnectionHandler
 
-template<class TConnectionHandler>
+class ServerConnectionManager;
+
+typedef std::shared_ptr<ServerConnectionManager> ServerConnectionManagerSPtr;
+typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerSPtr conHandler_sptr)> ConnectionManagerCallback;
+typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerSPtr conHandler_sptr)> AllowAnotherCallback;
+
 class ServerConnectionManager
 {
     public:
-        typedef std::shared_ptr<TConnectionHandler> TConnectionHandlerSPtr;
-        typedef std::function<void(Marvin::ErrorType err, TConnectionHandlerSPtr conn_sptr)> TConnHandlerCallback ;
+        typedef std::function<void()> AllowAnotherCallback;
+    
+        static ServerConnectionManager* instance;
+        static ServerConnectionManager* get_instance();
     
         ServerConnectionManager(const ServerConnectionManager&) = delete;
         ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
@@ -31,30 +35,31 @@ class ServerConnectionManager
         * a single threaded manner. That is achieved by requiring it to always
         * execute on the server strand.
         */
-        ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand);
-
-        /**
-        * Acquire a new ConnectionHandler instance. This returns a new connection handler via
-        * a call back so that the return of a new connection handler can be delayed
-        * until an already active connection handler is released
-        */
-        void acquireConnectionHandler(TConnHandlerCallback cb);
-//        void acquireConnectionHandler(std::function<void(Mavin::ErrorType err, TConnectionHandlerSPtr conn_sptr> cb);
+        ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand, int max_connections);
     
         /**
-        * Release a connection handler.
+        * called by server to verify that another accept is permitted
+        * within the context of the ConnectionManager's rescource allocation scheme.
+        * If not the ConnectionManager will wait till there is enough resource
+        * and invoke the cb to signal the server to continue. Did it this was
+        * so that the ConnectionManager does not need to know how to create
+        * ConnectionHandler, RequestHandler
         */
-        void releaseConnectionHandler(TConnectionHandlerSPtr conn_sptr);
+        void allowAnotherConnection(AllowAnotherCallback cb);
     
         /**
         ** Register a connection handler in a table so that it stays around to process request/response
+        ** and increments the count of connection handler active
         */
-        void registerConnectionHandler(TConnectionHandler* connHandler);
+        void registerConnectionHandler(ConnectionHandler* connHandler);
      
         /**
-        ** deregister the specified connection.
+        ** deregister the specified connection, removes from the table and decrements
+        ** the count of active connection handlers. If the there is a "allow another callback"
+        ** set invoke this callback if the number of active connection handlers is below the
+        ** max allowed
         */
-        void deregister(TConnectionHandler* ch);
+        void deregister(ConnectionHandler* ch);
 
         /**
         ** Stop all connections.
@@ -62,14 +67,20 @@ class ServerConnectionManager
         void stop_all();
 
     private:
-        void _deregister(TConnectionHandler* ch);
+        /**
+        * THese methods actually perform the register, deregister functions
+        * and are posted to the serverStrand
+        */
+        void _register(ConnectionHandler* ch);
+        void _deregister(ConnectionHandler* ch);
 
         boost::asio::io_service&    _io;
         boost::asio::strand&        _serverStrand;
+        int                         _maxNumberOfConnections;
+        int                         _currentNumberConnections;
+        AllowAnotherCallback        _callback;
         
-        std::map<TConnectionHandler*, std::unique_ptr<TConnectionHandler>> _connections;
+        std::map<ConnectionHandler*, std::unique_ptr<ConnectionHandler>> _connections;
 };
-
-#include "server_connection_manager.ipp"
 
 #endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

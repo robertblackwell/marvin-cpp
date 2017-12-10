@@ -30,7 +30,20 @@ using boost::bind;
 using boost::function;
 using boost::system::error_code;
 using boost::asio::io_service;
-
+/**
+* What about multiple access
+*/
+std::map<int, int> TCPConnection::socket_fds_inuse;
+void TCPConnection::fd_inuse(int fd)
+{
+    assert(socket_fds_inuse.find(fd) == socket_fds_inuse.end());
+    socket_fds_inuse[fd] = fd;
+}
+void TCPConnection::fd_free(int fd)
+{
+    assert(socket_fds_inuse.find(fd) != socket_fds_inuse.end());
+    socket_fds_inuse.erase(fd);
+}
 /**
  * Constructor
  *  @param {io_service} io_service  -   to use for running

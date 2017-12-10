@@ -19,7 +19,8 @@
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "uri_query.hpp"
-namespace test_server_client
+
+namespace body_format
 {
     /**
     * Class used to handle requests in the test server

@@ -7,6 +7,7 @@
 #include <string>
 #include <unistd.h>
 #include <boost/asio.hpp>
+#include <thread>
 #include <pthread.h>
 
 #define CATCH_CONFIG_RUNNER
@@ -17,19 +18,20 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
-#include "tsc_post.hpp"
-#include "tsc_pipeline.hpp"
-//#include "tsc_server.hpp"
-#include "tsc_testcase.hpp"
-#include "tsc_req_handler.hpp"
+#include "bf_post.hpp"
+#include "bf_pipeline.hpp"
+#include "bf_testcase.hpp"
+#include "bf_req_handler.hpp"
 
 int main( int argc, char* argv[] )
 {
     // global setup - run a server
-    RBLogging::setEnabled(false);
+    RBLogging::setEnabled(true);
     std::thread server_thread([](){
         try {
-            HTTPServer<test_server_client::RequestHandler> server;
+            HTTPServer server([](boost::asio::io_service& io){
+                return new body_format::RequestHandler(io);
+            });
             server.listen();
         } catch(std::exception & ex) {
             return;

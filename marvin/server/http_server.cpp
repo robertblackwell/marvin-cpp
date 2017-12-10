@@ -8,25 +8,34 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #include <thread>
+#include "http_server.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-template<class TRequestHandler>
-int HTTPServer<TRequestHandler>::__numberOfThreads = 4;
+int HTTPServer::__numberOfThreads = 4;
+int HTTPServer::__numberOfConnections = 2;
 
-template<class TRequestHandler>
-void HTTPServer<TRequestHandler>::configSet_NumberOfThreads(int n)
+
+void HTTPServer::configSet_NumberOfThreads(int n)
 {
     __numberOfThreads = n;
+}
+void HTTPServer::configSet_NumberOfConnections(int n)
+{
+    __numberOfConnections = n;
 }
 
 
 
-template<class TRequestHandler>
-HTTPServer<TRequestHandler>::HTTPServer()
-  : _io(5),
+
+HTTPServer::HTTPServer(RequestHandlerFactory factory)
+  : _factory(factory),
+    _io(5),
     _signals(_io),
     _acceptor(_io),
     _serverStrand(_io),
-    _connectionManager(_io, _serverStrand)
+    _numberOfConnections(__numberOfConnections),
+    _numberOfThreads(__numberOfThreads),
+    _connectionManager(_io, _serverStrand, __numberOfConnections)
 {
     LogTorTrace();
 
@@ -35,7 +44,7 @@ HTTPServer<TRequestHandler>::HTTPServer()
     // Register to handle the signals that indicate when the Server should exit.
     // It is safe to register for the same signal multiple times in a program,
     // provided all registration for the specified signal is made through Asio.
-#ifdef IINNIITT
+#if 0
     _signals.add(SIGINT);
     _signals.add(SIGTERM);
     #if defined(SIGQUIT)
@@ -53,7 +62,7 @@ HTTPServer<TRequestHandler>::HTTPServer()
 /**
 ** init
 */
-template<class TRequestHandler> void HTTPServer<TRequestHandler>::initialize()
+ void HTTPServer::initialize()
 {
     ///
     /// !! make sure this is big enough to handle the components with dedicated strands
@@ -82,11 +91,16 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::initialize()
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), _port);
     _acceptor.open(endpoint.protocol());
     _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-    _acceptor.bind(endpoint);
+    boost::system::error_code err;
+    _acceptor.bind(endpoint, err);
+    if( err) {
+        LogError("error port: ",_port, err.message());
+        exit(1);
+    }
+    LogDebug(err.message());
 
 }
-template<class TRequesstHandler>
-HTTPServer<TRequesstHandler>::~HTTPServer()
+HTTPServer::~HTTPServer()
 {
     LogTorTrace();
 }
@@ -94,14 +108,14 @@ HTTPServer<TRequesstHandler>::~HTTPServer()
 //-------------------------------------------------------------------------------------
 // listen - starts the accept cycle
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void HTTPServer<TRequestHandler>::listen(long port)
+ void HTTPServer::listen(long port)
 {
     _port = port;
     initialize();
     _acceptor.listen();
     
     // start the accept process on the _serverStrand
-    auto hf = std::bind(&HTTPServer<TRequestHandler>::startAccept, this);
+    auto hf = std::bind(&HTTPServer::startAccept, this);
     postOnStrand(hf);
     
 #define MULTI_THREAD
@@ -130,15 +144,12 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::listen(long po
 //-------------------------------------------------------------------------------------
 // startAccept
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void HTTPServer<TRequestHandler>::startAccept()
+ void HTTPServer::startAccept()
 {
     LogInfo("");
     ConnectionInterface* conptr = new TCPConnection(_io);
     
-    RequestHandlerBase* hi = new TRequestHandler(_io);
-    
-    ConnectionHandler<TRequestHandler>* connectionHandler =
-        new ConnectionHandler<TRequestHandler>(_io, _connectionManager, conptr);
+    ConnectionHandler* connectionHandler = new ConnectionHandler(_io, _connectionManager, conptr, _factory);
 
     auto hf = _serverStrand.wrap(
                     std::bind(&HTTPServer::handleAccept, this, connectionHandler, std::placeholders::_1)
@@ -149,9 +160,7 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::startAccept()
 //-------------------------------------------------------------------------------------
 // handleAccept - called on _strand to handle a new client connection
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void HTTPServer<TRequestHandler>::handleAccept(
-                                                                ConnectionHandler<TRequestHandler>* connHandler,
-                                                                const boost::system::error_code& err)
+ void HTTPServer::handleAccept(ConnectionHandler* connHandler, const boost::system::error_code& err)
 {
     LogInfo("", connHandler);
     if (! _acceptor.is_open()){
@@ -168,20 +177,21 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::handleAccept(
         // liberate it from the strand
         //
 //        std::cout << "Server handleAccept " << std::hex << (long) this << " " << (long)connHandler << std::endl;
-        auto hf = std::bind(&ConnectionHandler<TRequestHandler>::serve, connHandler);
+        auto hf = std::bind(&ConnectionHandler::serve, connHandler);
         _io.post(hf);
     }else{
         LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         delete connHandler;
     }
-    startAccept();
-    
+    _connectionManager.allowAnotherConnection([this](){
+        startAccept();
+    });
 }
 
 //-------------------------------------------------------------------------------------
 // postOnStrand - wraps a parameterless function in _strand and posts to _io
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void HTTPServer<TRequestHandler>::postOnStrand(std::function<void()> fn)
+ void HTTPServer::postOnStrand(std::function<void()> fn)
 {
     auto wrappedFn = _serverStrand.wrap(fn);
     _io.post(wrappedFn);
@@ -190,7 +200,7 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::postOnStrand(s
 //-------------------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------------------
-template<class TRequestHandler> void HTTPServer<TRequestHandler>::waitForStop()
+ void HTTPServer::waitForStop()
 {
     LogDebug("");
     auto hf = _serverStrand.wrap(
@@ -199,7 +209,7 @@ template<class TRequestHandler> void HTTPServer<TRequestHandler>::waitForStop()
 
   _signals.async_wait(hf);
 }
-template<class TRequestHandler> void HTTPServer<TRequestHandler>::doStop(const Marvin::ErrorType& err)
+ void HTTPServer::doStop(const Marvin::ErrorType& err)
 {
     LogDebug("");
     std::cout << "doStop" << std::endl;

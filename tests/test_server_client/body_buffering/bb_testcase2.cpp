@@ -1,6 +1,8 @@
 
-#include "tsc_testcase.hpp"
+#include "bf_testcase.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+
+using namespace body_buffering;
 
 EchoTestcase::EchoTestcase(EchoTestType type, std::string desc, std::vector<std::string> bufs) : _test_type(type), _description(desc), _body_buffers(bufs)
 {
@@ -24,7 +26,14 @@ std::string     EchoTestcase::buffers_as_string()
 }
 BufferChainSPtr EchoTestcase::buffers_as_buffer_chain()
 {
-    return buffer_chain(buffers_as_mbuffer());
+    std::string res = "";
+    BufferChainSPtr sp = std::make_shared<BufferChain>();
+    for(std::string& s: _body_buffers) {
+        res += s;
+        MBufferSPtr mb = m_buffer(s);
+        sp->push_back(mb);
+    }
+    return sp;
 }
 
 MBufferSPtr     EchoTestcase::chunk_as_mbuffer(std::size_t index)

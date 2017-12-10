@@ -16,38 +16,43 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
-#include "tsc_post.hpp"
-#include "tsc_pipeline.hpp"
-#include "tsc_testcase.hpp"
-#include "tsc_req_handler.hpp"
+#include "bf_post.hpp"
+#include "bf_pipeline.hpp"
+#include "bf_testcase.hpp"
+#include "bf_req_handler.hpp"
 
-static EchoTestcase tcase01(
-        EchoTestType::WITH_STRING,
+using namespace body_format;
+
+static Testcase tcase01(
+        TestType::WITH_STRING,
         "With string - 2 buffers",
         {
-            "1234567890",
-            "HGYTRESAWQ"
+            "12345987654",
+            "93hdiuybk"
         }
     );
-static EchoTestcase  tcase02(
-        EchoTestType::WITH_MBUFFER,
+static Testcase  tcase02(
+        TestType::WITH_MBUFFER,
         "With mbuffer - 2 buffers",
         {
             "1234567890",
+            "oiuhgre76",
             "HGYTRESAWQ"
         }
     );
-static EchoTestcase tcase03(
-        EchoTestType::WITH_BUFFER_CHAIN,
+static Testcase tcase03(
+        TestType::WITH_BUFFER_CHAIN,
         "With buffer chain - 2 buffers",
         {
             "1234567890",
-            "HGYTRESAWQ"
+            "1m2j3k4i5u6",
+            "qkjgtaitsko",
+            "2"
         }
     );
 void runTestClient();
-void test_one(EchoTestcase& testcase);
-void test_multiple(std::vector<EchoTestcase> cases);
+void test_one(Testcase& testcase);
+void test_multiple(std::vector<Testcase> cases);
 
 template<class TESTEXEC, class TESTCASE>
 void test_one(TESTCASE testcase)
@@ -70,30 +75,39 @@ void test_multiple(std::vector<TESTCASE> cases)
     }
     io_service.run();
 }
-
-// sends request with using different forms of body data structure
+#if 1
+TEST_CASE("PostOne","")
+{
+    test_one<PostTest, Testcase>(tcase01);
+}
+#endif
+#if 0
 // tests body parsing
-auto f1 = test_one<PostTest, EchoTestcase>;
+// sends request with using different forms of body data structure
 TEST_CASE("PostTest_consec", "[server, body, consecutive]")
 {
-    std::vector<EchoTestcase> tcs = {tcase01, tcase02, tcase03};
+    std::vector<Testcase> tcs = {tcase01, tcase02, tcase03};
     for(auto & c : tcs) {
-        test_one<PostTest, EchoTestcase>(c);
+        test_one<PostTest, Testcase>(c);
     }
 }
-
-// sends multiple request with body simultaneously
+#endif
+#if 0
 // tests simultaneous operation of server and reuqest handler
+// sends multiple request with body simultaneously
 TEST_CASE("PostTest_multiple", "[server, body, multiple]")
 {
-    std::vector<EchoTestcase> tcs = {tcase01, tcase02, tcase03};
-    test_multiple<PostTest, EchoTestcase>(tcs);
+    std::vector<Testcase> tcs = {tcase01, tcase02, tcase03, tcase01, tcase02, tcase03, tcase01, tcase02, tcase03};
+    test_multiple<PostTest, Testcase>(tcs);
 }
-
+#endif
+#if 0
+// tests pipelining and keep-alive/close in server and request handler
 // sends multiple request with body back to back on the same connection
-// tests pipelining in server
 TEST_CASE("PostTest_pipeline", "[server, body, pipeline]")
 {
-    std::vector<EchoTestcase> tcs = {tcase01, tcase02, tcase03};
-    test_one<PipelineTest, std::vector<EchoTestcase>>(tcs);
+//    std::vector<EchoTestcase> tcs = {tcase01, tcase02, tcase03};
+    std::vector<Testcase> tcs = {tcase01, tcase02, tcase03, tcase01, tcase02, tcase03, tcase01, tcase02, tcase03};
+    test_one<PipelineTest, std::vector<Testcase>>(tcs);
 }
+#endif

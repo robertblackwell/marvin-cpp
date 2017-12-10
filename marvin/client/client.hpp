@@ -223,10 +223,11 @@ public:
     /**
     * close - called to signal that connection::close has been received
     * and that the net round trip should use a different connection
+    * for the next message. This invalidates _connection, _rdr, _wrtr
     *
     * @TODO - not sure we need this - just delete the client object
     */
-//    close();
+    void close();
     
 #pragma mark - friend utility functions
    

@@ -139,7 +139,8 @@ protected:
     void _handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_transfered);
     
     // buffer management
-    MBufferSPtr _header_buffer_sptr;
+    int                             _total_bytes_read;
+    MBufferSPtr                     _header_buffer_sptr;
     MBufferSPtr                     _body_buffer_sptr;
     FBufferSharedPtr                _body_fragments_sptr;
 

@@ -4,7 +4,7 @@
 #include <pthread.h>
 
 #include "boost_stuff.hpp"
-
+#include "json.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "http_header.hpp"
@@ -14,9 +14,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "uri_query.hpp"
-#include "tsc_req_handler.hpp"
 
-using namespace test_server_client;
+#include "bf_req_handler.hpp"
+
+using namespace body_format;
+
 int RequestHandler::counter;
 RequestHandler::RequestHandler(boost::asio::io_service& io):RequestHandlerBase(io), _timer(io), _uuid(boost::uuids::random_generator()())
 {
@@ -99,11 +101,8 @@ void RequestHandler::handleRequest(
     MessageReaderV2SPtr req,
     MessageWriterV2SPtr resp,
     HandlerDoneCallbackType done
-){
-    // TODO - this is trying to catch multiple instances of a handler
-//    int local_counter = counter++;
-//        std::cout << "got to a new handler counter: " << local_counter << " " << std::hex << (long)this << std::endl;
-//        std::cout << "connection handler id " << req->getHeader("Connection_Handler_Id") << std::endl;
+)
+{
     std::ostringstream os;
     std::string uri = req->uri();
     LogDebug("uri:", uri);
@@ -120,7 +119,21 @@ void RequestHandler::handleRequest(
         std::string bdy = post_dispatcher(req);
         bodyString = (req->get_body_chain()).to_string();
     }
-
+    nlohmann::json j;
+    j["req"] = {
+        {"method", mm},
+        {"uri", uri},
+        {"headers", req->getHeaders()},
+        {"body",bodyString}
+    };
+    j["xtra"] = {
+        {"connection_handler_uuid", req->getHeader(HttpHeader::Name::ConnectionHandlerId)},
+        {"request_handler_uuid", boost::uuids::to_string(_uuid)}
+    };
+    
+    std::string json_body = j.dump();
+    bodyString = json_body;
+    
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
     msg->setIsRequest(false);
     msg->setStatusCode(200);
@@ -131,35 +144,24 @@ void RequestHandler::handleRequest(
     BufferChainSPtr bchain_sptr = buffer_chain(bodyString);
     msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(bodyString.length() ));
     
+    /// identify the connection handler for this request/response
     std::string uuid = req->getHeader(HttpHeader::Name::ConnectionHandlerId);
     msg->setHeader(HttpHeader::Name::ConnectionHandlerId, uuid);
-    
+
+    /// identify the request handler for this request/response
+    msg->setHeader(HttpHeader::Name::RequestHandlerId, boost::uuids::to_string(_uuid));
+
+    /// correctly handle keep-alive/close
     bool keep_alive;
-    
-    if(req->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {
-        keep_alive = false;
-        msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
-    } else {
+    if(req->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionKeepAlive) {
         keep_alive = true;
         msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionKeepAlive);
+    } else {
+        keep_alive = false;
+        msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
     }
-    
-    msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
-    keep_alive = true;
     
     resp->asyncWrite(msg, bchain_sptr, [this, done, keep_alive](Marvin::ErrorType& err){;
         done(err, keep_alive);
     });
 }
-
-void
-runTestServer()
-{
-    try {
-        HTTPServer<test_server_client::RequestHandler> server;
-        server.listen();
-    } catch(std::exception & ex) {
-        return;
-    }
-}
-

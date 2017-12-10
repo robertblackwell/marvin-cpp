@@ -12,7 +12,11 @@
 class RequestHandlerBase;
 
 typedef std::shared_ptr<RequestHandlerBase> RequestHandlerBaseSPtr;
-typedef std::function<RequestHandlerBaseSPtr()> RequestHandlerFactory;
+typedef std::unique_ptr<RequestHandlerBase> RequestHandlerBaseUPtr;
+
+typedef std::function<RequestHandlerBase*(boost::asio::io_service& io)> RequestHandlerFactory;
+typedef std::function<RequestHandlerBaseSPtr(boost::asio::io_service& io)> RequestHandlerSPtrFactory;
+typedef std::function<RequestHandlerBaseUPtr(boost::asio::io_service& io)> RequestHandlerUPtrFactory;
 
 typedef std::function<void(Marvin::ErrorType& err, bool keepAlive)> HandlerDoneCallbackType;
 typedef std::function<void(bool hijackConnectioin)> ConnectHandlerHijackCallbackType;

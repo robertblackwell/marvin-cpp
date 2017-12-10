@@ -6,50 +6,48 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 #include "http_header.hpp"
+#include "connection_handler.hpp"
+#include "server_connection_manager.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-template<class TRequestHandler>
-ConnectionHandler<TRequestHandler>::ConnectionHandler(
+ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&                                        io,
-    ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
-    ConnectionInterface*                                            conn
-):  _io(io), _connectionManager(connectionManager),
-    _uuid(boost::uuids::random_generator()())
+    ServerConnectionManager&                                        connectionManager,
+    ConnectionInterface*                                            conn,
+    RequestHandlerFactory                                           factory
+):  _io(io),
+    _connectionManager(connectionManager),
+    _uuid(boost::uuids::random_generator()()),
+    _factory(factory)
 {
     LogTorTrace();
-    _requestHandlerPtr  = new TRequestHandler(_io);
-    _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
-    
-#ifdef CON_SMARTPOINTER
+    /**
+    * The connection and the request handler persist acrosss all messages served
+    * by a connection handler. This is required to ensure that our MITM proxy
+    * can handle keep-alive
+    */
     _connection = std::shared_ptr<ConnectionInterface>(conn);
-#else
-    _connection = conn;
-#endif
+    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
+
 }
 
 
-template<class TRequestHandler>
-ConnectionHandler<TRequestHandler>::~ConnectionHandler()
+ConnectionHandler::~ConnectionHandler()
 {
+    _requestHandlerUnPtr = nullptr;
     LogTorTrace();
-#ifdef CON_SMARTPOINTER
-#else
-    delete _connection;
-#endif
     LogDebug("");
     
 }
-template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::close()
+void ConnectionHandler::close()
 {
     LogDebug(" fd:", nativeSocketFD());
-//    _connection->close();
 }
 /*!
 *   Utility method returns the underlying FD for this connection.
 *   Used only for debug racing purposes
 */
-template<class TRequestHandler>
-long ConnectionHandler<TRequestHandler>::nativeSocketFD()
+long ConnectionHandler::nativeSocketFD()
 {
     return _connection->nativeSocketFD();
 }
@@ -57,8 +55,7 @@ long ConnectionHandler<TRequestHandler>::nativeSocketFD()
 /*!
 * Come here when a the CONNECT handler calls its "done" callback
 */
-template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::handleConnectComplete(bool hijacked)
+void ConnectionHandler::handleConnectComplete(bool hijacked)
 {
     // do not want the connction closed unless !hijacked
     LogInfo(" fd:", nativeSocketFD());
@@ -73,20 +70,18 @@ void ConnectionHandler<TRequestHandler>::handleConnectComplete(bool hijacked)
 * to initiate another request/response cycle or to wait for the client to
 * close the connection
 */
-template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::requestComplete(Marvin::ErrorType err, bool keepAlive)
+void ConnectionHandler::requestComplete(Marvin::ErrorType err, bool keepAlive)
 {
     /*!
     * start serving the next request/response cycle
     */
     if(!err){
-        try{
-//            _connection->shutdown();
-            this->serveAnother();
-            }
-            catch (std::exception& e)
-            {
-                LogError("exception: ", e.what());
+            if (keepAlive) {
+                this->serveAnother();
+            } else {
+                this->serveAnother();   // this is a hack - wait for the cline to close the connection
+                                        // we will get a zero bytes read or error
+//                _connection->shutdown(); // let the next read take place - that will complete the shutdown
             }
     }else{
         _connection->close(); //TODO - this is wrong I think
@@ -97,8 +92,7 @@ void ConnectionHandler<TRequestHandler>::requestComplete(Marvin::ErrorType err, 
 * Come here when the latest request/response cycle is complete and
 * the client has indicated no more requests/
 */
-template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::handlerComplete(Marvin::ErrorType err)
+void ConnectionHandler::handlerComplete(Marvin::ErrorType err)
 {
     LogInfo(" fd:", nativeSocketFD());
     if(!err)
@@ -114,8 +108,7 @@ void ConnectionHandler<TRequestHandler>::handlerComplete(Marvin::ErrorType err)
 * Come here after a request message has been successfully read,
 * this is the first step in the request/response cycle
 */
-template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType err)
+void ConnectionHandler::readMessageHandler(Marvin::ErrorType err)
 {
     LogInfo(" fd:", nativeSocketFD());
     LogInfo("", Marvin::make_error_description(err));
@@ -155,13 +148,13 @@ void ConnectionHandler<TRequestHandler>::readMessageHandler(Marvin::ErrorType er
 /*!
 * Come here to start the read of a request message, ahdnhence start a request/response cycle
 */
-template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::serve()
+void ConnectionHandler::serve()
 {
     LogInfo(" fd:", nativeSocketFD());
 //    std::cout << "connection_handler::serve " << std::hex << (long) this << std::endl;
     ConnectionInterface* cptr = _connection.get();
     
+//    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
     _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
     _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));
 
@@ -174,20 +167,21 @@ void ConnectionHandler<TRequestHandler>::serve()
 * and MessageWriter objects - this is a effort to keep the same connection/socket open
 * for the next request
 */
-template<class TRequestHandler>
-void ConnectionHandler<TRequestHandler>::serveAnother()
+void ConnectionHandler::serveAnother()
 {
     LogInfo(" fd:", nativeSocketFD());
     /// get a new request object
     ConnectionInterface* cptr = _connection.get();
 //    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
 
+//    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
     _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
     _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));
 //    _writer->setWriteSock(cptr);
     
-    _requestHandlerPtr  = new TRequestHandler(_io);
-    _requestHandlerUnPtr = std::unique_ptr<TRequestHandler>(_requestHandlerPtr);
+//    _requestHandlerPtr  = new TRequestHandler(_io);
+
+//    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_requestHandlerPtr);
 
     auto rmh = std::bind(&ConnectionHandler::readMessageHandler, this, std::placeholders::_1 );
     _reader->readMessage(rmh);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0820"
+   LastUpgradeVersion = "0900"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-               BuildableName = "test_server_client"
-               BlueprintName = "test_server_client"
+               BlueprintIdentifier = "D46A84C51FDCC27D00D93365"
+               BuildableName = "test_server_client_body_buffering"
+               BlueprintName = "test_server_client_body_buffering"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,9 +33,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-            BuildableName = "test_server_client"
-            BlueprintName = "test_server_client"
+            BlueprintIdentifier = "D46A84C51FDCC27D00D93365"
+            BuildableName = "test_server_client_body_buffering"
+            BlueprintName = "test_server_client_body_buffering"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -57,9 +57,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-            BuildableName = "test_server_client"
-            BlueprintName = "test_server_client"
+            BlueprintIdentifier = "D46A84C51FDCC27D00D93365"
+            BuildableName = "test_server_client_body_buffering"
+            BlueprintName = "test_server_client_body_buffering"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -76,9 +76,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D42DB9B41E00F93000B2AF60"
-            BuildableName = "test_server_client"
-            BlueprintName = "test_server_client"
+            BlueprintIdentifier = "D46A84C51FDCC27D00D93365"
+            BuildableName = "test_server_client_body_buffering"
+            BlueprintName = "test_server_client_body_buffering"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

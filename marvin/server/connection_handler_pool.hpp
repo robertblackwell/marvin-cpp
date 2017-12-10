@@ -6,8 +6,8 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef connection_pool_hpp
-#define connection_pool_hpp
+#ifndef connection_handler_pool_hpp
+#define connection_handler_pool_hpp
 
 #include <stdio.h>
 #include <vector>

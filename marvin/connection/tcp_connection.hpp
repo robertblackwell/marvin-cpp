@@ -27,8 +27,7 @@ using namespace boost::asio;
 using ip::tcp;
 using system::error_code;
 
-//class Connection;
-//typedef std::shared_ptr<Connection> ConnectionPtr;
+
 class TCPConnection;
 typedef std::shared_ptr<TCPConnection> TCPConnectionSPtr;
 typedef std::unique_ptr<TCPConnection> TCPConnectionUPtr;
@@ -39,6 +38,10 @@ typedef std::unique_ptr<TCPConnection> TCPConnectionUPtr;
 class TCPConnection : public ConnectionInterface
 {
     public:
+    static std::map<int, int>   socket_fds_inuse;
+    static void fd_inuse(int fd);
+    static void fd_free(int fd);
+
     // client socket needs to know who to connect to
 #if 0
     TCPConnection(

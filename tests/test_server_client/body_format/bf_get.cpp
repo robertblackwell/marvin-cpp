@@ -1,7 +1,8 @@
-#include "tsc_get.hpp"
+#include "bf_get.hpp"
 
+using namespace body_format;
 
-GetTest::GetTest(boost::asio::io_service& io, EchoTestcase& testcase): _io(io), _testcase(testcase)
+GetTest::GetTest(boost::asio::io_service& io, Testcase& testcase): _io(io), _testcase(testcase)
 {
 
 }

@@ -173,6 +173,7 @@ void MessageReaderV2::read_message(std::function<void(Marvin::ErrorType err)> cb
 {
     _reading_full_message = true;
     _read_message_cb = cb;
+    _total_bytes_read = 0;
     this->_read_some_headers();
 }
 /**
@@ -184,6 +185,7 @@ void MessageReaderV2::read_headers(std::function<void(Marvin::ErrorType err)> cb
 {
     _reading_full_message = false;
     _read_message_cb = cb;
+    _total_bytes_read = 0;
     this->_read_some_headers();
 }
 /**
@@ -206,14 +208,34 @@ void MessageReaderV2::_handle_header_read(Marvin::ErrorType er, std::size_t byte
     LogDebug("entry fd: ", _readSock->nativeSocketFD());
     LogDebug("er: ", er.message());
     /**
-    * an io error with bytes_transfered == 0 is probably EOF - let the parser handle it
-    * otherwise (err && (bytes_transfered > 0)) return with error
+    * Error processing here is a bit tricky
+    *   -   if we are in the middle of processing a messages and
+    *       we get an io error with bytes_transfered == 0,
+    *       it is probably the other end sending an EOF to signal EOM
+    *       so let the parser handle it
+    *   -   if this is the first result for a new message and bytes_transfered ==0
+    *       this is probably the other end signalling socket closed and a new message
+    *       is not being sent. In this case we dont want the parse to see the EOF
+    *       as it wont treat it as an error and will keep trying to read.
+    *       want to pass it to the callback as EOF
+    *   -   otherwise (err && (bytes_transfered > 0)) return with error.
+    * For testing purposes we have to differentiate between ending a message
+    * with EOF and signalling connection closed with EOF
     */
     if(er && (bytes_transfered > 0)) {
         post_message_cb(er);
-        LogError("", er.message());
+        LogError("real error condition: ", er.message());
+        return;
     }
-
+    // EOF at start of new message - probably client closed connection
+    if(er && (bytes_transfered == 0) && (_total_bytes_read == 0)) {
+        post_message_cb(er);
+        LogError("probably client closed connection: ", er.message());
+        return;
+    }
+    if(er && (bytes_transfered == 0) && (_total_bytes_read > 0)) {
+        LogError("ending message with EOF: ", er.message());
+    }
     _header_buffer_sptr->setSize(bytes_transfered);
 //    std::cout << *_header_buffer_sptr << std::endl;
     MBuffer& mb = *_header_buffer_sptr;

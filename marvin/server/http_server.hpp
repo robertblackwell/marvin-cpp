@@ -41,10 +41,11 @@
 *       the server does not get overloaded.
 *
 */
-template<class TRequestHandler> class HTTPServer
+class HTTPServer
 {
 public:
 
+    static void configSet_NumberOfConnections(int num);
     static void configSet_NumberOfThreads(int num);
 
     HTTPServer(const HTTPServer&) = delete;
@@ -54,7 +55,7 @@ public:
     ** @brief Construct the server to listen on the specified TCP address and port.
     ** @param long port defaults to 9991
     */
-    explicit HTTPServer();
+    explicit HTTPServer(RequestHandlerFactory factory);
     ~HTTPServer();
     /**
     ** @brief starts the listen process on the servers port, and from there
@@ -65,6 +66,7 @@ public:
 private:
 
     static int __numberOfThreads;
+    static int __numberOfConnections;
 
     /**
     ** @brief just as it says - init the server ready to list
@@ -82,7 +84,7 @@ private:
     **          completed accept call.
     ** @param err a boost errorcide that described any error condition
     */
-    void handleAccept(ConnectionHandler<TRequestHandler>* handler, const boost::system::error_code& err);
+    void handleAccept(ConnectionHandler* handler, const boost::system::error_code& err);
 
     /**
     ** @brief encapsulates the process of posting a callback fn to the servcers strand
@@ -100,16 +102,13 @@ private:
     void doStop(const Marvin::ErrorType& err);
     
     int                                             _numberOfThreads;
+    int                                             _numberOfConnections;
     long                                            _port;
     boost::asio::io_service                         _io;
     boost::asio::strand                             _serverStrand;
     boost::asio::signal_set                         _signals;
     boost::asio::ip::tcp::acceptor                  _acceptor;
-    ServerConnectionManager<ConnectionHandler<TRequestHandler>>   _connectionManager;
-
+    ServerConnectionManager                         _connectionManager;
+    RequestHandlerFactory                           _factory;
 };
-template <class TRequestHandler>
-using Server_Template =  typename HTTPServer<TRequestHandler>::Server;
-
-#include "http_server.ipp"
 #endif // HTTP_SERVER_HPP

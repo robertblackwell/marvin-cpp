@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <map>
+#include <string>
 #include <vector>
 #include <set>
 
@@ -63,6 +64,7 @@ namespace HttpHeader
         static const std::string TransferEncoding = "TRANSFER-ENCODING";
         static const std::string ETag = "ETAG";
         static const std::string ConnectionHandlerId = "CONNECT-HANDLER-ID";
+        static const std::string RequestHandlerId = "REQUEST-HANDLER-ID";
     };
     namespace Value{
         static const std::string ConnectionClose = "CLOSE";
