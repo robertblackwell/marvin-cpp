@@ -23,7 +23,10 @@ void HTTPServer::configSet_NumberOfConnections(int n)
 {
     __numberOfConnections = n;
 }
-
+bool HTTPServer::verify()
+{
+    return true;
+}
 
 
 
@@ -38,26 +41,6 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory)
     _connectionManager(_io, _serverStrand, __numberOfConnections)
 {
     LogTorTrace();
-
-//    _port = port;
-//    initialize();
-    // Register to handle the signals that indicate when the Server should exit.
-    // It is safe to register for the same signal multiple times in a program,
-    // provided all registration for the specified signal is made through Asio.
-#if 0
-    _signals.add(SIGINT);
-    _signals.add(SIGTERM);
-    #if defined(SIGQUIT)
-    _signals.add(SIGQUIT);
-    #endif // defined(SIGQUIT)
-
-    waitForStop();
-    
-    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), _port);
-    _acceptor.open(endpoint.protocol());
-    _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-    _acceptor.bind(endpoint);
-#endif
 }
 /**
 ** init
@@ -170,7 +153,10 @@ HTTPServer::~HTTPServer()
     }
     if (!err){
         LogInfo("got a connection", connHandler->nativeSocketFD());
-        
+        /// at this point the native socket fd is assigned
+        /// so for debug purposes we can stash if in the
+        /// fd_inuse list
+       
         _connectionManager.registerConnectionHandler(connHandler);
         //
         // at this point we are running on _serveStrand start the connectionHandler with a post to

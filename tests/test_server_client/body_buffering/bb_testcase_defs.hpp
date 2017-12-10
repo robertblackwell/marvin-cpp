@@ -25,15 +25,15 @@ namespace body_buffering {
         Testcase            get_case(int index);
         TestcaseResultType  get_result(int index);
         int                 number_of_testcases();
-    private:
         std::vector<Testcase> cases;
+    private:
     };
 
     std::vector<std::string> make_header(std::string key, std::string value);
 
     /**
     * Create a set of testcases (a TestcaseDefinitions object) consiting of single messages with
-    * various buffer arrangements to test that MessageReaderV2 paser works correctly
+    * various buffer arrangements to test that MessageReader paser works correctly
     * regardless of how the incoming data is buffered.
     */
     TestcaseDefinitions makeTestcaseDefinitions_01();

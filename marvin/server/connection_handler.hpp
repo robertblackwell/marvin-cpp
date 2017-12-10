@@ -15,8 +15,8 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include "message_reader_v2.hpp"
-#include "message_writer_v2.hpp"
+#include "message_reader.hpp"
+#include "message_writer.hpp"
 #include "request_handler_base.hpp"
 #include "connection_handler.hpp"
 #include "connection_interface.hpp"
@@ -38,7 +38,6 @@ class ConnectionHandler
         ~ConnectionHandler();
     
         void serve();
-        void close();
         long nativeSocketFD();
     private:
     
@@ -51,13 +50,12 @@ class ConnectionHandler
         boost::uuids::uuid                                  _uuid;
         boost::asio::io_service&                            _io;
         ServerConnectionManager&                            _connectionManager;
-//        RequestHandlerBase*                                 _requestHandlerPtr;
         std::unique_ptr<RequestHandlerBase>                 _requestHandlerUnPtr;
         RequestHandlerFactory                               _factory;
     
         ConnectionInterfaceSPtr                             _connection;
-        MessageReaderV2SPtr                                 _reader;
-        MessageWriterV2SPtr                                 _writer;
+        MessageReaderSPtr                                 _reader;
+        MessageWriterSPtr                                 _writer;
 };
 
 #endif /* ConnectionHandler_hpp */

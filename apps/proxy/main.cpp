@@ -15,7 +15,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handlerV2.hpp"
+#include "forwarding_handler.hpp"
 #include "pipe_collector.hpp"
 
 int main(int argc, const char * argv[])
@@ -29,10 +29,10 @@ int main(int argc, const char * argv[])
         
         std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
         std::vector<int> ports{443, 9443};
-        ForwardingHandlerV2<PipeCollector>::configSet_HttpsPorts(ports);
-        ForwardingHandlerV2<PipeCollector>::configSet_HttpsHosts(re);
+        ForwardingHandler<PipeCollector>::configSet_HttpsPorts(ports);
+        ForwardingHandler<PipeCollector>::configSet_HttpsHosts(re);
         
-        HTTPServer<ForwardingHandlerV2<PipeCollector>> server;
+        HTTPServer<ForwardingHandler<PipeCollector>> server;
         server.listen(9991);
     }
     catch (std::exception& e)

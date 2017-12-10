@@ -19,19 +19,19 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 #include "t_server.hpp"
 #include "t_client.hpp"
 #include "testcase_defs.hpp"
 
 /**
-* This cli program provides a harness for testing the MessageReaderV2 class
-* against a set of testcases where the MessaageReaderV2 reads from a
+* This cli program provides a harness for testing the MessageReader class
+* against a set of testcases where the MessaageReader reads from a
 * socket.
 * Each testcase is processed by setting up a single boost::asio::io_service
 * and then running on that io_service a simple (and special purpose) tcp server and
 * a simple (and special ppurpose) tcp client. The client takes message buffers from the testcase
-* and sends those to the server. The server parses those incoming buffers (using an instance of MessageReaderV2)
+* and sends those to the server. The server parses those incoming buffers (using an instance of MessageReader)
 * into Http messages and verifies the result against the "expected"
 * values contained in a copy of the same testcase.
 *
@@ -40,7 +40,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 *
 */
 /**  --------------------------------------------------------------------------------------
-* run client and server the same thread to test MessageReaderV2
+* run client and server the same thread to test MessageReader
 *---------------------------------------------------------------------------------------*/
 static void runTestcase(Testcase tc)
 {
@@ -51,7 +51,7 @@ static void runTestcase(Testcase tc)
     * the testcase object to verify the message is received correctly
     */
     TServerSPtr srv = std::shared_ptr<TServer>(new TServer(io, tc));
-    srv->listen(9991, [](MessageReaderV2SPtr rdr) {
+    srv->listen(9991, [](MessageReaderSPtr rdr) {
         //go here is a win
     });
     /**

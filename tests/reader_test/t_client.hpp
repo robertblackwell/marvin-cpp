@@ -12,7 +12,7 @@
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 
 class TClient;
 typedef std:: shared_ptr<TClient> TClientSPtr;

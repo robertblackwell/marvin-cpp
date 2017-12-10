@@ -80,9 +80,12 @@ TCPConnection::TCPConnection(
             _boost_socket(io_service),
             _scheme(scheme),
             _server(server),
-            _port(port)
+            _port(port),
+            _closed_already(false)
 {
     LogTorTrace();
+    auto x = nativeSocketFD();
+    LogDebug("constructor:: native handle :: ", x);
 }
 
 
@@ -98,6 +101,10 @@ TCPConnection::TCPConnection(
 TCPConnection::~TCPConnection()
 {
     LogTorTrace();
+    if( ! _closed_already) {
+        LogFDTrace(nativeSocketFD());
+        _boost_socket.close();
+    }
 }
 std::string TCPConnection::scheme(){return _scheme;}
 std::string TCPConnection::server(){return _server;}
@@ -105,12 +112,15 @@ std::string TCPConnection::service(){return _port;}
 
 void TCPConnection::close()
 {
-    LogDebug(" fd: ", nativeSocketFD());
+    LogFDTrace(nativeSocketFD());
+    assert(! _closed_already);
+    _closed_already = true;
     _boost_socket.cancel();
     _boost_socket.close();
 }
 void TCPConnection::shutdown()
 {
+    assert(! _closed_already);
     _boost_socket.shutdown(boost::asio::socket_base::shutdown_both);
 }
 
@@ -124,7 +134,10 @@ void TCPConnection::asyncAccept(
 )
 {
 //    _boost_socket.non_blocking(true);
-    acceptor.async_accept(_boost_socket, cb);
+    acceptor.async_accept(_boost_socket, [cb, this](const boost::system::error_code& err) {
+        LogFDTrace(this->nativeSocketFD());
+        cb(err);
+    });
 }
 
 void TCPConnection::asyncConnect(ConnectCallbackType final_cb)
@@ -137,12 +150,15 @@ void TCPConnection::asyncConnect(ConnectCallbackType final_cb)
         LogDebug("resolve OK","so now connect");
         if( ec ){
             Marvin::ErrorType me = ec;
-            LogError("error_value", ec.value(), " message: ", ec.message());
+            LogError("error_value", ec.value(), " message: ", ec.message(), " fd: ", this->nativeSocketFD());
             completeWithError(me);
         } else {
             tcp::endpoint endpoint = *endpoint_iterator;
             auto connect_cb = bind(&TCPConnection::handle_connect, this, _1, ++endpoint_iterator);
-            _boost_socket.async_connect(endpoint, connect_cb);
+            _boost_socket.async_connect(endpoint, [this, connect_cb] (const boost::system::error_code& err) {
+                LogFDTrace(this->nativeSocketFD());
+                connect_cb(err);
+            });
             LogDebug("leaving");
         }
     });
@@ -176,7 +192,7 @@ void TCPConnection::handle_connect(
     LogDebug("entry");
     if (!err)
     {
-        LogDebug("connect OK");
+        LogFDTrace(nativeSocketFD());
         _boost_socket.non_blocking(true);
         completeWithSuccess();
     }

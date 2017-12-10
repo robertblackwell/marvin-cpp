@@ -24,15 +24,27 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "bb_testcase_defs.hpp"
 
 body_buffering::TestcaseDefinitions tdefs = body_buffering::makeTestcaseDefinitions_01();
-
-TEST_CASE("BB_01")
+body_buffering::TestcaseDefinitions tdefs_eof = body_buffering::makeTCS_eof();
+TEST_CASE("body_buffer_01")
 {
-    body_buffering::Testcase testcase = tdefs.get_case(1);
+    body_buffering::Testcase testcase = tdefs_eof.get_case(1);
     boost::asio::io_service io_service;
     body_buffering::TClient tst(io_service, "9991", testcase);
     tst.exec();
     io_service.run();
 }
+#if 1
+TEST_CASE("body_buffer_all")
+{
+//    body_buffering::Testcase testcase = tdefs.get_case(1);
+    for(auto const& testcase: tdefs.cases) {
+        boost::asio::io_service io_service;
+        body_buffering::TClient tst(io_service, "9991", testcase);
+        tst.exec();
+        io_service.run();
+    }
+}
+#endif
 int main( int argc, char* argv[] )
 {
     // global setup - run a server
@@ -49,6 +61,8 @@ int main( int argc, char* argv[] )
     });
 
     int result = Catch::Session().run( argc, argv );
+    // now wait for the saerver to complete its cleanup after the last request
+    sleep(5);
 
     raise(SIGTERM); // kill server - in xcode debugger this will not stop the server - but works when not in debugger
     server_thread.join();

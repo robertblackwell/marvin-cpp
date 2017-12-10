@@ -16,7 +16,7 @@
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "read_socket_interface.hpp"
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "connection_interface.hpp"
 
 //using namespace boost;

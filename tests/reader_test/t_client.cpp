@@ -16,7 +16,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 //#include "tsc_server.hpp"
 #include "testcase.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 #include "t_client.hpp"
 
 

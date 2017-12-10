@@ -16,7 +16,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include "rb_logger.hpp"
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "client.hpp"
 
 namespace body_format {

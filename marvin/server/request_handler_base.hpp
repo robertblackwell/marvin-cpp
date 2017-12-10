@@ -6,8 +6,8 @@
 #include <iostream>
 
 #include "boost_stuff.hpp"
-#include "message_reader_v2.hpp"
-#include "message_writer_v2.hpp"
+#include "message_reader.hpp"
+#include "message_writer.hpp"
 
 class RequestHandlerBase;
 
@@ -45,14 +45,14 @@ public:
     virtual ~RequestHandlerBase();
     
     virtual void handleConnect(
-        MessageReaderV2SPtr           req,
+        MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
         HandlerDoneCallbackType     done)
         { auto err = Marvin::make_error_ok(); done(err,false);}
     
     virtual void handleRequest(
-        MessageReaderV2SPtr           req,
-        MessageWriterV2SPtr           rep,
+        MessageReaderSPtr           req,
+        MessageWriterSPtr           rep,
         HandlerDoneCallbackType done) = 0;
     
     protected:

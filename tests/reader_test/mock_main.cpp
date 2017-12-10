@@ -14,15 +14,15 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG);
 
 #include "repeating_timer.hpp"
 #include "marvin_error.hpp"
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "mock_read_socket.hpp"
 
-#include "message_reader_v2.hpp"
-class MyMessageReader : public MessageReaderV2
+#include "message_reader.hpp"
+class MyMessageReader : public MessageReader
 {
 public:
     MyMessageReader(ReadSocketInterfaceSPtr readSock, boost::asio::io_service& io)
-    : MessageReaderV2(io, readSock)
+    : MessageReader(io, readSock)
     {
     
     }

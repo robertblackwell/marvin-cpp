@@ -27,7 +27,7 @@ enum class LogLevel {
 #define LOG_LEVEL_TORTRACE  6
 #define LOG_LEVEL_TRACE     7
     
-    typedef long LogLevelType
+typedef long LogLevelType
     
 #else
     

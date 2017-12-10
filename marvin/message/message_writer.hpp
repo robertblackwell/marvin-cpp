@@ -6,34 +6,49 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef message_writer_hpp
-#define message_writer_hpp
+#ifndef message_writer_v2_hpp
+#define message_writer_v2_hpp
 
 #include <stdio.h>
 #include "callback_typedefs.hpp"
 #include "message.hpp"
 #include "read_socket_interface.hpp"
 #include "connection_interface.hpp"
+#include "tcp_connection.hpp"
 
 class MessageWriter;
 typedef std::shared_ptr<MessageWriter> MessageWriterSPtr;
 typedef std::unique_ptr<MessageWriter> MessageWriterUPtr;
 
-class MessageWriter : public MessageBase{
+class MessageWriter
+{
 public:
 
-    MessageWriter(boost::asio::io_service& io, bool is_request);
+    /**
+    * The message writer has the logic to output MessageBase objects to an allready
+    * open connection.
+    * This is a one-shot object - once it has written a single message it should
+    * be discarded and a new one used for the next message on the same connection
+    */
+//    MessageWriter(boost::asio::io_service& io, TCPConnection& conn);
+    MessageWriter(boost::asio::io_service& io, ConnectionInterfaceSPtr conn);
     ~MessageWriter();
     
-    void setContent(std::string& contentStr);
-    std::string&  getBody();
-    void asyncWrite(WriteMessageCallbackType cb);
-    void asyncWriteHeaders(WriteHeadersCallbackType cb);
-    void asyncWriteBodyData(WriteBodyDataCallbackType cb);
-    void asyncWriteTrailers(AsyncWriteCallbackType cb);
-    void end();
+    void asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb);
+    void asyncWrite(MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb);
+    void asyncWrite(MessageBaseSPtr msg, MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb);
+    void asyncWrite(MessageBaseSPtr msg, BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb);
+
+    void asyncWriteHeaders(MessageBaseSPtr msg, WriteHeadersCallbackType cb);
+
+    void asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(MBuffer& data, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(BufferChainSPtr chain_ptr, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb);
+
+    void asyncWriteTrailers(MessageBaseSPtr msg, AsyncWriteCallbackType cb);
     
-    void setWriteSock(WriteSocketInterface* conn){ _writeSock = conn;}
+    void end();
     
     friend std::string traceWriter(MessageWriter& wrtr);
 
@@ -44,14 +59,21 @@ protected:
     void putHeadersStuffInBuffer();
 
     boost::asio::io_service&    _io;
-    WriteSocketInterface*       _writeSock;
+    ConnectionInterfaceSPtr     _conn;
+    MessageBaseSPtr             _currentMessage;
+    /**
+    * @todo - raw pointers for MBuffer and FBuffer are a problem
+    */
+    MBuffer                     _m_header_buf;
     
     bool                        _haveContent;
     boost::asio::streambuf      _bodyBuf;
-    std::string                 _bodyContent;
-    FBuffer*                    _currentBodyFBuffer;
     
-    boost::asio::streambuf      _headerBuf;
+    MBufferSPtr                 _body_mbuffer_sptr;
+    std::string                 _body_buffer_string;
+//    BufferChain                 _body_buffer_chain;
+    BufferChainSPtr             _body_buffer_chain_sptr;
+    
 };
 
 #endif /* message_writer_hpp */

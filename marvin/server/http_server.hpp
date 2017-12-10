@@ -13,8 +13,8 @@
 #include "connection_interface.hpp"
 #include "tcp_connection.hpp"
 #include "tls_connection.hpp"
-#include "message_reader_v2.hpp"
-#include "message_writer_v2.hpp"
+#include "message_reader.hpp"
+#include "message_writer.hpp"
 #include "rb_logger.hpp"
 #include "connection_handler.hpp"
 
@@ -44,6 +44,13 @@
 class HTTPServer
 {
 public:
+
+    /**
+    * This is for testing only and should be called after all clients have finished
+    * to verify that all connections are closed, all connection handlers have been deleted
+    * and all sockets are freed up
+    */
+    static bool verify();
 
     static void configSet_NumberOfConnections(int num);
     static void configSet_NumberOfThreads(int num);

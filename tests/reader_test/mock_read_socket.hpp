@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "catch.hpp"
 #include "boost_stuff.hpp"
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "repeating_timer.hpp"
 #include "error.hpp"
 #include "testcase.hpp"

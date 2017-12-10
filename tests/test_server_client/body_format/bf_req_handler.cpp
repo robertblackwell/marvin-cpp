@@ -30,7 +30,7 @@ RequestHandler::~RequestHandler()
 }
 
 void RequestHandler::handleConnect(
-    MessageReaderV2SPtr           req,
+    MessageReaderSPtr           req,
     ConnectionInterfaceSPtr     connPtr,
     HandlerDoneCallbackType    done)
 {
@@ -48,22 +48,22 @@ void RequestHandler::handleConnect(
 }
 
 void RequestHandler::pathHandler_A(
-    MessageReaderV2SPtr req,
-    MessageWriterV2SPtr resp,
+    MessageReaderSPtr req,
+    MessageWriterSPtr resp,
     HandlerDoneCallbackType done
 )
 {
 }
 void RequestHandler::pathHandler_B(
-    MessageReaderV2SPtr req,
-    MessageWriterV2SPtr resp,
+    MessageReaderSPtr req,
+    MessageWriterSPtr resp,
     HandlerDoneCallbackType done
 )
 {
 }
 void RequestHandler::pathHandler_C(
-    MessageReaderV2SPtr req,
-    MessageWriterV2SPtr resp,
+    MessageReaderSPtr req,
+    MessageWriterSPtr resp,
     HandlerDoneCallbackType done
 )
 {
@@ -92,14 +92,14 @@ std::string RequestHandler::get_dispatcher(std::string p)
         }
 }
 
-std::string RequestHandler::post_dispatcher(MessageReaderV2SPtr req)
+std::string RequestHandler::post_dispatcher(MessageReaderSPtr req)
 {
     return "this was a post";
 }
     
 void RequestHandler::handleRequest(
-    MessageReaderV2SPtr req,
-    MessageWriterV2SPtr resp,
+    MessageReaderSPtr req,
+    MessageWriterSPtr resp,
     HandlerDoneCallbackType done
 )
 {

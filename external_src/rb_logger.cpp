@@ -96,7 +96,7 @@ void RBLogging::Logger::torTraceLog(
 
 
         os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
-        os << "::"<< func_name << "[" << line_number << "]:" << std::hex << (long)this_arg << std::dec << std::endl;;
+        os << "::"<< func_name << "[" << line_number << "]: " << std::hex << (long)this_arg << std::dec << std::endl;;
         //
         // Only use the stream in the last step and this way we can send the log record somewhere else
         // easily
@@ -123,7 +123,7 @@ void RBLogging::Logger::fdTraceLog(
 
 
         os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
-        os << "::"<< func_name << "[" << line_number << "]:" << fd_arg << std::endl;;
+        os << "::"<< func_name << "[" << line_number << "] fd:" << fd_arg << std::endl;;
         //
         // Only use the stream in the last step and this way we can send the log record somewhere else
         // easily

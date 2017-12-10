@@ -33,9 +33,7 @@ using boost::asio::streambuf;
 
 Client::Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port)
 : _io(io), _scheme(scheme), _server(server), _port(port)
-{
-
-}
+{}
 
 Client::Client(boost::asio::io_service& io, std::string url)
 : _io(io), _url(url)
@@ -44,9 +42,7 @@ Client::Client(boost::asio::io_service& io, std::string url)
 }
 
 Client::Client(boost::asio::io_service& io, ConnectionInterface* conn) : _io(io)
-{
-
-}
+{}
 
 
 Client::~Client()
@@ -126,10 +122,10 @@ void Client::internalConnect()
         if(!ec) {
 
 #ifndef RDR_WRTR_ONESHOT
-            this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_conn_ptr, _io));
+            this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(_conn_ptr, _io));
             // get a writer
             TCPConnection& conRef = *_conn_uniq_ptr;
-            this->_wrtr = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, conRef));
+            this->_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(_io, conRef));
 #endif
             internalWrite();
         } else {
@@ -147,51 +143,19 @@ void Client::internalWrite()
 #ifdef RDR_WRTR_ONESHOT
     // set up the read of the response
     // create a MessageReader with a read socket
-    this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _conn_shared_ptr));
+    this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(_io, _conn_shared_ptr));
     // get a writer
-    this->_wrtr = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _conn_shared_ptr));
-#endif
-#define NO_PRE_READ 
-#ifndef NO_PRE_READ
-    LogDebug("start pre read");
-    if( _on_headers_handler != nullptr ) {
-        this->_rdr->readHeaders([this](Marvin::ErrorType ec){
-            if (!ec) {
-                this->_on_headers_handler(ec, _rdr);
-                if( _on_data_handler != nullptr ) {
-                    this->_rdr->readBody([this](Marvin::ErrorType err, BufferChain buf_chain){
-                        _on_data_handler(err, buf_chain);
-                    });
-                }
-            } else {
-                this->_on_headers_handler(ec, _rdr);
-            }
-        });
-
-    } else {
-        this->_rdr->readMessage([this](Marvin::ErrorType ec){
-            if (!ec) {
-                this->_response_handler(ec, _rdr);
-            } else {
-                this->_response_handler(ec, _rdr);
-            }
-        });
-    }
+    this->_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(_io, _conn_shared_ptr));
 #endif
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     setContentLength();
-    LogInfo("",traceWriterV2(*_wrtr));
+    LogInfo("",traceWriter(*_wrtr));
     
     assert(_body_mbuffer_sptr != nullptr);
     _wrtr->asyncWrite(_current_request, _body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {
-            // do nothing - let the read happen
-            LogDebug("do nothing");
-            
-#ifdef NO_PRE_READ
             LogDebug("start read");
-            
             this->_rdr->readMessage([this](Marvin::ErrorType ec){
                 if (!ec) {
                     this->_response_handler(ec, _rdr);
@@ -199,7 +163,6 @@ void Client::internalWrite()
                     this->_response_handler(ec, _rdr);
                 }
             });
-#endif
         } else {
             this->_response_handler(ec, _rdr);
         }
@@ -327,19 +290,7 @@ void Client::setContentLength()
     }
     msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(len));
 }
-MessageReaderV2SPtr Client::getResponse()
+MessageReaderSPtr Client::getResponse()
 {
     return _rdr;
 }
-
-#if 0
-void Client::setOnHeaders(ResponseHandlerCallbackType cb)
-{
-    _on_headers_handler = cb;
-}
-
-void Client::setOnData(ClientDataHandlerCallbackType cb)
-{
-    _on_data_handler = cb;
-}
-#endif

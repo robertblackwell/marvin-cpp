@@ -23,7 +23,7 @@
 #include <boost/bind.hpp>
 #include "rb_logger.hpp"
 
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "client.hpp"
 #include "tsc_testcase.hpp"
 #include "tsc_post.hpp"

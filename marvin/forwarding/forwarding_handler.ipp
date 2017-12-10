@@ -6,27 +6,27 @@ enum class ConnectAction{
 };
 
 template<class TCollector>
-std::vector<std::regex> ForwardingHandlerV2<TCollector>::__httpsHosts = std::vector<std::regex>();
+std::vector<std::regex> ForwardingHandler<TCollector>::__httpsHosts = std::vector<std::regex>();
 
 template<class TCollector>
-std::vector<int> ForwardingHandlerV2<TCollector>::__httpsPorts = std::vector<int>();
+std::vector<int> ForwardingHandler<TCollector>::__httpsPorts = std::vector<int>();
 
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::configSet_HttpsHosts(std::vector<std::regex> re)
+void ForwardingHandler<TCollector>::configSet_HttpsHosts(std::vector<std::regex> re)
 {
     __httpsHosts = re;
 }
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::configSet_HttpsPorts(std::vector<int> ports)
+void ForwardingHandler<TCollector>::configSet_HttpsPorts(std::vector<int> ports)
 {
     __httpsPorts = ports;
 }
 
 #pragma mark - Forward handler class
 template<class TCollector>
-ForwardingHandlerV2<TCollector>::ForwardingHandlerV2(
+ForwardingHandler<TCollector>::ForwardingHandler(
     boost::asio::io_service& io
 ): RequestHandlerBase(io)
 {
@@ -36,7 +36,7 @@ ForwardingHandlerV2<TCollector>::ForwardingHandlerV2(
 }
 
 template<class TCollector>
-ForwardingHandlerV2<TCollector>::~ForwardingHandlerV2()
+ForwardingHandler<TCollector>::~ForwardingHandler()
 {
     LogTorTrace();
 }
@@ -44,7 +44,7 @@ ForwardingHandlerV2<TCollector>::~ForwardingHandlerV2()
 #pragma mark - handle upgrade request
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::handleUpgrade()
+void ForwardingHandler<TCollector>::handleUpgrade()
 {
     // deny the upgrade
     _resp->setStatus("Forbidden");
@@ -74,7 +74,7 @@ void ForwardingHandlerV2<TCollector>::handleUpgrade()
 ///
 /// done(true) signals to the server that this method is "hijacking" the connection
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::handleConnect(
+void ForwardingHandler<TCollector>::handleConnect(
         MessageReaderSPtr           req,
         ConnectionInterfaceSPtr     connPtr,
         HandlerDoneCallbackType     done
@@ -119,7 +119,7 @@ void ForwardingHandlerV2<TCollector>::handleConnect(
     
 };
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::initiateTunnel()
+void ForwardingHandler<TCollector>::initiateTunnel()
 {
     // first lets try and connect to the upstream host
     // to do that we need an upstream connection
@@ -177,7 +177,7 @@ void ForwardingHandlerV2<TCollector>::initiateTunnel()
 /// @param req
 ///
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::handleRequest(
+void ForwardingHandler<TCollector>::handleRequest(
         MessageReaderSPtr req,
         MessageWriterSPtr resp,
         HandlerDoneCallbackType done
@@ -210,7 +210,7 @@ void ForwardingHandlerV2<TCollector>::handleRequest(
 }
 /// This method kicks off the forwarding process by pasing the request upstream
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::handleRequest_Upstream(
+void ForwardingHandler<TCollector>::handleRequest_Upstream(
         MessageReaderSPtr req,
         std::function<void(Marvin::ErrorType& err)> upstreamCb
 ){
@@ -276,7 +276,7 @@ void ForwardingHandlerV2<TCollector>::handleRequest_Upstream(
 };
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::handleUpstreamResponseReceived(Marvin::ErrorType& err)
+void ForwardingHandler<TCollector>::handleUpstreamResponseReceived(Marvin::ErrorType& err)
 {
     LogInfo("",traceRequest(*_upStreamRequestUPtr));
 
@@ -294,7 +294,7 @@ void ForwardingHandlerV2<TCollector>::handleUpstreamResponseReceived(Marvin::Err
 }
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::makeDownstreamResponse()
+void ForwardingHandler<TCollector>::makeDownstreamResponse()
 {
     LogInfo("");
     MessageReader& upStreamResponse = _upStreamRequestUPtr->getResponse();
@@ -334,7 +334,7 @@ void ForwardingHandlerV2<TCollector>::makeDownstreamResponse()
 }
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::makeDownstreamErrorResponse(Marvin::ErrorType& err)
+void ForwardingHandler<TCollector>::makeDownstreamErrorResponse(Marvin::ErrorType& err)
 {
     LogDebug("");
     // bad gateway 502
@@ -344,7 +344,7 @@ void ForwardingHandlerV2<TCollector>::makeDownstreamErrorResponse(Marvin::ErrorT
     _resp->setContent(n);
 }
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::onComplete(Marvin::ErrorType& err)
+void ForwardingHandler<TCollector>::onComplete(Marvin::ErrorType& err)
 {
     LogInfo("");
     if( err ){
@@ -360,7 +360,7 @@ void ForwardingHandlerV2<TCollector>::onComplete(Marvin::ErrorType& err)
 #pragma mark - bodies of utility functions
 
 template<class TCollector>
-ConnectAction ForwardingHandlerV2<TCollector>::determineConnecAction(std::string host, int port)
+ConnectAction ForwardingHandler<TCollector>::determineConnecAction(std::string host, int port)
 {
     std::vector<std::regex>  regexs = this->_httpsHosts;
     std::vector<int>         ports  = this->_httpsPorts;
@@ -370,7 +370,7 @@ ConnectAction ForwardingHandlerV2<TCollector>::determineConnecAction(std::string
 
 
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::response403Forbidden(MessageWriter& writer)
+void ForwardingHandler<TCollector>::response403Forbidden(MessageWriter& writer)
 {
     writer.setStatus("Forbidden");
     writer.setStatusCode(403);
@@ -378,7 +378,7 @@ void ForwardingHandlerV2<TCollector>::response403Forbidden(MessageWriter& writer
     writer.setContent(n);
 }
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::response200OKConnected(MessageWriter& writer)
+void ForwardingHandler<TCollector>::response200OKConnected(MessageWriter& writer)
 {
     writer.setStatus("OK");
     writer.setStatusCode(200);
@@ -386,7 +386,7 @@ void ForwardingHandlerV2<TCollector>::response200OKConnected(MessageWriter& writ
     writer.setContent(n);
 }
 template<class TCollector>
-void ForwardingHandlerV2<TCollector>::response502Badgateway(MessageWriter& writer)
+void ForwardingHandler<TCollector>::response502Badgateway(MessageWriter& writer)
 {
     writer.setStatus("BAD GATEWAY");
     writer.setStatusCode(503);

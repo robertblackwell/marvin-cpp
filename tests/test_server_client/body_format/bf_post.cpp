@@ -9,7 +9,7 @@ PostTest::PostTest(boost::asio::io_service& io, Testcase& testcase): _io(io), _t
 {
 
 }
-void PostTest::handler(Marvin::ErrorType& er, MessageReaderV2SPtr rdr)
+void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
     std::string raw_body = rdr->get_body_chain().to_string();
     json j = json::parse(raw_body);

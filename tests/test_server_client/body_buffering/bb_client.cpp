@@ -10,7 +10,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 
 #include "bb_testcase.hpp"
 #include "bb_client.hpp"
@@ -43,7 +43,7 @@ void TClient::connect()
     _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ConnectionInterface* conn) {
         LogDebug("connected");
         if( ! err ){
-            _rdr = std::make_shared<MessageReaderV2>(_io, _conn_sptr);
+            _rdr = std::make_shared<MessageReader>(_io, _conn_sptr);
             auto wbf = std::bind(&TClient::wait_before_write, this);
             _io.post(wbf);
         } else {
@@ -78,7 +78,8 @@ void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_tr
         _buffer_index++;
         if(_buffer_index >= _testcase.buffers().size()) {
             Marvin::ErrorType err_val = err;
-//            _test_cb(err_val);  /// finished writing the request message - let the reader collect the reponse
+            LogDebug("write complete start read");
+            read_message();
         } else {
             write_line();
         }
@@ -91,9 +92,7 @@ void TClient::wait_before_write()
 {
     LogDebug("");
     _timer.expires_from_now(boost::posix_time::milliseconds(100));
-//    auto ds = boost::bind(&TClient::write_line, this, std::placeholders::_1);
     _timer.async_wait([this](const boost::system::error_code& err) {
-        read_message();
         write_line();
     });
 

@@ -8,8 +8,8 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include "message_writer_v2.hpp"
-#include "message_reader_v2.hpp"
+#include "message_writer.hpp"
+#include "message_reader.hpp"
 #include "connection_interface.hpp"
 #include "url.hpp"
 
@@ -18,7 +18,7 @@ class Request;
 typedef std::shared_ptr<Request> RequestSPtr;
 typedef std::unique_ptr<Request> RequestUPtr;
 
-class Request : public MessageWriterV2
+class Request : public MessageWriter
 {
 public:
     Request(boost::asio::io_service& io);
@@ -31,7 +31,7 @@ public:
     void go(std::function<void(Marvin::ErrorType& err)> cb);
     // void goHeaders() - coming to a universe near you
     
-    MessageReaderV2&  getResponse();
+    MessageReader&  getResponse();
     
     void setUrl(std::string url);
     
@@ -47,7 +47,7 @@ protected:
     void defaultHeaders();
 
     boost::asio::io_service&                        _io;
-    MessageReaderV2SPtr                             _rdr;
+    MessageReaderSPtr                             _rdr;
     
     ConnectionInterfaceSPtr                         _connection;
     ReadSocketInterfaceSPtr                         _readSock;

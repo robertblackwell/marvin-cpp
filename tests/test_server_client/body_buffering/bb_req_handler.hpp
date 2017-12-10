@@ -36,31 +36,31 @@ namespace body_buffering
         ~RequestHandler();
         
         void handleConnect(
-            MessageReaderV2SPtr           req,
+            MessageReaderSPtr           req,
             ConnectionInterfaceSPtr     connPtr,
             HandlerDoneCallbackType    done);
 
         void pathHandler_A(
-            MessageReaderV2SPtr req,
-            MessageWriterV2SPtr resp,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp,
             HandlerDoneCallbackType done
         );
         void pathHandler_B(
-            MessageReaderV2SPtr req,
-            MessageWriterV2SPtr resp,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp,
             HandlerDoneCallbackType done
         );
         void pathHandler_C(
-            MessageReaderV2SPtr req,
-            MessageWriterV2SPtr resp,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp,
             HandlerDoneCallbackType done
         );
         std::string get_dispatcher(std::string p);
-        std::string post_dispatcher(MessageReaderV2SPtr req);
+        std::string post_dispatcher(MessageReaderSPtr req);
         
         void handleRequest(
-            MessageReaderV2SPtr req,
-            MessageWriterV2SPtr resp,
+            MessageReaderSPtr req,
+            MessageWriterSPtr resp,
             HandlerDoneCallbackType done
         );
     };

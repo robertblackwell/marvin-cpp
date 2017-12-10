@@ -12,7 +12,7 @@
 #include "repeating_timer.hpp"
 #include "bb_testcase.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 
 namespace body_buffering {
     class TClient;
@@ -69,7 +69,7 @@ namespace body_buffering {
             std::string                 _port;
             Testcase                    _testcase;
             TCPConnectionSPtr           _conn_sptr;
-            MessageReaderV2SPtr         _rdr;
+            MessageReaderSPtr         _rdr;
             int                         _buffer_index; /// index into the vector of buffers in the test case
             MarvinErrorCb               _test_cb;
             boost::asio::deadline_timer _timer;

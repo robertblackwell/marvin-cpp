@@ -16,9 +16,9 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "http_header.hpp"
-#include "message_writer_v2.hpp"
+#include "message_writer.hpp"
 #include "message_reader_v2.hpp"
 #include "tcp_connection.hpp"
 #include "url.hpp"
@@ -31,7 +31,7 @@ typedef std::unique_ptr<Client> ClientUPtr;
 * This is the type signature of callbacks that receive a fully or partially complete
 * response
 */
-typedef std::function<void(Marvin::ErrorType& err, MessageReaderV2SPtr msg)> ResponseHandlerCallbackType;
+typedef std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)> ResponseHandlerCallbackType;
 
 /**
 * This is the type signature of callbacks that receive chunks of body data
@@ -39,7 +39,7 @@ typedef std::function<void(Marvin::ErrorType& err, MessageReaderV2SPtr msg)> Res
 typedef std::function<void(Marvin::ErrorType& err, BufferChain buf_chain)>  ClientDataHandlerCallbackType;
 
 /**
-* determines whether a new MessageReaderV2 and MessageWriterV2
+* determines whether a new MessageReader and MessageWriter
 * are allocated for each new roundtrip. 
 */
 #define RDR_WRTR_ONESHOT 1
@@ -104,7 +104,7 @@ public:
     
 #pragma mark - getters and setters
     
-    MessageReaderV2SPtr  getResponse();
+    MessageReaderSPtr  getResponse();
     
     void setUrl(std::string url);    
     void setContent(std::string& contentStr);
@@ -259,8 +259,8 @@ protected:
     MessageBaseSPtr                                 _current_request;
     MBufferSPtr                                     _body_mbuffer_sptr;
     FBufferSharedPtr                                _body_fbuffer_sptr;
-    std::shared_ptr<MessageWriterV2>                  _wrtr;
-    std::shared_ptr<MessageReaderV2>                  _rdr;
+    std::shared_ptr<MessageWriter>                  _wrtr;
+    std::shared_ptr<MessageReader>                  _rdr;
     
 //    TCPConnection*                                  _conn_ptr;
     std::shared_ptr<TCPConnection>                  _conn_shared_ptr;

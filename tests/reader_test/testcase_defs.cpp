@@ -37,7 +37,7 @@ TestcaseDefinitions::TestcaseDefinitions(){}
 
 /**
 * Create a set of testcases (a TestcaseDefinitions object) consiting of single messages with
-* various buffer arrangements to test that MessageReaderV2 paser works correctly
+* various buffer arrangements to test that MessageReader paser works correctly
 * regardless of how the incoming data is buffered.
 */
 TestcaseDefinitions makeTestcaseDefinitions_01()

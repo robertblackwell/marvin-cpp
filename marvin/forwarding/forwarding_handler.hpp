@@ -1,13 +1,13 @@
 //
-//  forwarding_handlerV2.hpp
+//  forwarding_handler.hpp
 //  MarvinCpp
 //
 //  Created by ROBERT BLACKWELL on 12/25/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef forwarding_handlerV2_hpp
-#define forwarding_handlerV2_hpp
+#ifndef forwarding_handler_hpp
+#define forwarding_handler_hpp
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
@@ -34,15 +34,15 @@ enum class ConnectAction;
 *  Along the way it captures (via template parameter TCapture) a summary of the original request and
 *  upstream server response and distributes that according to the rules of the particular TCapture object
 */
-template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
+template<class TCollector> class ForwardingHandler : public RequestHandlerBase
 {
     public:
         // these are configuration settings
         static void configSet_HttpsHosts(std::vector<std::regex> re);
         static void configSet_HttpsPorts(std::vector<int> ports);
     
-        ForwardingHandlerV2(boost::asio::io_service& io);
-        ~ForwardingHandlerV2();
+        ForwardingHandler(boost::asio::io_service& io);
+        ~ForwardingHandler();
     
         void handleConnect(
             MessageReaderSPtr           req,
@@ -106,6 +106,6 @@ template<class TCollector> class ForwardingHandlerV2 : public RequestHandlerBase
 
 };
 
-#include "forwarding_handlerV2.ipp"
+#include "forwarding_handler.ipp"
 
-#endif /* forwarding_handlerV2_hpp */
+#endif /* forwarding_handler_hpp */

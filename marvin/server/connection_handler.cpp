@@ -34,15 +34,13 @@ ConnectionHandler::ConnectionHandler(
 
 ConnectionHandler::~ConnectionHandler()
 {
-    _requestHandlerUnPtr = nullptr;
     LogTorTrace();
-    LogDebug("");
-    
+    _requestHandlerUnPtr = nullptr;
+    _connection = nullptr;
+    _reader = nullptr;
+    _writer = nullptr;
 }
-void ConnectionHandler::close()
-{
-    LogDebug(" fd:", nativeSocketFD());
-}
+
 /*!
 *   Utility method returns the underlying FD for this connection.
 *   Used only for debug racing purposes
@@ -60,15 +58,16 @@ void ConnectionHandler::handleConnectComplete(bool hijacked)
     // do not want the connction closed unless !hijacked
     LogInfo(" fd:", nativeSocketFD());
     
-    if( ! hijacked )
+    if( ! hijacked ) {
+        assert(false); // requires a decision about how to manage closing connections
         _connection->close();
-    
+    }
     _connectionManager.deregister(this); // should be maybe called deregister
 }
 /*!
 * Called when a request/response cycle is complete and starts a read
 * to initiate another request/response cycle or to wait for the client to
-* close the connection
+* close the connection. Do both these things
 */
 void ConnectionHandler::requestComplete(Marvin::ErrorType err, bool keepAlive)
 {
@@ -84,29 +83,38 @@ void ConnectionHandler::requestComplete(Marvin::ErrorType err, bool keepAlive)
 //                _connection->shutdown(); // let the next read take place - that will complete the shutdown
             }
     }else{
+        LogDebug(err.message());
+        assert(false); /// we are not handling errors correctly - we dont deregister the connection handler
         _connection->close(); //TODO - this is wrong I think
     }
 }
 
 /*!
 * Come here when the latest request/response cycle is complete and
-* the client has indicated no more requests/
+* the client has indicated no more requests probably by closing the
+* connection and causing an error on read. In anycase
+* start the processing of releasing objects associated with this connection handler
 */
 void ConnectionHandler::handlerComplete(Marvin::ErrorType err)
 {
-    LogInfo(" fd:", nativeSocketFD());
-    if(!err)
-        _connection->close();
-    //
-    // This call will start the process of deleting linked objects. Hence we need to have closed the
-    // connection before this because after it we may not have the connection to close
-    //
+    #if 0
+    LogInfo(" fd:", nativeSocketFD(), " err: ", err.message());
+    if(!err){
+        assert(false);
+        _connection->close(); /// this is wrong or at least undecided
+    }
+    #endif
+    
+    // TODO - this does not close the sockst  - change to make that happen
     _connectionManager.deregister(this); // should be maybe called deregister
     
 }
 /*!
-* Come here after a request message has been successfully read,
-* this is the first step in the request/response cycle
+* Come here after a request message has been successfully read,or on a read error
+* For a successful read this is the first step in the request/response cycle.
+* For an error this is often the result of client closing the connection after
+* one or a series of request response cycles. Either way an error starts the process of
+* releasing all objects associated with a connection and request handler
 */
 void ConnectionHandler::readMessageHandler(Marvin::ErrorType err)
 {
@@ -139,7 +147,8 @@ void ConnectionHandler::readMessageHandler(Marvin::ErrorType err)
             
             _requestHandlerUnPtr->handleRequest(_reader, _writer, [this](Marvin::ErrorType& err, bool keepAlive){
                 LogInfo("");
-                this->requestComplete(err, keepAlive);
+                this->serveAnother();
+//                this->requestComplete(err, keepAlive);
             } );
         }
     }
@@ -155,8 +164,8 @@ void ConnectionHandler::serve()
     ConnectionInterface* cptr = _connection.get();
     
 //    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
-    _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
-    _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));
+    _reader = std::shared_ptr<MessageReader>(new MessageReader(_io, _connection));
+    _writer = std::shared_ptr<MessageWriter>(new MessageWriter(_io, _connection));
 
     auto rmh = std::bind(&ConnectionHandler::readMessageHandler, this, std::placeholders::_1 );
     _reader->readMessage(rmh);
@@ -175,8 +184,8 @@ void ConnectionHandler::serveAnother()
 //    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
 
 //    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
-    _reader = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _connection));
-    _writer = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _connection));
+    _reader = std::shared_ptr<MessageReader>(new MessageReader(_io, _connection));
+    _writer = std::shared_ptr<MessageWriter>(new MessageWriter(_io, _connection));
 //    _writer->setWriteSock(cptr);
     
 //    _requestHandlerPtr  = new TRequestHandler(_io);

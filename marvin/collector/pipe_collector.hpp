@@ -14,7 +14,7 @@
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handlerV2.hpp"
+#include "forwarding_handler.hpp"
 
 ///
 /// This class is a singleton that requires to be primed with the servers io_service object so that

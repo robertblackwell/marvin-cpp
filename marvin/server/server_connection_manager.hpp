@@ -26,7 +26,8 @@ class ServerConnectionManager
     
         static ServerConnectionManager* instance;
         static ServerConnectionManager* get_instance();
-    
+        static bool verify();
+        
         ServerConnectionManager(const ServerConnectionManager&) = delete;
         ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
 
@@ -81,6 +82,7 @@ class ServerConnectionManager
         AllowAnotherCallback        _callback;
         
         std::map<ConnectionHandler*, std::unique_ptr<ConnectionHandler>> _connections;
+        std::map<long, long>  _fd_list;
 };
 
 #endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

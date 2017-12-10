@@ -11,7 +11,7 @@
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handlerV2.hpp"
+#include "forwarding_handler.hpp"
 #include "pipe_collector.hpp"
 
 #import "marvin_objc.h"

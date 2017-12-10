@@ -11,8 +11,8 @@
 #include "marvin_error.hpp"
 #include "http_header.hpp"
 #include "error.hpp"
-#include "bufferV2.hpp"
-#include "message_reader_v2.hpp"
+#include "buffer.hpp"
+#include "message_reader.hpp"
 #include "testcase.hpp"
 #include "mock_read_socket.hpp"
 
@@ -21,18 +21,18 @@ typedef std::shared_ptr<Testrunner> TestrunnerSPtr;
 
 std::string chain_to_string(BufferChain chain);
 /**
-* Class TestRunner - Creates an instance of MessageReaderV2 using
-* its ReadSocketInterface and then exercises that MessageReaderV2
+* Class TestRunner - Creates an instance of MessageReader using
+* its ReadSocketInterface and then exercises that MessageReader
 * using a single Testcase.
 * Can either:
-*   -   use the MessageREaderV2 to read an entire message
+*   -   use the MessageReader to read an entire message
 *   -   read the headers and then read chunks of body as separate reads
 */
 class Testrunner
 {
     
 public:
-    MessageReaderV2SPtr         rdr_;
+    MessageReaderSPtr         rdr_;
     ReadSocketInterfaceSPtr     conn_;
     boost::asio::io_service&    io_;
     std::string                 body;

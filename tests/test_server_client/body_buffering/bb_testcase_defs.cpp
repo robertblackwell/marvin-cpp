@@ -39,7 +39,7 @@ TestcaseDefinitions::TestcaseDefinitions(){}
 
 /**
 * Create a set of testcases (a TestcaseDefinitions object) consiting of single messages with
-* various buffer arrangements to test that MessageReaderV2 paser works correctly
+* various buffer arrangements to test that MessageReader paser works correctly
 * regardless of how the incoming data is buffered.
 */
 TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
@@ -106,7 +106,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
 //    // 2 EOH comes with some body data
     tcases.add_case(
             Testcase(
-                "index 2 - 201 body length 10 SOME body data in header buffer",
+                "index 2 - 200 body length 10 SOME body data in header buffer",
                 std::vector<std::string>  {
                     "POST / HTTP/1.1\r\n",
                     "Host: ahost\r\n",
@@ -117,7 +117,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
                 },
                 std::string("HTTP/1.1 201 OK 22Reason Phrase\r\n"),
                 // expected status code
-                201,
+                200,
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
@@ -135,7 +135,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
     // 3 EOH and EOM at the same time
     tcases.add_case(
             Testcase(
-                "index 3 - simple 201 body length 10 SOME body data in with black line buffer",
+                "index 3 - simple 200 body length 10 SOME body data in with black line buffer",
                 std::vector<std::string>  {
                     "POST / HTTP/1.1\r\n",
                     "Host: ahost\r\n",
@@ -146,7 +146,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
                 },
                 std::string("HTTP/1.1 201 OK 22Reason Phrase\r\n"),
                 // expected status code
-                201,
+                200,
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
@@ -165,7 +165,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
 //    // 4 Chunked with headers on a boundary
     tcases.add_case(
         Testcase(
-                "index 4 - 201 body chunked encoding NO body data in header buffer",
+                "index 4 - 200 body chunked encoding NO body data in header buffer",
                 std::vector<std::string> {
                     "POST / HTTP/1.1\r\n",
                     "Host: ahost\r\n",
@@ -182,7 +182,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
                 },
                 std::string("HTTP/1.1 201 OK Reason Phrase\r\n"),
                 // expected status code
-                201,
+                200,
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
@@ -205,7 +205,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
 //    // 5 Chunked with headers with some body data - chunks not broken
     tcases.add_case(
             Testcase(
-                "index 5 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
+                "index 5 - simple 200 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
                     "POST / HTTP/1.1\r\n",
                     "Host: ahost\r\n",
@@ -222,7 +222,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
                 },
                  std::string("HTTP/1.1 201 OK Reason Phrase\r\n"),
                 // expected status code
-                201,
+                200,
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                  // expected headers
@@ -244,7 +244,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
 //    // 6 Chunked with headers with some body data - BROKEN chunks
     tcases.add_case(
                 Testcase(
-                "index 6 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
+                "index 6 - simple 200 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
                     "POST / HTTP/1.1\r\n",
                     "Host: ahost\r\n",
@@ -262,7 +262,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
                  },
                 std::string("HTTP/1.1 201 OK Reason Phrase\r\n"),
                 // expected status code
-                201,
+                200,
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
@@ -284,7 +284,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
 //    // 7 Chunked with headers with some body data - BROKEN chunks
     tcases.add_case(
                 Testcase(
-                "index 7 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
+                "index 7 - simple 200 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
                     "POST / HTTP/1.1\r\n",
                     "Host: ahost\r\n",
@@ -303,7 +303,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
                  },
                 std::string("HTTP/1.1 201 OK Reason Phrase\r\n"),
                 // expected status code
-                201,
+                200,
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers

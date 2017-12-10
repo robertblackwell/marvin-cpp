@@ -9,7 +9,7 @@ PipelineTest::PipelineTest(boost::asio::io_service& io, std::vector<Testcase>& t
     std::string url = _testcase[0]._url;
     _client = std::shared_ptr<Client>(new Client(_io, url));
 }
-void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderV2SPtr rdr)
+void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
     /// test server is handling connection keep-alive and close correctly
     /// all but last response should be keep-alive

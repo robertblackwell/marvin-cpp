@@ -15,7 +15,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handlerV2.hpp"
+#include "forwarding_handler.hpp"
 
 ///
 /// This class is a singleton, but it must be given a reference to the servers io_service object

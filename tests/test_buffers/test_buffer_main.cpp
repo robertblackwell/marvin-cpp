@@ -8,7 +8,7 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include <gtest/gtest.h>
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "rb_logger.hpp"
 
 #pragma mark - BufferChain

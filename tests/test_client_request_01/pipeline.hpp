@@ -32,7 +32,7 @@ class Pipeline
     MessageBaseSPtr _msg_sptr;
     Pipeline(boost::asio::io_service& io);
     void setup();
-    void handler(Marvin::ErrorType err, MessageReaderV2SPtr rdr);
+    void handler(Marvin::ErrorType err, MessageReaderSPtr rdr);
 };
 
 #endif

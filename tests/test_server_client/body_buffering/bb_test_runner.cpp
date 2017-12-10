@@ -12,8 +12,8 @@ std::string chain_to_string(BufferChain chain)
 
 void Testrunner::makeReader()
 {
-    rdr_ = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(io_, conn_));
-    auto rr = new MessageReaderV2(io_, conn_);
+    rdr_ = std::shared_ptr<MessageReader>(new MessageReader(io_, conn_));
+    auto rr = new MessageReader(io_, conn_);
 }
 /**
 * Constructor - tcIndex is an index into the set of testcases
@@ -25,7 +25,7 @@ Testrunner::Testrunner(boost::asio::io_service& io, ReadSocketInterfaceSPtr rd_s
 {
     LogDebug("");
     conn_ = rd_sock;
-    rdr_ = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(io_, conn_));
+    rdr_ = std::shared_ptr<MessageReader>(new MessageReader(io_, conn_));
     body = std::string("");
     bodyStream.str(body);
     body_accumulator = "";

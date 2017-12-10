@@ -7,7 +7,7 @@ PostTest::PostTest(boost::asio::io_service& io, EchoTestcase& testcase): _io(io)
 {
 
 }
-void PostTest::handler(Marvin::ErrorType& er, MessageReaderV2SPtr rdr)
+void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
     std::string sx = rdr->get_body_chain().to_string();
     std::string sy = _testcase.buffers_as_string();

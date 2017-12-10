@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 #include <sstream>
-#include "bufferV2.hpp"
+#include "buffer.hpp"
 #include "http_parser.h"
 #include "boost_stuff.hpp"
 
