@@ -18,6 +18,12 @@ OPENSSL_INCLUDE = $(OPENSSL_DIR)/include
 OPENSSL_LIBS=$(OPENSSL_DIR)
 JSON=https://github.com/nlohmann/json.git
 
+build_tests:
+	xcodebuild -scheme test_server_client_body_buffering clean 
+	xcodebuild -scheme test_server_client_body_buffering build | egrep -A 5 "(error|warning):"
+	xcodebuild -scheme test_server_client_body_format clean
+	xcodebuild -scheme test_server_client_body_format build | egrep -A 5 "(error|warning):"
+
 $(CLONE_DIR):
 	mkdir $(CLONE_DIR)
 	

@@ -19,7 +19,7 @@
 #include "buffer.hpp"
 #include "http_header.hpp"
 #include "message_writer.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 #include "tcp_connection.hpp"
 #include "url.hpp"
 
