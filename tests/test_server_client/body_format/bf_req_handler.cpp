@@ -30,13 +30,16 @@ RequestHandler::~RequestHandler()
 }
 
 void RequestHandler::handleConnect(
+    ServerContext&              server_context,
     MessageReaderSPtr           req,
     ConnectionInterfaceSPtr     connPtr,
-    HandlerDoneCallbackType    done)
+    HandlerDoneCallbackType     done)
 {
     LogDebug("");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
     auto er = Marvin::make_error_ok();
-    
+#pragma cland diagnostic pop
     boost::asio::streambuf b;
     std::ostream strm(&b);
     strm << "HTTP/1.1 200 OK\r\nContent-length:5\r\n\r\n12345" << std::endl;
@@ -98,12 +101,15 @@ std::string RequestHandler::post_dispatcher(MessageReaderSPtr req)
 }
     
 void RequestHandler::handleRequest(
+    ServerContext&   server_context,
     MessageReaderSPtr req,
     MessageWriterSPtr resp,
     HandlerDoneCallbackType done
 )
 {
-    std::ostringstream os;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+   std::ostringstream os;
     std::string uri = req->uri();
     LogDebug("uri:", uri);
     http::url parsed = http::ParseHttpUrl(uri);
@@ -127,8 +133,9 @@ void RequestHandler::handleRequest(
         {"body",bodyString}
     };
     j["xtra"] = {
-        {"connection_handler_uuid", req->getHeader(HttpHeader::Name::ConnectionHandlerId)},
-        {"request_handler_uuid", boost::uuids::to_string(_uuid)}
+        {"connection_handler_uuid", server_context.connection_handler_ptr->uuid()},
+        {"request_handler_uuid", boost::uuids::to_string(_uuid)},
+        {"fd", server_context.connection_ptr->nativeSocketFD()}
     };
     
     std::string json_body = j.dump();
@@ -144,13 +151,6 @@ void RequestHandler::handleRequest(
     BufferChainSPtr bchain_sptr = buffer_chain(bodyString);
     msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(bodyString.length() ));
     
-    /// identify the connection handler for this request/response
-    std::string uuid = req->getHeader(HttpHeader::Name::ConnectionHandlerId);
-    msg->setHeader(HttpHeader::Name::ConnectionHandlerId, uuid);
-
-    /// identify the request handler for this request/response
-    msg->setHeader(HttpHeader::Name::RequestHandlerId, boost::uuids::to_string(_uuid));
-
     /// correctly handle keep-alive/close
     bool keep_alive;
     if(req->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionKeepAlive) {
@@ -160,7 +160,7 @@ void RequestHandler::handleRequest(
         keep_alive = false;
         msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
     }
-    
+#pragma cland diagnostic pop
     resp->asyncWrite(msg, bchain_sptr, [this, done, keep_alive](Marvin::ErrorType& err){;
         done(err, keep_alive);
     });

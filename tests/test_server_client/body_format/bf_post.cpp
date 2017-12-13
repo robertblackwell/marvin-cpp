@@ -1,3 +1,4 @@
+#include <gtest/gtest.h>
 #include "json.hpp"
 #include "server_connection_manager.hpp"
 #include "bf_post.hpp"
@@ -22,8 +23,8 @@ void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 #endif
     assert(rdr->statusCode() == 200);
     assert(sx == sy);
-    REQUIRE(rdr->statusCode() == 200);
-    REQUIRE(sx == sy);
+    EXPECT_TRUE(rdr->statusCode() == 200);
+    EXPECT_TRUE(sx == sy);
     
 //    std::cout << "SUCCESS: " << _testcase._description <<  std::endl;
     if(rdr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {

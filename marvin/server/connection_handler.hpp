@@ -14,7 +14,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
-
+#include "server_context.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"
 #include "request_handler_base.hpp"
@@ -39,6 +39,7 @@ class ConnectionHandler
     
         void serve();
         long nativeSocketFD();
+        std::string uuid();
     private:
     
         void serveAnother();
@@ -46,16 +47,16 @@ class ConnectionHandler
         void requestComplete(Marvin::ErrorType err, bool keepAlive);
         void handlerComplete(Marvin::ErrorType err);
         void handleConnectComplete(bool hijack);
-
-        boost::uuids::uuid                                  _uuid;
-        boost::asio::io_service&                            _io;
-        ServerConnectionManager&                            _connectionManager;
-        std::unique_ptr<RequestHandlerBase>                 _requestHandlerUnPtr;
-        RequestHandlerFactory                               _factory;
+        boost::uuids::uuid                     _uuid;
+        boost::asio::io_service&               _io;
+        ServerConnectionManager&               _connectionManager;
+        std::unique_ptr<RequestHandlerBase>    _requestHandlerUnPtr;
+        RequestHandlerFactory                  _factory;
     
-        ConnectionInterfaceSPtr                             _connection;
+        ConnectionInterfaceSPtr                _connection;
         MessageReaderSPtr                                 _reader;
         MessageWriterSPtr                                 _writer;
+        ServerContext                                     _server_context;
 };
 
 #endif /* ConnectionHandler_hpp */

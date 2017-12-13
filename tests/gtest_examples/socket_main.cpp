@@ -8,8 +8,8 @@
 #include <unistd.h>
 #include <boost/asio.hpp>
 #include <pthread.h>
-#define CATCH_CONFIG_RUNNER
-#include "catch.hpp"
+
+#include <gtest/gtest.h>
 
 #include "rb_logger.hpp"
 
@@ -42,6 +42,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 /**  --------------------------------------------------------------------------------------
 * run client and server the same thread to test MessageReader
 *---------------------------------------------------------------------------------------*/
+#if 1
 static void runTestcase(Testcase tc)
 {
     LogDebug("");
@@ -64,9 +65,11 @@ static void runTestcase(Testcase tc)
     io.run();
     LogDebug("");
 }
+#endif
 // tests ending a message with out chunked encoding or content-length
-TEST_CASE("MessageReader_Socket_test_end_of_message")
+TEST(messagereader, endofmessage)
 {
+    ASSERT_TRUE(true);
     TestcaseDefinitions tcs = makeTCS_eof();
     for(int i = 0; i < tcs.number_of_testcases(); i++) {
         runTestcase(tcs.get_case(i));
@@ -75,16 +78,92 @@ TEST_CASE("MessageReader_Socket_test_end_of_message")
 // tests reading messages with all kinds of buffering
 // to ensure parse crosses from heading to body correctly
 // and that chunked encoding works correctly
-TEST_CASE("MessageReader_Socket_test_buffering")
+TEST(messagereader, buffering)
 {
+    ASSERT_TRUE(true);
     TestcaseDefinitions tcs = makeTestcaseDefinitions_01();
     for(int i = 0; i < tcs.number_of_testcases(); i++) {
         runTestcase(tcs.get_case(i));
     }
 }
+TestcaseDefinitions tc_defs;
+namespace {
+    class MyFixture1 : public ::testing::TestWithParam<int>
+    {
+        public:
+        MyFixture1(): _tcdefs(), _tc(tc_defs.get_case(GetParam()))
+        {
+            int index = GetParam();
+            auto tt = tc_defs;
+            auto tc = tc_defs.get_case_ptr(index);
+        }
+        ~MyFixture1(){}
+        virtual void SetUp()
+        {
+            std::cout << "setup" << std::endl;
+        }
+        virtual void TearDown()
+        {
+        
+        }
+        TestcaseDefinitions _tcdefs;
+        Testcase _tc;
+    };
+    class MyFixture2 : public ::testing::TestWithParam<Testcase>
+    {
+        public:
+        MyFixture2(): _tcdefs(), _tc(GetParam())
+        {
+            std::cout << "" << std::endl;
+        }
+        ~MyFixture2(){}
+        virtual void SetUp()
+        {
+            std::cout << "setup" << std::endl;
+        }
+        virtual void TearDown()
+        {
+        
+        }
+        TestcaseDefinitions _tcdefs;
+        Testcase _tc;
+    };
 
-#pragma mark - main
-int main(int argc, char * argv[]) {
-    RBLogging::setEnabled(false);
-    int result = Catch::Session().run( argc, argv );
+
 }
+TEST_P(MyFixture1, test01)
+{
+    std::cout << "TEST_F::MyFixture::_data " <<  std::endl;
+}
+INSTANTIATE_TEST_CASE_P(experiment, MyFixture1, testing::Values(1,2,3));
+
+TEST_P(MyFixture2, test01)
+{
+    std::cout << "TEST_F::MyFixture::_data " <<  std::endl;
+}
+INSTANTIATE_TEST_CASE_P(experiment, MyFixture2, testing::Values(tc_defs.get_case(1),tc_defs.get_case(2),tc_defs.get_case(3)));
+INSTANTIATE_TEST_CASE_P(experiment2, MyFixture2, testing::ValuesIn(makeTestcaseDefinitions_01().cases));
+#if 0
+class TCFixture : public ::testing::TestWithParam<Testcase>
+{
+    
+};
+TEST_P(TCFixture, run)
+{
+    auto tc = GetParam();
+    runTestcase(tc);
+}
+TestcaseDefinitions tcs;
+INSTANTIATE_TEST_CASE_P(instanceName, TCFixture, ::testing::ValuesIn(tcs.cases));
+#endif
+int main(int argc, char * argv[])
+{
+    RBLogging::setEnabled(false);
+    tc_defs = makeTestcaseDefinitions_01();
+    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    int _argc = 2;
+    testing::InitGoogleTest(&_argc, _argv);
+    auto ret = RUN_ALL_TESTS();
+    return ret;
+}
+

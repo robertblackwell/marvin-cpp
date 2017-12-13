@@ -9,12 +9,19 @@
 //
 #include <thread>
 #include "http_server.hpp"
+
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 int HTTPServer::__numberOfThreads = 4;
 int HTTPServer::__numberOfConnections = 2;
+int HTTPServer::__heartbeat_interval_ms = 1000;
 
+HTTPServer* HTTPServer::__instance = nullptr;
 
+HTTPServer* HTTPServer::get_instance()
+{
+    return __instance;
+}
 void HTTPServer::configSet_NumberOfThreads(int n)
 {
     __numberOfThreads = n;
@@ -22,6 +29,10 @@ void HTTPServer::configSet_NumberOfThreads(int n)
 void HTTPServer::configSet_NumberOfConnections(int n)
 {
     __numberOfConnections = n;
+}
+void HTTPServer::configSet_HeartbeatInterval(int millisecs)
+{
+    __heartbeat_interval_ms = millisecs;
 }
 bool HTTPServer::verify()
 {
@@ -38,7 +49,9 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory)
     _serverStrand(_io),
     _numberOfConnections(__numberOfConnections),
     _numberOfThreads(__numberOfThreads),
-    _connectionManager(_io, _serverStrand, __numberOfConnections)
+    _heartbeat_interval_ms(__heartbeat_interval_ms),
+    _connectionManager(_io, _serverStrand, __numberOfConnections),
+    _heartbeat_timer(_io)
 {
     LogTorTrace();
 }
@@ -59,7 +72,7 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory)
     #if defined(SIGQUIT)
     _signals.add(SIGQUIT);
     #endif // defined(SIGQUIT)
-    
+    __instance = this;
 #if 0
     auto handler = [this]( const boost::system::error_code& error, int signal_number)
     {
@@ -203,4 +216,11 @@ HTTPServer::~HTTPServer()
     _acceptor.close();
 //  connection_manager_.stop_all();
 }
+void HTTPServer::on_heartbeat(const boost::system::error_code& ec)
+{
+    std::cout << __FUNCTION__ << std::endl;
+    _heartbeat_timer.expires_from_now(boost::posix_time::milliseconds(_heartbeat_interval_ms));
+    auto ds = boost::bind(&HTTPServer::on_heartbeat, this, boost::asio::placeholders::error);
+    _heartbeat_timer.async_wait(ds);
 
+}

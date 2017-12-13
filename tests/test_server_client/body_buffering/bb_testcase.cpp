@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_ERROR)
 #include "bb_testcase.hpp"
 
 using namespace body_buffering;
@@ -34,6 +34,7 @@ Testcase::Testcase(
     }
     std::string Testcase::getDescription()
     {
+        LogDebug("");
         return _description;
     }
     std::string Testcase::lineAt(std::size_t ix)

@@ -13,7 +13,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 using namespace body_buffering;
 
 int
-TestcaseDefinitions::number_of_testcases(){
+TestcaseDefinitions::number_of_testcases()
+{
+    LogDebug("");
     return (int)cases.size();
 }
 

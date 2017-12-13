@@ -9,7 +9,7 @@
 #include <boost/asio.hpp>
 #include <pthread.h>
 
-#include "catch.hpp"
+#include <gtest/gtest.h>
 
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
@@ -76,7 +76,7 @@ void test_multiple(std::vector<TESTCASE> cases)
     io_service.run();
 }
 #if 1
-TEST_CASE("PostOne","")
+TEST(PostOne, One)
 {
     test_one<PostTest, Testcase>(tcase01);
 }

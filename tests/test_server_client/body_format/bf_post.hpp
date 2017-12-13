@@ -8,7 +8,7 @@
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include "catch.hpp"
+#include <gtest/gtest.h>
 #include "rb_logger.hpp"
 #include "buffer.hpp"
 #include "client.hpp"

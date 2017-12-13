@@ -98,7 +98,7 @@ class Logger{
                   const char* file_name,
                   const char* func_name,
                   int line_number,
-                  int fd_arg);
+                  long fd_arg);
     
     private:
         std::mutex _loggerMutex;
@@ -256,7 +256,16 @@ static Logger activeLogger{};
 
 #else
 
-    #define SET_LOGLEVEL(level) static RBLogging::LogLevelType rbLogLevel = level;
-    #define RBLOGGER_SETLEVEL(level) static  RBLogging::LogLevelType rbLogLevel = level;
+    #define SET_LOGLEVEL(level) \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wunused-variable\"") \
+    static RBLogging::LogLevelType rbLogLevel = level; \
+    _Pragma("clang diagnostic pop")
+
+    #define RBLOGGER_SETLEVEL(level) \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wunused-variable\"") \
+    static  RBLogging::LogLevelType rbLogLevel = level; \
+    _Pragma("clang diagnostic pop")
 
 #endif

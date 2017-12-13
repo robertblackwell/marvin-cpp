@@ -16,6 +16,7 @@
 //#include "UriParser.hpp"
 //#include "url.hpp"
 #include "http_server.hpp"
+#include "server_context.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "uri_query.hpp"
@@ -36,6 +37,7 @@ namespace body_buffering
         ~RequestHandler();
         
         void handleConnect(
+            ServerContext&   server_context,
             MessageReaderSPtr           req,
             ConnectionInterfaceSPtr     connPtr,
             HandlerDoneCallbackType    done);
@@ -59,6 +61,7 @@ namespace body_buffering
         std::string post_dispatcher(MessageReaderSPtr req);
         
         void handleRequest(
+            ServerContext&   server_context,
             MessageReaderSPtr req,
             MessageWriterSPtr resp,
             HandlerDoneCallbackType done

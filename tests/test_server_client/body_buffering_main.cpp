@@ -62,7 +62,7 @@ int main( int argc, char* argv[] )
 
     int result = Catch::Session().run( argc, argv );
     // now wait for the saerver to complete its cleanup after the last request
-    sleep(5);
+    sleep(10);
 
     raise(SIGTERM); // kill server - in xcode debugger this will not stop the server - but works when not in debugger
     server_thread.join();

@@ -54,7 +54,9 @@ public:
 
     static void configSet_NumberOfConnections(int num);
     static void configSet_NumberOfThreads(int num);
-
+    static void configSet_HeartbeatInterval(int millisecs);
+    static HTTPServer* get_instance();
+    
     HTTPServer(const HTTPServer&) = delete;
     HTTPServer& operator=(const HTTPServer&) = delete;
 
@@ -74,6 +76,8 @@ private:
 
     static int __numberOfThreads;
     static int __numberOfConnections;
+    static int __heartbeat_interval_ms;
+    static HTTPServer* __instance;
 
     /**
     ** @brief just as it says - init the server ready to list
@@ -107,7 +111,10 @@ private:
     ** @brief IS the signal callback
     */
     void doStop(const Marvin::ErrorType& err);
+    void on_heartbeat(const boost::system::error_code& ec);
+
     
+    int                                             _heartbeat_interval_ms;
     int                                             _numberOfThreads;
     int                                             _numberOfConnections;
     long                                            _port;
@@ -117,5 +124,6 @@ private:
     boost::asio::ip::tcp::acceptor                  _acceptor;
     ServerConnectionManager                         _connectionManager;
     RequestHandlerFactory                           _factory;
+    boost::asio::deadline_timer                     _heartbeat_timer;
 };
 #endif // HTTP_SERVER_HPP

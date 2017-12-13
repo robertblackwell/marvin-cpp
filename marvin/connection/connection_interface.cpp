@@ -37,6 +37,7 @@ ConnectionInterface* connectionFactory(
     if( scheme == "http" ){
         ptr = new TCPConnection(io_service);
     }else if( scheme == "https" ){
+        ptr = new TCPConnection(io_service);
 //        ptr = new TLSConnection(io_service);
     } else{
         assert(false);

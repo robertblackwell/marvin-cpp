@@ -8,6 +8,9 @@
 #include "http_header.hpp"
 #include "connection_handler.hpp"
 #include "server_connection_manager.hpp"
+#include "http_server.hpp"
+#include "server_context.hpp"
+
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 ConnectionHandler::ConnectionHandler(
@@ -28,6 +31,11 @@ ConnectionHandler::ConnectionHandler(
     */
     _connection = std::shared_ptr<ConnectionInterface>(conn);
     _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
+    _server_context.server_ptr = HTTPServer::get_instance();
+    _server_context.connection_handler_ptr = this;
+    _server_context.server_connection_manager_ptr = &connectionManager;
+    _server_context.connection_ptr = conn;
+    LogDebug("");
 
 }
 
@@ -49,7 +57,10 @@ long ConnectionHandler::nativeSocketFD()
 {
     return _connection->nativeSocketFD();
 }
-
+std::string ConnectionHandler::uuid()
+{
+    return boost::uuids::to_string(_uuid);
+}
 /*!
 * Come here when a the CONNECT handler calls its "done" callback
 */
@@ -135,17 +146,13 @@ void ConnectionHandler::readMessageHandler(Marvin::ErrorType err)
     } else{
         if(_reader->method() == HttpMethod::CONNECT ){
             LogWarn("CONNECT request");
-//            std::cout << std:: hex << &_reader << " " << (long)_reader.get() << std::endl;
-             _requestHandlerUnPtr->handleConnect(_reader, _connection, [this](Marvin::ErrorType& err, bool keepAlive){
+             _requestHandlerUnPtr->handleConnect(_server_context, _reader, _connection, [this](Marvin::ErrorType& err, bool keepAlive){
                 this->requestComplete(err, false);
              });
         } else {
             LogTrace(traceMessage(*_reader));
             
-            // this is a testing aid
-            _reader->setHeader(HttpHeader::Name::ConnectionHandlerId, uuid_str);
-            
-            _requestHandlerUnPtr->handleRequest(_reader, _writer, [this](Marvin::ErrorType& err, bool keepAlive){
+            _requestHandlerUnPtr->handleRequest(_server_context, _reader, _writer, [this](Marvin::ErrorType& err, bool keepAlive){
                 LogInfo("");
                 this->serveAnother();
 //                this->requestComplete(err, keepAlive);
@@ -161,7 +168,7 @@ void ConnectionHandler::serve()
 {
     LogInfo(" fd:", nativeSocketFD());
 //    std::cout << "connection_handler::serve " << std::hex << (long) this << std::endl;
-    ConnectionInterface* cptr = _connection.get();
+//    ConnectionInterface* cptr = _connection.get();
     
 //    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
     _reader = std::shared_ptr<MessageReader>(new MessageReader(_io, _connection));
@@ -180,7 +187,7 @@ void ConnectionHandler::serveAnother()
 {
     LogInfo(" fd:", nativeSocketFD());
     /// get a new request object
-    ConnectionInterface* cptr = _connection.get();
+//    ConnectionInterface* cptr = _connection.get();
 //    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
 
 //    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));

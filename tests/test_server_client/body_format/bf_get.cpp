@@ -12,6 +12,9 @@ void GetTest::exec()
     _msg = std::shared_ptr<MessageBase>(new MessageBase());
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [this](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
 #if 1
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+
         std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
         std::cout << "request " << std::hex << _client.get() << std::endl;
 //        std::cout << "request " << std::hex << &resp << std::endl;
@@ -25,7 +28,8 @@ void GetTest::exec()
         auto st = b->statusCode();
         assert(b->statusCode() == 200);
         std::string code = _testcase.buffers_as_string();
-        
+#pragma clang diagnostic pop
+
 #endif
         std::cout << "get request code = " << code << " success " << std::endl;
     };

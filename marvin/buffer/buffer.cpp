@@ -25,7 +25,6 @@ MBuffer::MBuffer(std::size_t cap)
 
 MBuffer::~MBuffer()
 {
-    LogTorTrace();
     if( (memPtr != nullptr) && (capacity_ > 0) ){
         free(memPtr);
     }
@@ -258,7 +257,7 @@ void Fragment::addToEnd(void* p, std::size_t len)
     void* cur_void_ptr = boost::asio::buffer_cast<void*>(_asio_buf);
     char* cur_ptr = boost::asio::buffer_cast<char*>(_asio_buf);
     std::size_t cur_len = boost::asio::buffer_size(_asio_buf);
-    char* p2 = &cur_ptr[cur_len];
+//    char* p2 = &cur_ptr[cur_len];
     assert( p == (cur_ptr + cur_len));
     _asio_buf = boost::asio::mutable_buffer(cur_void_ptr, len + cur_len);
 }
@@ -329,8 +328,8 @@ void FBuffer::addFragment(void* bytes, std::size_t len)
         if( (char*)bytes == ((char*)last.endPointer() + 1) ) {
 //            last.extendBy(len);
             last.addToEnd(bytes, len);
-            void* ptr = last.start();
-            std::size_t tmp_l = last.size();
+//            void* ptr = last.start();
+//            std::size_t tmp_l = last.size();
 //            _fragments.pop_back();
 //            Fragment f(ptr, tmp_l + len);
 //            _fragments.push_back(f);

@@ -9,9 +9,7 @@
 #include <boost/asio.hpp>
 #include <thread>
 #include <pthread.h>
-
-#define CATCH_CONFIG_RUNNER
-#include "catch.hpp"
+#include <gtest/gtest.h>
 
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
@@ -26,7 +24,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 int main( int argc, char* argv[] )
 {
     // global setup - run a server
-    RBLogging::setEnabled(true);
+    RBLogging::setEnabled(false);
     std::thread server_thread([](){
         try {
             HTTPServer server([](boost::asio::io_service& io){
@@ -37,10 +35,16 @@ int main( int argc, char* argv[] )
             return;
         }
     });
-
-    int result = Catch::Session().run( argc, argv );
-
+    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    int _argc = 2;
+    testing::InitGoogleTest(&_argc, _argv);
+    auto res = RUN_ALL_TESTS();
+    sleep(10);
     raise(SIGTERM); // kill server - in xcode debugger this will not stop the server - but works when not in debugger
-    server_thread.join();
-    return result;
+    return res;
+//    int result = Catch::Session().run( argc, argv );
+//    sleep(10);
+//    raise(SIGTERM); // kill server - in xcode debugger this will not stop the server - but works when not in debugger
+//    server_thread.join();
+//    return result;
 }

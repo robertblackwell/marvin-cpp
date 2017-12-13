@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D40F343D1FD0F5AD00EC653F"
-               BuildableName = "test_reader_socket"
-               BlueprintName = "test_reader_socket"
+               BlueprintIdentifier = "D42AC4F01FDF1775007CF7E0"
+               BuildableName = "test_strand"
+               BlueprintName = "test_strand"
                ReferencedContainer = "container:MarvinCpp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,9 +33,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D40F343D1FD0F5AD00EC653F"
-            BuildableName = "test_reader_socket"
-            BlueprintName = "test_reader_socket"
+            BlueprintIdentifier = "D42AC4F01FDF1775007CF7E0"
+            BuildableName = "test_strand"
+            BlueprintName = "test_strand"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -57,9 +57,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D40F343D1FD0F5AD00EC653F"
-            BuildableName = "test_reader_socket"
-            BlueprintName = "test_reader_socket"
+            BlueprintIdentifier = "D42AC4F01FDF1775007CF7E0"
+            BuildableName = "test_strand"
+            BlueprintName = "test_strand"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -76,9 +76,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D40F343D1FD0F5AD00EC653F"
-            BuildableName = "test_reader_socket"
-            BlueprintName = "test_reader_socket"
+            BlueprintIdentifier = "D42AC4F01FDF1775007CF7E0"
+            BuildableName = "test_strand"
+            BlueprintName = "test_strand"
             ReferencedContainer = "container:MarvinCpp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

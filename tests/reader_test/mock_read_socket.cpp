@@ -39,43 +39,59 @@ void MockReadSocket::asyncRead(MBuffer& mb, AsyncReadCallback cb)
     if( ! _tcObj.finished() )
     {
         // we still have some test data so simulate an io wait and then call the read callback
+        // these triggers should be the last buffer
         std::string s = _tcObj.next();
-        buf = (char*)s.c_str();
-        len = strlen(buf);
-        std::size_t buf_max = mb.capacity();
-        if( buf_max < len + 1){
-            LogError("MockReadSocket:asyncRead error buffer too small");
-            throw "MockReadSocket:asyncRead error buffer too small";
-        }
-        void* rawPtr = mb.data();
-        memcpy(rawPtr, buf, len);
-        ((char*)rawPtr)[len] = (char)0;
-        
-//        char* b = (char*)rawPtr;
-        std::string bb = std::string((char*)rawPtr, len);
-        
-        std::size_t startIndex = bb.find("\r\n");
-        std::string x;
-        if( startIndex != bb.npos ){
-            x = bb.replace(startIndex, std::string("\r\n").length(), "\\r\\n");
-        }else{
-            x = bb;
-        }
-        LogDebug("::new buffer: [", x, "] len:", len);
-        index++;
-        
-        // at this point we have moved len bytes into the buffer mb
-//            st = new SingleTimer(io_, 500);
-        st->start([this, buf, len, cb](const boost::system::error_code& ec)->bool{
+        if( (s == "eof")||(s=="close")||(s=="shutdown")) {
+            // start a timer and at expiry call cb with error code for eof
+            st->start([this, s, cb](const boost::system::error_code& ec)->bool{
+                
+                auto f = [this, s, cb](Marvin::ErrorType& er, std::size_t bytes){
+                    cb(er, bytes);
+                };
+                
+                auto pf = std::bind(f, Marvin::make_error_eof(), (std::size_t)0);
+                io_.post(pf);
+                return true;
+            });
+
+        } else {
+            buf = (char*)s.c_str();
+            len = strlen(buf);
+            std::size_t buf_max = mb.capacity();
+            if( buf_max < len + 1){
+                LogError("MockReadSocket:asyncRead error buffer too small");
+                throw "MockReadSocket:asyncRead error buffer too small";
+            }
+            void* rawPtr = mb.data();
+            memcpy(rawPtr, buf, len);
+            ((char*)rawPtr)[len] = (char)0;
             
-            auto f = [this, buf, len, cb](Marvin::ErrorType& er, std::size_t bytes){
-                cb(er, bytes);
-            };
+    //        char* b = (char*)rawPtr;
+            std::string bb = std::string((char*)rawPtr, len);
             
-            auto pf = std::bind(f, Marvin::make_error_ok(), (std::size_t)len);
-            io_.post(pf);
-            return true;
-        });
+            std::size_t startIndex = bb.find("\r\n");
+            std::string x;
+            if( startIndex != bb.npos ){
+                x = bb.replace(startIndex, std::string("\r\n").length(), "\\r\\n");
+            }else{
+                x = bb;
+            }
+            LogDebug("::new buffer: [", x, "] len:", len);
+            index++;
+            
+            // at this point we have moved len bytes into the buffer mb
+    //            st = new SingleTimer(io_, 500);
+            st->start([this, buf, len, cb](const boost::system::error_code& ec)->bool{
+                
+                auto f = [this, buf, len, cb](Marvin::ErrorType& er, std::size_t bytes){
+                    cb(er, bytes);
+                };
+                
+                auto pf = std::bind(f, Marvin::make_error_ok(), (std::size_t)len);
+                io_.post(pf);
+                return true;
+            });
+        }
     }
     else
     {

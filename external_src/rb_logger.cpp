@@ -108,7 +108,7 @@ void RBLogging::Logger::fdTraceLog(
               const char* file_name,
               const char* func_name,
               int line_number,
-              int fd_arg)
+              long fd_arg)
 {
     if (enabled()) {
         std::ostringstream os;

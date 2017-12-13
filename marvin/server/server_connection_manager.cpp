@@ -34,17 +34,18 @@ void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::Al
 }
 
 
-
+/**
+ * This method is ALWAYS called from the server strand so do not have to post
+ * it on that strand.
+ */
 void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connHandler)
 {
-    LogDebug("nativeSocket:: ", connHandler->nativeSocketFD());
-    auto pf = _serverStrand.wrap(std::bind(&ServerConnectionManager::_register, this, connHandler));
-    _io.post(pf);
-//    _connections[connHandler] = std::unique_ptr<ConnectionHandler>(connHandler);
-}
+    LogDebug("");
+//    std::cout << "register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
+//    std::cout << "register: _connections.size() " << _connections.size() << " "  << std::endl;
+//    std::cout << "_register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
+//    std::cout << "_register: _connections.size() " << _connections.size() << " "  << std::endl;
 
-void ServerConnectionManager::_register(ConnectionHandler* connHandler)
-{
     long fd = connHandler->nativeSocketFD();
     assert(_fd_list.find(fd) == _fd_list.end());
     assert(_connections.find(connHandler) == _connections.end()); // assert not already there
@@ -54,10 +55,16 @@ void ServerConnectionManager::_register(ConnectionHandler* connHandler)
     assert(verify());
 }
 
-
+/**
+ * This is called from a ConnectionHandler running on an arbitary io_service.
+ * need to post the real action on the server strand.
+ */
 void ServerConnectionManager::deregister(ConnectionHandler* ch)
 {
     LogDebug("nativeSocket:: ", ch->nativeSocketFD());
+//    std::cout << "deregister: fd_list.size() " << _fd_list.size() << " "  << std::endl;
+//    std::cout << "deregister: _connections.size() " << _connections.size() << " "  << std::endl;
+//    std::cout << "deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
     auto pf = _serverStrand.wrap(std::bind(&ServerConnectionManager::_deregister, this, ch));
     _io.post(pf);
 }
@@ -67,11 +74,27 @@ void ServerConnectionManager::deregister(ConnectionHandler* ch)
 void ServerConnectionManager::_deregister(ConnectionHandler* ch)
 {
     LogDebug("");
+//    std::cout << "_deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
     long fd = ch->nativeSocketFD();
+    auto fd1 = _fd_list.find(fd);
+    auto fd2 = _fd_list.end();
+#pragma clang diagnostic pop
+//    std::cout << "_deregister: fd_list.size() " << _fd_list.size() << " "  << std::endl;
+//    std::cout << "_deregister: _connections.size() " << _connections.size() << " "  << std::endl;
+//    for(auto const & f : _fd_list) {
+//        std::cout << f.first << " " << f.second << std::endl;
+//    }
+//    std::cout << "XXX fds : " << fd1->first << " " << fd2->first << std::endl;
+//    LogDebug("assert fd ", fd1, " ", fd2 );
     assert(_fd_list.find(fd) != _fd_list.end());
     if(_fd_list.find(fd) == _fd_list.end()) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
         auto fd1 = _fd_list.find(fd);
         auto fd2 = _fd_list.end();
+#pragma clang diagnostic pop
         assert(_fd_list.find(fd) != _fd_list.end());
     }
     assert(_connections.find(ch) != _connections.end()); // assert is there

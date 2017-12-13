@@ -33,7 +33,7 @@ public:
     }
 };
 #pragma mark - testcase_fbuffer
-TEST( FBuffer, Test_01)
+TEST(fbuffer, 01)
 {
     std::vector<std::string> v {
         "1234567890",
@@ -69,7 +69,7 @@ TEST( FBuffer, Test_01)
 }
 #pragma mark - testcase_fbuffer2
 
-TEST( FBuffer, Test_02)
+TEST(fbuffer, 02)
 {
     std::string data = "1234567890123456789012345678901234567890";
     std::vector<std::string> v {
