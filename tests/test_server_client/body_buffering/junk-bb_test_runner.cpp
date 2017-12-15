@@ -45,19 +45,19 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     }
 //        assert(er == expected_err);
     assert(rdr_->statusCode() == _tcObj.result_status_code());
-    REQUIRE(rdr_->statusCode() == _tcObj.result_status_code());
+    ASSERT_EQ(rdr_->statusCode() == _tcObj.result_status_code());
     auto h1 = _tcObj.result_headers();
     auto h2 = rdr_->getHeaders();
     bool hh = (h1 == h2);
     assert(_tcObj.result_headers() == rdr_->getHeaders());
-    REQUIRE(_tcObj.result_headers() == rdr_->getHeaders());
+    ASSERT_EQ(_tcObj.result_headers() == rdr_->getHeaders());
     auto b1 = _tcObj.result_body();
     auto b2 = rdr_->get_body_chain();
     auto b3 = rdr_->get_raw_body_chain();
     auto s2 = chain_to_string(b2);
     auto s3 = chain_to_string(b3);
     assert(b1 == s2);
-    REQUIRE(b1 == s2);
+    ASSERT_EQ(b1 == s2);
     auto desc = _tcObj.getDescription();
     std::cout << "TestRunner::readMessage Success for testcase " << _tcObj.getDescription() <<std::endl;
 }
@@ -74,8 +74,8 @@ void Testrunner::onBody(Marvin::ErrorType er, BufferChain chunk)
         bool vb = _tcObj.verify_body(body_accumulator);
         assert(vb);
         assert(er == Marvin::make_error_eom());
-        REQUIRE(vb);
-        REQUIRE(er == Marvin::make_error_eom());
+        ASSERT_EQ(vb);
+        ASSERT_EQ(er == Marvin::make_error_eom());
         auto desc = _tcObj.getDescription();
         std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << _tcObj.getDescription() <<std::endl;
 
@@ -91,14 +91,14 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     std::string ers = er.message();
     assert(er == expected_err);
     assert(rdr_->statusCode() == _tcObj.result_status_code());
-    REQUIRE(er == expected_err);
-    REQUIRE(rdr_->statusCode() == _tcObj.result_status_code());
+    ASSERT_EQ(er == expected_err);
+    ASSERT_EQ(rdr_->statusCode() == _tcObj.result_status_code());
     auto h1 = _tcObj.result_headers();
     auto h2 = rdr_->getHeaders();
     bool hhh = _tcObj.verify_headers(h2);
     assert(hhh);
-    REQUIRE(hhh);
-    REQUIRE(h1 == h2);
+    ASSERT_EQ(hhh);
+    ASSERT_EQ(h1 == h2);
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
 //        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << tcObj.getDescription() <<std::endl;
     rdr_->readBody(bh);

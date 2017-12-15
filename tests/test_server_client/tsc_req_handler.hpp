@@ -21,20 +21,18 @@
 #include "request.hpp"
 #include "uri_query.hpp"
 
-namespace body_format
-{
     /**
     * Class used to handle requests in the test server
     */
-    class RequestHandler : public RequestHandlerBase
+    class TscRequestHandler : public RequestHandlerBase
     {
     public:
         static int counter; // to see if there are multiple instances of the handler
         boost::asio::deadline_timer _timer;
         boost::uuids::uuid          _uuid;
 
-        RequestHandler(boost::asio::io_service& io);
-        ~RequestHandler();
+        TscRequestHandler(boost::asio::io_service& io);
+        ~TscRequestHandler();
         
         void handleConnect(
             ServerContext&   server_context,
@@ -67,6 +65,4 @@ namespace body_format
             HandlerDoneCallbackType done
         );
     };
-
-}
 #endif /* test_server_h */

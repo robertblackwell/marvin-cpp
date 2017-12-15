@@ -2,7 +2,6 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "catch.hpp"
 #include "boost_stuff.hpp"
 #include "buffer.hpp"
 #include "message.hpp"

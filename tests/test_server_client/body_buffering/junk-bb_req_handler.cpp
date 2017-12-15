@@ -2,9 +2,9 @@
 #include <sstream>
 #include <string>
 #include <pthread.h>
-
-#include "boost_stuff.hpp"
 #include "json.hpp"
+#include "boost_stuff.hpp"
+
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "http_header.hpp"
@@ -15,9 +15,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "request.hpp"
 #include "uri_query.hpp"
 
-#include "bf_req_handler.hpp"
+#include "bb_req_handler.hpp"
 
-using namespace body_format;
+using namespace body_buffering;
 
 int RequestHandler::counter;
 RequestHandler::RequestHandler(boost::asio::io_service& io):RequestHandlerBase(io), _timer(io), _uuid(boost::uuids::random_generator()())
@@ -30,16 +30,17 @@ RequestHandler::~RequestHandler()
 }
 
 void RequestHandler::handleConnect(
-    ServerContext&              server_context,
+    ServerContext&   server_context,
     MessageReaderSPtr           req,
     ConnectionInterfaceSPtr     connPtr,
-    HandlerDoneCallbackType     done)
+    HandlerDoneCallbackType    done)
 {
     LogDebug("");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
     auto er = Marvin::make_error_ok();
-#pragma cland diagnostic pop
+#pragma clang diagnostic pop
+
     boost::asio::streambuf b;
     std::ostream strm(&b);
     strm << "HTTP/1.1 200 OK\r\nContent-length:5\r\n\r\n12345" << std::endl;
@@ -109,7 +110,8 @@ void RequestHandler::handleRequest(
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
-   std::ostringstream os;
+
+    std::ostringstream os;
     std::string uri = req->uri();
     LogDebug("uri:", uri);
     http::url parsed = http::ParseHttpUrl(uri);
@@ -125,22 +127,7 @@ void RequestHandler::handleRequest(
         std::string bdy = post_dispatcher(req);
         bodyString = (req->get_body_chain()).to_string();
     }
-    nlohmann::json j;
-    j["req"] = {
-        {"method", mm},
-        {"uri", uri},
-        {"headers", req->getHeaders()},
-        {"body",bodyString}
-    };
-    j["xtra"] = {
-        {"connection_handler_uuid", server_context.connection_handler_ptr->uuid()},
-        {"request_handler_uuid", boost::uuids::to_string(_uuid)},
-        {"fd", server_context.connection_ptr->nativeSocketFD()}
-    };
-    
-    std::string json_body = j.dump();
-    bodyString = json_body;
-    
+
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
     msg->setIsRequest(false);
     msg->setStatusCode(200);
@@ -160,7 +147,8 @@ void RequestHandler::handleRequest(
         keep_alive = false;
         msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
     }
-#pragma cland diagnostic pop
+#pragma clang diagnostic pop
+
     resp->asyncWrite(msg, bchain_sptr, [this, done, keep_alive](Marvin::ErrorType& err){;
         done(err, keep_alive);
     });

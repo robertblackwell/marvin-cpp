@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <boost/asio.hpp>
 #include <pthread.h>
+#include <gtest/gtest.h>
+#include "json.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
@@ -16,6 +18,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "bb_client.hpp"
 
 using namespace body_buffering;
+
+using json = nlohmann::json;
 
 TClient::TClient(boost::asio::io_service& io, std::string port, Testcase tc)
 : _io(io), _scheme("http"), _server("localhost"), _port(port), _testcase(tc), _timer(_io)
@@ -66,8 +70,6 @@ void TClient::write_line()
         _conn_sptr->close();
     } else {
         auto hf = std::bind(&TClient::handle_write_complete, this, std::placeholders::_1, std::placeholders::_2);
-        auto buf = boost::asio::buffer(line.c_str(), line.size());
-        
         _conn_sptr->asyncWrite(line, hf);
     }
 }
@@ -77,7 +79,6 @@ void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_tr
     if( !err) {
         _buffer_index++;
         if(_buffer_index >= _testcase.buffers().size()) {
-            Marvin::ErrorType err_val = err;
             LogDebug("write complete start read");
             read_message();
         } else {
@@ -118,23 +119,27 @@ void TClient::onMessage(Marvin::ErrorType er)
     if( er != expected_err){
         std::cout << "bad" << std::endl;
     }
-//        assert(er == expected_err);
     assert(_rdr->statusCode() == _testcase.result_status_code());
-    REQUIRE(_rdr->statusCode() == _testcase.result_status_code());
+    EXPECT_TRUE(_rdr->statusCode() == _testcase.result_status_code());
     auto h1 = _testcase.result_headers();
     auto h2 = _rdr->getHeaders();
     bool hh = (h1 == h2);
-//    assert(_testcase.result_headers() == _rdr->getHeaders());
-//    REQUIRE(_testcase.result_headers() == _rdr->getHeaders());
+    std::string raw_body = _rdr->get_body_chain().to_string();
+    json j = json::parse(raw_body);
+    std::string req_body = j["req"]["body"];
+    std::string ch_uuid = j["xtra"]["connection_handler_uuid"];
+    std::string rh_uuid = j["xtra"]["request_handler_uuid"];
+
+    std::string sx = _rdr->get_body_chain().to_string();
     auto b1 = _testcase.result_body();
     auto b2 = _rdr->get_body_chain();
     auto b3 = _rdr->get_raw_body_chain();
     auto s2 = b2.to_string();
     auto s3 = b3.to_string();
-    assert(b1 == s2);
-    REQUIRE(b1 == s2);
+    assert(b1 == req_body);
+    EXPECT_TRUE(b1 == req_body);
     auto desc = _testcase.getDescription();
-    std::cout << "TestRunner::readMessage Success for testcase " << _testcase.getDescription() <<std::endl;
+//    std::cout << "TestRunner::readMessage Success for testcase " << _testcase.getDescription() <<std::endl;
 }
 
 #if 0
@@ -167,8 +172,8 @@ void TClient::onBody(Marvin::ErrorType er, BufferChain chunk)
         bool vb = _testcase.verify_body(body_accumulator);
         assert(vb);
         assert(er == Marvin::make_error_eom());
-        REQUIRE(vb);
-        REQUIRE(er == Marvin::make_error_eom());
+        EXPECT_TRUE(vb);
+        EXPECT_TRUE(er == Marvin::make_error_eom());
         auto desc = _testcase.getDescription();
         std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << _testcase.getDescription() <<std::endl;
 
@@ -184,14 +189,14 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     std::string ers = er.message();
     assert(er == expected_err);
     assert(_rdr->statusCode() == _testcase.result_status_code());
-    REQUIRE(er == expected_err);
-    REQUIRE(_rdr->statusCode() == _testcase.result_status_code());
+    EXPECT_TRUE(er == expected_err);
+    EXPECT_TRUE(_rdr->statusCode() == _testcase.result_status_code());
     auto h1 = _testcase.result_headers();
     auto h2 = _rdr->getHeaders();
     bool hhh = _testcase.verify_headers(h2);
     assert(hhh);
-    REQUIRE(hhh);
-    REQUIRE(h1 == h2);
+    EXPECT_TRUE(hhh);
+    EXPECT_TRUE(h1 == h2);
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
 //        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << tcObj.getDescription() <<std::endl;
     _rdr->readBody(bh);

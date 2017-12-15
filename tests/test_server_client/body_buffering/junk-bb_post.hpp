@@ -8,7 +8,7 @@
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include "catch.hpp"
+#include <gtest/gtest.h>
 #include "rb_logger.hpp"
 #include "buffer.hpp"
 #include "client.hpp"
@@ -18,7 +18,7 @@ namespace body_buffering {
     /**
     * This function runs a post request based on a testcase and checks the response is as expected.
     */
-    std::shared_ptr<Client> post_body_testcase(body_buffering::Testcase& testcase, boost::asio::io_service& io);
+    std::shared_ptr<Client> post_body_testcase(boost::asio::io_service& io, body_buffering::Testcase& testcase);
     class PostTest
     {
         public:

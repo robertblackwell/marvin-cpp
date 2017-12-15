@@ -14,30 +14,12 @@
 namespace body_buffering {
 
     /**
-    * This class is a collection of testcase objects
-    */
-    class TestcaseDefinitions
-    {
-    public:
-        TestcaseDefinitions();
-        ~TestcaseDefinitions();
-        void add_case(Testcase aCase);
-        Testcase            get_case(int index);
-        TestcaseResultType  get_result(int index);
-        int                 number_of_testcases();
-        std::vector<Testcase> cases;
-    private:
-    };
-
-    std::vector<std::string> make_header(std::string key, std::string value);
-
-    /**
     * Create a set of testcases (a TestcaseDefinitions object) consiting of single messages with
     * various buffer arrangements to test that MessageReader paser works correctly
     * regardless of how the incoming data is buffered.
     */
-    TestcaseDefinitions makeTestcaseDefinitions_01();
-    TestcaseDefinitions makeTCS_eof();
+    std::vector<body_buffering::Testcase> make_test_cases();
+    std::vector<body_buffering::Testcase> make_eof_cases();
 }
 
 #endif

@@ -1,7 +1,7 @@
 #include "server_connection_manager.hpp"
 #include "bb_post.hpp"
 
-using namespace body_format;
+using namespace body_buffering;
 
 PostTest::PostTest(boost::asio::io_service& io, EchoTestcase& testcase): _io(io), _testcase(testcase)
 {
@@ -17,8 +17,8 @@ void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 #endif
     assert(rdr->statusCode() == 200);
     assert(sx == sy);
-    REQUIRE(rdr->statusCode() == 200);
-    REQUIRE(sx == sy);
+    ASSERT_EQ(rdr->statusCode() == 200);
+    ASSERT_EQ(sx == sy);
     
 //    std::cout << "SUCCESS: " << _testcase._description <<  std::endl;
     if(rdr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {

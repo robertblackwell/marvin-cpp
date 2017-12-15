@@ -12,43 +12,10 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 using namespace body_buffering;
 
-int
-TestcaseDefinitions::number_of_testcases()
+std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
 {
-    LogDebug("");
-    return (int)cases.size();
-}
-
-void
-TestcaseDefinitions::add_case(Testcase acase)
-{
-    cases.push_back(acase);
-}
-Testcase
-TestcaseDefinitions::get_case(int index)
-{
-
-    auto c = cases[index];
-    return c;
-}
-
-std::vector<std::string> make_header(std::string key, std::string value){
-    return std::vector<std::string>{key, value};
-}
-
-TestcaseDefinitions::~TestcaseDefinitions(){}
-TestcaseDefinitions::TestcaseDefinitions(){}
-
-/**
-* Create a set of testcases (a TestcaseDefinitions object) consiting of single messages with
-* various buffer arrangements to test that MessageReader paser works correctly
-* regardless of how the incoming data is buffered.
-*/
-TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
-{
-    TestcaseDefinitions tcases;
-    // case 0
-     tcases.add_case(
+    std::vector<body_buffering::Testcase> tcases;    // case 0
+     tcases.push_back(
             Testcase(
                 "index 0 - simple 200 body length 10",
                 std::vector<std::string> {
@@ -78,7 +45,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
             )
     );
 //    // index 1 -- EOH is signalled by a blank line
-    tcases.add_case(
+    tcases.push_back(
             Testcase(
                 "index 1 - simple 200 body length 11 no body data in header buffer",
                 std::vector<std::string>  {
@@ -106,7 +73,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
         )
     );
 //    // 2 EOH comes with some body data
-    tcases.add_case(
+    tcases.push_back(
             Testcase(
                 "index 2 - 200 body length 10 SOME body data in header buffer",
                 std::vector<std::string>  {
@@ -135,7 +102,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
     );
  
     // 3 EOH and EOM at the same time
-    tcases.add_case(
+    tcases.push_back(
             Testcase(
                 "index 3 - simple 200 body length 10 SOME body data in with black line buffer",
                 std::vector<std::string>  {
@@ -165,7 +132,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
     
 //
 //    // 4 Chunked with headers on a boundary
-    tcases.add_case(
+    tcases.push_back(
         Testcase(
                 "index 4 - 200 body chunked encoding NO body data in header buffer",
                 std::vector<std::string> {
@@ -205,7 +172,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
     );
 //
 //    // 5 Chunked with headers with some body data - chunks not broken
-    tcases.add_case(
+    tcases.push_back(
             Testcase(
                 "index 5 - simple 200 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
@@ -244,7 +211,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
     );
 
 //    // 6 Chunked with headers with some body data - BROKEN chunks
-    tcases.add_case(
+    tcases.push_back(
                 Testcase(
                 "index 6 - simple 200 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
@@ -284,7 +251,7 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
     );
 
 //    // 7 Chunked with headers with some body data - BROKEN chunks
-    tcases.add_case(
+    tcases.push_back(
                 Testcase(
                 "index 7 - simple 200 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
@@ -325,10 +292,10 @@ TestcaseDefinitions body_buffering::makeTestcaseDefinitions_01()
     );
     return tcases;
 }
-TestcaseDefinitions body_buffering::makeTCS_eof()
+std::vector<body_buffering::Testcase> body_buffering::make_eof_cases()
 {
-    TestcaseDefinitions tcases;
-     tcases.add_case(
+    std::vector<Testcase> tcases;
+     tcases.push_back(
             Testcase(
                 "index 0 - terminate with eof(shutdown) - no message length",
                 std::vector<std::string> {
@@ -356,7 +323,7 @@ TestcaseDefinitions body_buffering::makeTCS_eof()
                  std::string("01234567890")
             )
     );
-     tcases.add_case(
+     tcases.push_back(
             Testcase(
                 "index 1 - terminate with close - no message length",
                 std::vector<std::string> {
@@ -384,7 +351,7 @@ TestcaseDefinitions body_buffering::makeTCS_eof()
                  std::string("01234567890")
             )
     );
-     tcases.add_case(
+     tcases.push_back(
             Testcase(
                 "index 0 - terminate with eof - no message length and no body",
                 std::vector<std::string> {

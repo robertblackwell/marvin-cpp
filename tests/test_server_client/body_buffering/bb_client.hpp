@@ -15,6 +15,11 @@
 #include "message_reader.hpp"
 
 namespace body_buffering {
+
+    /**
+    * Sends a message to a test server and validates the response as directed by
+    * body_buffering::Testcase instance
+    */
     class TClient;
     typedef std:: shared_ptr<TClient> TClientSPtr;
     typedef std:: unique_ptr<TClient> TClientUPtr;
@@ -25,7 +30,8 @@ namespace body_buffering {
     * This is a client that sends a request as a raw set of buffers without
     * any checking on the method, headers, content length etc. Caller musrt ensure
     * all that stuff.
-    * It reads the response as a http message
+    * It reads the response as a http message and validates the response
+    * based on properties in the Testcase object
     */
     class TClient
     {
