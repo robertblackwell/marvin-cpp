@@ -71,7 +71,7 @@ public:
     ** dispatches instances of TRequestHandler to service the connection
     */
     void listen(long port = 9991);
-    
+    void terminate();
 private:
 
     static int __numberOfThreads;
@@ -111,6 +111,7 @@ private:
     ** @brief IS the signal callback
     */
     void doStop(const Marvin::ErrorType& err);
+    void start_heartbeat();
     void on_heartbeat(const boost::system::error_code& ec);
 
     
@@ -125,5 +126,6 @@ private:
     ServerConnectionManager                         _connectionManager;
     RequestHandlerFactory                           _factory;
     boost::asio::deadline_timer                     _heartbeat_timer;
+    bool                                            _terminate_requested; // heartbeat will terminate server if this is set
 };
 #endif // HTTP_SERVER_HPP

@@ -22,14 +22,14 @@ namespace body_format {
     class PipelineTest
     {
         public:
-            PipelineTest(boost::asio::io_service& io, std::vector<Testcase>& testcase);
+            PipelineTest(boost::asio::io_service& io, std::vector<Testcase> testcase);
             void handler(Marvin::ErrorType& er, MessageReaderSPtr rdr);
             void exec();
         protected:
             boost::asio::io_service&    _io;
             MessageBaseSPtr             _msg;
             ClientSPtr                  _client;
-            std::vector<Testcase>&      _testcase;
+            std::vector<Testcase>       _testcase;
             int                         _msg_index;
             std::string                 _ch_uuid;
             std::string                 _rh_uuid;

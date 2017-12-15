@@ -95,14 +95,27 @@ private:
         tcp::resolver::iterator endpoint_iterator
     );
 
+    void async_write(void* data, std::size_t size, AsyncWriteCallback cb);
+
     void completeWithError(Marvin::ErrorType& ec);
     void completeWithSuccess();
+    
+    void post_accept_cb(std::function<void(boost::system::error_code& err)> cb, Marvin::ErrorType err);
+    void post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err);
+    void post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
+    void post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
+    
+    void resolveCompleteWithSuccess();
+    void connectionCompleteWithSuccess();
+
+    void io_post(std::function<void()> noParam_cb);
 
 
     std::string                     _scheme;
     std::string                     _server;
     std::string                     _port;
     boost::asio::io_service&        _io;
+    boost::asio::strand             _strand;
     boost::asio::ip::tcp::resolver  _resolver;
     boost::asio::ip::tcp::socket    _boost_socket;
     ConnectCallbackType             _finalCb;

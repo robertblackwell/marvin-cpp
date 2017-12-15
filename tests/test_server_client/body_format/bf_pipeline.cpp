@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
+#include "json.hpp"
 #include "bf_pipeline.hpp"
 
 using namespace body_format;
+using json = nlohmann::json;
 
-PipelineTest::PipelineTest(boost::asio::io_service& io, std::vector<Testcase>& testcase): _io(io), _testcase(testcase)
+PipelineTest::PipelineTest(boost::asio::io_service& io, std::vector<Testcase> testcase): _io(io), _testcase(testcase)
 {
     _msg_index = 0;
     std::string url = _testcase[0]._url;
@@ -11,6 +13,13 @@ PipelineTest::PipelineTest(boost::asio::io_service& io, std::vector<Testcase>& t
 }
 void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
+    std::string raw_body = rdr->get_body_chain().to_string();
+    json j = json::parse(raw_body);
+    std::string req_body = j["req"]["body"];
+    std::string ch_uuid = j["xtra"]["connection_handler_uuid"];
+    std::string rh_uuid = j["xtra"]["request_handler_uuid"];
+    std::string srwbdy = _testcase[_msg_index].buffers_as_string();
+
     /// test server is handling connection keep-alive and close correctly
     /// all but last response should be keep-alive
     /// last one should be close
@@ -29,8 +38,8 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     * instances of connection handler and request handler have their own uuid.
     * Request handler puts these in the response header
     */
-    std::string ch_uuid = rdr->getHeader(HttpHeader::Name::ConnectionHandlerId);
-    std::string rh_uuid = rdr->getHeader(HttpHeader::Name::RequestHandlerId);
+//    std::string ch_uuid = rdr->getHeader(HttpHeader::Name::ConnectionHandlerId);
+//    std::string rh_uuid = rdr->getHeader(HttpHeader::Name::RequestHandlerId);
     if( _msg_index == 0 ) {
         _ch_uuid = ch_uuid;
         _rh_uuid = rh_uuid;
@@ -42,16 +51,16 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     }
     
     std::string sx = rdr->get_body_chain().to_string();
-    std::string sy = _testcase[_msg_index].buffers_as_string();
+    std::string expected_req_body = _testcase[_msg_index].buffers_as_string();
 
 #ifdef _VERBOSE
 //        std::cout << "echo'ed body " << sx << std::endl;
 //        std::cout << "testcasebody " << testcase.buffers_as_string() << std::endl;
 #endif
     assert(rdr->statusCode() == 200);
-    assert(sx == sy);
+    assert(req_body == expected_req_body);
     ASSERT_TRUE(rdr->statusCode() == 200);
-    ASSERT_TRUE(sx == sy);
+    ASSERT_TRUE(req_body == expected_req_body);
 
     std::cout << "Pipeline::" << _testcase[_msg_index]._description <<  std::endl;
     _msg_index++;
@@ -68,7 +77,7 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 */
 void PipelineTest::exec()
 {
-    Testcase& tc = _testcase[_msg_index];
+    const Testcase& tc = _testcase[_msg_index];
     _msg = std::shared_ptr<MessageBase>(new MessageBase());
     _msg->setMethod(HttpMethod::POST);
     

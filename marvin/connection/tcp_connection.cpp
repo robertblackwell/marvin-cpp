@@ -59,6 +59,7 @@ TCPConnection::TCPConnection(
             )
             :
             _io(io_service),
+            _strand(_io),
             _resolver(io_service),
             _boost_socket(io_service),
             _scheme(scheme),
@@ -76,6 +77,7 @@ TCPConnection::TCPConnection(
             )
             :
             _io(io_service),
+            _strand(_io),
             _resolver(io_service),
             _boost_socket(io_service),
             _scheme(scheme),
@@ -91,9 +93,11 @@ TCPConnection::TCPConnection(
 
 TCPConnection::TCPConnection(
     boost::asio::io_service& io_service
-    ):   _io(io_service),
-         _resolver(io_service), // dont really need this
-         _boost_socket(io_service)
+    ):
+        _io(io_service),
+        _strand(_io),
+        _resolver(io_service), // dont really need this
+        _boost_socket(io_service)
 
 {
     LogTorTrace();
@@ -136,7 +140,8 @@ void TCPConnection::asyncAccept(
 //    _boost_socket.non_blocking(true);
     acceptor.async_accept(_boost_socket, [cb, this](const boost::system::error_code& err) {
         LogFDTrace(this->nativeSocketFD());
-        cb(err);
+        post_accept_cb(cb, err);
+//        cb(err);
     });
 }
 
@@ -145,13 +150,12 @@ void TCPConnection::asyncConnect(ConnectCallbackType final_cb)
     tcp::resolver::query query(this->_server, _port);
     _finalCb = final_cb; // save the final callback
     
-    _resolver.async_resolve(query, [this](const boost::system::error_code& ec,
-                                          tcp::resolver::iterator endpoint_iterator){
+    _resolver.async_resolve(query, [this](const boost::system::error_code& ec, tcp::resolver::iterator endpoint_iterator){
         LogDebug("resolve OK","so now connect");
         if( ec ){
-            Marvin::ErrorType me = ec;
+            Marvin::ErrorType merr = ec;
             LogError("error_value", ec.value(), " message: ", ec.message(), " fd: ", this->nativeSocketFD());
-            completeWithError(me);
+            completeWithError(merr);
         } else {
             tcp::endpoint endpoint = *endpoint_iterator;
             auto connect_cb = bind(&TCPConnection::handle_connect, this, _1, ++endpoint_iterator);
@@ -173,7 +177,8 @@ void TCPConnection::handle_resolve(
     {
         LogError("resolve FAILED","Error: ",err.message());
         Marvin::ErrorType me = err;
-        completeWithError(me);
+        post_connect_cb(_finalCb, err);
+//        completeWithError(me);
         return;
     }else{
         LogDebug("resolve OK","so now connect");
@@ -194,7 +199,8 @@ void TCPConnection::handle_connect(
     {
         LogFDTrace(nativeSocketFD());
         _boost_socket.non_blocking(true);
-        completeWithSuccess();
+        post_connect_cb(_finalCb, err);
+//        completeWithSuccess();
     }
     else if (endpoint_iterator != tcp::resolver::iterator())
     {
@@ -208,18 +214,10 @@ void TCPConnection::handle_connect(
     {
         LogError("resolve FAILED","Error: ",err.message());
         Marvin::ErrorType me = err;
-        completeWithError(me);
+        post_connect_cb(_finalCb, err);
+//        completeWithError(me);
     }
     LogDebug("leaving");
-}
-void TCPConnection::completeWithError(Marvin::ErrorType& ec)
-{
-    _finalCb(ec, nullptr);
-}
-void TCPConnection::completeWithSuccess()
-{
-    Marvin::ErrorType err = Marvin::make_error_ok();
-    _finalCb(err, this);
 }
 /**
  * read
@@ -236,7 +234,8 @@ void TCPConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
     _boost_socket.async_read_some(b, [this, cb, &buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered){
         Marvin::ErrorType m_err = err;
         buffer.setSize(bytes_transfered);
-        cb(m_err, bytes_transfered);
+        post_read_cb(cb, m_err, bytes_transfered);
+//        cb(m_err, bytes_transfered);
     });
     
 }
@@ -249,72 +248,42 @@ void TCPConnection::asyncWrite(MBuffer& buf, AsyncWriteCallbackType cb)
     void* bp = buf.data();
 //    char* cp = (char*) bp;
     std::size_t len = buf.size();
-    auto bb = boost::asio::buffer(bp, len);
-    
-    boost::asio::async_write(
-        (this->_boost_socket),
-        bb,
-        [this, cb](
-            const Marvin::ErrorType& err,
-            std::size_t bytes_transfered
-            )
-        {
-        LogDebug("");
-        if( !err ){
-            Marvin::ErrorType m_err = Marvin::make_error_ok();
-            cb(m_err, bytes_transfered);
-        }else{
-            Marvin::ErrorType m_err = err;
-            cb(m_err, bytes_transfered);
-        }
-    });
+    async_write(bp, len, cb);
 }
 
 void TCPConnection::asyncWrite(std::string& str, AsyncWriteCallback cb)
 {
     LogDebug("");
-    boost::asio::async_write(
-        (this->_boost_socket),
-        boost::asio::buffer(str.c_str(), str.size()),
-        [this, cb](
-            const Marvin::ErrorType& err,
-            std::size_t bytes_transfered
-            )
-        {
-        LogDebug("");
-        if( !err ){
-            Marvin::ErrorType m_err = Marvin::make_error_ok();
-            cb(m_err, bytes_transfered);
-        }else{
-            Marvin::ErrorType m_err = err;
-            cb(m_err, bytes_transfered);
-        }
-    });
-
+    async_write( (void*)str.c_str(), str.size(), cb);
 }
 void TCPConnection::asyncWrite(BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb)
 {
     /// this took a while to work out - change buffer code at your peril
     auto tmp = buf_chain_sptr->asio_buffer_sequence();
-    
-    LogDebug("");
-    boost::asio::async_write(
-        (this->_boost_socket),
-        tmp,
-        [this, &tmp, cb](
-            const Marvin::ErrorType& err,
-            std::size_t bytes_transfered
-            )
-        {
+    auto handler = [this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    {
         LogDebug("");
-        if( !err ){
-            Marvin::ErrorType m_err = Marvin::make_error_ok();
-            cb(m_err, bytes_transfered);
-        }else{
-            Marvin::ErrorType m_err = err;
-            cb(m_err, bytes_transfered);
-        }
-    });
+        post_write_cb(cb, err, bytes_transfered);
+    };
+
+    LogDebug("");
+    boost::asio::async_write((this->_boost_socket), tmp, handler);
+//        [this, &tmp, cb](
+//            const Marvin::ErrorType& err,
+//            std::size_t bytes_transfered
+//            )
+//        {
+//        LogDebug("");
+//        if( !err ){
+//            Marvin::ErrorType m_err = Marvin::make_error_ok();
+//            post_write_cb(cb, m_err, bytes_transfered);
+////            cb(m_err, bytes_transfered);
+//        }else{
+//            Marvin::ErrorType m_err = err;
+//            post_write_cb(cb, m_err, bytes_transfered);
+////            cb(m_err, bytes_transfered);
+//        }
+//    });
 
 }
 #if 1
@@ -333,10 +302,12 @@ void TCPConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallbac
         LogDebug("");
         if( !err ){
             Marvin::ErrorType m_err = Marvin::make_error_ok();
-            cb(m_err, bytes_transfered);
+            post_write_cb(cb, m_err, bytes_transfered);
+//            cb(m_err, bytes_transfered);
         }else{
             Marvin::ErrorType m_err = err;
-            cb(m_err, bytes_transfered);
+            post_write_cb(cb, m_err, bytes_transfered);
+//            cb(m_err, bytes_transfered);
         }
     });
 #endif
@@ -344,23 +315,113 @@ void TCPConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallbac
 void TCPConnection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
 {
     LogDebug("");
-    boost::asio::async_write(
-        (this->_boost_socket),
-        sb,
-        [this, cb](
-            const Marvin::ErrorType& err,
-            std::size_t bytes_transfered
-            )
-        {
+    auto handler = [this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    {
         LogDebug("");
-        if( !err ){
-            Marvin::ErrorType m_err = Marvin::make_error_ok();
-            cb(m_err, bytes_transfered);
-        }else{
-            Marvin::ErrorType m_err = err;
-            cb(m_err, bytes_transfered);
-        }
-    });
+        post_write_cb(cb, err, bytes_transfered);
+//        if( !err ){
+//            Marvin::ErrorType m_err = Marvin::make_error_ok();
+//            post_write_cb(cb, m_err, bytes_transfered);
+////            cb(m_err, bytes_transfered);
+//        }else{
+//            Marvin::ErrorType m_err = err;
+//            post_write_cb(cb, m_err, bytes_transfered);
+////            cb(m_err, bytes_transfered);
+//        }
+    };
+    boost::asio::async_write((this->_boost_socket), sb, handler);
+//        [this, cb](
+//            const Marvin::ErrorType& err,
+//            std::size_t bytes_transfered
+//            )
+//        {
+//        LogDebug("");
+//        if( !err ){
+//            Marvin::ErrorType m_err = Marvin::make_error_ok();
+//            post_write_cb(cb, m_err, bytes_transfered);
+////            cb(m_err, bytes_transfered);
+//        }else{
+//            Marvin::ErrorType m_err = err;
+//            post_write_cb(cb, m_err, bytes_transfered);
+////            cb(m_err, bytes_transfered);
+//        }
+//    });
+}
+#endif
+/**
+* Common internal write method for all single buffer writes
+*/
+void TCPConnection::async_write(void* data, std::size_t size, AsyncWriteCallback cb)
+{
+    LogDebug("");
+    auto handler = [this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    {
+        LogDebug("");
+        post_write_cb(cb, err, bytes_transfered);
+    };
+
+    boost::asio::async_write((this->_boost_socket), boost::asio::buffer(data, size), handler);
 }
 
-#endif
+
+#pragma mark - post result of async ops through various callbacks
+#define USE_POST 1
+
+void TCPConnection::completeWithError(Marvin::ErrorType& ec)
+{
+    #if USE_POST
+    auto c = std::bind(_finalCb, ec, nullptr);
+    _io.post(c);
+    #else
+    _finalCb(ec, nullptr);
+    #endif
+}
+void TCPConnection::completeWithSuccess()
+{
+    Marvin::ErrorType err = Marvin::make_error_ok();
+    #if USE_POST
+    auto c = std::bind(_finalCb, err, this);
+    _io.post(c);
+    #else
+    _finalCb(err, this);
+    #endif
+}
+void TCPConnection::post_accept_cb(std::function<void(boost::system::error_code& err)> cb, Marvin::ErrorType err)
+{
+    #if USE_POST
+    auto c = std::bind(cb, err);
+    _io.post(c);
+    #else
+    cb(err);
+    #endif
+}
+
+void TCPConnection::post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err)
+{
+    ConnectionInterface* tmp = (err) ? nullptr : this;
+    #if USE_POST
+    auto c = std::bind(cb, err, tmp);
+    _io.post(c);
+    #else
+    _finalCb(err, tmp);
+    #endif
+}
+void TCPConnection::post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered)
+{
+    #if USE_POST
+    auto c = std::bind(cb, err, bytes_transfered);
+    _io.post(c);
+    #else
+    cb(err, bytes_transfered);
+    #endif
+}
+void TCPConnection::post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType err, std::size_t  bytes_transfered)
+{
+    #if USE_POST
+    auto c = std::bind(cb, err, bytes_transfered);
+    _io.post(c);
+    #else
+    cb(err, bytes_transfered);
+    #endif
+}
+

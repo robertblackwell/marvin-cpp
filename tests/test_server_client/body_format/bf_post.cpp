@@ -6,7 +6,7 @@
 using namespace body_format;
 using json = nlohmann::json;
 
-PostTest::PostTest(boost::asio::io_service& io, Testcase& testcase): _io(io), _testcase(testcase)
+PostTest::PostTest(boost::asio::io_service& io, Testcase testcase): _io(io), _testcase(testcase)
 {
 
 }

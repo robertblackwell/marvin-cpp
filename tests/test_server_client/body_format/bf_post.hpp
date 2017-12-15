@@ -18,18 +18,18 @@ namespace body_format {
     /**
     * This function runs a post request based on a testcase and checks the response is as expected.
     */
-    std::shared_ptr<Client> post_body_testcase(body_format::Testcase& testcase, boost::asio::io_service& io);
+    std::shared_ptr<Client> post_body_testcase(body_format::Testcase testcase, boost::asio::io_service& io);
     class PostTest
     {
         public:
-            PostTest(boost::asio::io_service& io, Testcase& testcase);
+            PostTest(boost::asio::io_service& io, Testcase testcase);
             void handler(Marvin::ErrorType& er, MessageReaderSPtr rdr);
             void exec();
         protected:
             boost::asio::io_service&    _io;
             MessageBaseSPtr             _msg;
             ClientSPtr                  _client;
-            Testcase&                   _testcase;
+            Testcase                    _testcase;
     };
 }
 

@@ -21,6 +21,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "bf_testcase.hpp"
 #include "bf_req_handler.hpp"
 
+#if 0
 using namespace body_format;
 
 static Testcase tcase01(
@@ -110,4 +111,5 @@ TEST_CASE("PostTest_pipeline", "[server, body, pipeline]")
     std::vector<Testcase> tcs = {tcase01, tcase02, tcase03, tcase01, tcase02, tcase03, tcase01, tcase02, tcase03};
     test_one<PipelineTest, std::vector<Testcase>>(tcs);
 }
+#endif
 #endif

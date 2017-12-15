@@ -51,7 +51,8 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory)
     _numberOfThreads(__numberOfThreads),
     _heartbeat_interval_ms(__heartbeat_interval_ms),
     _connectionManager(_io, _serverStrand, __numberOfConnections),
-    _heartbeat_timer(_io)
+    _heartbeat_timer(_io),
+    _terminate_requested(false)
 {
     LogTorTrace();
 }
@@ -93,12 +94,18 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory)
         LogError("error port: ",_port, err.message());
         exit(1);
     }
+    start_heartbeat();
+
     LogDebug(err.message());
 
 }
 HTTPServer::~HTTPServer()
 {
     LogTorTrace();
+}
+void HTTPServer::terminate()
+{
+    _terminate_requested = true;
 }
 #pragma mark - listen, accept processing
 //-------------------------------------------------------------------------------------
@@ -131,10 +138,12 @@ HTTPServer::~HTTPServer()
     }
     LogDebug("original thread");
     _io.run();
+//    std::cout << __FUNCTION__ << " after io.run() " << std::endl;
     for(int t_count = 0; t_count < numThreads - 1; t_count++)
     {
-        threads[t_count-1].join();
+        threads[t_count].join();
     }
+//    std::cout << __FUNCTION__<<" after join" << std::endl;
 #endif
 }
 //-------------------------------------------------------------------------------------
@@ -151,6 +160,8 @@ HTTPServer::~HTTPServer()
                     std::bind(&HTTPServer::handleAccept, this, connectionHandler, std::placeholders::_1)
                     );
     conptr->asyncAccept(_acceptor, hf);
+//    _acceptor.async_accept(_boost_socket, hf);
+
 }
 
 //-------------------------------------------------------------------------------------
@@ -179,7 +190,10 @@ HTTPServer::~HTTPServer()
         auto hf = std::bind(&ConnectionHandler::serve, connHandler);
         _io.post(hf);
     }else{
+        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
         LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
+        _io.stop();
+        return;
         delete connHandler;
     }
     _connectionManager.allowAnotherConnection([this](){
@@ -219,8 +233,24 @@ HTTPServer::~HTTPServer()
 void HTTPServer::on_heartbeat(const boost::system::error_code& ec)
 {
     std::cout << __FUNCTION__ << std::endl;
+    if(_terminate_requested) {
+        _connectionManager.stop_all();
+        _acceptor.cancel(); // let the accept handler close the server down
+                            // all we want here is to cancel the accept handlers waiting
+                            // and cancel all connections
+//        _heartbeat_timer.cancel();
+//        _io.stop();
+        return;
+    }
+    start_heartbeat();
+
+}
+void HTTPServer::start_heartbeat()
+{
     _heartbeat_timer.expires_from_now(boost::posix_time::milliseconds(_heartbeat_interval_ms));
-    auto ds = boost::bind(&HTTPServer::on_heartbeat, this, boost::asio::placeholders::error);
+    auto ds = _serverStrand.wrap(
+                                  boost::bind(&HTTPServer::on_heartbeat, this, boost::asio::placeholders::error)
+                                  );
     _heartbeat_timer.async_wait(ds);
 
 }

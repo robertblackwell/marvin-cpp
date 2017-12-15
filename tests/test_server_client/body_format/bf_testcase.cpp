@@ -8,27 +8,27 @@ Testcase::Testcase(TestType type, std::string desc, std::vector<std::string> buf
 {
    _url = "http://localhost:9991";
 }
-std::size_t     Testcase::chunks_count()
+std::size_t     Testcase::chunks_count() const
 {
     return _body_buffers.size();
 }
-MBufferSPtr     Testcase::buffers_as_mbuffer()
+MBufferSPtr     Testcase::buffers_as_mbuffer() const
 {
     return m_buffer(buffers_as_string());
 }
-std::string     Testcase::buffers_as_string()
+std::string     Testcase::buffers_as_string() const
 {
     std::string res = "";
-    for(std::string& s: _body_buffers) {
+    for(const std::string& s: _body_buffers) {
         res += s;
     }
     return res;
 }
-BufferChainSPtr Testcase::buffers_as_buffer_chain()
+BufferChainSPtr Testcase::buffers_as_buffer_chain() const
 {
     std::string res = "";
     BufferChainSPtr sp = std::make_shared<BufferChain>();
-    for(std::string& s: _body_buffers) {
+    for(const std::string& s: _body_buffers) {
         res += s;
         MBufferSPtr mb = m_buffer(s);
         sp->push_back(mb);
