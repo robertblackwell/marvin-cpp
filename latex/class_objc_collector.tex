@@ -1,0 +1,64 @@
+\hypertarget{class_objc_collector}{}\section{Objc\+Collector Class Reference}
+\label{class_objc_collector}\index{Objc\+Collector@{Objc\+Collector}}
+
+
+{\ttfamily \#include $<$objc\+\_\+collector.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_objc_collector_a8648b6ea89441339da4f8386b3132fdf}{Objc\+Collector} (\hyperlink{class_objc_collector}{Objc\+Collector} const \&)=delete
+\item 
+\mbox{\Hypertarget{class_objc_collector_aa4b5f226cb4ae0af76a5e86e235add12}\label{class_objc_collector_aa4b5f226cb4ae0af76a5e86e235add12}} 
+void {\bfseries operator=} (\hyperlink{class_objc_collector}{Objc\+Collector} const \&)=delete
+\item 
+void \hyperlink{class_objc_collector_a9518ac372bd2ef1d765bb715730c1f6c}{collect} (std\+::string \&scheme, std\+::string \&host, Message\+Reader\+S\+Ptr req, Message\+Writer\+S\+Ptr resp)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_objc_collector_a95ca99de538f642d4eb4fb01a8dee3b4}\label{class_objc_collector_a95ca99de538f642d4eb4fb01a8dee3b4}} 
+static \hyperlink{class_objc_collector}{Objc\+Collector} $\ast$ {\bfseries get\+Instance} (boost\+::asio\+::io\+\_\+service \&io)
+\item 
+\mbox{\Hypertarget{class_objc_collector_afe187c7f7caebabcd3b6faebbdab71e9}\label{class_objc_collector_afe187c7f7caebabcd3b6faebbdab71e9}} 
+static void {\bfseries set\+Delegate} (void $\ast$delegate)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_objc_collector_a3b76feca4dba6fa500115a8731e5bbdf}\label{class_objc_collector_a3b76feca4dba6fa500115a8731e5bbdf}} 
+static bool {\bfseries \+\_\+first\+Time} = true
+\item 
+\mbox{\Hypertarget{class_objc_collector_af04ba5a0277f3b48b7fb7c2f0a56f684}\label{class_objc_collector_af04ba5a0277f3b48b7fb7c2f0a56f684}} 
+static \hyperlink{class_objc_collector}{Objc\+Collector} $\ast$ {\bfseries \+\_\+instance} = N\+U\+LL
+\item 
+\mbox{\Hypertarget{class_objc_collector_a31d2f9e91e62e9346e6a496a95dce8ee}\label{class_objc_collector_a31d2f9e91e62e9346e6a496a95dce8ee}} 
+static void $\ast$ {\bfseries \+\_\+anon\+Delegate} = N\+U\+LL
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class is a singleton, but it must be given a reference to the servers io\+\_\+service object so that it can schedule callbacks. Have decided to pass the io\+\_\+service in the static get\+Instance method so that this cannot be forgotten 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_objc_collector_a8648b6ea89441339da4f8386b3132fdf}\label{class_objc_collector_a8648b6ea89441339da4f8386b3132fdf}} 
+\index{Objc\+Collector@{Objc\+Collector}!Objc\+Collector@{Objc\+Collector}}
+\index{Objc\+Collector@{Objc\+Collector}!Objc\+Collector@{Objc\+Collector}}
+\subsubsection{\texorpdfstring{Objc\+Collector()}{ObjcCollector()}}
+{\footnotesize\ttfamily Objc\+Collector\+::\+Objc\+Collector (\begin{DoxyParamCaption}\item[{\hyperlink{class_objc_collector}{Objc\+Collector} const \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+Delete copy constructors 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_objc_collector_a9518ac372bd2ef1d765bb715730c1f6c}\label{class_objc_collector_a9518ac372bd2ef1d765bb715730c1f6c}} 
+\index{Objc\+Collector@{Objc\+Collector}!collect@{collect}}
+\index{collect@{collect}!Objc\+Collector@{Objc\+Collector}}
+\subsubsection{\texorpdfstring{collect()}{collect()}}
+{\footnotesize\ttfamily void Objc\+Collector\+::collect (\begin{DoxyParamCaption}\item[{std\+::string \&}]{scheme,  }\item[{std\+::string \&}]{host,  }\item[{Message\+Reader\+S\+Ptr}]{req,  }\item[{Message\+Writer\+S\+Ptr}]{resp }\end{DoxyParamCaption})}
+
+Interface method for client code to call collect In here implement the creation the summary records but dont do any IO or sending leave that for posted\+Collect
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/objc/objc\+\_\+collector.\+hpp\item 
+marvin/objc/objc\+\_\+\+\_\+collector.\+mm\end{DoxyCompactItemize}

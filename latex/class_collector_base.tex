@@ -1,0 +1,48 @@
+\hypertarget{class_collector_base}{}\section{Collector\+Base Class Reference}
+\label{class_collector_base}\index{Collector\+Base@{Collector\+Base}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_collector_base_afcc95192e8c0de4e422f615d61b28b98}{Null\+Collector} (Null\+Collector const \&)=delete
+\item 
+\mbox{\Hypertarget{class_collector_base_a8221d1e6914280d84fae334dfa90c011}\label{class_collector_base_a8221d1e6914280d84fae334dfa90c011}} 
+void {\bfseries operator=} (\hyperlink{class_collector_base_afcc95192e8c0de4e422f615d61b28b98}{Null\+Collector} const \&)=delete
+\item 
+void \hyperlink{class_collector_base_a0754879d950cf3eedfaad04e9572e36c}{collect} (std\+::string \&host, Message\+Reader\+S\+Ptr req, Message\+Writer\+S\+Ptr resp)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_collector_base_a879b9a16e9ec5f96e69735b9ca71c9e2}\label{class_collector_base_a879b9a16e9ec5f96e69735b9ca71c9e2}} 
+static \hyperlink{class_collector_base_afcc95192e8c0de4e422f615d61b28b98}{Null\+Collector} $\ast$ {\bfseries get\+Instance} (boost\+::asio\+::io\+\_\+service \&io)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_collector_base_a7c5bda7b50244929b91a4065b88f5d6f}\label{class_collector_base_a7c5bda7b50244929b91a4065b88f5d6f}} 
+static bool {\bfseries \+\_\+first\+Time}
+\item 
+\mbox{\Hypertarget{class_collector_base_a15463b6456436c380d18630311d1b39e}\label{class_collector_base_a15463b6456436c380d18630311d1b39e}} 
+static \hyperlink{class_collector_base_afcc95192e8c0de4e422f615d61b28b98}{Null\+Collector} $\ast$ {\bfseries \+\_\+instance}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_collector_base_a0754879d950cf3eedfaad04e9572e36c}\label{class_collector_base_a0754879d950cf3eedfaad04e9572e36c}} 
+\index{Collector\+Base@{Collector\+Base}!collect@{collect}}
+\index{collect@{collect}!Collector\+Base@{Collector\+Base}}
+\subsubsection{\texorpdfstring{collect()}{collect()}}
+{\footnotesize\ttfamily void Collector\+Base\+::collect (\begin{DoxyParamCaption}\item[{std\+::string \&}]{host,  }\item[{Message\+Reader\+S\+Ptr}]{req,  }\item[{Message\+Writer\+S\+Ptr}]{resp }\end{DoxyParamCaption})}
+
+Interface method for client code to call collect In here implement the creation the summary records but dont do any IO or sending leave that for posted\+Collect\mbox{\Hypertarget{class_collector_base_afcc95192e8c0de4e422f615d61b28b98}\label{class_collector_base_afcc95192e8c0de4e422f615d61b28b98}} 
+\index{Collector\+Base@{Collector\+Base}!Null\+Collector@{Null\+Collector}}
+\index{Null\+Collector@{Null\+Collector}!Collector\+Base@{Collector\+Base}}
+\subsubsection{\texorpdfstring{Null\+Collector()}{NullCollector()}}
+{\footnotesize\ttfamily Collector\+Base\+::\+Null\+Collector (\begin{DoxyParamCaption}\item[{Null\+Collector const \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+Delete copy constructors 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/collector/collector\+\_\+base.\+hpp\item 
+marvin/collector/collector\+\_\+base.\+cpp\end{DoxyCompactItemize}

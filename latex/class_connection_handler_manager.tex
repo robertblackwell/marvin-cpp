@@ -1,0 +1,29 @@
+\hypertarget{class_connection_handler_manager}{}\section{Connection\+Handler\+Manager Class Reference}
+\label{class_connection_handler_manager}\index{Connection\+Handler\+Manager@{Connection\+Handler\+Manager}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_connection_handler_manager_a3c6a65fe45c3574fbb816224233032ae}\label{class_connection_handler_manager_a3c6a65fe45c3574fbb816224233032ae}} 
+{\bfseries Connection\+Handler\+Manager} (boost\+::asio\+::io\+\_\+service \&io, boost\+::asio\+::strand \&strand)
+\item 
+\mbox{\Hypertarget{class_connection_handler_manager_a41e753bd06b7248fe6f4adebbe2eec05}\label{class_connection_handler_manager_a41e753bd06b7248fe6f4adebbe2eec05}} 
+void {\bfseries init} (boost\+::asio\+::io\+\_\+service \&io)
+\item 
+\mbox{\Hypertarget{class_connection_handler_manager_a690c04e4c29cf92649148e4e03b6473e}\label{class_connection_handler_manager_a690c04e4c29cf92649148e4e03b6473e}} 
+void {\bfseries async\+Acquire\+Connection\+Handler} (std\+::string scheme, std\+::string server, std\+::string port, Connect\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_connection_handler_manager_a5931179ee0b6c4955977aa52d36f4407}\label{class_connection_handler_manager_a5931179ee0b6c4955977aa52d36f4407}} 
+void {\bfseries release\+Connection\+Handler} (\hyperlink{class_connection_handler}{Connection\+Handler} $\ast$conn\+\_\+handler)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_connection_handler_manager_aaf3d518a261232e67ea9ff2460f67582}\label{class_connection_handler_manager_aaf3d518a261232e67ea9ff2460f67582}} 
+static \hyperlink{class_connection_handler_manager}{Connection\+Handler\+Manager} $\ast$ {\bfseries get\+Instance} (boost\+::asio\+::io\+\_\+service \&io)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/server/connection\+\_\+handler\+\_\+pool.\+hpp\item 
+marvin/server/connection\+\_\+handler\+\_\+pool .\+cpp\end{DoxyCompactItemize}

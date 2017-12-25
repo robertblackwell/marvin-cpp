@@ -1,0 +1,206 @@
+\hypertarget{class_parser}{}\section{Parser Class Reference}
+\label{class_parser}\index{Parser@{Parser}}
+Inheritance diagram for Parser\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_parser}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_parser_ac6eba4f77cd89023b2940e46ed449df3}{set\+Streaming\+Option} (bool streaming\+Option)
+\item 
+int \hyperlink{class_parser_a72709d4b733b6ad615669726f77ca52a}{append\+Bytes} (void $\ast$buffer, unsigned length)
+\item 
+void \hyperlink{class_parser_ac569347a4bdd7a04ede0c0a4c6efe215}{append\+E\+OF} ()
+\item 
+void \hyperlink{class_parser_a534e9326567306cdf50a7bb980292c37}{pause} ()
+\item 
+\mbox{\Hypertarget{class_parser_a4872223c0f89b4f6f01eb2af4ab61849}\label{class_parser_a4872223c0f89b4f6f01eb2af4ab61849}} 
+void {\bfseries un\+Pause} ()
+\item 
+\mbox{\Hypertarget{class_parser_af5678187dc7ea87e789b137b65719775}\label{class_parser_af5678187dc7ea87e789b137b65719775}} 
+bool {\bfseries is\+Paused} ()
+\item 
+bool \hyperlink{class_parser_aae7788cc722b8455e691a14dded5d726}{is\+Finished\+Headers} ()
+\item 
+bool \hyperlink{class_parser_ad9d6c98af922409a78ff65083b1983e3}{is\+Finished\+Message} ()
+\item 
+\mbox{\Hypertarget{class_parser_a22a7239a764b6f9bd34c044ce1f6bbe2}\label{class_parser_a22a7239a764b6f9bd34c044ce1f6bbe2}} 
+bool {\bfseries is\+Error} ()
+\item 
+\mbox{\Hypertarget{class_parser_ab1701b88c2232d03e1dfc77a7e4b1563}\label{class_parser_ab1701b88c2232d03e1dfc77a7e4b1563}} 
+enum http\+\_\+errno {\bfseries get\+Errno} ()
+\item 
+\mbox{\Hypertarget{class_parser_a293570156f767bf0050fc7889b65f356}\label{class_parser_a293570156f767bf0050fc7889b65f356}} 
+\hyperlink{struct_parser_error}{Parser\+Error} {\bfseries get\+Error} ()
+\item 
+virtual \hyperlink{class_message_interface}{Message\+Interface} $\ast$ \hyperlink{class_parser_a7b3c3ac1cf86a5f9fdda1ecf06dcd4dc}{current\+Message} ()=0
+\item 
+\mbox{\Hypertarget{class_parser_a543fbd3286c6ca53ed364f4be75473ff}\label{class_parser_a543fbd3286c6ca53ed364f4be75473ff}} 
+virtual void {\bfseries On\+Parse\+Begin} ()
+\item 
+\mbox{\Hypertarget{class_parser_ae1c3a1139dbf03130e4a8c6232bc0f1c}\label{class_parser_ae1c3a1139dbf03130e4a8c6232bc0f1c}} 
+virtual void {\bfseries On\+Headers\+Complete} (\hyperlink{class_message_interface}{Message\+Interface} $\ast$msg, void $\ast$body\+\_\+start\+\_\+ptr, std\+::size\+\_\+t remainder)
+\item 
+\mbox{\Hypertarget{class_parser_a8cd09a2975183aeabc46f492291d10ba}\label{class_parser_a8cd09a2975183aeabc46f492291d10ba}} 
+virtual void {\bfseries On\+Message\+Complete} (\hyperlink{class_message_interface}{Message\+Interface} $\ast$msg)
+\item 
+\mbox{\Hypertarget{class_parser_a721ea9e9c80070e4b41e664329f0c4a4}\label{class_parser_a721ea9e9c80070e4b41e664329f0c4a4}} 
+virtual void {\bfseries On\+Parse\+Error} ()
+\item 
+\mbox{\Hypertarget{class_parser_ab8c3d57fb793c4a5799020e474b7f6f7}\label{class_parser_ab8c3d57fb793c4a5799020e474b7f6f7}} 
+virtual void {\bfseries On\+Body\+Data} (void $\ast$buf, int len)
+\item 
+\mbox{\Hypertarget{class_parser_aba88a1d565dffa2c4845bb74e4e8b09e}\label{class_parser_aba88a1d565dffa2c4845bb74e4e8b09e}} 
+virtual void {\bfseries On\+Chunk\+Begin} (int chunk\+Length)
+\item 
+\mbox{\Hypertarget{class_parser_ab6b2ca1970700b5d1ac9a87cb2bf2776}\label{class_parser_ab6b2ca1970700b5d1ac9a87cb2bf2776}} 
+virtual void {\bfseries On\+Chunk\+Data} (void $\ast$buf, int len)
+\item 
+\mbox{\Hypertarget{class_parser_af755405a007c893d17f2179b06152eda}\label{class_parser_af755405a007c893d17f2179b06152eda}} 
+virtual void {\bfseries On\+Chunk\+End} ()
+\item 
+\mbox{\Hypertarget{class_parser_af14d6a9a94ce9c59690a432571dbc371}\label{class_parser_af14d6a9a94ce9c59690a432571dbc371}} 
+void {\bfseries set\+Up\+Parser\+Callbacks} ()
+\item 
+\mbox{\Hypertarget{class_parser_a34cc536f1137eeadca5ab67c681355aa}\label{class_parser_a34cc536f1137eeadca5ab67c681355aa}} 
+void {\bfseries set\+Up\+Next\+Message} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_parser_ad4e7e322f9a17b8339d83186f74a694c}\label{class_parser_ad4e7e322f9a17b8339d83186f74a694c}} 
+http\+\_\+parser $\ast$ {\bfseries parser}
+\item 
+\mbox{\Hypertarget{class_parser_abcf9c5ff429254103942871e829930f5}\label{class_parser_abcf9c5ff429254103942871e829930f5}} 
+http\+\_\+parser\+\_\+settings $\ast$ {\bfseries parser\+Settings}
+\item 
+\mbox{\Hypertarget{class_parser_aadbd6809527f07a8a54a7d9b2520e9ed}\label{class_parser_aadbd6809527f07a8a54a7d9b2520e9ed}} 
+bool {\bfseries headers\+Complete\+Flag}
+\item 
+\mbox{\Hypertarget{class_parser_a1caf934e3135f3c608c7a461ade4db8b}\label{class_parser_a1caf934e3135f3c608c7a461ade4db8b}} 
+bool {\bfseries message\+Complete\+Flag}
+\item 
+\mbox{\Hypertarget{class_parser_a1bdfdb9108621ff22ebe8d6a3f297d2d}\label{class_parser_a1bdfdb9108621ff22ebe8d6a3f297d2d}} 
+std\+::string {\bfseries message\+Data}
+\item 
+\mbox{\Hypertarget{class_parser_aa111be7074c6a7e23475b18329f31b1d}\label{class_parser_aa111be7074c6a7e23475b18329f31b1d}} 
+int {\bfseries header\+\_\+state}
+\item 
+\mbox{\Hypertarget{class_parser_a2a07f1e555ffed364d2e8e9db57cd423}\label{class_parser_a2a07f1e555ffed364d2e8e9db57cd423}} 
+simple\+\_\+buffer\+\_\+t $\ast$ {\bfseries url\+\_\+buf}
+\item 
+\mbox{\Hypertarget{class_parser_a49632afe07eeaf50e025ec7e3a3066d6}\label{class_parser_a49632afe07eeaf50e025ec7e3a3066d6}} 
+simple\+\_\+buffer\+\_\+t $\ast$ {\bfseries status\+\_\+buf}
+\item 
+\mbox{\Hypertarget{class_parser_a9bffeb646e67684de79189570a3d9bd6}\label{class_parser_a9bffeb646e67684de79189570a3d9bd6}} 
+simple\+\_\+buffer\+\_\+t $\ast$ {\bfseries name\+\_\+buf}
+\item 
+\mbox{\Hypertarget{class_parser_abaf2ea297ca47df80116d24c94acd9a2}\label{class_parser_abaf2ea297ca47df80116d24c94acd9a2}} 
+simple\+\_\+buffer\+\_\+t $\ast$ {\bfseries value\+\_\+buf}
+\item 
+\mbox{\Hypertarget{class_parser_a673a3369ac06cbc967394cdd2c441c90}\label{class_parser_a673a3369ac06cbc967394cdd2c441c90}} 
+std\+::map$<$ std\+::string, std\+::string $>$ {\bfseries headers}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_parser_a9726af2e5828a3562c0fd11b5ac26c44}\label{class_parser_a9726af2e5828a3562c0fd11b5ac26c44}} 
+void {\bfseries save\+Name\+Value\+Pair} (http\+\_\+parser $\ast$parser, simple\+\_\+buffer\+\_\+t $\ast$name, simple\+\_\+buffer\+\_\+t $\ast$value)
+\item 
+\mbox{\Hypertarget{class_parser_af30ac5f51242b2b1799be52420bac286}\label{class_parser_af30ac5f51242b2b1799be52420bac286}} 
+\hyperlink{class_parser}{Parser} $\ast$ {\bfseries get\+Parser} (http\+\_\+parser $\ast$parser)
+\item 
+\mbox{\Hypertarget{class_parser_a553cdbecb83388bcb98eccddac9af8fa}\label{class_parser_a553cdbecb83388bcb98eccddac9af8fa}} 
+void {\bfseries set\+Parser} (http\+\_\+parser $\ast$c\+\_\+parser, \hyperlink{class_parser}{Parser} $\ast$cpp\+\_\+parser)
+\item 
+\mbox{\Hypertarget{class_parser_a4d73dd1c39e6ea25e3d0ca7eca36b241}\label{class_parser_a4d73dd1c39e6ea25e3d0ca7eca36b241}} 
+int {\bfseries message\+\_\+begin\+\_\+cb} (http\+\_\+parser $\ast$parser)
+\item 
+\mbox{\Hypertarget{class_parser_a30193b3f5c1dc5af2675d6d31e343e8a}\label{class_parser_a30193b3f5c1dc5af2675d6d31e343e8a}} 
+int {\bfseries url\+\_\+data\+\_\+cb} (http\+\_\+parser $\ast$parser, const char $\ast$at, size\+\_\+t length)
+\item 
+\mbox{\Hypertarget{class_parser_a62661f27c58fe69011a1016bf29138ce}\label{class_parser_a62661f27c58fe69011a1016bf29138ce}} 
+int {\bfseries status\+\_\+data\+\_\+cb} (http\+\_\+parser $\ast$parser, const char $\ast$at, size\+\_\+t length)
+\item 
+\mbox{\Hypertarget{class_parser_aaae17943dd3f7db938ec5a1f8c9c8d9b}\label{class_parser_aaae17943dd3f7db938ec5a1f8c9c8d9b}} 
+int {\bfseries header\+\_\+field\+\_\+data\+\_\+cb} (http\+\_\+parser $\ast$parser, const char $\ast$at, size\+\_\+t length)
+\item 
+\mbox{\Hypertarget{class_parser_aa28d460926c10a8f055916842c8eef23}\label{class_parser_aa28d460926c10a8f055916842c8eef23}} 
+int {\bfseries header\+\_\+value\+\_\+data\+\_\+cb} (http\+\_\+parser $\ast$parser, const char $\ast$at, size\+\_\+t length)
+\item 
+\mbox{\Hypertarget{class_parser_afaf8bbeac4baa4f0d275635735f3ed8b}\label{class_parser_afaf8bbeac4baa4f0d275635735f3ed8b}} 
+int {\bfseries headers\+\_\+complete\+\_\+cb} (http\+\_\+parser $\ast$parser, const char $\ast$aptr, size\+\_\+t remainder)
+\item 
+\mbox{\Hypertarget{class_parser_a6a11778033c82b51021c9f7af6796d49}\label{class_parser_a6a11778033c82b51021c9f7af6796d49}} 
+int {\bfseries chunk\+\_\+size\+\_\+start} (http\+\_\+parser $\ast$parser, const char $\ast$at, size\+\_\+t length)
+\item 
+\mbox{\Hypertarget{class_parser_ac54638bfd9ba21a338f3ed6decd587c9}\label{class_parser_ac54638bfd9ba21a338f3ed6decd587c9}} 
+int {\bfseries chunk\+\_\+header\+\_\+cb} (http\+\_\+parser $\ast$parser)
+\item 
+\mbox{\Hypertarget{class_parser_a63771c42c64eca8eb6ebaba249a241de}\label{class_parser_a63771c42c64eca8eb6ebaba249a241de}} 
+int {\bfseries body\+\_\+data\+\_\+cb} (http\+\_\+parser $\ast$parser, const char $\ast$at, size\+\_\+t length)
+\item 
+\mbox{\Hypertarget{class_parser_a9944899a787daa6ff1a03c3c8db106ac}\label{class_parser_a9944899a787daa6ff1a03c3c8db106ac}} 
+int {\bfseries chunk\+\_\+complete\+\_\+cb} (http\+\_\+parser $\ast$parser)
+\item 
+\mbox{\Hypertarget{class_parser_a74c8ba05a16748266ea355b8fe4d1626}\label{class_parser_a74c8ba05a16748266ea355b8fe4d1626}} 
+int {\bfseries message\+\_\+complete\+\_\+cb} (http\+\_\+parser $\ast$parser)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_parser_a72709d4b733b6ad615669726f77ca52a}\label{class_parser_a72709d4b733b6ad615669726f77ca52a}} 
+\index{Parser@{Parser}!append\+Bytes@{append\+Bytes}}
+\index{append\+Bytes@{append\+Bytes}!Parser@{Parser}}
+\subsubsection{\texorpdfstring{append\+Bytes()}{appendBytes()}}
+{\footnotesize\ttfamily int Parser\+::append\+Bytes (\begin{DoxyParamCaption}\item[{void $\ast$}]{buffer,  }\item[{unsigned}]{length }\end{DoxyParamCaption})}
+
+send data to the parser for consumption \mbox{\Hypertarget{class_parser_ac569347a4bdd7a04ede0c0a4c6efe215}\label{class_parser_ac569347a4bdd7a04ede0c0a4c6efe215}} 
+\index{Parser@{Parser}!append\+E\+OF@{append\+E\+OF}}
+\index{append\+E\+OF@{append\+E\+OF}!Parser@{Parser}}
+\subsubsection{\texorpdfstring{append\+E\+O\+F()}{appendEOF()}}
+{\footnotesize\ttfamily void Parser\+::append\+E\+OF (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Signal end of data to the parser. Required in some cases as there are message formats that do not contain message length information. \mbox{\Hypertarget{class_parser_a7b3c3ac1cf86a5f9fdda1ecf06dcd4dc}\label{class_parser_a7b3c3ac1cf86a5f9fdda1ecf06dcd4dc}} 
+\index{Parser@{Parser}!current\+Message@{current\+Message}}
+\index{current\+Message@{current\+Message}!Parser@{Parser}}
+\subsubsection{\texorpdfstring{current\+Message()}{currentMessage()}}
+{\footnotesize\ttfamily virtual \hyperlink{class_message_interface}{Message\+Interface}$\ast$ Parser\+::current\+Message (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+Returns the the Message currently being parsed. When operating in non streaming mode this also returns the most recently parsed message. 
+
+Implemented in \hyperlink{class_message_reader_a06ec9e561ff5cde8f4e1ffb0ff17cb1f}{Message\+Reader}.
+
+\mbox{\Hypertarget{class_parser_aae7788cc722b8455e691a14dded5d726}\label{class_parser_aae7788cc722b8455e691a14dded5d726}} 
+\index{Parser@{Parser}!is\+Finished\+Headers@{is\+Finished\+Headers}}
+\index{is\+Finished\+Headers@{is\+Finished\+Headers}!Parser@{Parser}}
+\subsubsection{\texorpdfstring{is\+Finished\+Headers()}{isFinishedHeaders()}}
+{\footnotesize\ttfamily bool Parser\+::is\+Finished\+Headers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+return true if parsing of the header fields of the current message is finished. In which case the header fields can be obtained thru the headers property of the \hyperlink{class_h_t_t_p_message}{H\+T\+T\+P\+Message} returned from $\ast$ get\+Current\+Message \mbox{\Hypertarget{class_parser_ad9d6c98af922409a78ff65083b1983e3}\label{class_parser_ad9d6c98af922409a78ff65083b1983e3}} 
+\index{Parser@{Parser}!is\+Finished\+Message@{is\+Finished\+Message}}
+\index{is\+Finished\+Message@{is\+Finished\+Message}!Parser@{Parser}}
+\subsubsection{\texorpdfstring{is\+Finished\+Message()}{isFinishedMessage()}}
+{\footnotesize\ttfamily bool Parser\+::is\+Finished\+Message (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+return true if parsing of current message is finished, in which case the message can be obtained via the get\+Current\+Message method \mbox{\Hypertarget{class_parser_a534e9326567306cdf50a7bb980292c37}\label{class_parser_a534e9326567306cdf50a7bb980292c37}} 
+\index{Parser@{Parser}!pause@{pause}}
+\index{pause@{pause}!Parser@{Parser}}
+\subsubsection{\texorpdfstring{pause()}{pause()}}
+{\footnotesize\ttfamily void Parser\+::pause (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Pause and/or unpause the parser \mbox{\Hypertarget{class_parser_ac6eba4f77cd89023b2940e46ed449df3}\label{class_parser_ac6eba4f77cd89023b2940e46ed449df3}} 
+\index{Parser@{Parser}!set\+Streaming\+Option@{set\+Streaming\+Option}}
+\index{set\+Streaming\+Option@{set\+Streaming\+Option}!Parser@{Parser}}
+\subsubsection{\texorpdfstring{set\+Streaming\+Option()}{setStreamingOption()}}
+{\footnotesize\ttfamily void Parser\+::set\+Streaming\+Option (\begin{DoxyParamCaption}\item[{bool}]{streaming\+Option }\end{DoxyParamCaption})}
+
+Sets the message streaming option -\/ to the value of stream\+Option 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/message/parser.\+hpp\item 
+marvin/message/parser.\+cpp\end{DoxyCompactItemize}

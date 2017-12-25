@@ -14,7 +14,10 @@
 
 #include "http_server.hpp"
 #include <gtest/gtest.h>
-
+/**
+* This class starts and stops a server with the given
+* request handler factory
+*/
 template<class Handler>
 class ServerRunner
 {

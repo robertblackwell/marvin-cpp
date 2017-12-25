@@ -1,0 +1,36 @@
+\#\+Using \hyperlink{namespace_marvin}{Marvin} in an Objc app This short file explains how to integrate c++ marvin into an Objc Cocoa app.
+
+\subsection*{the pieces of the puzzle}
+
+Go to folder {\ttfamily src/objc} and observe the files in that folder\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily \hyperlink{marvin__objc_8h_source}{marvin\+\_\+objc.\+h}} and {\ttfamily marvin\+\_\+objc.\+mm} are objc++ files that implement a wraper for the c++ marvin code. These files need to know about a few of the c++ classes and in addition make use of
+\begin{DoxyItemize}
+\item {\ttfamily \hyperlink{marvin__delegate__objc_8h_source}{marvin\+\_\+delegate\+\_\+objc.\+h}} and {\ttfamily marvin\+\_\+delegate\+\_\+objc.\+mm}, again objc++ files that implement a skelton delegate object that can be used to get back from the marvin proxy details of each http request/response exchange that was observed.
+\item {\ttfamily \hyperlink{objc__collector_8hpp_source}{objc\+\_\+collector.\+hpp}} and {\ttfamily objc\+\_\+collector.\+mm} provides a C++ class that has been compiled under objc++ and provides the packaging of a request/response exchange into a form consumable by object-\/c and calls the marvin delegate object.
+\end{DoxyItemize}
+\item Finally the folder {\ttfamily proxy\+\_\+cocoa} contains {\ttfamily App\+Delegate.\+h} and {\ttfamily App\+Delegate.\+mm} and objectivec++ implementation of a skeleton app delegate that will connect an app to the marvin proxy.
+\end{DoxyItemize}
+
+\subsection*{threads}
+
+This is one of the complexities to be overcome because the C++ components of marvin make use of boost\+::asio\+::io\+\_\+service which is a form of run\+\_\+loop which is distinct from the apple run\+\_\+loop and apple dispatch queues. {\bfseries We need to make sure these two async technologoes do not get in each otehrs way}.
+
+So, how do we do that\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily \hyperlink{marvin__objc_8h_source}{marvin\+\_\+objc.\+h}} and {\ttfamily marviv\+\_\+objc.\+mm} class invoke the C++ code on a background thread (via the {\ttfamily run} method using {\ttfamily perform\+Selector\+On\+Background\+Thread}) without starting the apple runloop.
+\item the marvin C++ code then creates a number of otehr threads for its own purposes.
+\item the {\ttfamily objc\+\_\+collector.\+h/.mm} class calls the {\bfseries delegates} {\ttfamily notify} method on the main thread, again using a variety of {\ttfamily perform\+Selector}. {\bfseries Note}, we did not use some variation of\+:
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}
+dispath\_async(displatch\_get\_main\_queue, ...)
+\end{DoxyCode}
+
+
+as (from Apples won documentation) the main queue and the main thread are not allways the same thing. 

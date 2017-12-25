@@ -1,0 +1,122 @@
+\hypertarget{class_message_writer}{}\section{Message\+Writer Class Reference}
+\label{class_message_writer}\index{Message\+Writer@{Message\+Writer}}
+Inheritance diagram for Message\+Writer\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_message_writer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_message_writer_a92f4d619f9ef47dee6237d2826ab6b18}{Message\+Writer} (boost\+::asio\+::io\+\_\+service \&io, Connection\+Interface\+S\+Ptr conn)
+\item 
+\mbox{\Hypertarget{class_message_writer_a23d55794db33f0d677505190b65943e8}\label{class_message_writer_a23d55794db33f0d677505190b65943e8}} 
+void {\bfseries async\+Write} (Message\+Base\+S\+Ptr msg, Write\+Message\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_a64ef95415e3dc628ac4033675285511c}\label{class_message_writer_a64ef95415e3dc628ac4033675285511c}} 
+void {\bfseries async\+Write} (Message\+Base\+S\+Ptr msg, std\+::string \&body\+\_\+string, Write\+Message\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_a64f2202b6058d2817de987fa1bab056b}\label{class_message_writer_a64f2202b6058d2817de987fa1bab056b}} 
+void {\bfseries async\+Write} (Message\+Base\+S\+Ptr msg, M\+Buffer\+S\+Ptr body\+\_\+mb\+\_\+sptr, Write\+Message\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_a00aa34b356034fc0c49303c7cac5498e}\label{class_message_writer_a00aa34b356034fc0c49303c7cac5498e}} 
+void {\bfseries async\+Write} (Message\+Base\+S\+Ptr msg, Buffer\+Chain\+S\+Ptr body\+\_\+chain\+\_\+sptr, Write\+Message\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_ae4c41c55e28ed99c5535f859fdae7abf}\label{class_message_writer_ae4c41c55e28ed99c5535f859fdae7abf}} 
+void {\bfseries async\+Write\+Headers} (Message\+Base\+S\+Ptr msg, Write\+Headers\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_a4cab5e912c1cb51d23fa76792b3e6eda}\label{class_message_writer_a4cab5e912c1cb51d23fa76792b3e6eda}} 
+void {\bfseries async\+Write\+Body\+Data} (std\+::string \&data, Write\+Body\+Data\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_ab86abed828afa7fbd30e300c585d1d31}\label{class_message_writer_ab86abed828afa7fbd30e300c585d1d31}} 
+void {\bfseries async\+Write\+Body\+Data} (\hyperlink{struct_m_buffer}{M\+Buffer} \&data, Write\+Body\+Data\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_aaf63ccacfe7b7134e75687ef7d19b48c}\label{class_message_writer_aaf63ccacfe7b7134e75687ef7d19b48c}} 
+void {\bfseries async\+Write\+Body\+Data} (Buffer\+Chain\+S\+Ptr chain\+\_\+ptr, Write\+Body\+Data\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_af7ebe407465a33f2f343fe504bb02642}\label{class_message_writer_af7ebe407465a33f2f343fe504bb02642}} 
+void {\bfseries async\+Write\+Body\+Data} (boost\+::asio\+::const\+\_\+buffer data, Write\+Body\+Data\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_a861b118a4ff445b27e09c43f4cac6bda}\label{class_message_writer_a861b118a4ff445b27e09c43f4cac6bda}} 
+void {\bfseries async\+Write\+Trailers} (Message\+Base\+S\+Ptr msg, Async\+Write\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_ac74abc89b3ad3f2b778e7dbfe60e6a72}\label{class_message_writer_ac74abc89b3ad3f2b778e7dbfe60e6a72}} 
+void {\bfseries end} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_message_writer_adf2d412ea99f1a9a9ae198e98013f0b9}\label{class_message_writer_adf2d412ea99f1a9a9ae198e98013f0b9}} 
+void {\bfseries async\+Write\+Full\+Body} (Write\+Message\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_message_writer_aa6551bbb8ac0808823df8960a36b87bf}\label{class_message_writer_aa6551bbb8ac0808823df8960a36b87bf}} 
+void {\bfseries on\+Write\+Headers} (Marvin\+::\+Error\+Type \&ec)
+\item 
+\mbox{\Hypertarget{class_message_writer_a5a0e7a5a62a95929e5a832bd48200412}\label{class_message_writer_a5a0e7a5a62a95929e5a832bd48200412}} 
+void {\bfseries put\+Headers\+Stuff\+In\+Buffer} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_message_writer_aaf28fbb61f0fc9783fab731d12f06aed}\label{class_message_writer_aaf28fbb61f0fc9783fab731d12f06aed}} 
+boost\+::asio\+::io\+\_\+service \& {\bfseries \+\_\+io}
+\item 
+\mbox{\Hypertarget{class_message_writer_a2fa38a10a98a06bec22a59489f582965}\label{class_message_writer_a2fa38a10a98a06bec22a59489f582965}} 
+Connection\+Interface\+S\+Ptr {\bfseries \+\_\+conn}
+\item 
+\mbox{\Hypertarget{class_message_writer_a6b04facc589bab6acca0c85ba5e481ef}\label{class_message_writer_a6b04facc589bab6acca0c85ba5e481ef}} 
+Message\+Base\+S\+Ptr {\bfseries \+\_\+current\+Message}
+\item 
+\hyperlink{struct_m_buffer}{M\+Buffer} \hyperlink{class_message_writer_a77fcbd1fa4556cb745536c5a1eee6d70}{\+\_\+m\+\_\+header\+\_\+buf}
+\item 
+\mbox{\Hypertarget{class_message_writer_a8a3c2444eb3fd4634a8d1e286fce272d}\label{class_message_writer_a8a3c2444eb3fd4634a8d1e286fce272d}} 
+bool {\bfseries \+\_\+have\+Content}
+\item 
+\mbox{\Hypertarget{class_message_writer_af0bccbe32eecf55f98461ffdd795aac3}\label{class_message_writer_af0bccbe32eecf55f98461ffdd795aac3}} 
+boost\+::asio\+::streambuf {\bfseries \+\_\+body\+Buf}
+\item 
+\mbox{\Hypertarget{class_message_writer_a9a5a72be97d50ee812d04394e138f628}\label{class_message_writer_a9a5a72be97d50ee812d04394e138f628}} 
+M\+Buffer\+S\+Ptr {\bfseries \+\_\+body\+\_\+mbuffer\+\_\+sptr}
+\item 
+\mbox{\Hypertarget{class_message_writer_a3ef2348f35aeeb1d95c5aeb0d037976e}\label{class_message_writer_a3ef2348f35aeeb1d95c5aeb0d037976e}} 
+std\+::string {\bfseries \+\_\+body\+\_\+buffer\+\_\+string}
+\item 
+\mbox{\Hypertarget{class_message_writer_a151a30d9725e35d4c25dcc000a247570}\label{class_message_writer_a151a30d9725e35d4c25dcc000a247570}} 
+Buffer\+Chain\+S\+Ptr {\bfseries \+\_\+body\+\_\+buffer\+\_\+chain\+\_\+sptr}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_message_writer_a3740b08ba1b836dbf6a6ca2d3e4fadf7}\label{class_message_writer_a3740b08ba1b836dbf6a6ca2d3e4fadf7}} 
+std\+::string {\bfseries trace\+Writer} (\hyperlink{class_message_writer}{Message\+Writer} \&wrtr)
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_message_writer_a92f4d619f9ef47dee6237d2826ab6b18}\label{class_message_writer_a92f4d619f9ef47dee6237d2826ab6b18}} 
+\index{Message\+Writer@{Message\+Writer}!Message\+Writer@{Message\+Writer}}
+\index{Message\+Writer@{Message\+Writer}!Message\+Writer@{Message\+Writer}}
+\subsubsection{\texorpdfstring{Message\+Writer()}{MessageWriter()}}
+{\footnotesize\ttfamily Message\+Writer\+::\+Message\+Writer (\begin{DoxyParamCaption}\item[{boost\+::asio\+::io\+\_\+service \&}]{io,  }\item[{Connection\+Interface\+S\+Ptr}]{conn }\end{DoxyParamCaption})}
+
+The message writer has the logic to output \hyperlink{class_message_base}{Message\+Base} objects to an allready open connection. This is a one-\/shot object -\/ once it has written a single message it should be discarded and a new one used for the next message on the same connection 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_message_writer_a77fcbd1fa4556cb745536c5a1eee6d70}\label{class_message_writer_a77fcbd1fa4556cb745536c5a1eee6d70}} 
+\index{Message\+Writer@{Message\+Writer}!\+\_\+m\+\_\+header\+\_\+buf@{\+\_\+m\+\_\+header\+\_\+buf}}
+\index{\+\_\+m\+\_\+header\+\_\+buf@{\+\_\+m\+\_\+header\+\_\+buf}!Message\+Writer@{Message\+Writer}}
+\subsubsection{\texorpdfstring{\+\_\+m\+\_\+header\+\_\+buf}{\_m\_header\_buf}}
+{\footnotesize\ttfamily \hyperlink{struct_m_buffer}{M\+Buffer} Message\+Writer\+::\+\_\+m\+\_\+header\+\_\+buf\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000001}{Todo}]
+\begin{DoxyItemize}
+\item raw pointers for \hyperlink{struct_m_buffer}{M\+Buffer} and \hyperlink{class_f_buffer}{F\+Buffer} are a problem 
+\end{DoxyItemize}\end{DoxyRefDesc}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/message/message\+\_\+writer.\+hpp\item 
+marvin/message/message\+\_\+writer.\+cpp\end{DoxyCompactItemize}

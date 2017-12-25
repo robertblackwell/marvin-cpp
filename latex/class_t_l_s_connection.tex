@@ -1,0 +1,102 @@
+\hypertarget{class_t_l_s_connection}{}\section{T\+L\+S\+Connection Class Reference}
+\label{class_t_l_s_connection}\index{T\+L\+S\+Connection@{T\+L\+S\+Connection}}
+Inheritance diagram for T\+L\+S\+Connection\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_t_l_s_connection}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_t_l_s_connection_ac9ad86b89b6a327277962f43a11b542e}{T\+L\+S\+Connection} (boost\+::asio\+::io\+\_\+service \&io\+\_\+service, const std\+::string \&scheme, const std\+::string \&server, const std\+::string \&port)
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_a3ee6b831efcf2674dc60ff29d9c5429d}\label{class_t_l_s_connection_a3ee6b831efcf2674dc60ff29d9c5429d}} 
+{\bfseries T\+L\+S\+Connection} (boost\+::asio\+::io\+\_\+service \&io\+\_\+service)
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_a9fb660429140b86b36877afdbed4c1c0}\label{class_t_l_s_connection_a9fb660429140b86b36877afdbed4c1c0}} 
+void {\bfseries async\+Connect} (Connect\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_a18acf6d17737221d72ad83ad9ec12bc9}\label{class_t_l_s_connection_a18acf6d17737221d72ad83ad9ec12bc9}} 
+void {\bfseries async\+Accept} (boost\+::asio\+::ip\+::tcp\+::acceptor \&acceptor, std\+::function$<$ void(const boost\+::system\+::error\+\_\+code \&err)$>$ cb)
+\item 
+void \hyperlink{class_t_l_s_connection_abcca8739e56387ddceeefd15f8ea0967}{async\+Write} (\hyperlink{struct_m_buffer}{M\+Buffer} \&fb, Async\+Write\+Callback\+Type cb)
+\item 
+void \hyperlink{class_t_l_s_connection_a986b8ea40c6708966dc5a499e18b39ae}{async\+Write} (\hyperlink{class_f_buffer}{F\+Buffer} \&fb, Async\+Write\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_a5d7a765878b0087d3146cdc8fa97a5f5}\label{class_t_l_s_connection_a5d7a765878b0087d3146cdc8fa97a5f5}} 
+void {\bfseries async\+Write\+Stream\+Buf} (boost\+::asio\+::streambuf \&sb, Async\+Write\+Callback)
+\item 
+void \hyperlink{class_t_l_s_connection_a37ef49d562cad83c9cdb130f7196f0b5}{async\+Read} (\hyperlink{struct_m_buffer}{M\+Buffer} \&mb, Async\+Read\+Callback\+Type cb)
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_aa8cac88c4c5108ab12c3f5399a3b630c}\label{class_t_l_s_connection_aa8cac88c4c5108ab12c3f5399a3b630c}} 
+void {\bfseries shutdown} ()
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_acb98e7da74c8946ee1eb3dc29d60241a}\label{class_t_l_s_connection_acb98e7da74c8946ee1eb3dc29d60241a}} 
+void {\bfseries close} ()
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_a871fe43f125797293bb7761268f94fe3}\label{class_t_l_s_connection_a871fe43f125797293bb7761268f94fe3}} 
+long {\bfseries native\+Socket\+FD} ()
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_a20a96cc4b58864147634dba4236fdf94}\label{class_t_l_s_connection_a20a96cc4b58864147634dba4236fdf94}} 
+std\+::string {\bfseries scheme} ()
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_a410ec7fcd5f42090531387893692f7e9}\label{class_t_l_s_connection_a410ec7fcd5f42090531387893692f7e9}} 
+std\+::string {\bfseries server} ()
+\item 
+\mbox{\Hypertarget{class_t_l_s_connection_aa9f44a7552dfc1b04cb4056cefffb68d}\label{class_t_l_s_connection_aa9f44a7552dfc1b04cb4056cefffb68d}} 
+std\+::string {\bfseries service} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_t_l_s_connection_ac9ad86b89b6a327277962f43a11b542e}\label{class_t_l_s_connection_ac9ad86b89b6a327277962f43a11b542e}} 
+\index{T\+L\+S\+Connection@{T\+L\+S\+Connection}!T\+L\+S\+Connection@{T\+L\+S\+Connection}}
+\index{T\+L\+S\+Connection@{T\+L\+S\+Connection}!T\+L\+S\+Connection@{T\+L\+S\+Connection}}
+\subsubsection{\texorpdfstring{T\+L\+S\+Connection()}{TLSConnection()}}
+{\footnotesize\ttfamily T\+L\+S\+Connection\+::\+T\+L\+S\+Connection (\begin{DoxyParamCaption}\item[{boost\+::asio\+::io\+\_\+service \&}]{io\+\_\+service,  }\item[{const std\+::string \&}]{scheme,  }\item[{const std\+::string \&}]{server,  }\item[{const std\+::string \&}]{port }\end{DoxyParamCaption})}
+
+Constructor 
+\begin{DoxyParams}{Parameters}
+{\em \{io\+\_\+service\}} & io\+\_\+service -\/ to use for running \\
+\hline
+{\em \{string\}} & scheme -\/ \char`\"{}http\char`\"{} or \char`\"{}https\char`\"{} \\
+\hline
+{\em \{string\}} & server -\/ domain string \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_t_l_s_connection_a37ef49d562cad83c9cdb130f7196f0b5}\label{class_t_l_s_connection_a37ef49d562cad83c9cdb130f7196f0b5}} 
+\index{T\+L\+S\+Connection@{T\+L\+S\+Connection}!async\+Read@{async\+Read}}
+\index{async\+Read@{async\+Read}!T\+L\+S\+Connection@{T\+L\+S\+Connection}}
+\subsubsection{\texorpdfstring{async\+Read()}{asyncRead()}}
+{\footnotesize\ttfamily void T\+L\+S\+Connection\+::async\+Read (\begin{DoxyParamCaption}\item[{\hyperlink{struct_m_buffer}{M\+Buffer} \&}]{buffer,  }\item[{Async\+Read\+Callback\+Type}]{cb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+read 
+
+Implements \hyperlink{class_read_socket_interface}{Read\+Socket\+Interface}.
+
+\mbox{\Hypertarget{class_t_l_s_connection_abcca8739e56387ddceeefd15f8ea0967}\label{class_t_l_s_connection_abcca8739e56387ddceeefd15f8ea0967}} 
+\index{T\+L\+S\+Connection@{T\+L\+S\+Connection}!async\+Write@{async\+Write}}
+\index{async\+Write@{async\+Write}!T\+L\+S\+Connection@{T\+L\+S\+Connection}}
+\subsubsection{\texorpdfstring{async\+Write()}{asyncWrite()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void T\+L\+S\+Connection\+::async\+Write (\begin{DoxyParamCaption}\item[{\hyperlink{struct_m_buffer}{M\+Buffer} \&}]{buffer,  }\item[{Async\+Write\+Callback\+Type}]{cb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+write 
+
+Implements \hyperlink{class_connection_interface}{Connection\+Interface}.
+
+\mbox{\Hypertarget{class_t_l_s_connection_a986b8ea40c6708966dc5a499e18b39ae}\label{class_t_l_s_connection_a986b8ea40c6708966dc5a499e18b39ae}} 
+\index{T\+L\+S\+Connection@{T\+L\+S\+Connection}!async\+Write@{async\+Write}}
+\index{async\+Write@{async\+Write}!T\+L\+S\+Connection@{T\+L\+S\+Connection}}
+\subsubsection{\texorpdfstring{async\+Write()}{asyncWrite()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void T\+L\+S\+Connection\+::async\+Write (\begin{DoxyParamCaption}\item[{\hyperlink{class_f_buffer}{F\+Buffer} \&}]{fb,  }\item[{Async\+Write\+Callback\+Type}]{cb }\end{DoxyParamCaption})}
+
+use the boost function that O\+N\+LY returns when the write is D\+O\+NE 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/connection/tls\+\_\+connection.\+hpp\item 
+marvin/connection/tls\+\_\+connection.\+cpp\end{DoxyCompactItemize}

@@ -57,6 +57,9 @@ class MessageReader : public Parser, public MessageBase
 {
 public:
 
+    using ReadMessageCallback = std::function<void(Marvin::ErrorType err)>;
+    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, BufferChain chunk)>;
+
     static void configSet_HeaderBufferSize(long bsize);
     static void configSet_BodyBufferSize(long bsize);
 
@@ -102,8 +105,9 @@ public:
     *
     * The raw not-de-chunked body data can be obtained (as a BufferChain) by calling get_raw_body_chain
     */
-    void readMessage(std::function<void(Marvin::ErrorType err)> cb);
-    
+//    void readMessage(std::function<void(Marvin::ErrorType err)> cb);
+    void readMessage(ReadMessageCallback cb);
+
     /*!
     * Gets the message body as a std::string 
     * !!! need to do better
@@ -115,46 +119,30 @@ public:
     friend std::string traceReader(MessageReader& rdr);
     
 protected:
-    static std::size_t     __headerBufferSize;
-    static std::size_t     __bodyBufferSize;
     //----------------------------------------------------------------------------------------------------
-    // private methods
+    // protected methods
     //----------------------------------------------------------------------------------------------------
-    void read_headers(std::function<void(Marvin::ErrorType err)> cb);
-    void read_message(std::function<void(Marvin::ErrorType err)> cb);
-    void _read_some_headers();
-    void _handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered);
+    void p_read_headers(std::function<void(Marvin::ErrorType err)> cb);
+    void p_read_message(std::function<void(Marvin::ErrorType err)> cb);
+    void p_read_some_headers();
+    void p_handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered);
     
-    bool _reading_full_message;
-    bool _reading_body;
-    std::function<void(Marvin::ErrorType err)> _read_message_cb;
-    std::function<void(Marvin::ErrorType err, BufferChain chunk)> _read_body_cb;
+    void p_read_body(std::function<void(Marvin::ErrorType err)> cb);
+    void p_read_all_body();
+    void p_read_some_body();
+    void p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered);
     
-    void read_body(std::function<void(Marvin::ErrorType err)> cb);
-    void _read_all_body();
-    void _read_some_body();
-    void _handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered);
+    void p_read_body_chunk();
+    void p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_transfered);
     
-    void _read_body_chunk();
-    void _handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_transfered);
-    
-    // buffer management
-    int                             _total_bytes_read;
-    MBufferSPtr                     _header_buffer_sptr;
-    MBufferSPtr                     _body_buffer_sptr;
-    FBufferSharedPtr                _body_fragments_sptr;
 
-    BufferChain                     _raw_body_buffer_chain;
-    BufferChain                     _body_buffer_chain;
-    std::vector<FBufferSharedPtr>   _body_fragments_chain;
-
-    void _make_new_body_buffer();
-    void post_message_cb(Marvin::ErrorType er);
-    void post_body_chunk_cb(Marvin::ErrorType er, BufferChain chain);
-    bool parser_ok(int nparsed, MBuffer& mb);
+    void p_make_new_body_buffer();
+    void p_post_message_cb(Marvin::ErrorType er);
+    void p_post_body_chunk_cb(Marvin::ErrorType er, BufferChain chain);
+    bool p_parser_ok(int nparsed, MBuffer& mb);
 
     /**
-    *  These methods are overridesa for virtual methods in Paser 
+    *  These methods are override for virtual methods in Paser
     */
     MessageInterface* currentMessage();
     void OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
@@ -165,33 +153,37 @@ protected:
     void OnChunkEnd();
 
     //----------------------------------------------------------------------------------------------------
-    // private properties and methods
+    // protected properties 
     //----------------------------------------------------------------------------------------------------
-    ReadSocketInterfaceSPtr     _readSock;
-    boost::asio::io_service&    _io;
-    std::size_t                 _body_buffer_size;
-    std::size_t                 _header_buffer_size;
+    // static for config
+    static std::size_t     s_headerBufferSize;
+    static std::size_t     s_bodyBufferSize;
     
-    
-    // records whether a readBody has already been issued
-    bool            _readBodyStarted;
-    
-    // These are used for buffering body data. Body data is ALWAYS stored inro _bodyMBufferPtr
-    // The _bodyFBufferPtr are used to keep track of the possibly multiple
-    // chunk bodies that may be contained in the buffer arriving from a single read
-    MBuffer*        _bodyMBufferPtr;
-    FBuffer*        _bodyFBufferPtr;
-    //read buffer for headers
-    MBuffer*        _readBuffer;
+    // socket and io_service
+    ReadSocketInterfaceSPtr     m_readSock;
+    boost::asio::io_service&    m_io;
 
-    /// used for full message read - body collection
-    std::string                 body;
-    std::ostringstream          bodyStream;
-
+    bool m_reading_full_message;
+    bool m_reading_body;
     
-    ReadBodyDataCallbackType   _bodyCallback;
-    ReadHeadersCallbackType    _responseCb;
-    ReadMessageCallbackType    _messageCb;
+//    std::function<void(Marvin::ErrorType err)> m_read_message_cb;
+    ReadMessageCallback m_read_message_cb;
+
+    std::function<void(Marvin::ErrorType err, BufferChain chunk)> m_read_body_cb;
+    
+    /// @TODO - there is redundancy here needs to be cleaned up
+    int                             m_total_bytes_read;
+    MBufferSPtr                     m_header_buffer_sptr;
+    MBufferSPtr                     m_body_buffer_sptr;
+
+    BufferChain                     m_raw_body_buffer_chain;
+    BufferChain                     m_body_buffer_chain;
+
+    std::size_t                     m_body_buffer_size;
+    std::size_t                     m_header_buffer_size;
+    
+    /// used to collect body data when doing a full message read
+    std::string                 m_body;
 };
 
 #endif

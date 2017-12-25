@@ -1,0 +1,25 @@
+\hypertarget{class_tunnel_handler}{}\section{Tunnel\+Handler Class Reference}
+\label{class_tunnel_handler}\index{Tunnel\+Handler@{Tunnel\+Handler}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_tunnel_handler_a5168e90a221524fb993659159fa458e1}\label{class_tunnel_handler_a5168e90a221524fb993659159fa458e1}} 
+{\bfseries Tunnel\+Handler} (Connection\+Interface\+S\+Ptr down\+Stream\+Connection, T\+C\+P\+Connection\+S\+Ptr upstream\+Connection)
+\item 
+void \hyperlink{class_tunnel_handler_aa734d9765344680b8c48bb0c2b870f72}{start} (std\+::function$<$ void(Marvin\+::\+Error\+Type \&err)$>$ cb)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_tunnel_handler_aa734d9765344680b8c48bb0c2b870f72}\label{class_tunnel_handler_aa734d9765344680b8c48bb0c2b870f72}} 
+\index{Tunnel\+Handler@{Tunnel\+Handler}!start@{start}}
+\index{start@{start}!Tunnel\+Handler@{Tunnel\+Handler}}
+\subsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily void Tunnel\+Handler\+::start (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(Marvin\+::\+Error\+Type \&err)$>$}]{cb }\end{DoxyParamCaption})}
+
+start both halves, downstream first as there is not likely to be traffic that way until the upstream starts we are done when they are both done the error to record is the one that strikes first. we done need to force close anything as the servers ro client should eventually close their end and we will ehar about it 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/connection/tunnel\+\_\+handler.\+hpp\item 
+marvin/connection/tunnel\+\_\+handler.\+cpp\end{DoxyCompactItemize}

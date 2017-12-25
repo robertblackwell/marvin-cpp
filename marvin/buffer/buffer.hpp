@@ -1,7 +1,8 @@
 #ifndef mock_buffer_v2_hpp
 #define mock_buffer_v2_hpp
-
-
+/*!
+* \brief header file for buffer module
+*/
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -15,9 +16,12 @@ class MBuffer;
 typedef std::shared_ptr<MBuffer> MBufferSPtr;
 typedef std::unique_ptr<MBuffer> MBufferUPtr;
 #pragma mark - MBuffer class
+
 /**
- * MBuffer class wraps a contigous buffer an provides manipulation methods.
- * Once constructed the Mbuffer iinstance "own" the raw memory.
+ * \brief MBuffer a contiguous buffer
+ *
+ * MBuffer class wraps a contigous buffer and provides manipulation methods.
+ * Once constructed the Mbuffer instance "own" the raw memory.
  * MBuffer destructor releases the raw memory.
  */
 struct MBuffer {

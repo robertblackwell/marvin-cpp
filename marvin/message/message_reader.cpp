@@ -18,12 +18,12 @@ std::string traceReader(MessageReader& rdr)
 {
     std::stringstream ss;
     ss  << traceMessage(rdr)
-        << " body.len: " << rdr.body.size() ;
+        << " body.len: " << rdr.m_body.size() ;
     return ss.str();
 }
 #pragma mark - class default constants
-std::size_t MessageReader::__headerBufferSize = 10000;
-std::size_t MessageReader::__bodyBufferSize = 20000;
+std::size_t MessageReader::s_headerBufferSize = 10000;
+std::size_t MessageReader::s_bodyBufferSize = 20000;
 
 #pragma mark - static functions to do once only config for the class
 /**
@@ -32,7 +32,7 @@ std::size_t MessageReader::__bodyBufferSize = 20000;
 */
 void MessageReader::configSet_BodyBufferSize(long bsize)
 {
-    __bodyBufferSize = bsize;
+    s_bodyBufferSize = bsize;
 }
 
 /**
@@ -41,16 +41,17 @@ void MessageReader::configSet_BodyBufferSize(long bsize)
 */
 void MessageReader::configSet_HeaderBufferSize(long bsize)
 {
-    __headerBufferSize = bsize;
+    s_headerBufferSize = bsize;
 }
 #pragma mark - constructor
 
-MessageReader::MessageReader( boost::asio::io_service& io, ReadSocketInterfaceSPtr readSock): _io(io), _readSock(readSock)
+MessageReader::MessageReader( boost::asio::io_service& io, ReadSocketInterfaceSPtr readSock)
+: m_io(io), m_readSock(readSock)
 {
     LogTorTrace();
-    _body_buffer_size   = __bodyBufferSize;
-    _header_buffer_size = __headerBufferSize;
-    _header_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_header_buffer_size));
+    m_body_buffer_size   = s_bodyBufferSize;
+    m_header_buffer_size = s_headerBufferSize;
+    m_header_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(m_header_buffer_size));
 }
 
 /**
@@ -70,14 +71,14 @@ MessageReader::~MessageReader()
 */
 BufferChain MessageReader::get_body_chain()
 {
-    return _body_buffer_chain;
+    return m_body_buffer_chain;
 }
 /*!
 * accesses the BufferChain containing the raw (not de-chunked) body data
 */
 BufferChain MessageReader::get_raw_body_chain()
 {
-    return _raw_body_buffer_chain;
+    return m_raw_body_buffer_chain;
 }
 #pragma mark - public interface read methods
 /**
@@ -86,7 +87,7 @@ BufferChain MessageReader::get_raw_body_chain()
 */
 void MessageReader::readMessage(std::function<void(Marvin::ErrorType)> cb)
 {
-    this->read_message(cb);
+    this->p_read_message(cb);
 }
 
 /*!
@@ -95,7 +96,7 @@ void MessageReader::readMessage(std::function<void(Marvin::ErrorType)> cb)
 */
 void MessageReader::readHeaders(std::function<void(Marvin::ErrorType)> cb)
 {
-    read_headers(cb);
+    p_read_headers(cb);
 }
 /*!
 * An interface method that is called to initiate an async read of some body data.
@@ -103,13 +104,13 @@ void MessageReader::readHeaders(std::function<void(Marvin::ErrorType)> cb)
 */
 void MessageReader::readBody(std::function<void(Marvin::ErrorType err, BufferChain chunk)> cb)
 {
-    _read_body_cb = cb;
-    _reading_body = true;
-    if (_body_buffer_chain.size() > 0) {
-        post_body_chunk_cb(Marvin::make_error_ok(), _body_buffer_chain);
-        _body_buffer_chain.clear();
+    m_read_body_cb = cb;
+    m_reading_body = true;
+    if (m_body_buffer_chain.size() > 0) {
+       p_post_body_chunk_cb(Marvin::make_error_ok(), m_body_buffer_chain);
+        m_body_buffer_chain.clear();
     } else {
-        _read_body_chunk();
+        p_read_body_chunk();
     }
 }
 
@@ -121,7 +122,7 @@ void MessageReader::OnMessageComplete(MessageInterface* msg){
 //    std::cout << "message complete" << std::endl;
 }
 /**
-* @note WARNING - http_parser has been modified. The interface to this function
+* @WARNING - http_parser has been modified. The interface to this function
 * and that of headers_complete_cb required by http_parser have been modified (and
 * that required a few lines of change in http_parser) to provide the address in the
 * current buffer of the first byte of body data in that same buffer, together
@@ -136,7 +137,7 @@ void MessageReader::OnHeadersComplete(MessageInterface* msg, void* body_start_pt
     if (remainder > 0) {
         MBufferSPtr tmp = std::shared_ptr<MBuffer>(new MBuffer(remainder));
         tmp->append(body_start_ptr, remainder);
-        _raw_body_buffer_chain.push_back(tmp);
+        m_raw_body_buffer_chain.push_back(tmp);
     }
     LogDebug("");
 }
@@ -154,7 +155,7 @@ void MessageReader::OnBodyData(void* buf, int len)
 {
     MBufferSPtr tmp = std::shared_ptr<MBuffer>(new MBuffer(len));
     tmp->append(buf, len);
-    _body_buffer_chain.push_back(tmp);
+    m_body_buffer_chain.push_back(tmp);
 }
 
 void MessageReader::OnChunkBegin(int chunkLength) { LogDebug("");}
@@ -168,43 +169,43 @@ void MessageReader::OnChunkEnd() { LogDebug(""); }
 * followed by the reading of all body data.
 * Note the setting of _reading_full_message = true
 */
-void MessageReader::read_message(std::function<void(Marvin::ErrorType err)> cb)
+void MessageReader::p_read_message(std::function<void(Marvin::ErrorType err)> cb)
 {
-    _reading_full_message = true;
-    _read_message_cb = cb;
-    _total_bytes_read = 0;
-    this->_read_some_headers();
+    m_reading_full_message = true;
+    m_read_message_cb = cb;
+    m_total_bytes_read = 0;
+    this->p_read_some_headers();
 }
 /**
 * called by interface method readHeaders to start the reading of headers without
 * reading body data.
 * Note the setting of _reading_full_message = false
 */
-void MessageReader::read_headers(std::function<void(Marvin::ErrorType err)> cb)
+void MessageReader::p_read_headers(std::function<void(Marvin::ErrorType err)> cb)
 {
-    _reading_full_message = false;
-    _read_message_cb = cb;
-    _total_bytes_read = 0;
-    this->_read_some_headers();
+    m_reading_full_message = false;
+    m_read_message_cb = cb;
+    m_total_bytes_read = 0;
+    this->p_read_some_headers();
 }
 /**
 * The first step in a two part async loop that reads all headers (until headersComplete)
 * This function sets up and initiates a read.
 */
-void MessageReader::_read_some_headers()
+void MessageReader::p_read_some_headers()
 {
-    LogDebug(" fd: ", _readSock->nativeSocketFD());
-    assert( _header_buffer_sptr != nullptr );
-    auto h = std::bind(&MessageReader::_handle_header_read, this, std::placeholders::_1, std::placeholders::_2);
-    _readSock->asyncRead(*_header_buffer_sptr, h);
+    LogDebug(" fd: ", m_readSock->nativeSocketFD());
+    assert( m_header_buffer_sptr != nullptr );
+    auto h = std::bind(&MessageReader::p_handle_header_read, this, std::placeholders::_1, std::placeholders::_2);
+    m_readSock->asyncRead(*m_header_buffer_sptr, h);
 }
 /**
 * Step two in an async loop to read all headers. This is the async completion
 * handler for reading headers
 */
-void MessageReader::_handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered)
+void MessageReader::p_handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered)
 {
-    LogDebug("entry fd: ", _readSock->nativeSocketFD());
+    LogDebug("entry fd: ", m_readSock->nativeSocketFD());
     LogDebug("er: ", er.message());
     /**
     * Error processing here is a bit tricky
@@ -222,95 +223,95 @@ void MessageReader::_handle_header_read(Marvin::ErrorType er, std::size_t bytes_
     * with EOF and signalling connection closed with EOF
     */
     if(er && (bytes_transfered > 0)) {
-        post_message_cb(er);
+        p_post_message_cb(er);
         LogError("real error condition: ", er.message());
         return;
     }
     // EOF at start of new message - probably client closed connection
-    if(er && (bytes_transfered == 0) && (_total_bytes_read == 0)) {
-        post_message_cb(er);
+    if(er && (bytes_transfered == 0) && (m_total_bytes_read == 0)) {
+        p_post_message_cb(er);
         LogError("probably client closed connection: ", er.message());
         return;
     }
-    if(er && (bytes_transfered == 0) && (_total_bytes_read > 0)) {
+    if(er && (bytes_transfered == 0) && (m_total_bytes_read > 0)) {
         LogError("ending message with EOF: ", er.message());
     }
-    _header_buffer_sptr->setSize(bytes_transfered);
+    m_header_buffer_sptr->setSize(bytes_transfered);
 //    std::cout << *_header_buffer_sptr << std::endl;
-    MBuffer& mb = *_header_buffer_sptr;
+    MBuffer& mb = *m_header_buffer_sptr;
     int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
-    if( ! parser_ok(nparsed, mb)) {
-        post_message_cb(Marvin::make_error_parse());
+    if( ! p_parser_ok(nparsed, mb)) {
+        p_post_message_cb(Marvin::make_error_parse());
         return;
     }
     
 
     if( isFinishedMessage() ) {
-        post_message_cb(Marvin::make_error_ok());
+        p_post_message_cb(Marvin::make_error_ok());
     } else if( isFinishedHeaders()& (! isFinishedMessage())) {
-        if( _reading_full_message ) {
-            _read_all_body();
+        if( m_reading_full_message ) {
+            p_read_all_body();
         } else {
-            post_message_cb(Marvin::make_error_ok());
+            p_post_message_cb(Marvin::make_error_ok());
         }
     } else if( ! isFinishedHeaders() ) {
-        _read_some_headers();
+        p_read_some_headers();
     }
 }
 #pragma mark - methods for reading all body data as part of reading an entire message
 /**
 * Kicks off the process of reading all body data.
 */
-void MessageReader::_read_all_body()
+void MessageReader::p_read_all_body()
 {
 //    _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
-    _make_new_body_buffer();
-    _read_some_body();
+    p_make_new_body_buffer();
+    p_read_some_body();
 }
 /**
 * First part of an async loop that reads all body data. This method
 * sets up and initiates an async read
 */
-void MessageReader::_read_some_body()
+void MessageReader::p_read_some_body()
 {
-    LogDebug(" fd: ", _readSock->nativeSocketFD());
-    auto h = std::bind(&MessageReader::_handle_body_read, this, std::placeholders::_1, std::placeholders::_2);
-    _readSock->asyncRead(*_body_buffer_sptr, h);
+    LogDebug(" fd: ", m_readSock->nativeSocketFD());
+    auto h = std::bind(&MessageReader::p_handle_body_read, this, std::placeholders::_1, std::placeholders::_2);
+    m_readSock->asyncRead(*m_body_buffer_sptr, h);
 }
 /**
 * Step two of the async loop that reads all body data. This is the async
 * completion handler.
 */
-void MessageReader::_handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered)
+void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered)
 {
-    LogDebug("entry fd: ", _readSock->nativeSocketFD());
+    LogDebug("entry fd: ", m_readSock->nativeSocketFD());
     /**
     * an io error with bytes_transfered == 0 is probably EOF - let the parser handle it
     * otherwise (err && (bytes_transfered > 0)) return with error
     */
     if(er && (bytes_transfered > 0)) {
-        post_message_cb(er);
+        p_post_message_cb(er);
         LogError("", er.message());
     }
-    _body_buffer_sptr->setSize(bytes_transfered);
+    m_body_buffer_sptr->setSize(bytes_transfered);
     MBufferSPtr tmp = std::shared_ptr<MBuffer>(new MBuffer(bytes_transfered));
-    tmp->append(_body_buffer_sptr->data(), _body_buffer_sptr->size());
+    tmp->append(m_body_buffer_sptr->data(), m_body_buffer_sptr->size());
 //    std::cout << std::endl << __FUNCTION__ << ": " << tmp->toString() << std::endl;
-    _raw_body_buffer_chain.push_back(tmp);
+    m_raw_body_buffer_chain.push_back(tmp);
     
-    MBuffer& mb = *_body_buffer_sptr;
+    MBuffer& mb = *m_body_buffer_sptr;
     int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
-    if( ! parser_ok(nparsed, mb)) {
-        post_message_cb(Marvin::make_error_parse());
+    if( ! p_parser_ok(nparsed, mb)) {
+        p_post_message_cb(Marvin::make_error_parse());
         return;
     }
     
     if( isFinishedMessage()) {
-        post_message_cb(Marvin::make_error_ok());
+        p_post_message_cb(Marvin::make_error_ok());
     } else {
-        _make_new_body_buffer();
+        p_make_new_body_buffer();
 //        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
-        _read_some_body();
+        p_read_some_body();
     }
 }
 
@@ -320,49 +321,49 @@ void MessageReader::_handle_body_read(Marvin::ErrorType er, std::size_t bytes_tr
 * Initiates the process of reading ONE chunk of body data. Sets up
 * a read and completion handler. No looping for this
 */
-void MessageReader::_read_body_chunk()
+void MessageReader::p_read_body_chunk()
 {
-    LogDebug(" fd: ", _readSock->nativeSocketFD());
-    auto h = std::bind(&MessageReader::_handle_body_chunk, this, std::placeholders::_1, std::placeholders::_2);
-    if(_body_buffer_sptr == nullptr) {
-        _make_new_body_buffer();
+    LogDebug(" fd: ", m_readSock->nativeSocketFD());
+    auto h = std::bind(&MessageReader::p_handle_body_chunk, this, std::placeholders::_1, std::placeholders::_2);
+    if(m_body_buffer_sptr == nullptr) {
+        p_make_new_body_buffer();
 //        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     }
-    _readSock->asyncRead(*_body_buffer_sptr, h);
+    m_readSock->asyncRead(*m_body_buffer_sptr, h);
 }
 /**
 * Completion handler for reading a single chunk of body data.
 */
-void MessageReader::_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_transfered)
+void MessageReader::p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_transfered)
 {
-    LogDebug("entry fd: ", _readSock->nativeSocketFD());
+    LogDebug("entry fd: ", m_readSock->nativeSocketFD());
     /**
     * an io error with bytes_transfered == 0 is probably EOF - let the parser handle it
     * otherwise (err && (bytes_transfered > 0)) return with error
     */
     if(er && (bytes_transfered > 0)) {
-        post_body_chunk_cb(er, _body_buffer_chain);
+        p_post_body_chunk_cb(er, m_body_buffer_chain);
         LogError("", er.message());
     }
     
-    _body_buffer_sptr->setSize(bytes_transfered);
+    m_body_buffer_sptr->setSize(bytes_transfered);
     MBufferSPtr tmp = std::shared_ptr<MBuffer>(new MBuffer(bytes_transfered));
-    _raw_body_buffer_chain.push_back(tmp);
+    m_raw_body_buffer_chain.push_back(tmp);
     
-    MBuffer& mb = *_body_buffer_sptr;
+    MBuffer& mb = *m_body_buffer_sptr;
     int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
-    if( ! parser_ok(nparsed, mb)) {
-        post_body_chunk_cb(Marvin::make_error_parse(), _body_buffer_chain);
+    if( ! p_parser_ok(nparsed, mb)) {
+        p_post_body_chunk_cb(Marvin::make_error_parse(), m_body_buffer_chain);
         return;
     }
     
 
     if( isFinishedMessage()) {
-        post_body_chunk_cb(Marvin::make_error_eom(), _body_buffer_chain);
-        _body_buffer_chain.clear();
+        p_post_body_chunk_cb(Marvin::make_error_eom(), m_body_buffer_chain);
+        m_body_buffer_chain.clear();
     } else {
-        post_body_chunk_cb(Marvin::make_error_ok(), _body_buffer_chain);
-        _body_buffer_chain.clear();
+        p_post_body_chunk_cb(Marvin::make_error_ok(), m_body_buffer_chain);
+        m_body_buffer_chain.clear();
 //        _make_new_body_buffer();
 //        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     }
@@ -371,9 +372,9 @@ void MessageReader::_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_t
 /**
 * Creates a shared pointer to a single new buffer for reading body data.
 */
-void MessageReader::_make_new_body_buffer()
+void MessageReader::p_make_new_body_buffer()
 {
-    _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
+    m_body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(m_body_buffer_size));
 }
 
 #pragma mark - post method for scheduling a callback to run later on the runloop
@@ -383,10 +384,10 @@ void MessageReader::_make_new_body_buffer()
 * _read_message_cb is a property that stores the address of the
 * callback provided to readMessage() and readHeaders() interface methods.
 */
-void MessageReader::post_message_cb(Marvin::ErrorType er)
+void MessageReader::p_post_message_cb(Marvin::ErrorType er)
 {
-    auto pf = std::bind(_read_message_cb, er);
-    _io.post(pf);
+    auto pf = std::bind(m_read_message_cb, er);
+    m_io.post(pf);
 }
 /**
 * Schedules the execution of the _read_message_cb in the future on this instances
@@ -394,13 +395,13 @@ void MessageReader::post_message_cb(Marvin::ErrorType er)
 * _read_body_cb is a property that stores the address of the
 * callback provided to readBody();
 */
-void MessageReader::post_body_chunk_cb(Marvin::ErrorType er, BufferChain chain)
+void MessageReader::p_post_body_chunk_cb(Marvin::ErrorType er, BufferChain chain)
 {
-    auto pf = std::bind(_read_body_cb, er, chain);
-    _io.post(pf);
+    auto pf = std::bind(m_read_body_cb, er, chain);
+    m_io.post(pf);
 }
 #pragma mark - error related functions
-bool MessageReader::parser_ok(int nparsed, MBuffer& mb)
+bool MessageReader::p_parser_ok(int nparsed, MBuffer& mb)
 {
     if( nparsed != (int)mb.size()) {
         LogWarn("some next message in buffer");

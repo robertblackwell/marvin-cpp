@@ -232,7 +232,7 @@ void HTTPServer::terminate()
 }
 void HTTPServer::on_heartbeat(const boost::system::error_code& ec)
 {
-    std::cout << __FUNCTION__ << std::endl;
+//    std::cout << __FUNCTION__ << std::endl;
     if(_terminate_requested) {
         _connectionManager.stop_all();
         _acceptor.cancel(); // let the accept handler close the server down

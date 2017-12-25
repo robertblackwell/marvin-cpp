@@ -1,0 +1,95 @@
+\hypertarget{class_forwarding_handler}{}\section{Forwarding\+Handler$<$ T\+Collector $>$ Class Template Reference}
+\label{class_forwarding_handler}\index{Forwarding\+Handler$<$ T\+Collector $>$@{Forwarding\+Handler$<$ T\+Collector $>$}}
+
+
+This class implements the proxy forwarding process for http/https protocols. Its a revised version to make way for future requirements of \char`\"{}replaying\char`\"{} an exchange The V2 version of this class makes the composition of functions during the forwarding process more evident.  Reads a message from the downstream client, converts that to a non-\/proxy request to the targets server, sends that request, collects the response and finally sends that response to the originating client. Along the way it captures (via template parameter T\+Capture) a summary of the original request and upstream server response and distributes that according to the rules of the particular T\+Capture object.  
+
+
+
+
+{\ttfamily \#include $<$forwarding\+\_\+handler.\+hpp$>$}
+
+Inheritance diagram for Forwarding\+Handler$<$ T\+Collector $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_forwarding_handler}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_forwarding_handler_a86bb59fe85fa0bc42b26715b59e34583}\label{class_forwarding_handler_a86bb59fe85fa0bc42b26715b59e34583}} 
+{\bfseries Forwarding\+Handler} (boost\+::asio\+::io\+\_\+service \&io)
+\item 
+void \hyperlink{class_forwarding_handler_ac4f8ecec2ca1267b8fdf806c5d4cc155}{handle\+Connect} (Message\+Reader\+S\+Ptr req, Connection\+Interface\+S\+Ptr conn\+Ptr, Handler\+Done\+Callback\+Type done)
+\item 
+void \hyperlink{class_forwarding_handler_ab5007f621c7f0fe5a9c92b71ff6c15ef}{handle\+Request} (Message\+Reader\+S\+Ptr req, Message\+Writer\+S\+Ptr rep, Handler\+Done\+Callback\+Type done)
+\item 
+\mbox{\Hypertarget{class_forwarding_handler_a86bb59fe85fa0bc42b26715b59e34583}\label{class_forwarding_handler_a86bb59fe85fa0bc42b26715b59e34583}} 
+{\bfseries Forwarding\+Handler} (boost\+::asio\+::io\+\_\+service \&io)
+\item 
+\mbox{\Hypertarget{class_forwarding_handler_ac4f8ecec2ca1267b8fdf806c5d4cc155}\label{class_forwarding_handler_ac4f8ecec2ca1267b8fdf806c5d4cc155}} 
+void {\bfseries handle\+Connect} (Message\+Reader\+S\+Ptr req, Connection\+Interface\+S\+Ptr conn\+Ptr, Handler\+Done\+Callback\+Type done)
+\item 
+\mbox{\Hypertarget{class_forwarding_handler_ab5007f621c7f0fe5a9c92b71ff6c15ef}\label{class_forwarding_handler_ab5007f621c7f0fe5a9c92b71ff6c15ef}} 
+void {\bfseries handle\+Request} (Message\+Reader\+S\+Ptr req, Message\+Writer\+S\+Ptr rep, Handler\+Done\+Callback\+Type done)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_forwarding_handler_adddd57d657fa1ffee84de10bf265a6b7}\label{class_forwarding_handler_adddd57d657fa1ffee84de10bf265a6b7}} 
+static void {\bfseries config\+Set\+\_\+\+Https\+Hosts} (std\+::vector$<$ std\+::regex $>$ re)
+\item 
+\mbox{\Hypertarget{class_forwarding_handler_a6a10a3c09de0e6b78471fa6af669e2e5}\label{class_forwarding_handler_a6a10a3c09de0e6b78471fa6af669e2e5}} 
+static void {\bfseries config\+Set\+\_\+\+Https\+Ports} (std\+::vector$<$ int $>$ ports)
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T\+Collector$>$\newline
+class Forwarding\+Handler$<$ T\+Collector $>$}
+
+This class implements the proxy forwarding process for http/https protocols. Its a revised version to make way for future requirements of \char`\"{}replaying\char`\"{} an exchange The V2 version of this class makes the composition of functions during the forwarding process more evident.  Reads a message from the downstream client, converts that to a non-\/proxy request to the targets server, sends that request, collects the response and finally sends that response to the originating client. Along the way it captures (via template parameter T\+Capture) a summary of the original request and upstream server response and distributes that according to the rules of the particular T\+Capture object. 
+
+This class implements the proxy forwarding process for http/https protocols.  Reads a message from the downstream client, converts that to a non-\/proxy request to the targets server, sends that request, collects the response and finally sends that response to the originating client. Along the way it captures (via template parameter T\+Capture) a summary of the original request and upstream server response and distributes that according to the rules of the particular T\+Capture object. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_forwarding_handler_ac4f8ecec2ca1267b8fdf806c5d4cc155}\label{class_forwarding_handler_ac4f8ecec2ca1267b8fdf806c5d4cc155}} 
+\index{Forwarding\+Handler@{Forwarding\+Handler}!handle\+Connect@{handle\+Connect}}
+\index{handle\+Connect@{handle\+Connect}!Forwarding\+Handler@{Forwarding\+Handler}}
+\subsubsection{\texorpdfstring{handle\+Connect()}{handleConnect()}}
+{\footnotesize\ttfamily template$<$class T\+Collector $>$ \\
+void \hyperlink{class_forwarding_handler}{Forwarding\+Handler}$<$ T\+Collector $>$\+::handle\+Connect (\begin{DoxyParamCaption}\item[{Message\+Reader\+S\+Ptr}]{req,  }\item[{Connection\+Interface\+S\+Ptr}]{conn\+Ptr,  }\item[{Handler\+Done\+Callback\+Type}]{done }\end{DoxyParamCaption})}
+
+Handles a C\+O\+N\+N\+E\+CT request.
+
+If the request is a H\+T\+T\+PS tunnel request then test to see if this is a host of interest and in that case try for a mitm/https link (more on this elsewhere).
+
+Other wise try to establish a tunnel. First try to establish a connection with the intended destination host, if successful reply to client with a 200 else reply with a
+\begin{DoxyEnumerate}
+\item If target host is connected that hand off to a tunnel class.
+\end{DoxyEnumerate}
+
+N\+O\+TE !!! If it looks like a tunnel will be established M\+U\+ST call done(true)
+
+B\+E\+F\+O\+RE this method returns so that the server does not close the client connection.
+
+done(true) signals to the server that this method is \char`\"{}hijacking\char`\"{} the connection \mbox{\Hypertarget{class_forwarding_handler_ab5007f621c7f0fe5a9c92b71ff6c15ef}\label{class_forwarding_handler_ab5007f621c7f0fe5a9c92b71ff6c15ef}} 
+\index{Forwarding\+Handler@{Forwarding\+Handler}!handle\+Request@{handle\+Request}}
+\index{handle\+Request@{handle\+Request}!Forwarding\+Handler@{Forwarding\+Handler}}
+\subsubsection{\texorpdfstring{handle\+Request()}{handleRequest()}}
+{\footnotesize\ttfamily template$<$class T\+Collector $>$ \\
+void \hyperlink{class_forwarding_handler}{Forwarding\+Handler}$<$ T\+Collector $>$\+::handle\+Request (\begin{DoxyParamCaption}\item[{Message\+Reader\+S\+Ptr}]{req,  }\item[{Message\+Writer\+S\+Ptr}]{resp,  }\item[{Handler\+Done\+Callback\+Type}]{done }\end{DoxyParamCaption})}
+
+Handles a normal (not C\+O\+N\+N\+E\+CT) http request contained in req of type Message\+Reader\+S\+Ptr (a shared\+\_\+ptr to a message\+Reader). Sends the ulimate response back to the origninal client via a \hyperlink{class_message_writer}{Message\+Writer} pointed to by the shared\+\_\+ptr resp After all is over call done(true) to signal that the server shell can destroy the connection and the reader and writer 
+\begin{DoxyParams}{Parameters}
+{\em req} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/forwarding/forwarding\+\_\+handler.\+hpp\item 
+marvin/forwarding/forwarding\+\_\+handler.\+ipp\end{DoxyCompactItemize}

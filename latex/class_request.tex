@@ -1,0 +1,153 @@
+\hypertarget{class_request}{}\section{Request Class Reference}
+\label{class_request}\index{Request@{Request}}
+Inheritance diagram for Request\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_request}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_request_a94f71ef02d2d80f134e3a83064b66589}\label{class_request_a94f71ef02d2d80f134e3a83064b66589}} 
+{\bfseries Request} (boost\+::asio\+::io\+\_\+service \&io)
+\item 
+\mbox{\Hypertarget{class_request_aaea4c25d9eef0985a1e5dd57a5b29633}\label{class_request_aaea4c25d9eef0985a1e5dd57a5b29633}} 
+{\bfseries Request} (const \hyperlink{class_request}{Request} \&other)=delete
+\item 
+\mbox{\Hypertarget{class_request_ad7fb0a96230a4f6f778d636a1a0b0335}\label{class_request_ad7fb0a96230a4f6f778d636a1a0b0335}} 
+\hyperlink{class_request}{Request} \& {\bfseries operator=} (const \hyperlink{class_request}{Request} \&)=delete
+\item 
+\mbox{\Hypertarget{class_request_a181c57295b0a5e2f28b1845f9d605260}\label{class_request_a181c57295b0a5e2f28b1845f9d605260}} 
+void {\bfseries go} (std\+::function$<$ void(Marvin\+::\+Error\+Type \&err)$>$ cb)
+\item 
+\hyperlink{class_message_reader}{Message\+Reader} \& \hyperlink{class_request_ac9e91894d06fac3bcb657ba64693da22}{get\+Response} ()
+\item 
+void \hyperlink{class_request_a0a0cc1ae66771dd92c1ad78e9e6df59a}{set\+Url} (std\+::string url)
+\item 
+\mbox{\Hypertarget{class_request_a34a6c9ee0d9789a98950e3146c42db14}\label{class_request_a34a6c9ee0d9789a98950e3146c42db14}} 
+void {\bfseries end} ()
+\item 
+\mbox{\Hypertarget{class_request_a94f71ef02d2d80f134e3a83064b66589}\label{class_request_a94f71ef02d2d80f134e3a83064b66589}} 
+{\bfseries Request} (boost\+::asio\+::io\+\_\+service \&io)
+\item 
+\mbox{\Hypertarget{class_request_aaea4c25d9eef0985a1e5dd57a5b29633}\label{class_request_aaea4c25d9eef0985a1e5dd57a5b29633}} 
+{\bfseries Request} (const \hyperlink{class_request}{Request} \&other)=delete
+\item 
+\mbox{\Hypertarget{class_request_ad7fb0a96230a4f6f778d636a1a0b0335}\label{class_request_ad7fb0a96230a4f6f778d636a1a0b0335}} 
+\hyperlink{class_request}{Request} \& {\bfseries operator=} (const \hyperlink{class_request}{Request} \&)=delete
+\item 
+\mbox{\Hypertarget{class_request_a181c57295b0a5e2f28b1845f9d605260}\label{class_request_a181c57295b0a5e2f28b1845f9d605260}} 
+void {\bfseries go} (std\+::function$<$ void(Marvin\+::\+Error\+Type \&err)$>$ cb)
+\item 
+\mbox{\Hypertarget{class_request_a367164dedd048b63c542ad028bade31b}\label{class_request_a367164dedd048b63c542ad028bade31b}} 
+\hyperlink{class_message_reader}{Message\+Reader} \& {\bfseries get\+Response} ()
+\item 
+\mbox{\Hypertarget{class_request_a0a0cc1ae66771dd92c1ad78e9e6df59a}\label{class_request_a0a0cc1ae66771dd92c1ad78e9e6df59a}} 
+void {\bfseries set\+Url} (std\+::string url)
+\item 
+\mbox{\Hypertarget{class_request_a34a6c9ee0d9789a98950e3146c42db14}\label{class_request_a34a6c9ee0d9789a98950e3146c42db14}} 
+void {\bfseries end} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_request_ad6d505e24ef5b1038d5820d3541df091}\label{class_request_ad6d505e24ef5b1038d5820d3541df091}} 
+void {\bfseries async\+Get\+Write\+Socket} (Connect\+Callback\+Type connect\+Cb)
+\item 
+\mbox{\Hypertarget{class_request_a79a3f10ae291bd48c7b7664d7a7c5419}\label{class_request_a79a3f10ae291bd48c7b7664d7a7c5419}} 
+void {\bfseries have\+Connection} (Marvin\+::\+Error\+Type \&err, \hyperlink{class_connection_interface}{Connection\+Interface} $\ast$conn)
+\item 
+\mbox{\Hypertarget{class_request_a03ba174751dad7a36ce9706f9a067aa0}\label{class_request_a03ba174751dad7a36ce9706f9a067aa0}} 
+void {\bfseries full\+Write\+Handler} (Marvin\+::\+Error\+Type \&err)
+\item 
+\mbox{\Hypertarget{class_request_aff1b5c9d9b7760186179ec5cb911d2a4}\label{class_request_aff1b5c9d9b7760186179ec5cb911d2a4}} 
+void {\bfseries read\+Complete} (Marvin\+::\+Error\+Type \&err)
+\item 
+\mbox{\Hypertarget{class_request_abebb155c39c86a63113f1998a7cb28d6}\label{class_request_abebb155c39c86a63113f1998a7cb28d6}} 
+void {\bfseries default\+Headers} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_request_a281495472bc533384d273ad2e9c747b7}\label{class_request_a281495472bc533384d273ad2e9c747b7}} 
+boost\+::asio\+::io\+\_\+service \& {\bfseries \+\_\+io}
+\item 
+\mbox{\Hypertarget{class_request_a384fc425224362988597830b21d9a48e}\label{class_request_a384fc425224362988597830b21d9a48e}} 
+Message\+Reader\+S\+Ptr {\bfseries \+\_\+rdr}
+\item 
+\mbox{\Hypertarget{class_request_a1fc82297ae22708d0c405c422c66807f}\label{class_request_a1fc82297ae22708d0c405c422c66807f}} 
+Connection\+Interface\+S\+Ptr {\bfseries \+\_\+connection}
+\item 
+\mbox{\Hypertarget{class_request_aa9852adbf9fba98ba7bdecb6e8d5a30e}\label{class_request_aa9852adbf9fba98ba7bdecb6e8d5a30e}} 
+Read\+Socket\+Interface\+S\+Ptr {\bfseries \+\_\+read\+Sock}
+\item 
+\mbox{\Hypertarget{class_request_a1a605eca637460576d0f56d3c8c7b936}\label{class_request_a1a605eca637460576d0f56d3c8c7b936}} 
+std\+::function$<$ void(Marvin\+::\+Error\+Type \&err)$>$ {\bfseries \+\_\+go\+Cb}
+\item 
+\mbox{\Hypertarget{class_request_ae6cf259304098272c26655851aa482cd}\label{class_request_ae6cf259304098272c26655851aa482cd}} 
+bool {\bfseries \+\_\+one\+Trip\+Only}
+\item 
+\mbox{\Hypertarget{class_request_a6e689919d384805d52ebfd2f8fec71db}\label{class_request_a6e689919d384805d52ebfd2f8fec71db}} 
+std\+::string {\bfseries \+\_\+service}
+\item 
+\mbox{\Hypertarget{class_request_acaef6cea153579e81bad5bd5da7922f8}\label{class_request_acaef6cea153579e81bad5bd5da7922f8}} 
+std\+::string {\bfseries \+\_\+server}
+\item 
+\mbox{\Hypertarget{class_request_a967d7538ddd207dfb720881f2258566a}\label{class_request_a967d7538ddd207dfb720881f2258566a}} 
+std\+::string {\bfseries \+\_\+scheme}
+\item 
+\mbox{\Hypertarget{class_request_ad2eaec63a9e7259713435c6c07f2f2a1}\label{class_request_ad2eaec63a9e7259713435c6c07f2f2a1}} 
+std\+::string {\bfseries \+\_\+host}
+\item 
+\mbox{\Hypertarget{class_request_a921b319801626a6de3efcd7105449c2b}\label{class_request_a921b319801626a6de3efcd7105449c2b}} 
+std\+::string {\bfseries \+\_\+port}
+\item 
+\mbox{\Hypertarget{class_request_a0cbbe7e1f72e983934815780bffd679a}\label{class_request_a0cbbe7e1f72e983934815780bffd679a}} 
+std\+::string {\bfseries \+\_\+path}
+\item 
+\mbox{\Hypertarget{class_request_ac087de88773edb3045709a5a5a480fa0}\label{class_request_ac087de88773edb3045709a5a5a480fa0}} 
+Url\+::\+Query {\bfseries \+\_\+query}
+\item 
+\mbox{\Hypertarget{class_request_ad5911146df93fe3b6ea57b0ca5280880}\label{class_request_ad5911146df93fe3b6ea57b0ca5280880}} 
+std\+::string {\bfseries \+\_\+query\+Str}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_request_aafeb39491c604dd3ba954b382d31f56f}\label{class_request_aafeb39491c604dd3ba954b382d31f56f}} 
+std\+::string {\bfseries trace\+Request} (\hyperlink{class_request}{Request} \&request)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_request_ac9e91894d06fac3bcb657ba64693da22}\label{class_request_ac9e91894d06fac3bcb657ba64693da22}} 
+\index{Request@{Request}!get\+Response@{get\+Response}}
+\index{get\+Response@{get\+Response}!Request@{Request}}
+\subsubsection{\texorpdfstring{get\+Response()}{getResponse()}}
+{\footnotesize\ttfamily \hyperlink{class_message_reader}{Message\+Reader} \& Request\+::get\+Response (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+ \subsubsection*{getter for the response message inside this request }\mbox{\Hypertarget{class_request_a0a0cc1ae66771dd92c1ad78e9e6df59a}\label{class_request_a0a0cc1ae66771dd92c1ad78e9e6df59a}} 
+\index{Request@{Request}!set\+Url@{set\+Url}}
+\index{set\+Url@{set\+Url}!Request@{Request}}
+\subsubsection{\texorpdfstring{set\+Url()}{setUrl()}}
+{\footnotesize\ttfamily void Request\+::set\+Url (\begin{DoxyParamCaption}\item[{std\+::string}]{url }\end{DoxyParamCaption})}
+
+
+
+ sets the url for the request, parses the url into components and saves them in particular deduces
+\begin{DoxyItemize}
+\item scheme
+\item host -\/ both with and without port appended
+\item port
+\item path/uri \subsubsection*{-\/ query string }
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/client/request.\+hpp\item 
+marvin/src/request copy.\+hpp\item 
+marvin/client/request.\+cpp\item 
+marvin/src/request copy.\+cpp\end{DoxyCompactItemize}

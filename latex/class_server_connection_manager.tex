@@ -1,0 +1,88 @@
+\hypertarget{class_server_connection_manager}{}\section{Server\+Connection\+Manager Class Reference}
+\label{class_server_connection_manager}\index{Server\+Connection\+Manager@{Server\+Connection\+Manager}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_server_connection_manager_a28eaf417682341e6f8c733b30c59bbd8}\label{class_server_connection_manager_a28eaf417682341e6f8c733b30c59bbd8}} 
+typedef std\+::function$<$ void()$>$ {\bfseries Allow\+Another\+Callback}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_server_connection_manager_a8f20818d0fd29612ce09f694aaad0271}\label{class_server_connection_manager_a8f20818d0fd29612ce09f694aaad0271}} 
+{\bfseries Server\+Connection\+Manager} (const \hyperlink{class_server_connection_manager}{Server\+Connection\+Manager} \&)=delete
+\item 
+\mbox{\Hypertarget{class_server_connection_manager_a3193017398278086cb7d79820987c5e2}\label{class_server_connection_manager_a3193017398278086cb7d79820987c5e2}} 
+\hyperlink{class_server_connection_manager}{Server\+Connection\+Manager} \& {\bfseries operator=} (const \hyperlink{class_server_connection_manager}{Server\+Connection\+Manager} \&)=delete
+\item 
+\hyperlink{class_server_connection_manager_a0b2c91c8c5f07706cbec0bb08de8039d}{Server\+Connection\+Manager} (boost\+::asio\+::io\+\_\+service \&io, boost\+::asio\+::strand \&server\+Strand, int max\+\_\+connections)
+\item 
+void \hyperlink{class_server_connection_manager_a9661756cbecdbec901860ffec5cf6e47}{allow\+Another\+Connection} (Allow\+Another\+Callback cb)
+\item 
+void \hyperlink{class_server_connection_manager_aa2c03c50b5154af1424ed92a35cd6389}{register\+Connection\+Handler} (\hyperlink{class_connection_handler}{Connection\+Handler} $\ast$conn\+Handler)
+\item 
+void \hyperlink{class_server_connection_manager_a61073d71f21045b5202fa035e9da282f}{deregister} (\hyperlink{class_connection_handler}{Connection\+Handler} $\ast$ch)
+\item 
+void \hyperlink{class_server_connection_manager_a83a3b22ce780b4762ad06e7f2ffbb611}{stop\+\_\+all} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_server_connection_manager_a548c5d053584a2a0bf18a1422a802b95}\label{class_server_connection_manager_a548c5d053584a2a0bf18a1422a802b95}} 
+static \hyperlink{class_server_connection_manager}{Server\+Connection\+Manager} $\ast$ {\bfseries get\+\_\+instance} ()
+\item 
+\mbox{\Hypertarget{class_server_connection_manager_a2aabc84134814ff480b8214bda06cb26}\label{class_server_connection_manager_a2aabc84134814ff480b8214bda06cb26}} 
+static bool {\bfseries verify} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_server_connection_manager_a79204557e4949379c3197dd476d74ccb}\label{class_server_connection_manager_a79204557e4949379c3197dd476d74ccb}} 
+static \hyperlink{class_server_connection_manager}{Server\+Connection\+Manager} $\ast$ {\bfseries instance}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_server_connection_manager_a0b2c91c8c5f07706cbec0bb08de8039d}\label{class_server_connection_manager_a0b2c91c8c5f07706cbec0bb08de8039d}} 
+\index{Server\+Connection\+Manager@{Server\+Connection\+Manager}!Server\+Connection\+Manager@{Server\+Connection\+Manager}}
+\index{Server\+Connection\+Manager@{Server\+Connection\+Manager}!Server\+Connection\+Manager@{Server\+Connection\+Manager}}
+\subsubsection{\texorpdfstring{Server\+Connection\+Manager()}{ServerConnectionManager()}}
+{\footnotesize\ttfamily Server\+Connection\+Manager\+::\+Server\+Connection\+Manager (\begin{DoxyParamCaption}\item[{boost\+::asio\+::io\+\_\+service \&}]{io,  }\item[{boost\+::asio\+::strand \&}]{server\+Strand,  }\item[{int}]{max\+\_\+connections }\end{DoxyParamCaption})}
+
+Construct a connection manager. The connection handler must operate in a single threaded manner. That is achieved by requiring it to always execute on the server strand. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_server_connection_manager_a9661756cbecdbec901860ffec5cf6e47}\label{class_server_connection_manager_a9661756cbecdbec901860ffec5cf6e47}} 
+\index{Server\+Connection\+Manager@{Server\+Connection\+Manager}!allow\+Another\+Connection@{allow\+Another\+Connection}}
+\index{allow\+Another\+Connection@{allow\+Another\+Connection}!Server\+Connection\+Manager@{Server\+Connection\+Manager}}
+\subsubsection{\texorpdfstring{allow\+Another\+Connection()}{allowAnotherConnection()}}
+{\footnotesize\ttfamily void Server\+Connection\+Manager\+::allow\+Another\+Connection (\begin{DoxyParamCaption}\item[{Server\+Connection\+Manager\+::\+Allow\+Another\+Callback}]{cb }\end{DoxyParamCaption})}
+
+called by server to verify that another accept is permitted within the context of the Connection\+Manager\textquotesingle{}s rescource allocation scheme. If not the Connection\+Manager will wait till there is enough resource and invoke the cb to signal the server to continue. Did it this was so that the Connection\+Manager does not need to know how to create \hyperlink{class_connection_handler}{Connection\+Handler}, \hyperlink{class_request_handler}{Request\+Handler} \mbox{\Hypertarget{class_server_connection_manager_a61073d71f21045b5202fa035e9da282f}\label{class_server_connection_manager_a61073d71f21045b5202fa035e9da282f}} 
+\index{Server\+Connection\+Manager@{Server\+Connection\+Manager}!deregister@{deregister}}
+\index{deregister@{deregister}!Server\+Connection\+Manager@{Server\+Connection\+Manager}}
+\subsubsection{\texorpdfstring{deregister()}{deregister()}}
+{\footnotesize\ttfamily void Server\+Connection\+Manager\+::deregister (\begin{DoxyParamCaption}\item[{\hyperlink{class_connection_handler}{Connection\+Handler} $\ast$}]{ch }\end{DoxyParamCaption})}
+
+deregister the specified connection, removes from the table and decrements the count of active connection handlers. If the there is a \char`\"{}allow another callback\char`\"{} set invoke this callback if the number of active connection handlers is below the max allowed
+
+This is called from a \hyperlink{class_connection_handler}{Connection\+Handler} running on an arbitary io\+\_\+service. need to post the real action on the server strand. \mbox{\Hypertarget{class_server_connection_manager_aa2c03c50b5154af1424ed92a35cd6389}\label{class_server_connection_manager_aa2c03c50b5154af1424ed92a35cd6389}} 
+\index{Server\+Connection\+Manager@{Server\+Connection\+Manager}!register\+Connection\+Handler@{register\+Connection\+Handler}}
+\index{register\+Connection\+Handler@{register\+Connection\+Handler}!Server\+Connection\+Manager@{Server\+Connection\+Manager}}
+\subsubsection{\texorpdfstring{register\+Connection\+Handler()}{registerConnectionHandler()}}
+{\footnotesize\ttfamily void Server\+Connection\+Manager\+::register\+Connection\+Handler (\begin{DoxyParamCaption}\item[{\hyperlink{class_connection_handler}{Connection\+Handler} $\ast$}]{conn\+Handler }\end{DoxyParamCaption})}
+
+Register a connection handler in a table so that it stays around to process request/response and increments the count of connection handler active
+
+This method is A\+L\+W\+A\+YS called from the server strand so do not have to post it on that strand. \mbox{\Hypertarget{class_server_connection_manager_a83a3b22ce780b4762ad06e7f2ffbb611}\label{class_server_connection_manager_a83a3b22ce780b4762ad06e7f2ffbb611}} 
+\index{Server\+Connection\+Manager@{Server\+Connection\+Manager}!stop\+\_\+all@{stop\+\_\+all}}
+\index{stop\+\_\+all@{stop\+\_\+all}!Server\+Connection\+Manager@{Server\+Connection\+Manager}}
+\subsubsection{\texorpdfstring{stop\+\_\+all()}{stop\_all()}}
+{\footnotesize\ttfamily void Server\+Connection\+Manager\+::stop\+\_\+all (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Stop all connections. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/server/server\+\_\+connection\+\_\+manager.\+hpp\item 
+marvin/server/server\+\_\+connection\+\_\+manager.\+cpp\end{DoxyCompactItemize}

@@ -23,7 +23,7 @@ int main( int argc, char* argv[] )
     RBLogging::setEnabled(false);
 #define EX_RUNNER
 #ifdef EX_RUNNER
-    ServerRunner<RequestHandler> s_runner;
+    ServerRunner<TscRequestHandler> s_runner;
     s_runner.setup();
 #endif
     char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed

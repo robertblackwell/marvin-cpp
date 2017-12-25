@@ -1,0 +1,49 @@
+\hypertarget{class_buffer_chain}{}\section{Buffer\+Chain Class Reference}
+\label{class_buffer_chain}\index{Buffer\+Chain@{Buffer\+Chain}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_buffer_chain_a18cabe85c817f2d2fe71cef8796dc5aa}\label{class_buffer_chain_a18cabe85c817f2d2fe71cef8796dc5aa}} 
+void {\bfseries push\+\_\+back} (M\+Buffer\+S\+Ptr mb)
+\item 
+\mbox{\Hypertarget{class_buffer_chain_a0d79bb22c88dc25967ffe4156d889564}\label{class_buffer_chain_a0d79bb22c88dc25967ffe4156d889564}} 
+void {\bfseries clear} ()
+\item 
+\mbox{\Hypertarget{class_buffer_chain_a1ac72f8fe63e67e3ab6c9fda557df723}\label{class_buffer_chain_a1ac72f8fe63e67e3ab6c9fda557df723}} 
+std\+::vector$<$ boost\+::asio\+::mutable\+\_\+buffer $>$ {\bfseries asio\+\_\+buffer\+\_\+sequence} ()
+\item 
+\mbox{\Hypertarget{class_buffer_chain_af7b326120387e4d45820f1393457dbbf}\label{class_buffer_chain_af7b326120387e4d45820f1393457dbbf}} 
+std\+::size\+\_\+t {\bfseries size} ()
+\item 
+\mbox{\Hypertarget{class_buffer_chain_a8174da8c9bb38ec30a243161963a5438}\label{class_buffer_chain_a8174da8c9bb38ec30a243161963a5438}} 
+std\+::string {\bfseries to\+\_\+string} ()
+\item 
+\mbox{\Hypertarget{class_buffer_chain_a2854bbd7379d04fd1b82b1ee59b8e1d9}\label{class_buffer_chain_a2854bbd7379d04fd1b82b1ee59b8e1d9}} 
+M\+Buffer\+S\+Ptr {\bfseries amalgamate} ()
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \hyperlink{class_buffer_chain_ae7312cff3464f8365e320c781578ea10}{operator$<$$<$} (std\+::ostream \&os, \hyperlink{class_buffer_chain}{Buffer\+Chain} const \&b)
+\item 
+\mbox{\Hypertarget{class_buffer_chain_a1bcf6a64428ee17912c161fe5287be84}\label{class_buffer_chain_a1bcf6a64428ee17912c161fe5287be84}} 
+std\+::vector$<$ boost\+::asio\+::const\+\_\+buffer $>$ {\bfseries buffer\+\_\+chain\+\_\+to\+\_\+const\+\_\+buffer\+\_\+sequence} (\hyperlink{class_buffer_chain}{Buffer\+Chain} \&bchain)
+\item 
+\mbox{\Hypertarget{class_buffer_chain_af2cd978dcbbff1d71753e24e5506f243}\label{class_buffer_chain_af2cd978dcbbff1d71753e24e5506f243}} 
+std\+::vector$<$ boost\+::asio\+::mutable\+\_\+buffer $>$ {\bfseries buffer\+\_\+chain\+\_\+to\+\_\+mutable\+\_\+buffer\+\_\+sequence} (\hyperlink{class_buffer_chain}{Buffer\+Chain} \&bchain)
+\end{DoxyCompactItemize}
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{class_buffer_chain_ae7312cff3464f8365e320c781578ea10}\label{class_buffer_chain_ae7312cff3464f8365e320c781578ea10}} 
+\index{Buffer\+Chain@{Buffer\+Chain}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!Buffer\+Chain@{Buffer\+Chain}}
+\subsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily std\+::ostream\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{\hyperlink{class_buffer_chain}{Buffer\+Chain} const \&}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+outputs the content to a stream 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/buffer/buffer.\+hpp\item 
+marvin/buffer/buffer.\+cpp\end{DoxyCompactItemize}

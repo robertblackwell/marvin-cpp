@@ -1,0 +1,143 @@
+\hypertarget{class_message_base}{}\section{Message\+Base Class Reference}
+\label{class_message_base}\index{Message\+Base@{Message\+Base}}
+Inheritance diagram for Message\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_message_base}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_message_base_ab750b4a7967fcd3e129d28a3ae1d4e86}\label{class_message_base_ab750b4a7967fcd3e129d28a3ae1d4e86}} 
+void {\bfseries set\+Status\+Code} (int sc)
+\item 
+\mbox{\Hypertarget{class_message_base_a1340e12d07b6a0bbaff5221c3683c242}\label{class_message_base_a1340e12d07b6a0bbaff5221c3683c242}} 
+void {\bfseries set\+Status} (std\+::string st)
+\item 
+\mbox{\Hypertarget{class_message_base_a030bbf498c20f1c2a2ce281ac69a1e61}\label{class_message_base_a030bbf498c20f1c2a2ce281ac69a1e61}} 
+int {\bfseries status\+Code} ()
+\item 
+\mbox{\Hypertarget{class_message_base_a730462343be26eae0b3b56941c837c61}\label{class_message_base_a730462343be26eae0b3b56941c837c61}} 
+std\+::string {\bfseries status} ()
+\item 
+\mbox{\Hypertarget{class_message_base_ac12869ed519facbe12e9fa9ee71e5d9b}\label{class_message_base_ac12869ed519facbe12e9fa9ee71e5d9b}} 
+void {\bfseries set\+Method} (Http\+Method m)
+\item 
+\mbox{\Hypertarget{class_message_base_a917ec916c37524ff7a8c9b27c3d0bb98}\label{class_message_base_a917ec916c37524ff7a8c9b27c3d0bb98}} 
+void {\bfseries set\+Method} (enum http\+\_\+method m)
+\item 
+\mbox{\Hypertarget{class_message_base_acfc91d36bdd4dd1b3828a03f5d427b54}\label{class_message_base_acfc91d36bdd4dd1b3828a03f5d427b54}} 
+virtual void {\bfseries set\+Method} (std\+::string m\+\_\+str)
+\item 
+\mbox{\Hypertarget{class_message_base_a124e822086bf08600f83aa834ede9fce}\label{class_message_base_a124e822086bf08600f83aa834ede9fce}} 
+std\+::string {\bfseries get\+Method\+As\+String} ()
+\item 
+\mbox{\Hypertarget{class_message_base_a21720424f7a3a95b0ee150cedf047789}\label{class_message_base_a21720424f7a3a95b0ee150cedf047789}} 
+Http\+Method {\bfseries method} ()
+\item 
+\mbox{\Hypertarget{class_message_base_a23d29f983dd8ea011e21a974bdaa90b4}\label{class_message_base_a23d29f983dd8ea011e21a974bdaa90b4}} 
+void {\bfseries set\+Uri} (std\+::string u)
+\item 
+\mbox{\Hypertarget{class_message_base_a71811fa2215104e4aaf504f0e51c377e}\label{class_message_base_a71811fa2215104e4aaf504f0e51c377e}} 
+std\+::string {\bfseries uri} ()
+\item 
+\mbox{\Hypertarget{class_message_base_af56fe4e5b5a2857e7a2c95a1869c616b}\label{class_message_base_af56fe4e5b5a2857e7a2c95a1869c616b}} 
+void {\bfseries set\+Http\+Vers\+Major} (int major)
+\item 
+\mbox{\Hypertarget{class_message_base_aefe31e700e9ed8af32229e24fddd8663}\label{class_message_base_aefe31e700e9ed8af32229e24fddd8663}} 
+int {\bfseries http\+Vers\+Major} ()
+\item 
+\mbox{\Hypertarget{class_message_base_a3d0ed46204dbf8357cce7106906a139d}\label{class_message_base_a3d0ed46204dbf8357cce7106906a139d}} 
+void {\bfseries set\+Http\+Vers\+Minor} (int minor)
+\item 
+\mbox{\Hypertarget{class_message_base_ae876fd4350b0413030a0c5385086bcc8}\label{class_message_base_ae876fd4350b0413030a0c5385086bcc8}} 
+int {\bfseries http\+Vers\+Minor} ()
+\item 
+\mbox{\Hypertarget{class_message_base_aac4e29eb8556be7359c5d3259e09005e}\label{class_message_base_aac4e29eb8556be7359c5d3259e09005e}} 
+void {\bfseries set\+Header} (std\+::string key, std\+::string value)
+\item 
+\mbox{\Hypertarget{class_message_base_a5d74045a5918ebb0b6a337e35d26993e}\label{class_message_base_a5d74045a5918ebb0b6a337e35d26993e}} 
+bool {\bfseries has\+Header} (std\+::string key)
+\item 
+\mbox{\Hypertarget{class_message_base_a789c4f9ca6f44823daa8a1059f311590}\label{class_message_base_a789c4f9ca6f44823daa8a1059f311590}} 
+std\+::string {\bfseries header} (std\+::string key)
+\item 
+\mbox{\Hypertarget{class_message_base_a98645e19e2b6722d581459bdd6c146dd}\label{class_message_base_a98645e19e2b6722d581459bdd6c146dd}} 
+void {\bfseries remove\+Header} (std\+::string key)
+\item 
+\mbox{\Hypertarget{class_message_base_acf5d8a221c5c9a7d1a02c9c55798dda9}\label{class_message_base_acf5d8a221c5c9a7d1a02c9c55798dda9}} 
+std\+::string {\bfseries get\+Header} (std\+::string key)
+\item 
+\mbox{\Hypertarget{class_message_base_a69869f3d0a88514d8254c583c707a3ec}\label{class_message_base_a69869f3d0a88514d8254c583c707a3ec}} 
+std\+::map$<$ std\+::string, std\+::string $>$ \& {\bfseries get\+Headers} ()
+\item 
+\mbox{\Hypertarget{class_message_base_a2a6e0f2ebd74554871c2d1ceb13ad8a4}\label{class_message_base_a2a6e0f2ebd74554871c2d1ceb13ad8a4}} 
+std\+::string {\bfseries str} ()
+\item 
+\mbox{\Hypertarget{class_message_base_a51e1e421b8938dc569ee5c6dea432ff7}\label{class_message_base_a51e1e421b8938dc569ee5c6dea432ff7}} 
+void {\bfseries dump\+Headers} (std\+::ostream \&os)
+\item 
+\mbox{\Hypertarget{class_message_base_aa94bd648691d59a9848716bd9bd244ee}\label{class_message_base_aa94bd648691d59a9848716bd9bd244ee}} 
+void {\bfseries set\+Trailer} (std\+::string key, std\+::string value)
+\item 
+\mbox{\Hypertarget{class_message_base_af8c76e1d4d2e6fcb2250ed7f32f3538b}\label{class_message_base_af8c76e1d4d2e6fcb2250ed7f32f3538b}} 
+bool {\bfseries has\+Trailer} (std\+::string key)
+\item 
+\mbox{\Hypertarget{class_message_base_a8c80bb7c6504c19c78741fb92d97ef72}\label{class_message_base_a8c80bb7c6504c19c78741fb92d97ef72}} 
+std\+::string {\bfseries trailer} (std\+::string key)
+\item 
+\mbox{\Hypertarget{class_message_base_acb033494a6cd68256589232ceea2ab09}\label{class_message_base_acb033494a6cd68256589232ceea2ab09}} 
+void {\bfseries set\+Is\+Request} (bool flag)
+\item 
+\mbox{\Hypertarget{class_message_base_aed6742887d171862fd53d747d813491d}\label{class_message_base_aed6742887d171862fd53d747d813491d}} 
+bool {\bfseries is\+Request} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_message_base_a647ba386ca25d115d68f9f3c86beebe8}\label{class_message_base_a647ba386ca25d115d68f9f3c86beebe8}} 
+bool {\bfseries \+\_\+is\+\_\+request}
+\item 
+\mbox{\Hypertarget{class_message_base_a093ad4697fd2f03b394085fec74f2054}\label{class_message_base_a093ad4697fd2f03b394085fec74f2054}} 
+enum http\+\_\+method {\bfseries \+\_\+method}
+\item 
+\mbox{\Hypertarget{class_message_base_a3c5d42001f69414a3bd627b0d1e5606e}\label{class_message_base_a3c5d42001f69414a3bd627b0d1e5606e}} 
+std\+::string {\bfseries \+\_\+method\+Str}
+\item 
+\mbox{\Hypertarget{class_message_base_a7a830e02b75d652d4602b77ed8afd772}\label{class_message_base_a7a830e02b75d652d4602b77ed8afd772}} 
+std\+::string {\bfseries \+\_\+uri}
+\item 
+\mbox{\Hypertarget{class_message_base_aa967b2e5fcf381851ca4b43aa42fdff6}\label{class_message_base_aa967b2e5fcf381851ca4b43aa42fdff6}} 
+int {\bfseries \+\_\+status\+\_\+code}
+\item 
+\mbox{\Hypertarget{class_message_base_a9f697453b5e4c3d566bf929d7f1f67b3}\label{class_message_base_a9f697453b5e4c3d566bf929d7f1f67b3}} 
+std\+::string {\bfseries \+\_\+status}
+\item 
+\mbox{\Hypertarget{class_message_base_aca700db308fc5b1708e08f40c9fbf2ec}\label{class_message_base_aca700db308fc5b1708e08f40c9fbf2ec}} 
+int {\bfseries \+\_\+http\+\_\+major}
+\item 
+\mbox{\Hypertarget{class_message_base_a1507173e297eed53eb53c45f52d09054}\label{class_message_base_a1507173e297eed53eb53c45f52d09054}} 
+int {\bfseries \+\_\+http\+\_\+minor}
+\item 
+\mbox{\Hypertarget{class_message_base_abc90275b70204447de92d1f20dd755c5}\label{class_message_base_abc90275b70204447de92d1f20dd755c5}} 
+std\+::map$<$ std\+::string, std\+::string $>$ {\bfseries \+\_\+headers}
+\item 
+\mbox{\Hypertarget{class_message_base_a322ec7701cd03545071561600050aa5d}\label{class_message_base_a322ec7701cd03545071561600050aa5d}} 
+std\+::map$<$ std\+::string, std\+::string $>$ {\bfseries \+\_\+trailers}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_message_base_acb21b1e7f1d029519af4fec437c4791b}\label{class_message_base_acb21b1e7f1d029519af4fec437c4791b}} 
+std\+::string {\bfseries trace\+Message} (\hyperlink{class_message_base}{Message\+Base} \&msg)
+\item 
+\mbox{\Hypertarget{class_message_base_a2eab8867f8d6105bb286295df101bcb4}\label{class_message_base_a2eab8867f8d6105bb286295df101bcb4}} 
+void {\bfseries serialize\+Headers} (\hyperlink{class_message_base}{Message\+Base} \&msg, \hyperlink{struct_m_buffer}{M\+Buffer} \&buf)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+marvin/message/message.\+hpp\item 
+marvin/message/message.\+cpp\end{DoxyCompactItemize}

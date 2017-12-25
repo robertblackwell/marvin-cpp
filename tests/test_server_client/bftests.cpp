@@ -16,10 +16,10 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
-#include "bf_post.hpp"
-#include "bf_pipeline.hpp"
-#include "bf_testcase.hpp"
-#include "bf_req_handler.hpp"
+#include "test_server_client/bf/bf_post.hpp"
+#include "test_server_client/bf/bf_pipeline.hpp"
+#include "test_server_client/bf/bf_testcase.hpp"
+#include "test_server_client/tsc_req_handler.hpp"
 #include "server_runner.hpp"
 using namespace body_format;
 
@@ -94,12 +94,12 @@ std::vector<body_format::Testcase> make_cases()
     * Parameterized fixture for testing each message stand alone
     * which requires a server to be started
     */
-    class RoundTripOneshot : public ::testing::Test, public ::testing::WithParamInterface<body_format::Testcase>
+    class BFOneshot : public ::testing::Test, public ::testing::WithParamInterface<body_format::Testcase>
     {
         public:
-        RoundTripOneshot(): _tc(GetParam())
+        BFOneshot(): _tc(GetParam())
         {}
-        ~RoundTripOneshot(){}
+        ~BFOneshot(){}
         virtual void SetUp(){}
         virtual void TearDown() {}
         body_format::Testcase   _tc;
@@ -107,7 +107,7 @@ std::vector<body_format::Testcase> make_cases()
 
 }
 // run each test on a separate io_service
-TEST_P(RoundTripOneshot, 001)
+TEST_P(BFOneshot, 001)
 {
     const body_format::Testcase& testcase = GetParam();
     boost::asio::io_service io_service;
@@ -117,12 +117,12 @@ TEST_P(RoundTripOneshot, 001)
     io_service.run();
 }
 
-INSTANTIATE_TEST_CASE_P(consecutive, RoundTripOneshot, testing::Values(tcase01, tcase02, tcase03));
+INSTANTIATE_TEST_CASE_P(BFconsecutive, BFOneshot, testing::Values(tcase01, tcase02, tcase03));
 
 
 // run all request on a single io_service at the same time
 // but all as separate request streams and separate connections
-TEST(Multiple, alltogether)
+TEST(BFMultiple, alltogether)
 {
     boost::asio::io_service io_service;
     std::vector<body_format::Testcase> cases = make_cases();
@@ -135,7 +135,7 @@ TEST(Multiple, alltogether)
     io_service.run();
 }
 
-TEST(Multiple, pipeline)
+TEST(BFMultiple, pipeline)
 {
     boost::asio::io_service io_service;
     std::vector<body_format::Testcase> cases = make_cases();
