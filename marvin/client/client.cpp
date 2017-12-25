@@ -41,7 +41,7 @@ Client::Client(boost::asio::io_service& io, std::string url)
     setupUrl(url);
 }
 
-Client::Client(boost::asio::io_service& io, ConnectionInterface* conn) : _io(io)
+Client::Client(boost::asio::io_service& io, ISocket* conn) : _io(io)
 {}
 
 
@@ -64,7 +64,7 @@ void Client::asyncConnect(ErrorOnlyCallbackType cb)
     TCPConnection* ptr = new TCPConnection(_io, _scheme, _server, _port);
     
     _conn_shared_ptr = std::shared_ptr<TCPConnection>(ptr);
-    auto f = [this, cb](Marvin::ErrorType& ec, ConnectionInterface* c) {
+    auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);
         LogInfo(" conn", (long)_conn_shared_ptr.get(), " er: ", er_s);
         cb(ec);

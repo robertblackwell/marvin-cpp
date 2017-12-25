@@ -20,7 +20,7 @@ TEST(connect, fail)
 {
     boost::asio::io_service io;
     auto conn_sptr = std::make_shared<TCPConnection>(io, "https", "ddddgoogle.com", "443");
-    conn_sptr->asyncConnect([](Marvin::ErrorType& err, ConnectionInterface* conn)
+    conn_sptr->asyncConnect([](Marvin::ErrorType& err, ISocket* conn)
     {
         std::cout << err.message() << std::endl;
         auto not_found = boost::asio::error::make_error_code(boost::asio::error::netdb_errors::host_not_found);
@@ -33,7 +33,7 @@ TEST(connect, succeed)
 {
     boost::asio::io_service io;
     auto conn_sptr = std::make_shared<TCPConnection>(io, "https", "google.com", "443");
-    conn_sptr->asyncConnect([](Marvin::ErrorType& err, ConnectionInterface* conn)
+    conn_sptr->asyncConnect([](Marvin::ErrorType& err, ISocket* conn)
     {
         std::cout << err.message() << std::endl;
         ASSERT_TRUE(! err);

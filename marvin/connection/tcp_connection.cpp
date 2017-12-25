@@ -22,7 +22,7 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "tcp_connection.hpp"
 
 using boost::asio::ip::tcp;
@@ -369,9 +369,9 @@ void TCPConnection::post_accept_cb(std::function<void(boost::system::error_code&
     #endif
 }
 
-void TCPConnection::post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ConnectionInterface* conn)
+void TCPConnection::post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ISocket* conn)
 {
-    ConnectionInterface* tmp = (err) ? nullptr : this;
+    ISocket* tmp = (err) ? nullptr : this;
     #if USE_POST
     auto c = std::bind(cb, err, tmp);
     m_io.post(c);

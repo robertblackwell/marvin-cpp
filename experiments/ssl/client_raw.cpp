@@ -17,7 +17,7 @@
 
 using namespace boost::asio;
 
-//#include "connection_interface.hpp"
+//#include "i_socket.hpp"
 //#include "tls_connection.hpp"
 
 #define REQUEST "GET https://ssllabs.com/ HTTP/1.1\r\nHost: www.ssllabs.com\r\n\r\n";

@@ -12,7 +12,7 @@
 #include "parser.hpp"
 #include "rb_logger.hpp"
 
-#include "read_socket_interface.hpp"
+#include "i_socket.hpp"
 #include "callback_typedefs.hpp"
 
 /**
@@ -63,7 +63,7 @@ public:
     static void configSet_HeaderBufferSize(long bsize);
     static void configSet_BodyBufferSize(long bsize);
 
-    MessageReader( boost::asio::io_service& io, ReadSocketInterfaceSPtr readSock);
+    MessageReader( boost::asio::io_service& io, ISocketSPtr readSock);
     ~MessageReader();
     /*!
     *
@@ -160,8 +160,8 @@ protected:
     static std::size_t     s_bodyBufferSize;
     
     // socket and io_service
-    ReadSocketInterfaceSPtr     m_readSock;
-    boost::asio::io_service&    m_io;
+    ISocketSPtr                  m_readSock;
+    boost::asio::io_service&     m_io;
 
     bool m_reading_full_message;
     bool m_reading_body;

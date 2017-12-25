@@ -46,7 +46,7 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
     
         void handleConnect(
             MessageReaderSPtr           req,
-            ConnectionInterfaceSPtr     connPtr,
+            ISocketSPtr     connPtr,
             HandlerDoneCallbackType     done);
 
         void handleRequest(
@@ -81,7 +81,7 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
 
 
         /// @brief Only used by the handleConnect method
-        ConnectionInterfaceSPtr     _conn;
+        ISocketSPtr     _conn;
         MessageReaderSPtr           _req;
         MessageWriterSPtr           _resp;
         RequestUPtr                 _upStreamRequestUPtr;
@@ -95,7 +95,7 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
         /// used for handleConnect - tunnel
         MBufferUPtr                 _initialResponseBuf;
         TunnelHandlerSPtr           _tunnelHandler;
-        ConnectionInterfaceSPtr     _downStreamConnection; // used only for tunnel
+        ISocketSPtr     _downStreamConnection; // used only for tunnel
         TCPConnectionSPtr          _upstreamConnection; // used only for tunnels
     
         /// regexs to define hosts that require mitm not tunnel

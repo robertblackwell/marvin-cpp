@@ -9,7 +9,7 @@
 #include "repeating_timer.hpp"
 #include "error.hpp"
 #include "testcase.hpp"
-#include "read_socket_interface.hpp"
+#include "i_socket.hpp"
 
 typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallback;
 
@@ -19,7 +19,7 @@ typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>
 class MockReadSocket;
 typedef std::shared_ptr<MockReadSocket> MockReadSocketSPtr;
 
-class MockReadSocket : public ReadSocketInterface
+class MockReadSocket : public IReadSocket
 {
 public:
 //    MockReadSocket(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));

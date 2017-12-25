@@ -23,7 +23,7 @@ class TunnelHandler
 {
     public:
         TunnelHandler(
-            ConnectionInterfaceSPtr  downStreamConnection,
+            ISocketSPtr  downStreamConnection,
             TCPConnectionSPtr      upstreamConnection
         );
         ~TunnelHandler();
@@ -32,9 +32,9 @@ class TunnelHandler
     private:
         void tryDone();
         std::function<void(Marvin::ErrorType& err)> _callback;
-        ConnectionInterfaceSPtr     _downstreamConnection;
+        ISocketSPtr     _downstreamConnection;
 //        TCPConnectionSPtr          _upstreamConnection;
-        ConnectionInterfaceSPtr     _upstreamConnection;
+        ISocketSPtr     _upstreamConnection;
     
         HalfTunnelUPtr              _upstreamHalfTunnel;
         HalfTunnelUPtr              _downstreamHalfTunnel;

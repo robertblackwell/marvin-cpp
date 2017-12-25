@@ -13,7 +13,7 @@
 #include <vector>
 #include <map>
 #include <set>
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "connection_pool.hpp"
 
 //---------------------------------------------------------------------------------------------------
@@ -22,16 +22,16 @@
 class InUseConnectionsType
 {
     private:
-    std::map<ConnectionInterface*, ConnectionInterface*>  _connections;
+    std::map<ISocket*, ISocket*>  _connections;
     
     public:
     
     InUseConnectionsType();
     std::size_t size();
     
-    void remove(ConnectionInterface* aConn);
+    void remove(ISocket* aConn);
     
-    void add(ConnectionInterface* conn);
+    void add(ISocket* conn);
 };
 //---------------------------------------------------------------------------------------------------
 // ConnectionRequest - Holds a pending request for a connection
@@ -150,7 +150,7 @@ public:
         ConnectCallbackType cb
     );
     
-    void releaseConnection(ConnectionInterface* conn);
+    void releaseConnection(ISocket* conn);
 
 private:
     
@@ -163,7 +163,7 @@ private:
     );
 
     // this is the real interface - but is wrapped in a strand by the public call
-    void __releaseConnection(ConnectionInterface* conn);
+    void __releaseConnection(ISocket* conn);
     
     void createNewConnection(
                 std::string scheme, // http: or https:
@@ -172,7 +172,7 @@ private:
                 ConnectCallbackType cb
     );
 
-    void postSuccess(ConnectCallbackType cb, ConnectionInterface* conn);
+    void postSuccess(ConnectCallbackType cb, ISocket* conn);
     void postFail(ConnectCallbackType cb, Marvin::ErrorType& ec);
     
     boost::asio::io_service&        io;

@@ -13,7 +13,7 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 
 
 //---------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ InUseConnectionsType::size()
 }
 
 void
-InUseConnectionsType::remove(ConnectionInterface* aConn)
+InUseConnectionsType::remove(ISocket* aConn)
 {
     if( aConn == NULL )
         return;
@@ -39,7 +39,7 @@ InUseConnectionsType::remove(ConnectionInterface* aConn)
 }
 
 void
-InUseConnectionsType::add(ConnectionInterface* conn)
+InUseConnectionsType::add(ISocket* conn)
 {
     _connections[conn] = conn;
 }
@@ -196,14 +196,14 @@ void ConnectionHandlerManager::::createNewConnection(
             //                                                service,
             //                                                tcp::resolver::query::canonical_name);
     
-    ConnectionInterface* conn = connectionFactory(io, scheme, server, service);
+    ISocket* conn = socketFactory(io, scheme, server, service);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
     _inUse.add(conn);
     //
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ConnectionInterface* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ISocket* conn){
         if( !ec ){
             postSuccess(cb, conn);
         }else{
@@ -215,13 +215,13 @@ void ConnectionHandlerManager::::createNewConnection(
 //
 //so far all we implement is a limit on the number of connections
 //
-void ConnectionHandlerManager::::releaseConnection(ConnectionInterface* conn)
+void ConnectionHandlerManager::::releaseConnection(ISocket* conn)
 {
     auto hf = _poolStrand.wrap(std::bind(&ConnectionPool::__releaseConnection, this, conn));
     io.post(hf);
 
 }
-void ConnectionHandlerManager::::__releaseConnection(ConnectionInterface* conn)
+void ConnectionHandlerManager::::__releaseConnection(ISocket* conn)
 {
     LogDebug(" conn: ", conn);
     assert( conn != NULL );
@@ -270,7 +270,7 @@ void ConnectionHandlerManager::::__releaseConnection(ConnectionInterface* conn)
     }
 #endif
 }
-void ConnectionHandlerManager::::postSuccess(ConnectCallbackType cb, ConnectionInterface* conn)
+void ConnectionHandlerManager::::postSuccess(ConnectCallbackType cb, ISocket* conn)
 {
     Marvin::ErrorType merr = Marvin::make_error_ok();
     auto pf = std::bind(cb, merr, conn);

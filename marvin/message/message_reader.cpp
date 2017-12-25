@@ -10,7 +10,7 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "read_socket_interface.hpp"
+#include "i_socket.hpp"
 #include "message_reader.hpp"
 
 #pragma mark - tracing functions
@@ -45,7 +45,7 @@ void MessageReader::configSet_HeaderBufferSize(long bsize)
 }
 #pragma mark - constructor
 
-MessageReader::MessageReader( boost::asio::io_service& io, ReadSocketInterfaceSPtr readSock)
+MessageReader::MessageReader( boost::asio::io_service& io, ISocketSPtr readSock)
 : m_io(io), m_readSock(readSock)
 {
     LogTorTrace();

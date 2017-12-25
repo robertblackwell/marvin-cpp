@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include "buffer.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 
 class HalfTunnel;
 typedef std::shared_ptr<HalfTunnel> HalfTunnelSPtr;
@@ -21,7 +21,7 @@ typedef std::unique_ptr<HalfTunnel> HalfTunnelUPtr;
 class HalfTunnel
 {
     public:
-        HalfTunnel(ConnectionInterfaceSPtr readEnd, ConnectionInterfaceSPtr writeEnd);
+        HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd);
         void start(std::function<void(Marvin::ErrorType& err)> cb);
     private:
         void startRead();
@@ -29,8 +29,8 @@ class HalfTunnel
         void handleWrite(Marvin::ErrorType& err, std::size_t bytes_transfered);
     
     
-        ConnectionInterfaceSPtr     _readEnd;
-        ConnectionInterfaceSPtr     _writeEnd;
+        ISocketSPtr     _readEnd;
+        ISocketSPtr     _writeEnd;
         std::function<void(Marvin::ErrorType& err)> _callback;
         MBufferUPtr                 _bufferUPtr;
         MBuffer*                    _bufferPtr;

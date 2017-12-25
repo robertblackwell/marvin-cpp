@@ -27,7 +27,7 @@ std::string traceWriter(MessageWriter& writer)
 }
 
 //MessageWriter::MessageWriter(boost::asio::io_service& io, TCPConnection& conn):_io(io), _conn(conn), _m_header_buf(1000)
-MessageWriter::MessageWriter(boost::asio::io_service& io, ConnectionInterfaceSPtr conn):_io(io), _conn(conn), _m_header_buf(1000)
+MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr conn):_io(io), _conn(conn), _m_header_buf(1000)
 {
     LogTorTrace();
 }
@@ -59,7 +59,7 @@ void MessageWriter::putHeadersStuffInBuffer()
 void MessageWriter::onWriteHeaders(Marvin::ErrorType& ec)
 {
     // put the  first line and header into a buffer
-//    WriteSocketInterface* wsock = getWriteSocket();
+//    IWriteSocket* wsock = getWriteSocket();
 //    wsock.asyncWrite();
 }
 void MessageWriter::asyncWrite(MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb)

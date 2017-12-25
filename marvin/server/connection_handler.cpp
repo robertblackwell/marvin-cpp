@@ -16,7 +16,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&                                        io,
     ServerConnectionManager&                                        connectionManager,
-    ConnectionInterface*                                            conn,
+    ISocket*                                            conn,
     RequestHandlerFactory                                           factory
 ):  _io(io),
     _connectionManager(connectionManager),
@@ -29,7 +29,7 @@ ConnectionHandler::ConnectionHandler(
     * by a connection handler. This is required to ensure that our MITM proxy
     * can handle keep-alive
     */
-    _connection = std::shared_ptr<ConnectionInterface>(conn);
+    _connection = std::shared_ptr<ISocket>(conn);
     _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
     _server_context.server_ptr = HTTPServer::get_instance();
     _server_context.connection_handler_ptr = this;
@@ -168,7 +168,7 @@ void ConnectionHandler::serve()
 {
     LogInfo(" fd:", nativeSocketFD());
 //    std::cout << "connection_handler::serve " << std::hex << (long) this << std::endl;
-//    ConnectionInterface* cptr = _connection.get();
+//    ISocket* cptr = _connection.get();
     
 //    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));
     _reader = std::shared_ptr<MessageReader>(new MessageReader(_io, _connection));
@@ -187,7 +187,7 @@ void ConnectionHandler::serveAnother()
 {
     LogInfo(" fd:", nativeSocketFD());
     /// get a new request object
-//    ConnectionInterface* cptr = _connection.get();
+//    ISocket* cptr = _connection.get();
 //    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
 
 //    _requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(_factory(_io));

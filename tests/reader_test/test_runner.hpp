@@ -22,7 +22,7 @@ typedef std::shared_ptr<Testrunner> TestrunnerSPtr;
 std::string chain_to_string(BufferChain chain);
 /**
 * Class TestRunner - Creates an instance of MessageReader using
-* its ReadSocketInterface and then exercises that MessageReader
+* its IReadSocket and then exercises that MessageReader
 * using a single Testcase.
 * Can either:
 *   -   use the MessageReader to read an entire message
@@ -33,7 +33,7 @@ class Testrunner
     
 public:
     MessageReaderSPtr         rdr_;
-    ReadSocketInterfaceSPtr     conn_;
+    IReadSocketSPtr     conn_;
     boost::asio::io_service&    io_;
     std::string                 body;
     std::ostringstream          bodyStream;
@@ -44,7 +44,7 @@ public:
     * Constructor - tcIndex is an index into the set of testcases
     * that the class TestCases knows about
     */
-    Testrunner(boost::asio::io_service& io, ReadSocketInterfaceSPtr rd_sock, Testcase tcObj);
+    Testrunner(boost::asio::io_service& io, IReadSocketSPtr rd_sock, Testcase tcObj);
     ~Testrunner();
     /**
     * runs a test that reads reads a full message

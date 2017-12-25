@@ -25,7 +25,7 @@
 #include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "tls_connection.hpp"
 #include <cassert>
 

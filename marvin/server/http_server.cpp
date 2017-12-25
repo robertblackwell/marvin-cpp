@@ -152,7 +152,7 @@ void HTTPServer::terminate()
  void HTTPServer::startAccept()
 {
     LogInfo("");
-    ConnectionInterface* conptr = new TCPConnection(_io);
+    ISocket* conptr = new TCPConnection(_io);
     
     ConnectionHandler* connectionHandler = new ConnectionHandler(_io, _connectionManager, conptr, _factory);
 

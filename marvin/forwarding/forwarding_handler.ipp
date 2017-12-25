@@ -76,7 +76,7 @@ void ForwardingHandler<TCollector>::handleUpgrade()
 template<class TCollector>
 void ForwardingHandler<TCollector>::handleConnect(
         MessageReaderSPtr           req,
-        ConnectionInterfaceSPtr     connPtr,
+        ISocketSPtr     connPtr,
         HandlerDoneCallbackType     done
 ){
     LogInfo("");
@@ -130,7 +130,7 @@ void ForwardingHandler<TCollector>::initiateTunnel()
     _upstreamConnection =
         std::shared_ptr<TCPConnection>(new TCPConnection(_io, _scheme, _host, std::to_string(_port)));
     
-    _upstreamConnection->asyncConnect([this](Marvin::ErrorType& err, ConnectionInterface* conn){
+    _upstreamConnection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
         if( err ){
             LogWarn("initiateTunnel: FAILED scheme:", this->_scheme, " host:", this->_host, " port:", this->_port);
             response502Badgateway(*_resp);

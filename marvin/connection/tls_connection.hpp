@@ -15,9 +15,9 @@
 #include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
-#include "read_socket_interface.hpp"
+#include "i_socket.hpp"
 #include "buffer.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 
 //using namespace boost;
 //using namespace boost::system;
@@ -33,7 +33,7 @@ typedef boost::asio::ssl::stream<tcp::socket> SslSocketType;
 //--------------------------------------------------------------------------------------------------
 // SSL/TLS Connection
 //--------------------------------------------------------------------------------------------------
-class TLSConnection : public ConnectionInterface
+class TLSConnection : public ISocket
 {
     public:
     // client socket needs to know who to connect to

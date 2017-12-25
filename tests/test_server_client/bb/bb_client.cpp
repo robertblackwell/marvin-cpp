@@ -44,7 +44,7 @@ void TClient::send_testcase_buffers(SysErrorCb cb)
 void TClient::connect()
 {
     LogDebug("");
-    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ConnectionInterface* conn) {
+    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
         LogDebug("connected");
         if( ! err ){
             _rdr = std::make_shared<MessageReader>(_io, _conn_sptr);

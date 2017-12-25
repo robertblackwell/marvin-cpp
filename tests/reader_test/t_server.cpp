@@ -67,7 +67,7 @@ void TServer::startAccept()
 {
     LogInfo("");
     _conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(_io));
-//    ReadSocketInterface* rd_sock_ifce = _conn_sptr.get();
+//    IReadSocket* rd_sock_ifce = _conn_sptr.get();
     _rdr = std::shared_ptr<MessageReader>(new MessageReader(_io, _conn_sptr));
     auto hf = std::bind(&TServer::handleAccept, this, std::placeholders::_1);
     _conn_sptr->asyncAccept(_acceptor, hf);

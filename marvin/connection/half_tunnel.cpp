@@ -8,7 +8,7 @@
 
 #include "half_tunnel.hpp"
 
-HalfTunnel::HalfTunnel(ConnectionInterfaceSPtr readEnd, ConnectionInterfaceSPtr writeEnd)
+HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd)
 {
     _readEnd = readEnd;
     _writeEnd = writeEnd;

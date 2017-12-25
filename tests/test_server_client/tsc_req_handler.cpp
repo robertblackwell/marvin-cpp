@@ -95,7 +95,7 @@ TscRequestHandler::~TscRequestHandler()
 void TscRequestHandler::handleConnect(
     ServerContext&              server_context,
     MessageReaderSPtr           req,
-    ConnectionInterfaceSPtr     connPtr,
+    ISocketSPtr     connPtr,
     HandlerDoneCallbackType     done)
 {
     LogDebug("");

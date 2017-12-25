@@ -19,7 +19,7 @@
 #include "message_writer.hpp"
 #include "request_handler_base.hpp"
 #include "connection_handler.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 
 class ServerConnectionManager;
 class ConnectionHandler;
@@ -31,7 +31,7 @@ class ConnectionHandler
         ConnectionHandler(
             boost::asio::io_service&                                        io,
             ServerConnectionManager&                                        connectionManager,
-            ConnectionInterface*                                            conn,
+            ISocket*                                            conn,
             RequestHandlerFactory                                           factory
         );
     
@@ -53,7 +53,7 @@ class ConnectionHandler
         std::unique_ptr<RequestHandlerBase>    _requestHandlerUnPtr;
         RequestHandlerFactory                  _factory;
     
-        ConnectionInterfaceSPtr                _connection;
+        ISocketSPtr                _connection;
         MessageReaderSPtr                                 _reader;
         MessageWriterSPtr                                 _writer;
         ServerContext                                     _server_context;

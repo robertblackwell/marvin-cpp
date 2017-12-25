@@ -48,7 +48,7 @@ public:
     virtual void handleConnect(
         ServerContext&   server_context,
         MessageReaderSPtr           req,
-        ConnectionInterfaceSPtr     connPtr,
+        ISocketSPtr     connPtr,
         HandlerDoneCallbackType     done)
         { auto err = Marvin::make_error_ok(); done(err,false);}
     

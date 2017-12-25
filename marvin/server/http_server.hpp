@@ -10,7 +10,7 @@
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
 #include "request_handler_base.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "tcp_connection.hpp"
 #include "tls_connection.hpp"
 #include "message_reader.hpp"

@@ -17,7 +17,7 @@ void Testrunner::makeReader()
 * Constructor - tcIndex is an index into the set of testcases
 * that the class TestCases knows about
 */
-Testrunner::Testrunner(boost::asio::io_service& io, ReadSocketInterfaceSPtr rd_sock, Testcase tcObj)
+Testrunner::Testrunner(boost::asio::io_service& io, IReadSocketSPtr rd_sock, Testcase tcObj)
     : io_(io),
     _tcObj(tcObj)
 {

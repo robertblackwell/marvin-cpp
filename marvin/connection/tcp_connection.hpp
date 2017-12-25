@@ -15,9 +15,9 @@
 
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
-#include "read_socket_interface.hpp"
+#include "i_socket.hpp"
 #include "buffer.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 
 using namespace boost;
 using namespace boost::system;
@@ -37,7 +37,7 @@ using TCPConnectionUPtr = std::unique_ptr<TCPConnection>;
 //--------------------------------------------------------------------------------------------------
 // NON SSL/TLS Connection
 //--------------------------------------------------------------------------------------------------
-class TCPConnection : public ConnectionInterface
+class TCPConnection : public ISocket
 {
     public:
     /**
@@ -146,7 +146,7 @@ private:
     void completeWithSuccess();
     
     void post_accept_cb(std::function<void(boost::system::error_code& err)> cb, Marvin::ErrorType err);
-    void post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ConnectionInterface* conn);
+    void post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ISocket* conn);
     void post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
     void post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
     

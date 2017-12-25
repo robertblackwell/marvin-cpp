@@ -95,7 +95,7 @@ public:
     * Create a client with an established connection. In this case a call to
     * connect will fail with an exception - as it is a logic error
     */
-    Client(boost::asio::io_service& io, ConnectionInterface* conn);
+    Client(boost::asio::io_service& io, ISocket* conn);
 
     Client(const Client& other) = delete;
     Client& operator=(const Client&) = delete;
@@ -264,7 +264,7 @@ protected:
     
 //    TCPConnection*                                  _conn_ptr;
     std::shared_ptr<TCPConnection>                  _conn_shared_ptr;
-    ReadSocketInterface*                            _readSock;
+    IReadSocket*                            _readSock;
     
     std::function<void(Marvin::ErrorType& err)>     _goCb;
     ResponseHandlerCallbackType                     _response_handler;

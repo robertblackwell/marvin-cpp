@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include "callback_typedefs.hpp"
 #include "message.hpp"
-#include "read_socket_interface.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
+#include "i_socket.hpp"
 #include "tcp_connection.hpp"
 
 class MessageWriter;
@@ -31,7 +31,7 @@ public:
     * be discarded and a new one used for the next message on the same connection
     */
 //    MessageWriter(boost::asio::io_service& io, TCPConnection& conn);
-    MessageWriter(boost::asio::io_service& io, ConnectionInterfaceSPtr conn);
+    MessageWriter(boost::asio::io_service& io, ISocketSPtr conn);
     ~MessageWriter();
     
     void asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb);
@@ -59,7 +59,7 @@ protected:
     void putHeadersStuffInBuffer();
 
     boost::asio::io_service&    _io;
-    ConnectionInterfaceSPtr     _conn;
+    ISocketSPtr                 _conn;
     MessageBaseSPtr             _currentMessage;
     /**
     * @todo - raw pointers for MBuffer and FBuffer are a problem

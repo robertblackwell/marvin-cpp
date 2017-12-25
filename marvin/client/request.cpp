@@ -164,12 +164,12 @@ void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
 
 //    asyncGetWriteSocket(cf);
 
-//    ConnectionInterface* conn = connectionFactory(_io, _scheme, _server, _port);
-    ConnectionInterface* conn = (ConnectionInterface*) new TCPConnection(_io, _scheme, _server, _port);
+//    ISocket* conn = socketFactory(_io, _scheme, _server, _port);
+    ISocket* conn = (ISocket*) new TCPConnection(_io, _scheme, _server, _port);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ConnectionInterface* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ISocket* conn){
     std::string er_s = Marvin::make_error_description(ec);
         LogInfo(" conn", (long)conn, " er: ", er_s);
         this->haveConnection(ec, conn);
@@ -204,7 +204,7 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
                 scheme,
                 server,
                 service,
-        [this, connectCb](Marvin::ErrorType& ec, ConnectionInterface* conn){
+        [this, connectCb](Marvin::ErrorType& ec, ISocket* conn){
             if( ec ){
                 LogWarn("", (long)this, " connection: ", (long)conn);
                 Marvin::ErrorType m_er = ec;
@@ -226,7 +226,7 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 //--------------------------------------------------------------------------------
 // we are connected start read and write
 //--------------------------------------------------------------------------------
-void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
+void Request::haveConnection(Marvin::ErrorType& err, ISocket* conn)
 {
     if( !err ){
     

@@ -19,7 +19,7 @@
 #include "http_server.hpp"
 #include "server_connection_manager.hpp"
 #include "request_handler_base.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "tcp_connection.hpp"
 #include "tls_connection.hpp"
 #include "connection_handler.hpp"
@@ -28,14 +28,14 @@
 class HTTPServer;
 class ServerConnectionManager;
 class ConnectionHandler;
-class ConnectionInterface;
+class ISocket;
 
 struct ServerContext
 {
     HTTPServer*                 server_ptr;
     ServerConnectionManager*    server_connection_manager_ptr;
     ConnectionHandler*          connection_handler_ptr;
-    ConnectionInterface*        connection_ptr;
+    ISocket*        connection_ptr;
 };
 
 #endif /* server_context_hpp */

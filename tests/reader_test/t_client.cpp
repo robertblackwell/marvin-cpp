@@ -37,7 +37,7 @@ void TClient::send_testcase_buffers(SysErrorCb cb)
 void TClient::connect()
 {
     LogDebug("");
-    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ConnectionInterface* conn) {
+    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
         LogDebug("connected");
         if( ! err ){
             auto wbf = std::bind(&TClient::wait_before_write, this);

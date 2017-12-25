@@ -10,7 +10,7 @@
 #include <boost/bind.hpp>
 #include "message_writer.hpp"
 #include "message_reader.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "url.hpp"
 
 using boost::asio::ip::tcp;
@@ -41,7 +41,7 @@ public:
     
 protected:
     void asyncGetWriteSocket(ConnectCallbackType connectCb);
-    void haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn);
+    void haveConnection(Marvin::ErrorType& err, ISocket* conn);
     void fullWriteHandler(Marvin::ErrorType& err);
     void readComplete(Marvin::ErrorType& err);
     void defaultHeaders();
@@ -49,8 +49,8 @@ protected:
     boost::asio::io_service&                        _io;
     MessageReaderSPtr                             _rdr;
     
-    ConnectionInterfaceSPtr                         _connection;
-    ReadSocketInterfaceSPtr                         _readSock;
+    ISocketSPtr                         _connection;
+    IReadSocketSPtr                         _readSock;
     
     std::function<void(Marvin::ErrorType& err)>     _goCb;
     
