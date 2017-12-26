@@ -37,9 +37,6 @@ typedef std::function<void(Marvin::ErrorType& err)>                    WriteMess
 /// call back when reading headers
 typedef std::function<void(Marvin::ErrorType& err)>                    ReadHeadersCallbackType;
 
-/// Callback when reading body data
-typedef std::function<void(Marvin::ErrorType& err, FBuffer* fBufPtr)>  ReadBodyDataCallbackType;
-
 /// Call back when reading full message is complete
 typedef std::function<void(Marvin::ErrorType& err)>                    ReadMessageCallbackType;
 

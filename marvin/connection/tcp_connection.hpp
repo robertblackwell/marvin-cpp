@@ -15,7 +15,6 @@
 
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
-#include "i_socket.hpp"
 #include "buffer.hpp"
 #include "i_socket.hpp"
 
@@ -27,16 +26,14 @@ using namespace boost::asio;
 using ip::tcp;
 using system::error_code;
 
-
 class TCPConnection;
-//typedef std::shared_ptr<TCPConnection> TCPConnectionSPtr;
-//typedef std::unique_ptr<TCPConnection> TCPConnectionUPtr;
 
 using TCPConnectionSPtr = std::shared_ptr<TCPConnection>;
 using TCPConnectionUPtr = std::unique_ptr<TCPConnection>;
-//--------------------------------------------------------------------------------------------------
-// NON SSL/TLS Connection
-//--------------------------------------------------------------------------------------------------
+/**
+* \brief Wraps a boost::asio tcp socket and provides non TLS/SSL application specific async operations as specified in ISocket; in addition
+* implements timeout on all except asyncAccept operations.
+*/
 class TCPConnection : public ISocket
 {
     public:
@@ -110,13 +107,13 @@ class TCPConnection : public ISocket
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     
-    void asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb);
+    void asyncWrite(Marvin::MBuffer& buffer, AsyncWriteCallbackType cb);
     void asyncWrite(std::string& str, AsyncWriteCallbackType cb);
-    void asyncWrite(BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb);
+    void asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb);
     void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb);
     void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback);
 
-    void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb);
+    void asyncRead(Marvin::MBuffer& mb,  AsyncReadCallbackType cb);
     void shutdown();
     void close();
     
@@ -130,34 +127,34 @@ class TCPConnection : public ISocket
     
 private:
 
-    void handle_resolve(
+    void p_handle_resolve(
         const boost::system::error_code& err,
         tcp::resolver::iterator endpoint_iterator
     );
     
-    void handle_connect(
+    void p_handle_connect(
         const boost::system::error_code& err,
         tcp::resolver::iterator endpoint_iterator
     );
 
-    void async_write(void* data, std::size_t size, AsyncWriteCallback cb);
+    void p_async_write(void* data, std::size_t size, AsyncWriteCallback cb);
 
     void completeWithError(Marvin::ErrorType& ec);
     void completeWithSuccess();
     
-    void post_accept_cb(std::function<void(boost::system::error_code& err)> cb, Marvin::ErrorType err);
-    void post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ISocket* conn);
-    void post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
-    void post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
+    void p_post_accept_cb(std::function<void(boost::system::error_code& err)> cb, Marvin::ErrorType err);
+    void p_post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ISocket* conn);
+    void p_post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
+    void p_post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
     
     void resolveCompleteWithSuccess();
     void connectionCompleteWithSuccess();
 
-    void io_post(std::function<void()> noParam_cb);
+    void p_io_post(std::function<void()> noParam_cb);
     
-    void handle_timeout(const boost::system::error_code& err);
-    void cancel_timeout();
-    void set_timeout(long interval_millisecs);
+    void p_handle_timeout(const boost::system::error_code& err);
+    void p_cancel_timeout();
+    void p_set_timeout(long interval_millisecs);
 
 
     std::string                     m_scheme;

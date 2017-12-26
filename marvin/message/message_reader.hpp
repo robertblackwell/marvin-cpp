@@ -15,18 +15,38 @@
 #include "i_socket.hpp"
 #include "callback_typedefs.hpp"
 
+class MessageReader;
+typedef std::shared_ptr<MessageReader> MessageReaderSPtr;
+typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
+
 /**
-    *
-    * NOTE : current implementation binds the message to the reader so a reader
-    * can only read one message and then needs to be discarded
-    *
+* \brief Knows how to read http messages in the form of MessageBase instances; note this class
+*  is derived from MessageBase so the message read is bound to this reader as a subclass instance.
+*
+* ## Modes of use
+*
+* two modes of operation are provided:
+*   -   read an entire messages in on method call including any message content or body and only notify the
+*       caller when an entire message  is available.
+*   -   read the header of an http messages in one method call and notify the caller of that, then have the caller
+*       call again (anotehr method) to get chunks of the message bidy.
+*
+* \warning - this later mode is not yet implemented.
+*
+* \warning - instance of this class are one-time-only as after reading a message the reader instance actually
+* holds the message data as this class is derived from MessageBase.
+*
+* Hence to read a second message a new instance of thei class is required.
+*
+* \note current implementation binds the message to the reader so a reader
+* can only read one message and then needs to be discarded
+*
  * Instances of this class represent an incoming http(s) response message from a socket/stream.
  * Please note the "incoming" because the MessageReader is seeking to provide a dynamic interface
  * so that other components can start interacting with the reader (and the message) once the headers
  * have arrived and POSSIBLY before the body has arrived.
  *
- * Buffer strategy
- * ===============
+ * ### Buffer strategy
  *
  * The MessageReader object calls on a Connection object to do the reading from the underlying socket/stream.
  * The MessageReader provides buffers to the Connection class at the time the read is initiated
@@ -47,18 +67,14 @@
  *      (shared pointer to each buffer being retained in a std::vector). This is the structure that
  *      is returned to the called for readMessage() and readBody(). These buffers can easily be used a boost buffer
  *      sequence for i/o.
- *  
+ *
  */
-class MessageReader;
-typedef std::shared_ptr<MessageReader> MessageReaderSPtr;
-typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
-
 class MessageReader : public Parser, public MessageBase
 {
 public:
 
     using ReadMessageCallback = std::function<void(Marvin::ErrorType err)>;
-    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, BufferChain chunk)>;
+    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChain chunk)>;
 
     static void configSet_HeaderBufferSize(long bsize);
     static void configSet_BodyBufferSize(long bsize);
@@ -92,7 +108,7 @@ public:
     *
     *  The BufferChain will release all the embedded buffers when the value goes out of scope.
     */
-    void readBody(std::function<void(Marvin::ErrorType err, BufferChain chunk)>);
+    void readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChain chunk)>);
     
     /*!
     * This method starts the read of a full message including the body of the message. Use of this method
@@ -113,8 +129,8 @@ public:
     * !!! need to do better
     */
     
-    BufferChain  get_body_chain();
-    BufferChain  get_raw_body_chain();
+    Marvin::BufferChain  get_body_chain();
+    Marvin::BufferChain  get_raw_body_chain();
     
     friend std::string traceReader(MessageReader& rdr);
     
@@ -138,8 +154,8 @@ protected:
 
     void p_make_new_body_buffer();
     void p_post_message_cb(Marvin::ErrorType er);
-    void p_post_body_chunk_cb(Marvin::ErrorType er, BufferChain chain);
-    bool p_parser_ok(int nparsed, MBuffer& mb);
+    void p_post_body_chunk_cb(Marvin::ErrorType er, Marvin::BufferChain chain);
+    bool p_parser_ok(int nparsed, Marvin::MBuffer& mb);
 
     /**
     *  These methods are override for virtual methods in Paser
@@ -160,7 +176,7 @@ protected:
     static std::size_t     s_bodyBufferSize;
     
     // socket and io_service
-    ISocketSPtr                  m_readSock;
+    ISocketSPtr                  m_read_sock;
     boost::asio::io_service&     m_io;
 
     bool m_reading_full_message;
@@ -169,15 +185,15 @@ protected:
 //    std::function<void(Marvin::ErrorType err)> m_read_message_cb;
     ReadMessageCallback m_read_message_cb;
 
-    std::function<void(Marvin::ErrorType err, BufferChain chunk)> m_read_body_cb;
+    std::function<void(Marvin::ErrorType err, Marvin::BufferChain chunk)> m_read_body_cb;
     
     /// @TODO - there is redundancy here needs to be cleaned up
     int                             m_total_bytes_read;
-    MBufferSPtr                     m_header_buffer_sptr;
-    MBufferSPtr                     m_body_buffer_sptr;
+    Marvin::MBufferSPtr             m_header_buffer_sptr;
+    Marvin::MBufferSPtr             m_body_buffer_sptr;
 
-    BufferChain                     m_raw_body_buffer_chain;
-    BufferChain                     m_body_buffer_chain;
+    Marvin::BufferChain             m_raw_body_buffer_chain;
+    Marvin::BufferChain             m_body_buffer_chain;
 
     std::size_t                     m_body_buffer_size;
     std::size_t                     m_header_buffer_size;

@@ -26,8 +26,7 @@ std::string traceWriter(MessageWriter& writer)
     return ss.str();
 }
 
-//MessageWriter::MessageWriter(boost::asio::io_service& io, TCPConnection& conn):_io(io), _conn(conn), _m_header_buf(1000)
-MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr conn):_io(io), _conn(conn), _m_header_buf(1000)
+MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock):m_io(io), m_write_sock(write_sock), m_header_buf(1000)
 {
     LogTorTrace();
 }
@@ -49,19 +48,7 @@ MessageWriter::~MessageWriter()
     LogTorTrace();
 }
 
-void MessageWriter::putHeadersStuffInBuffer()
-{
-    MessageBaseSPtr msg = _currentMessage;
-    _m_header_buf.empty();
-    serializeHeaders(*msg, _m_header_buf);
-    LogDebug("request size: ");
-}
-void MessageWriter::onWriteHeaders(Marvin::ErrorType& ec)
-{
-    // put the  first line and header into a buffer
-//    IWriteSocket* wsock = getWriteSocket();
-//    wsock.asyncWrite();
-}
+#pragma mark - public methods
 void MessageWriter::asyncWrite(MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb)
 {
    
@@ -69,21 +56,21 @@ void MessageWriter::asyncWrite(MessageBaseSPtr msg, std::string& body_string, Wr
         asyncWrite(msg, cb);
     } else {
 //        std:: cout << std::endl << "body buffer write: " << body_string << std::endl;
-        _body_buffer_string = body_string;
-        _body_buffer_chain_sptr = buffer_chain(body_string);
+        m_body_buffer_string = body_string;
+        m_body_buffer_chain_sptr = Marvin::buffer_chain(body_string);
         asyncWrite(msg, cb);
     }
 }
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb)
+void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb)
 {
     assert(body_mb_sptr != nullptr);
-    _body_buffer_chain_sptr = buffer_chain(body_mb_sptr);
+    m_body_buffer_chain_sptr = buffer_chain(body_mb_sptr);
     asyncWrite(msg, cb);
 }
 
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb)
+void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb)
 {
-    _body_buffer_chain_sptr = body_chain_sptr;
+    m_body_buffer_chain_sptr = body_chain_sptr;
     asyncWrite(msg, cb);
 }
 
@@ -91,7 +78,7 @@ void
 MessageWriter::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
 {
     LogDebug("");
-    _currentMessage = msg;
+    m_current_message = msg;
     asyncWriteHeaders(msg, [this, cb](Marvin::ErrorType& ec){
         LogDebug(" cb: ", (long) &cb);
         // doing a full write of the message
@@ -99,7 +86,7 @@ MessageWriter::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
             LogDebug("", ec.value(), ec.category().name(), ec.category().message(ec.value()));
             cb(ec);
         } else {
-            asyncWriteFullBody([this, cb](Marvin::ErrorType& ec2){
+            p_async_write_full_body([this, cb](Marvin::ErrorType& ec2){
                 LogDebug(" cb: ", (long) &cb);
                 auto pf = std::bind(cb, ec2);
 //                _io.post(pf);
@@ -112,9 +99,9 @@ MessageWriter::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
 void
 MessageWriter::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType cb)
 {
-    putHeadersStuffInBuffer();
+    p_put_headers_stuff_in_buffer();
     
-    _conn->asyncWrite(_m_header_buf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+    m_write_sock->asyncWrite(m_header_buf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
 
         LogDebug("");
         // need to check and do something about insufficient write
@@ -124,51 +111,17 @@ MessageWriter::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType 
     });
 }
 
-//
-// writes the entire body - precondition - we have the entire body already via call to setContent()
-//
-void MessageWriter::asyncWriteFullBody(WriteMessageCallbackType cb)
-{
-    LogDebug(" cb: ", (long) &cb);
-    // if body not set throw exception
-    if( ( ! _body_buffer_chain_sptr) || ( _body_buffer_chain_sptr->size() == 0) ) {
-        LogWarn("writing empty body");
-        Marvin::ErrorType ee = Marvin::make_error_ok();
-        auto pf = std::bind(cb, ee);
-        _io.post(pf);
-    } else{
-#if 0
-        /**
-        * PROBLEM - this copies the body - find a better way
-        * @todo - there is a bug here when using buffer chains
-        */
-        std::cout << std::endl << __FUNCTION__ << " "<< _body_buffer_chain_sptr->to_string() << std::endl;
-        /**
-        * This is a hack to overcome some bug in BufferChain usage
-        */
-        _body_mbuffer_sptr = _body_buffer_chain_sptr->amalgamate();
-        _conn->asyncWrite(*_body_mbuffer_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
-#else
-        _conn->asyncWrite(_body_buffer_chain_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
-#endif
-            LogDebug("");
-            auto pf = std::bind(cb, ec);
-            _io.post(pf);
-        });
-    }
-    
-}
 
 void MessageWriter::asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb)
 {
     auto bf = boost::asio::buffer(data);
-    _conn->asyncWrite(bf, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    m_write_sock->asyncWrite(bf, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }
-void MessageWriter::asyncWriteBodyData(MBuffer& data, WriteBodyDataCallbackType cb)
+void MessageWriter::asyncWriteBodyData(Marvin::MBuffer& data, WriteBodyDataCallbackType cb)
 {
-    _conn->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    m_write_sock->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }
@@ -181,7 +134,7 @@ void MessageWriter::asyncWriteBodyData(MBuffer& data, WriteBodyDataCallbackType 
 //}
 void MessageWriter::asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb)
 {
-    _conn->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    m_write_sock->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }
@@ -192,4 +145,32 @@ void MessageWriter::asyncWriteTrailers(MessageBaseSPtr msg,  AsyncWriteCallbackT
 
 void MessageWriter::end()
 {
+}
+#pragma mark - internal functions
+void MessageWriter::p_put_headers_stuff_in_buffer()
+{
+    MessageBaseSPtr msg = m_current_message;
+    m_header_buf.empty();
+    serializeHeaders(*msg, m_header_buf);
+    LogDebug("request size: ");
+}
+//
+// writes the entire body - precondition - we have the entire body already
+//
+void MessageWriter::p_async_write_full_body(WriteMessageCallbackType cb)
+{
+    LogDebug(" cb: ", (long) &cb);
+    // if body not set throw exception
+    if( ( ! m_body_buffer_chain_sptr) || ( m_body_buffer_chain_sptr->size() == 0) ) {
+        LogWarn("writing empty body");
+        Marvin::ErrorType ee = Marvin::make_error_ok();
+        auto pf = std::bind(cb, ee);
+        m_io.post(pf);
+    } else{
+        m_write_sock->asyncWrite(m_body_buffer_chain_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+        LogDebug("");
+        auto pf = std::bind(cb, ec);
+        m_io.post(pf);
+        });
+    }
 }

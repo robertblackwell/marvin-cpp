@@ -105,7 +105,7 @@ public:
     bool    isRequest();
     
     friend std::string traceMessage(MessageBase& msg);
-    friend void serializeHeaders(MessageBase& msg, MBuffer& buf);
+    friend void serializeHeaders(MessageBase& msg, Marvin::MBuffer& buf);
 //    friend void serializeHeaders(MessageBase& msg, boost::asio::streambuf& buf);
 
 protected:

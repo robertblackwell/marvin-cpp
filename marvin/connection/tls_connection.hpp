@@ -53,11 +53,10 @@ class TLSConnection : public ISocket
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     
-    void asyncWrite(MBuffer& fb, AsyncWriteCallbackType cb);
-    void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb);
+    void asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallbackType cb);
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 
-    void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb);
+    void asyncRead(Marvin::MBuffer& mb,  AsyncReadCallbackType cb);
     void shutdown();
     void close();
     

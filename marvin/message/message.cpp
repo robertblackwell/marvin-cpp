@@ -30,7 +30,7 @@ std::string traceMessage(MessageBase& msg)
 }
 
 //void serializeHeaders(MessageBase& msg, boost::asio::streambuf& b)
-void serializeHeaders(MessageBase& msg, MBuffer& mb)
+void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
 {
     boost::asio::streambuf b;
     std::ostream os(&b);

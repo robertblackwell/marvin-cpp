@@ -34,7 +34,7 @@ typedef std::shared_ptr<IReadSocket> IReadSocketSPtr;
 */
 class IReadSocket{
 public:
-    virtual void asyncRead(MBuffer& mb, AsyncReadCallback cb) = 0;
+    virtual void asyncRead(Marvin::MBuffer& mb, AsyncReadCallback cb) = 0;
 };
 
 /**
@@ -46,8 +46,8 @@ typedef std::shared_ptr<IWriteSocket> IWriteSocketSPtr;
 class IWriteSocket{
 public:
     virtual void asyncWrite(std::string& str, AsyncWriteCallbackType cb) = 0;
-    virtual void asyncWrite(MBuffer& fb, AsyncWriteCallback) = 0;
-    virtual void asyncWrite(BufferChainSPtr chain_sptr, AsyncWriteCallback) = 0;
+    virtual void asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallback) = 0;
+    virtual void asyncWrite(Marvin::BufferChainSPtr chain_sptr, AsyncWriteCallback) = 0;
     virtual void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb) = 0;
     virtual void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
 };
