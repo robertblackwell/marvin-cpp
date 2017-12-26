@@ -17,6 +17,26 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
 
 
 #pragma mark - BufferChain
+BufferChainSPtr BufferChain::makeSPtr(std::string& s)
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    sp->push_back(Marvin::MBuffer::makeSPtr(s));
+    return sp;
+}
+BufferChainSPtr BufferChain::makeSPtr(MBuffer& mb)
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    sp->push_back(Marvin::MBuffer::makeSPtr(mb));
+    return sp;
+}
+BufferChainSPtr BufferChain::makeSPtr(MBufferSPtr mb_sptr)
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    sp->push_back(mb_sptr);
+    return sp;
+}
+
+
 BufferChain::BufferChain()
 {
     _chain = std::vector<MBufferSPtr>();
@@ -58,13 +78,13 @@ MBufferSPtr BufferChain::amalgamate()
 BufferChainSPtr buffer_chain(std::string& s)
 {
     BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
-    sp->push_back(m_buffer(s));
+    sp->push_back(Marvin::MBuffer::makeSPtr(s));
     return sp;
 }
 BufferChainSPtr buffer_chain(MBuffer& mb)
 {
     BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
-    sp->push_back(m_buffer(mb));
+    sp->push_back(Marvin::MBuffer::makeSPtr(mb));
     return sp;
 }
 BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr)

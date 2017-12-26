@@ -6,15 +6,15 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef connection_handler_pool_hpp
-#define connection_handler_pool_hpp
+#ifndef connection_pool_hpp
+#define connection_pool_hpp
 
 #include <stdio.h>
 #include <vector>
 #include <map>
 #include <set>
 #include "i_socket.hpp"
-//#include "connection_pool.hpp"
+#include "connection_pool.hpp"
 
 //---------------------------------------------------------------------------------------------------
 // InUseConnections - List of assigned connections currently "in use"
@@ -134,28 +134,28 @@ class WaitingRequestsType
 //          delete conn
 //          connection_count--
 //
-class ConnectionHandlerManager
+class ConnectionPool
 {
 public:
-    static ConnectionHandlerManager* getInstance(boost::asio::io_service& io);
+    static ConnectionPool* getInstance(boost::asio::io_service& io);
            
-    ConnectionHandlerManager(boost::asio::io_service& io, boost::asio::strand& strand);
+    ConnectionPool(boost::asio::io_service& io);
     
     void init(boost::asio::io_service& io);
     
-    void asyncAcquireConnectionHandler(
+    void asyncGetConnection(
         std::string scheme,
         std::string server,
         std::string port,
         ConnectCallbackType cb
     );
     
-    void releaseConnectionHandler(ConnectionHandler* conn_handler);
+    void releaseConnection(ISocket* conn);
 
 private:
     
     // this is the real interface - but is wrapped in a strand by the public call
-    void __asyncAcquireConnection(
+    void __asyncGetConnection(
         std::string scheme,
         std::string server,
         std::string port,

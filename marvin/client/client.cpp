@@ -80,22 +80,22 @@ void Client::asyncConnect(ErrorOnlyCallbackType cb)
 //--------------------------------------------------------------------------------
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb)
 {
-    _body_mbuffer_sptr = m_buffer(body);
+    _body_mbuffer_sptr = Marvin::MBuffer::makeSPtr(body);
     _async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  MBufferSPtr body, ResponseHandlerCallbackType cb)
+void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body, ResponseHandlerCallbackType cb)
 {
     _body_mbuffer_sptr = body;
     _async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb)
+void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb)
 {
     _body_mbuffer_sptr = chain_sptr->amalgamate();
     _async_write(requestMessage, cb);
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
-    _body_mbuffer_sptr  = m_buffer(""); // no body
+    _body_mbuffer_sptr  = Marvin::MBuffer::makeSPtr(""); // no body
     _async_write(requestMessage, cb);
 }
 void Client::_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)

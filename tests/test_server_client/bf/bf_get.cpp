@@ -22,7 +22,7 @@ void GetTest::exec()
 //        std::cout << "request " << resp.getBody() << std::endl;
 //        std::cout << "request " << std::hex << req.get() << std::endl;
         MessageReaderSPtr b = _client->getResponse();
-        BufferChain bdy_chain = b->get_body_chain();
+        Marvin::BufferChain bdy_chain = b->get_body_chain();
         std::string body_as_string = bdy_chain.to_string();
         std::string bdy = body_as_string;
         auto st = b->statusCode();

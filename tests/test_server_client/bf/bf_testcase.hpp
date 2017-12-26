@@ -35,13 +35,13 @@ namespace body_format {
         
         Testcase(TestType type, std::string desc, std::vector<std::string>);
         std::size_t     chunks_count() const;
-        MBufferSPtr     buffers_as_mbuffer() const;
+        Marvin::MBufferSPtr     buffers_as_mbuffer() const;
         std::string     buffers_as_string() const;
-        BufferChainSPtr buffers_as_buffer_chain() const;
+        Marvin::BufferChainSPtr buffers_as_buffer_chain() const;
         
-        MBufferSPtr     chunk_as_mbuffer(std::size_t index);
+        Marvin::MBufferSPtr     chunk_as_mbuffer(std::size_t index);
         std::string     chunk_as_string(std::size_t index);
-        BufferChainSPtr chunk_as_buffer_chain(std::size_t index);
+        Marvin::BufferChainSPtr chunk_as_buffer_chain(std::size_t index);
 
     };
 }

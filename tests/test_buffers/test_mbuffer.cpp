@@ -10,6 +10,8 @@
 #include "rb_logger.hpp"
 #include <gtest/gtest.h>
 
+using namespace Marvin;
+
 #pragma mark - testcase_mbuffer
 TEST(mbuffer, 01)
 {

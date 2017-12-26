@@ -9,16 +9,21 @@
 //#include <boost/date_time/posix_time/posix_time.hpp>
 #include <cassert>
 #include <vector>
+/**
+* \ingroup Buffer
+*/
 
 namespace Marvin {
 class MBuffer;
-
+/// \ingroup Buffer
 using MBufferSPtr =  std::shared_ptr<MBuffer>;
+/// \ingroup Buffer
 using MBufferUPtr =  std::unique_ptr<MBuffer>;
 
 #pragma mark - MBuffer class
 
 /*!
+* \ingroup Buffer
 * \brief MBuffer provides a contiguous expanding buffer
  *
  * MBuffer class wraps a contigous buffer and provides manipulation methods.
@@ -27,6 +32,11 @@ using MBufferUPtr =  std::unique_ptr<MBuffer>;
  */
 struct MBuffer {
 public:
+    static MBufferSPtr makeSPtr(std::size_t capacity);
+    static MBufferSPtr makeSPtr(std::string s);
+    static MBufferSPtr makeSPtr(void* mem, std::size_t size);
+    static MBufferSPtr makeSPtr(MBuffer& mb);
+
     /**
      * Constructor - give it a slab of memory to manage
      * Let the MBuffer constructor allocate the memory - but tell it howmuch
@@ -110,11 +120,6 @@ protected:
     std::size_t capacity_;  /// the capacity of the buffer, the value used for the malloc call
     std::size_t size_;      /// size of the currently filled portion of the memory slab
 };
-
-MBufferSPtr m_buffer(std::size_t capacity);
-MBufferSPtr m_buffer(std::string s);
-MBufferSPtr m_buffer(void* mem, std::size_t size);
-MBufferSPtr m_buffer(MBuffer& mb);
 
 } //namespace Marvin
 #endif

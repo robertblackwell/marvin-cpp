@@ -14,8 +14,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "tcp_connection.hpp"
 #include "message_reader.hpp"
 
-#include "test_server_client/bb/bb_testcase.hpp"
-#include "test_server_client/bb/bb_client.hpp"
+#include "bb_testcase.hpp"
+#include "bb_client.hpp"
 
 using namespace body_buffering;
 

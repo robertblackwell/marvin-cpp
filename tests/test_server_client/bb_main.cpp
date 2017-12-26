@@ -17,11 +17,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 
-#include "test_server_client/tsc_req_handler.hpp"
-#include "test_server_client/server_runner.hpp"
-#include "test_server_client/bb/bb_client.hpp"
-#include "test_server_client/bb/bb_testcase.hpp"
-#include "test_server_client/bb/bb_testcase_defs.hpp"
+#include "tsc_req_handler.hpp"
+#include "server_runner.hpp"
+#include "bb_client.hpp"
+#include "bb_testcase.hpp"
+#include "bb_testcase_defs.hpp"
 
 
 int main( int argc, char* argv[] )

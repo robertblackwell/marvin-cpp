@@ -9,7 +9,7 @@
 #include <map>
 #include "marvin_error.hpp"
 #include "http_header.hpp"
-#include "test_server_client/bb/bb_testcase.hpp"
+#include "bb_testcase.hpp"
 
 namespace body_buffering {
 

@@ -1,7 +1,9 @@
 
-#ifndef i_socket_hpp
-#define i_socket_hpp
-
+#ifndef marvin_i_socket_hpp
+#define marvin_i_socket_hpp
+/**
+* \defgroup SocketIO
+*/
 #include <iostream>
 #include <istream>
 #include <ostream>
@@ -20,16 +22,17 @@ using namespace boost::system;
 using namespace boost::asio;
 
 
-//--------------------------------------------------------------------------------------------------
-// Interface to specify the interface to sockets that do SSL/TLS and sockets that do NOT
-//--------------------------------------------------------------------------------------------------
-typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallback;
-typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncWriteCallback;
+/// \ingroup SocketIO
+using AsyncReadCallback = std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>;
+/// \ingroup SocketIO
+using AsyncWriteCallback = std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>;
 
 class IReadSocket;
-typedef std::shared_ptr<IReadSocket> IReadSocketSPtr;
+/// \ingroup SocketIO
+ using IReadSocketSPtr = std::shared_ptr<IReadSocket>;
 
 /**
+* \ingroup SocketIO
 * \brief Interface defines all the read methods common to a tcp and an ssl socket
 */
 class IReadSocket{
@@ -37,12 +40,14 @@ public:
     virtual void asyncRead(Marvin::MBuffer& mb, AsyncReadCallback cb) = 0;
 };
 
+class IWriteSocket;
+/// \ingroup SocketIO
+using IWriteSocketSPtr = std::shared_ptr<IWriteSocket>;
+
 /**
+* \ingroup SocketIO
 * \brief Interface defines all the write methods common to a tcp and an ssl socket
 */
-class IWriteSocket;
-typedef std::shared_ptr<IWriteSocket> IWriteSocketSPtr;
-
 class IWriteSocket{
 public:
     virtual void asyncWrite(std::string& str, AsyncWriteCallbackType cb) = 0;
@@ -52,17 +57,21 @@ public:
     virtual void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
 };
 
-/**
-* \brief Interface defiines all the methods read, write, connect, accept, shutdown, close common to tcp and ssl sockets
-*/
 class ISocket;
 
+/// \ingroup SocketIO
 using ISocketSPtr = std::shared_ptr<ISocket>;
+/// \ingroup SocketIO
 using ISocketUPtr = std::unique_ptr<ISocket>;
 
+/**
+* \ingroup SocketIO
+* \brief Interface defines all the methods read, write, connect, accept, shutdown, close common to tcp and ssl sockets
+*/
 class ISocket : public IReadSocket, public IWriteSocket
 {
     public:
+    using SPtr = std::shared_ptr<ISocket>;
     virtual long nativeSocketFD() = 0;
     virtual void asyncConnect(ConnectCallbackType cb) = 0;
     virtual void asyncAccept(

@@ -17,6 +17,29 @@ namespace  Marvin {
   
 
 #pragma mark - MBuffer implementation
+MBufferSPtr MBuffer::makeSPtr(std::size_t capacity)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(capacity));
+    return mbp;
+}
+MBufferSPtr MBuffer::makeSPtr(std::string s)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(s.size()));
+    mbp->append((void*) s.c_str(), s.size());
+    return mbp;
+}
+MBufferSPtr MBuffer::makeSPtr(void* mem, std::size_t size)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(size));
+    mbp->append(mem, size);
+    return mbp;
+}
+MBufferSPtr MBuffer::makeSPtr(MBuffer& mb)
+{
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(mb.capacity()));
+    mbp->append(mb.data(), mb.size());
+    return mbp;
+}
 
 MBuffer::MBuffer(std::size_t cap)
 {

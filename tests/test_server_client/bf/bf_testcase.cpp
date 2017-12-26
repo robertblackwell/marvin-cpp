@@ -12,9 +12,10 @@ std::size_t     Testcase::chunks_count() const
 {
     return _body_buffers.size();
 }
-MBufferSPtr     Testcase::buffers_as_mbuffer() const
+Marvin::MBufferSPtr     Testcase::buffers_as_mbuffer() const
 {
-    return m_buffer(buffers_as_string());
+    return Marvin::MBuffer::makeSPtr(buffers_as_string());
+//    return m_buffer(buffers_as_string());
 }
 std::string     Testcase::buffers_as_string() const
 {
@@ -24,27 +25,27 @@ std::string     Testcase::buffers_as_string() const
     }
     return res;
 }
-BufferChainSPtr Testcase::buffers_as_buffer_chain() const
+Marvin::BufferChainSPtr Testcase::buffers_as_buffer_chain() const
 {
     std::string res = "";
-    BufferChainSPtr sp = std::make_shared<BufferChain>();
+    Marvin::BufferChainSPtr sp = std::make_shared<Marvin::BufferChain>();
     for(const std::string& s: _body_buffers) {
         res += s;
-        MBufferSPtr mb = m_buffer(s);
+        Marvin::MBufferSPtr mb = Marvin::MBuffer::makeSPtr(s);
         sp->push_back(mb);
     }
     return sp;
 }
 
-MBufferSPtr     Testcase::chunk_as_mbuffer(std::size_t index)
+Marvin::MBufferSPtr     Testcase::chunk_as_mbuffer(std::size_t index)
 {
-    return m_buffer(chunk_as_string(index));
+    return Marvin::MBuffer::makeSPtr(chunk_as_string(index));
 }
 std::string     Testcase::chunk_as_string(std::size_t index)
 {
     return _body_buffers[index];
 }
-BufferChainSPtr Testcase::chunk_as_buffer_chain(std::size_t index)
+Marvin::BufferChainSPtr Testcase::chunk_as_buffer_chain(std::size_t index)
 {
-    return buffer_chain(chunk_as_mbuffer(index));
+    return Marvin::BufferChain::makeSPtr(chunk_as_mbuffer(index));
 }

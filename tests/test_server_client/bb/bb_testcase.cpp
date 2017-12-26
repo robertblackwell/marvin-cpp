@@ -6,7 +6,7 @@
 #include <map>
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_ERROR)
-#include "test_server_client/bb/bb_testcase.hpp"
+#include "bb_testcase.hpp"
 
 using namespace body_buffering;
 

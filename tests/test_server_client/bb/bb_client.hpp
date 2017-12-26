@@ -12,7 +12,7 @@
 #include "repeating_timer.hpp"
 #include "tcp_connection.hpp"
 #include "message_reader.hpp"
-#include "test_server_client/bb/bb_testcase.hpp"
+#include "bb_testcase.hpp"
 
 namespace body_buffering {
 

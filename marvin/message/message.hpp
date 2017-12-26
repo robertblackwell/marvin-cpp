@@ -1,27 +1,36 @@
-#ifndef MESSAGE_HPP
-#define MESSAGE_HPP
+#ifndef marvin_http_message_hpp
+#define marvin_http_message_hpp
 #include <string>
 #include <map>
 #include <sstream>
 #include "buffer.hpp"
 #include "http_parser.h"
 #include "boost_stuff.hpp"
-
+#include "i_message.hpp"
+/**
+* \defgroup HttpMessage
+* \brief This group deals with the structure, parsing and construction of HTTP/1.1 messages.
+*/
 #pragma once
 #pragma mark - http message interfaces
 
-//
-// BAD kludge to get C++ enum same as http_parser c enum
-//
-//  usage HttpMethod::GET -- see http_parser.h for list of names
-//
+/**
+* \ingroup HttpMessage
+* \brief Enum for HTTP method. It is a BAD kludge to get C++ enum same as http_parser c enum;
+* usage HttpMethod::GET -- see http_parser.h for list of names
+*/
 enum class HttpMethod{
 #define EC(num, name, string) name = HTTP_##name,
     HTTP_METHOD_MAP(EC)
 #undef EC
 };
 std::string httpMethodString(HttpMethod m);
-
+/**
+* \ingroup HttpMessage
+* \brief Defines an interface that all representations of a Http Message should conform to.
+*/
+using MessageInterface = IMessage;
+#if 0
 class MessageInterface
 {
 public:
@@ -55,11 +64,14 @@ public:
     virtual bool isRequest() = 0;
     
 };
-
+#endif
 #pragma - http message base
 class MessageBase;
+/// \ingroup HttpMessage
 typedef std::shared_ptr<MessageBase> MessageBaseSPtr;
 
+/// \ingroup HttpMessage
+/// \brief A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
 class MessageBase : public MessageInterface
 {
 public:

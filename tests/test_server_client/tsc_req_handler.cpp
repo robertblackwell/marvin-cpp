@@ -43,7 +43,7 @@ MessageBaseSPtr make_200_response(std::string body)
     msg->setHttpVersMajor(1);
     msg->setHttpVersMinor(1);
 
-    Marvin::BufferChainSPtr bchain_sptr = Marvin::buffer_chain(body);
+    Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
     msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(body.length() ));
     return msg;
 }
@@ -56,7 +56,7 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->setHttpVersMajor(1);
     msg->setHttpVersMinor(1);
 
-    Marvin::BufferChainSPtr bchain_sptr = Marvin::buffer_chain(body);
+    Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
     msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(body.length() ));
     return msg;
 }
@@ -165,7 +165,7 @@ void TscRequestHandler::handle_post_timeout(
     MessageBaseSPtr msg = make_200_response(j.dump());
     bool keep_alive = apply_keepalive_rules(req, msg);
     std::string json_body = j.dump();
-    Marvin::BufferChainSPtr bchain_sptr = Marvin::buffer_chain(json_body);
+    Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(json_body);
     prepare_send_response(resp, msg, json_body, done, keep_alive);
     _timer.expires_from_now(boost::posix_time::milliseconds(timeout_interval));
     _timer.async_wait([this](const boost::system::error_code& err) {
@@ -184,7 +184,7 @@ void TscRequestHandler::handle_post_echo(
     MessageBaseSPtr msg = make_200_response(j.dump());
     bool keep_alive = apply_keepalive_rules(req, msg);
     std::string json_body = j.dump();
-    Marvin::BufferChainSPtr bchain_sptr = Marvin::buffer_chain(json_body);
+    Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(json_body);
     resp->asyncWrite(msg, json_body, [this, done, keep_alive](Marvin::ErrorType& err){;
         done(err, keep_alive);
     });

@@ -1,13 +1,6 @@
-//
-//  message_writer.hpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/10/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
 
-#ifndef message_writer_v2_hpp
-#define message_writer_v2_hpp
+#ifndef marvin_message_writer_v2_hpp
+#define marvin_message_writer_v2_hpp
 
 #include <stdio.h>
 #include "callback_typedefs.hpp"

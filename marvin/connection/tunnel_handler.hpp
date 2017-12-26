@@ -1,13 +1,6 @@
-//
-//  TunnelHandler.hpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/31/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
 
-#ifndef tunnel_handler_hpp
-#define tunnel_handler_hpp
+#ifndef marvin_tunnel_handler_hpp
+#define marvin_tunnel_handler_hpp
 
 #include <stdio.h>
 #include <memory>
@@ -16,14 +9,20 @@
 #include "half_tunnel.hpp"
 
 class TunnelHandler;
-typedef std::shared_ptr<TunnelHandler> TunnelHandlerSPtr;
-typedef std::unique_ptr<TunnelHandler> TunnelHandlerUPtr;
+/// \ingroup SocketIO
+using TunnelHandlerSPtr = std::shared_ptr<TunnelHandler> ;
+/// \ingroup SocketIO
+using TunnelHandlerUPtr = std::unique_ptr<TunnelHandler>;
 
+/**
+* \ingroup SocketIO
+* \brief Cmbines two HalfTunnel objects to provide bi directional pipe between two end points.
+*/
 class TunnelHandler
 {
     public:
         TunnelHandler(
-            ISocketSPtr  downStreamConnection,
+            ISocketSPtr            downStreamConnection,
             TCPConnectionSPtr      upstreamConnection
         );
         ~TunnelHandler();

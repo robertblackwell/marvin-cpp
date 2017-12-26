@@ -10,33 +10,33 @@
 
 HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd)
 {
-    _readEnd = readEnd;
-    _writeEnd = writeEnd;
-    _bufferPtr = new MBuffer(20000);
-    _bufferUPtr = std::unique_ptr<MBuffer>(_bufferPtr);
+    m_read_end = readEnd;
+    m_write_end = writeEnd;
+    m_bufferPtr = new Marvin::MBuffer(20000);
+    m_bufferUPtr = std::unique_ptr<MBuffer>(m_bufferPtr);
 }
 void HalfTunnel::start(std::function<void(Marvin::ErrorType& err)> cb)
 {
-    _callback = cb;
-    startRead();
+    m_callback = cb;
+    p_start_read();
 }
-void HalfTunnel::startRead()
+void HalfTunnel::p_start_read()
 {
-    auto hf = std::bind(&HalfTunnel::handleRead, this, std::placeholders::_1, std::placeholders::_2);
-    _readEnd->asyncRead(*_bufferPtr, hf);
+    auto hf = std::bind(&HalfTunnel::p_handle_read, this, std::placeholders::_1, std::placeholders::_2);
+    m_readEnd->asyncRead(*m_bufferPtr, hf);
 }
-void HalfTunnel::handleRead(Marvin::ErrorType& err, std::size_t bytes_transfered)
+void HalfTunnel::p_handle_read(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
     if( ! err ){
-        auto hf = std::bind(&HalfTunnel::handleWrite, this, std::placeholders::_1, std::placeholders::_2);
-        _writeEnd->asyncWrite(*_bufferPtr, hf);
+        auto hf = std::bind(&HalfTunnel::p_handle_write, this, std::placeholders::_1, std::placeholders::_2);
+        m_writeEnd->asyncWrite(*m_bufferPtr, hf);
     } else {
     }
 }
-void HalfTunnel::handleWrite(Marvin::ErrorType& err, std::size_t bytes_transfered)
+void HalfTunnel::p_handle_write(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
     if( ! err ){
-        startRead();
+        p_start_read();
     } else {
     }
 }

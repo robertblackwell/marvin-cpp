@@ -10,16 +10,26 @@
  #include <cassert>
  #include <vector>
  #include "m_buffer.hpp"
+/**
+* \ingroup Buffer
+*/
+
 namespace Marvin {
 class BufferChain;
 
+/// \ingroup Buffer
 using BufferChainSPtr = std::shared_ptr<BufferChain>;
 /**
+* \ingroup Buffer
 * \brief Provides a chain of MBuffers to allow for reading data in chunks without copying into a single contigous buffer.
 */
 class BufferChain
 {
     public:
+        static BufferChainSPtr makeSPtr(std::string& s);
+        static BufferChainSPtr makeSPtr(MBuffer& mb);
+        static BufferChainSPtr makeSPtr(MBufferSPtr mb_sptr);
+    
         BufferChain();
         void            push_back(MBufferSPtr mb);
         void            clear();
@@ -40,9 +50,6 @@ class BufferChain
         std::vector<boost::asio::mutable_buffer>    _asio_chain;
         std::size_t                                 _size;
 };
-BufferChainSPtr buffer_chain(std::string& s);
-BufferChainSPtr buffer_chain(MBuffer& mb);
-BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr);
 
 } // namespave Marvin
 #endif

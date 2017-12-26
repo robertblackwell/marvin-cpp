@@ -1,18 +1,15 @@
 
-#ifndef tcp_connection_hpp
-#define tcp_connection_hpp
+#ifndef marvin_tcp_connection_hpp
+#define marvin_tcp_connection_hpp
+/**
+* \ingroup SocketIO
+*/
 
 #include <iostream>
 #include <istream>
 #include <ostream>
 #include <string>
-
-//#include <boost/asio.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/function.hpp>
-
 #include "boost_stuff.hpp"
-
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "buffer.hpp"
@@ -31,6 +28,7 @@ class TCPConnection;
 using TCPConnectionSPtr = std::shared_ptr<TCPConnection>;
 using TCPConnectionUPtr = std::unique_ptr<TCPConnection>;
 /**
+* \ingroup SocketIO
 * \brief Wraps a boost::asio tcp socket and provides non TLS/SSL application specific async operations as specified in ISocket; in addition
 * implements timeout on all except asyncAccept operations.
 */

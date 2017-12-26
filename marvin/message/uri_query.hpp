@@ -1,19 +1,13 @@
-//
-//  query_parser.hpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/14/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
-
-#ifndef query_parser_hpp
-#define query_parser_hpp
+#ifndef marvin_query_parser_hpp
+#define marvin_query_parser_hpp
 
 #include <stdio.h>
 #include <string>
 #include <map>
+/// \ingroup HttpMessage
 void printMap(std::map<std::string, std::string> m);
 
+/// \ingroup HttpMessage
 class UriQuery
 {
 public:

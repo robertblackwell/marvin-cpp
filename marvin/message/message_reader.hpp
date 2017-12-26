@@ -1,5 +1,5 @@
-#ifndef message_reader_v2_hpp
-#define message_reader_v2_hpp
+#ifndef marvin_message_reader_v2_hpp
+#define marvin_message_reader_v2_hpp
 
 #include <iostream>
 #include <iterator>

@@ -16,7 +16,7 @@
 //void test_mbuffer_01();
 //void test_fbuffer_01();
 //void test_fbuffer_02();
-
+using namespace Marvin;
 TEST(buffer_chain, assignment)
 {
     MBuffer mb(100);

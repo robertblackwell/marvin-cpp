@@ -1,7 +1,9 @@
 
-#ifndef tls_connection_hpp
-#define tls_connection_hpp
-
+#ifndef marvin_tls_connection_hpp
+#define marvin_tls_connection_hpp
+/**
+* \ingroup SocketIO
+*/
 #include <iostream>
 #include <istream>
 #include <ostream>
@@ -28,11 +30,12 @@
 //using system::error_code;
 //using boost::asio::ip::tcp;
 ////namespace ssl = boost::asio::ssl;
-typedef boost::asio::ssl::stream<tcp::socket> SslSocketType;
+using SslSocketType = boost::asio::ssl::stream<boost::asio::ip::tcp::socket>;
 
-//--------------------------------------------------------------------------------------------------
-// SSL/TLS Connection
-//--------------------------------------------------------------------------------------------------
+/**
+* \ingroup SocketIO
+* \brief Provides a bi-directional TLS connection that carries TCP traffic.
+*/
 class TLSConnection : public ISocket
 {
     public:

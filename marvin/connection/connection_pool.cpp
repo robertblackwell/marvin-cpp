@@ -7,13 +7,13 @@
 //
 #include <map>
 #include <set>
-#include "connection_handler_pool.hpp"
+#include "connection_pool.hpp"
 
 #include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "i_socket.hpp"
+#include "connection_interface.hpp"
 
 
 //---------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ InUseConnectionsType::size()
 }
 
 void
-InUseConnectionsType::remove(ISocket* aConn)
+InUseConnectionsType::remove(ConnectionInterface* aConn)
 {
     if( aConn == NULL )
         return;
@@ -39,7 +39,7 @@ InUseConnectionsType::remove(ISocket* aConn)
 }
 
 void
-InUseConnectionsType::add(ISocket* conn)
+InUseConnectionsType::add(ConnectionInterface* conn)
 {
     _connections[conn] = conn;
 }
@@ -47,7 +47,7 @@ InUseConnectionsType::add(ISocket* conn)
 //---------------------------------------------------------------------------------------------------
 // ConnectionRequest - Holds a pending request for a connection
 //---------------------------------------------------------------------------------------------------
-ConnectionHandlerRequest::ConnectionRequest(
+ConnectionRequest::ConnectionRequest(
     std::string scheme,
     std::string server,
     std::string service,
@@ -58,7 +58,7 @@ ConnectionHandlerRequest::ConnectionRequest(
     _service = service;
     _callback = cb;
 }
-ConnectionHandlerRequest::~ConnectionRequest()
+ConnectionRequest::~ConnectionRequest()
 {
     LogDebug("");
 }
@@ -144,13 +144,13 @@ class HostsCounterType
     
 };
 #endif
-ConnectionHandlerManager* globalConnectionPool = NULL;
+ConnectionPool* globalConnectionPool = NULL;
 
-ConnectionHandlerManager::ConnectionHandlerManager(boost::asio::io_service& io_service): io(io_service), resolver_(io_service), _poolStrand(io)
+ConnectionPool::ConnectionPool(boost::asio::io_service& io_service): io(io_service), resolver_(io_service), _poolStrand(io)
 {
     _maxConnections = 25;
 }
-ConnectionPool* ConnectionHandlerManager::::getInstance(boost::asio::io_service& io)
+ConnectionPool* ConnectionPool::getInstance(boost::asio::io_service& io)
 {
     if( globalConnectionPool == NULL ){
         globalConnectionPool = new ConnectionPool(io);
@@ -160,7 +160,7 @@ ConnectionPool* ConnectionHandlerManager::::getInstance(boost::asio::io_service&
 /**
  * get a connection to the scheme::server
  */
-void ConnectionHandlerManager::::asyncGetConnection(
+void ConnectionPool::asyncGetConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
@@ -170,7 +170,7 @@ void ConnectionHandlerManager::::asyncGetConnection(
     auto hf = _poolStrand.wrap(std::bind(&ConnectionPool::__asyncGetConnection, this, scheme, server, service, cb));
     io.post(hf);
 }
-void ConnectionHandlerManager::::__asyncGetConnection(
+void ConnectionPool::__asyncGetConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
@@ -185,7 +185,7 @@ void ConnectionHandlerManager::::__asyncGetConnection(
         createNewConnection(scheme, server, service, cb);
     }
 }
-void ConnectionHandlerManager::::createNewConnection(
+void ConnectionPool::createNewConnection(
             std::string scheme, // http: or https:
             std::string server, // also called hostname
             std::string service,// http/https or port number
@@ -196,14 +196,14 @@ void ConnectionHandlerManager::::createNewConnection(
             //                                                service,
             //                                                tcp::resolver::query::canonical_name);
     
-    ISocket* conn = socketFactory(io, scheme, server, service);
+    ConnectionInterface* conn = connectionFactory(io, scheme, server, service);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
     _inUse.add(conn);
     //
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ISocket* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ConnectionInterface* conn){
         if( !ec ){
             postSuccess(cb, conn);
         }else{
@@ -215,13 +215,13 @@ void ConnectionHandlerManager::::createNewConnection(
 //
 //so far all we implement is a limit on the number of connections
 //
-void ConnectionHandlerManager::::releaseConnection(ISocket* conn)
+void ConnectionPool::releaseConnection(ConnectionInterface* conn)
 {
     auto hf = _poolStrand.wrap(std::bind(&ConnectionPool::__releaseConnection, this, conn));
     io.post(hf);
 
 }
-void ConnectionHandlerManager::::__releaseConnection(ISocket* conn)
+void ConnectionPool::__releaseConnection(ConnectionInterface* conn)
 {
     LogDebug(" conn: ", conn);
     assert( conn != NULL );
@@ -270,13 +270,13 @@ void ConnectionHandlerManager::::__releaseConnection(ISocket* conn)
     }
 #endif
 }
-void ConnectionHandlerManager::::postSuccess(ConnectCallbackType cb, ISocket* conn)
+void ConnectionPool::postSuccess(ConnectCallbackType cb, ConnectionInterface* conn)
 {
     Marvin::ErrorType merr = Marvin::make_error_ok();
     auto pf = std::bind(cb, merr, conn);
     io.post(pf);
 }
-void ConnectionHandlerManager::::postFail(ConnectCallbackType cb, Marvin::ErrorType& ec)
+void ConnectionPool::postFail(ConnectCallbackType cb, Marvin::ErrorType& ec)
 {
     Marvin::ErrorType merr = ec;
     auto pf = std::bind(cb, merr, nullptr);
