@@ -270,7 +270,7 @@ void TLSConnection::completeWithSuccess()
  * read
  */
 //----------------------------------------------------------------------------
-void TLSConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
+void TLSConnection::asyncRead(Marvin::MBuffer& buffer, AsyncReadCallbackType cb)
 {
     // if a read is active - throw an exception
     //    async_read(this->socket_, buf, )
@@ -290,7 +290,7 @@ void TLSConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
  * write
  */
 //----------------------------------------------------------------------------
-void TLSConnection::asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb)
+void TLSConnection::asyncWrite(Marvin::MBuffer& buffer, AsyncWriteCallbackType cb)
 {
 }
 //----------------------------------------------------------------------------

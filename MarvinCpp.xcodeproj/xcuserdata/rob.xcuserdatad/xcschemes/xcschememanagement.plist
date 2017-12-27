@@ -34,6 +34,11 @@
 			<key>orderHint</key>
 			<integer>30</integer>
 		</dict>
+		<key>marvin.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>47</integer>
+		</dict>
 		<key>nullstream.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -368,6 +373,11 @@
 			<true/>
 		</dict>
 		<key>D4AF58DB1DE6F6AD001AC0A1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D4BE4F6A1FF36F2300A0281C</key>
 		<dict>
 			<key>primary</key>
 			<true/>

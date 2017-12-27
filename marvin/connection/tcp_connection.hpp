@@ -31,12 +31,40 @@ using TCPConnectionUPtr = std::unique_ptr<TCPConnection>;
 * \ingroup SocketIO
 * \brief Wraps a boost::asio tcp socket and provides non TLS/SSL application specific async operations as specified in ISocket; in addition
 * implements timeout on all except asyncAccept operations.
+*
+* ## Timeouts
+* A Note on timeouts, the use of a boost::asio::strand by this class, and
+* concurrent calls to the async io methods defined below.
+*
+* 1. Only one async I/O operation should be outstanding at any time.
+* 2. Internally this class applies timeouts to the operations:
+*       -   asyncConnect
+*       -   asyncRead
+*       -   asyncWrite in all its forms
+*   to accomodate this an instance of boost::asio::strand is used to ensure
+*   that internal io handlers coordinate correctly and do not run concurrently.
+*
+*   HOowever all callbacks provided to asyncConnect, asyncRead, asyncWrite are scheduled (using _io.post())on
+*   the instance of io_service being used by the TCPConnection instance and ARE NOT
+*   running on the internal strand. These callbacks should NOT be wrapped by another strand as
+*   that could cause deadlocks.
+*
+*   Notice that asyncAccept was NOT included in the list of io ops subject to timeout.
+*
+*       -   asyncAccept is intended to be used by a server and could be outstanding for a very long time,
+*           and hence a timeout seems inappropriate, and nothing else should be happening on that
+*           socket while the saerver is waiting for a client connection.
+*           \todo consider taking accept out of this class
+*       -   because of no timeout there is no need for internal handlers associated with asyncAccept
+*           to be run on the internal asio::strand.
+*       -   it is likely that asyncAccept callback will be wrapped by a strand within a server as part
+*           of a servers management of its own concurrency issues.
 */
 class TCPConnection : public ISocket
 {
     public:
     /**
-    * Configuration - static methods are provided for configuriing the
+    * \note Configuration - static methods are provided for configuriing the
     * time out values to be used by connections. The one set of config values
     * apply to all connections. These should be set (if needed) at startup
     */
@@ -76,32 +104,6 @@ class TCPConnection : public ISocket
     );
     
     ~TCPConnection();
-    /**
-    * A Note on timeouts, the use of a boost::asio::strand by this class, and
-    * concurrent calls to the async io methods defined below.
-    *
-    * 1. Only one async I/O operation should be outstanding at any time.
-    * 2. Internally this class applies timeouts to the operations:
-    *       -   asyncConnect
-    *       -   asyncRead
-    *       -   asyncWrite in all its forms
-    *   to accomodate this an instance of boost::asio::strand is used to ensure
-    *   that internal io handlers coordinate correctly and do not run concurrently.
-    *
-    *   HOwever all callbacks provided to asyncConnect, asyncRead, asyncWrite are scheduled (using _io.post())on
-    *   the instance of io_service being used by the TCPConnection instance and ARE NOT
-    *   running on the internal strand. These callbacks should NOT be wrapped by another strand as
-    *   that could cause deadlocks.
-    *
-    *   Notice that asyncAccept was NOT included in the list of io ops subject to timeout.
-    *
-    *       -   asyncAccept is intended to be used by a server and could be outstanding for a very long time,
-    *           and hence a timeout seems inappropriate
-    *       -   because of no timeout there is no need for internal handlers associated with asyncAccept
-    *           to be run on the internal asio::strand.
-    *       -   it is likely that asyncAccept callback will be wrapped by a strand within a server as part
-    *           of a servers management of its own concurrency issues.
-    */
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     

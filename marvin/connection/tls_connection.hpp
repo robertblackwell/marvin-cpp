@@ -21,15 +21,15 @@
 #include "buffer.hpp"
 #include "i_socket.hpp"
 
-//using namespace boost;
-//using namespace boost::system;
-//using namespace boost::asio;
-//
-//
-//using ip::tcp;
-//using system::error_code;
-//using boost::asio::ip::tcp;
-////namespace ssl = boost::asio::ssl;
+using namespace boost;
+using namespace boost::system;
+using namespace boost::asio;
+
+
+using ip::tcp;
+using system::error_code;
+using boost::asio::ip::tcp;
+//namespace ssl = boost::asio::ssl;
 using SslSocketType = boost::asio::ssl::stream<boost::asio::ip::tcp::socket>;
 
 /**
