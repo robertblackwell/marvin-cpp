@@ -6,24 +6,9 @@
 #include "buffer.hpp"
 #include "http_parser.h"
 #include "boost_stuff.hpp"
-/**
-* \defgroup HttpMessage
-* \brief This group deals with the structure, parsing and construction of HTTP/1.1 messages.
-*/
-#pragma once
+#include "http_method.hpp"
 #pragma mark - http message interfaces
 
-/**
-* \ingroup HttpMessage
-* \brief Enum for HTTP method. It is a BAD kludge to get C++ enum same as http_parser c enum;
-* usage HttpMethod::GET -- see http_parser.h for list of names
-*/
-enum class HttpMethod{
-#define EC(num, name, string) name = HTTP_##name,
-    HTTP_METHOD_MAP(EC)
-#undef EC
-};
-std::string httpMethodString(HttpMethod m);
 /**
 * \ingroup HttpMessage
 * \brief Defines an interface that all representations of a Http Message should conform to.

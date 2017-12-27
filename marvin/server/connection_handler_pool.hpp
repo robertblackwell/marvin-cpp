@@ -1,20 +1,13 @@
-//
-//  connection_pool.hpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/14/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
 
-#ifndef connection_handler_pool_hpp
-#define connection_handler_pool_hpp
+#ifndef marvin_connection_handler_pool_hpp
+#define marvin_connection_handler_pool_hpp
 
 #include <stdio.h>
 #include <vector>
 #include <map>
 #include <set>
 #include "i_socket.hpp"
-//#include "connection_pool.hpp"
+/// \ingroup Server
 
 //---------------------------------------------------------------------------------------------------
 // InUseConnections - List of assigned connections currently "in use"

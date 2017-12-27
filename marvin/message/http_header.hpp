@@ -8,6 +8,9 @@
 #include <set>
 
 /// \ingroup HttpMessage
+/// Alias for a map of strings, this is the data structure that represents the headers
+/// in a http message. Probably inadequate for general use as does not cope well with
+/// headers that have multiple value separated by ';'
 using HttpHeadersType = std::map<std::string, std::string>;
 /// \ingroup HttpMessage
 using HttpHeaderFilterSetType = std::set<std::string>;

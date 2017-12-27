@@ -41,10 +41,10 @@ void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
         std::string u = msg.uri();
         os << m << " " << u << " " << vers << "\r\n";
     } else{
-        os << vers << " " << msg._status_code << " " << msg._status <<  "\r\n";
+        os << vers << " " << msg.m_status_code << " " << msg.m_status <<  "\r\n";
     }
     
-    for(auto const& h : msg._headers) {
+    for(auto const& h : msg.m_headers) {
         os << h.first << ": " << h.second << "\r\n";
     }
     // end of headers
@@ -58,19 +58,11 @@ void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
     std::string sss = ss;
     
 }
-
-std::string httpMethodString(HttpMethod m){
-
-    enum http_method c_m = (enum http_method) m;
-    std::string s(http_method_str(c_m));
-    return s;
-}
-
 #pragma - http message base impl
 
 MessageBase::MessageBase()
 {
-    this->_is_request = true;
+    this->m_is_request = true;
     this->setHttpVersMajor(1);
     this->setHttpVersMinor(1);
 }
@@ -78,96 +70,97 @@ MessageBase::MessageBase()
 MessageBase::~MessageBase(){}
 
 bool
-MessageBase::isRequest(){ return _is_request; }
+MessageBase::isRequest(){ return m_is_request; }
 
 void
-MessageBase::setIsRequest(bool flag){ _is_request = flag;}
+MessageBase::setIsRequest(bool flag){ m_is_request = flag;}
 
 void
-MessageBase::setStatusCode(int sc){ _status_code = sc; _is_request = false; }
+MessageBase::setStatusCode(int sc){ m_status_code = sc; m_is_request = false; }
 
 void
-MessageBase::setStatus(std::string st){ _status = st; _is_request = false; }
+MessageBase::setStatus(std::string st){ m_status = st; m_is_request = false; }
 
 int
-MessageBase::statusCode() {return _status_code; };
+MessageBase::statusCode() {return m_status_code; };
 
 std::string
-MessageBase::status() {return _status;};
+MessageBase::status() {return m_status;};
 
 void
-MessageBase::setMethod(HttpMethod m){ _method = (enum http_method)m;  _is_request = true; }
+MessageBase::setMethod(HttpMethod m){ m_method = (enum http_method)m;  m_is_request = true; }
 void
-MessageBase::setMethod(enum http_method m){ _method = m; _is_request = true; }
+MessageBase::setMethod(enum http_method m){ m_method = m; m_is_request = true; }
 void
-MessageBase::setMethod(std::string m){ _methodStr = m; _is_request = true; }
+MessageBase::setMethod(std::string m){ m_methodStr = m; m_is_request = true; }
 
 std::string
-MessageBase::getMethodAsString(){return httpMethodString((HttpMethod) _method);};
+MessageBase::getMethodAsString(){return httpMethodString((HttpMethod) m_method);};
 
 void
-MessageBase::setUri(std::string u){ _uri = u;}
+MessageBase::setUri(std::string u){ m_uri = u;}
 
 std::string
 MessageBase::uri(){
-return _uri;
+return m_uri;
 }
 
 void
-MessageBase::setHttpVersMajor(int major){ _http_major = major; }
+MessageBase::setHttpVersMajor(int major){ m_http_major = major; }
 
 int
-MessageBase::httpVersMajor() {return _http_major; }
+MessageBase::httpVersMajor() {return m_http_major; }
 
 void
-MessageBase::setHttpVersMinor(int minor){ _http_minor = minor; }
+MessageBase::setHttpVersMinor(int minor){ m_http_minor = minor; }
 
 int
-MessageBase::httpVersMinor(){return _http_minor; }
+MessageBase::httpVersMinor(){return m_http_minor; }
 
 void
 MessageBase::setHeader(std::string key, std::string value){
     HttpHeader::canonicalKey(key);
-    _headers[key] = value;
+    m_headers[key] = value;
 };
 
 bool
 MessageBase::hasHeader( std::string key){
     HttpHeader::canonicalKey(key);
-    return ( _headers.find(key) != _headers.end() );
+    return ( m_headers.find(key) != m_headers.end() );
 };
 
 std::string
 MessageBase::header(std::string key){
     HttpHeader::canonicalKey(key);
-    if( hasHeader(key) ){ return _headers[key]; } else { return nullptr;}
+    if( hasHeader(key) ){ return m_headers[key]; } else { return nullptr;}
 }
 
 void
 MessageBase::removeHeader( std::string key){
     HttpHeader::canonicalKey(key);
-    if( _headers.find(key) != _headers.end()  )
-        _headers.erase(key);
+    if( m_headers.find(key) != m_headers.end()  )
+        m_headers.erase(key);
 }
 
 std::string
 MessageBase::getHeader(std::string key){
     HttpHeader::canonicalKey(key);
-    if( _headers.find(key) != _headers.end() ){
-        return _headers[key];
+    if( m_headers.find(key) != m_headers.end() ){
+        return m_headers[key];
     }
     return nullptr;
 }
-std::map<std::string, std::string>&
+//std::map<std::string, std::string>&
+HttpHeadersType&
 MessageBase::getHeaders(){
-    return _headers;
+    return m_headers;
 }
 std::string
 MessageBase::str(){
     std::ostringstream ss;
     ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
-    std::map<std::string, std::string>::iterator it = _headers.begin();
-    while(it != _headers.end())
+    std::map<std::string, std::string>::iterator it = m_headers.begin();
+    while(it != m_headers.end())
     {
         ss << it->first << ": " << it->second << "\r\n";
         it++;
@@ -178,8 +171,8 @@ MessageBase::str(){
 void
 MessageBase::dumpHeaders(std::ostream& os)
 {
-    std::map<std::string, std::string>::iterator it = _headers.begin();
-    while(it != _headers.end())
+    std::map<std::string, std::string>::iterator it = m_headers.begin();
+    while(it != m_headers.end())
     {
         os<<it->first<<" : "<<it->second<<std::endl;
         it++;
@@ -187,9 +180,9 @@ MessageBase::dumpHeaders(std::ostream& os)
         
 }
 void
-MessageBase::setTrailer(std::string key, std::string value){ _trailers[key] = value; };
+MessageBase::setTrailer(std::string key, std::string value){ m_trailers[key] = value; };
 bool
-MessageBase::hasTrailer( std::string key){ return ( _trailers.find(key) != _trailers.end() ); };
+MessageBase::hasTrailer( std::string key){ return ( m_trailers.find(key) != m_trailers.end() ); };
 std::string
-MessageBase::trailer(std::string key){if( hasTrailer(key) ){return _trailers[key];} else{ return nullptr;} }
+MessageBase::trailer(std::string key){if( hasTrailer(key) ){return m_trailers[key];} else{ return nullptr;} }
     

@@ -6,9 +6,9 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef CONNECTION_HANDLER_HPP
-#define CONNECTION_HANDLER_HPP
-
+#ifndef marvin_connection_handler_hpp
+#define marvin_connection_handler_hpp
+/// \ingroup Server
 #include <stdio.h>
 #include <boost/asio.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -23,16 +23,21 @@
 
 class ServerConnectionManager;
 class ConnectionHandler;
-typedef std::shared_ptr<ConnectionHandler> ConnectionHandlerSPtr;
+/// \ingroup Server
+using ConnectionHandlerSPtr = std::shared_ptr<ConnectionHandler>;
 
+/// \ingroup Server
+/// \brief An instance of this class is created by the server foor every open client connection;
+/// this instance manages the life time and invocation of the request handler that actually services the
+/// client request.
 class ConnectionHandler
 {
     public:
         ConnectionHandler(
-            boost::asio::io_service&                                        io,
-            ServerConnectionManager&                                        connectionManager,
-            ISocket*                                            conn,
-            RequestHandlerFactory                                           factory
+            boost::asio::io_service&     io,
+            ServerConnectionManager&     connectionManager,
+            ISocket*                     conn,
+            RequestHandlerFactory        factory
         );
     
         ~ConnectionHandler();
@@ -42,21 +47,22 @@ class ConnectionHandler
         std::string uuid();
     private:
     
-        void serveAnother();
-        void readMessageHandler(Marvin::ErrorType err);
-        void requestComplete(Marvin::ErrorType err, bool keepAlive);
-        void handlerComplete(Marvin::ErrorType err);
-        void handleConnectComplete(bool hijack);
-        boost::uuids::uuid                     _uuid;
-        boost::asio::io_service&               _io;
-        ServerConnectionManager&               _connectionManager;
-        std::unique_ptr<RequestHandlerBase>    _requestHandlerUnPtr;
-        RequestHandlerFactory                  _factory;
+        void p_serve_another();
+        void p_read_message_handler(Marvin::ErrorType err);
+        void p_request_complete(Marvin::ErrorType err, bool keepAlive);
+        void p_handler_complete(Marvin::ErrorType err);
+        void p_handle_connect_complete(bool hijack);
+        
+        boost::uuids::uuid                     m_uuid;
+        boost::asio::io_service&               m_io;
+        ServerConnectionManager&               m_connectionManager;
+        std::unique_ptr<RequestHandlerBase>    m_requestHandlerUnPtr;
+        RequestHandlerFactory                  m_factory;
     
-        ISocketSPtr                _connection;
-        MessageReaderSPtr                                 _reader;
-        MessageWriterSPtr                                 _writer;
-        ServerContext                                     _server_context;
+        ISocketSPtr                            m_connection;
+        MessageReaderSPtr                      m_reader;
+        MessageWriterSPtr                      m_writer;
+        ServerContext                          m_server_context;
 };
 
 #endif /* ConnectionHandler_hpp */

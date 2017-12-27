@@ -1,7 +1,7 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "server_connection_manager.hpp"
-
+/// \todo - the code in this file needs tidying up - too many commented out lines
 ServerConnectionManager* ServerConnectionManager::instance;
 
 ServerConnectionManager* ServerConnectionManager::get_instance()
@@ -14,9 +14,9 @@ bool ServerConnectionManager::verify()
 }
 
 ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand, int max_connections)
-    : _io(io), _serverStrand(serverStrand),
-    _maxNumberOfConnections(max_connections),
-    _currentNumberConnections(0)
+    : m_io(io), m_serverStrand(serverStrand),
+    m_maxNumberOfConnections(max_connections),
+    m_currentNumberConnections(0)
 {
     LogTorTrace();
     instance = this;
@@ -24,9 +24,9 @@ ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, bo
 
 void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
 {
-    assert(_callback == nullptr);
-    if( _connections.size() > _maxNumberOfConnections ) {
-        _callback = cb;
+    assert(m_callback == nullptr);
+    if( m_connections.size() > m_maxNumberOfConnections ) {
+        m_callback = cb;
         std::cout << "ServerConnectionManager::waiting server" << std::endl;
     } else {
         cb();
@@ -47,11 +47,11 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
 //    std::cout << "_register: _connections.size() " << _connections.size() << " "  << std::endl;
 
     long fd = connHandler->nativeSocketFD();
-    assert(_fd_list.find(fd) == _fd_list.end());
-    assert(_connections.find(connHandler) == _connections.end()); // assert not already there
+    assert(m_fd_list.find(fd) == m_fd_list.end());
+    assert(m_connections.find(connHandler) == m_connections.end()); // assert not already there
     assert(verify());
-    _connections[connHandler] = std::unique_ptr<ConnectionHandler>(connHandler);
-    _fd_list[fd] = fd;
+    m_connections[connHandler] = std::unique_ptr<ConnectionHandler>(connHandler);
+    m_fd_list[fd] = fd;
     assert(verify());
 }
 
@@ -65,21 +65,22 @@ void ServerConnectionManager::deregister(ConnectionHandler* ch)
 //    std::cout << "deregister: fd_list.size() " << _fd_list.size() << " "  << std::endl;
 //    std::cout << "deregister: _connections.size() " << _connections.size() << " "  << std::endl;
 //    std::cout << "deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
-    auto pf = _serverStrand.wrap(std::bind(&ServerConnectionManager::_deregister, this, ch));
-    _io.post(pf);
+    auto pf = m_serverStrand.wrap(std::bind(&ServerConnectionManager::p_deregister, this, ch));
+    m_io.post(pf);
 }
+#pragma mark - private methods
 /**
 * Paranoid
 */
-void ServerConnectionManager::_deregister(ConnectionHandler* ch)
+void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
 {
     LogDebug("");
 //    std::cout << "_deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
     long fd = ch->nativeSocketFD();
-    auto fd1 = _fd_list.find(fd);
-    auto fd2 = _fd_list.end();
+    auto fd1 = m_fd_list.find(fd);
+    auto fd2 = m_fd_list.end();
 #pragma clang diagnostic pop
 //    std::cout << "_deregister: fd_list.size() " << _fd_list.size() << " "  << std::endl;
 //    std::cout << "_deregister: _connections.size() " << _connections.size() << " "  << std::endl;
@@ -88,26 +89,26 @@ void ServerConnectionManager::_deregister(ConnectionHandler* ch)
 //    }
 //    std::cout << "XXX fds : " << fd1->first << " " << fd2->first << std::endl;
 //    LogDebug("assert fd ", fd1, " ", fd2 );
-    assert(_fd_list.find(fd) != _fd_list.end());
-    if(_fd_list.find(fd) == _fd_list.end()) {
+    assert(m_fd_list.find(fd) != m_fd_list.end());
+    if(m_fd_list.find(fd) == m_fd_list.end()) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
-        auto fd1 = _fd_list.find(fd);
-        auto fd2 = _fd_list.end();
+        auto fd1 = m_fd_list.find(fd);
+        auto fd2 = m_fd_list.end();
 #pragma clang diagnostic pop
-        assert(_fd_list.find(fd) != _fd_list.end());
+        assert(m_fd_list.find(fd) != m_fd_list.end());
     }
-    assert(_connections.find(ch) != _connections.end()); // assert is there
+    assert(m_connections.find(ch) != m_connections.end()); // assert is there
     assert(verify());
     
-    _connections.erase(ch);
-    _fd_list.erase(fd);
-    if (_callback && (_connections.size() < _maxNumberOfConnections)) {
+    m_connections.erase(ch);
+    m_fd_list.erase(fd);
+    if (m_callback && (m_connections.size() < m_maxNumberOfConnections)) {
         LogDebug("");
         std::cout << "ServerConnectionManager::releasing callback" << std::endl;
-        auto tmp = _callback;
-        _callback = nullptr;
-        _io.post(tmp);
+        auto tmp = m_callback;
+        m_callback = nullptr;
+        m_io.post(tmp);
     }
 }
 
