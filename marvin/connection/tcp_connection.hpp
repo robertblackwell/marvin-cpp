@@ -126,6 +126,7 @@ class TCPConnection : public ISocket
     std::string service();
     
 private:
+    void p_read_handler(Marvin::MBuffer& buffer, AsyncReadCallbackType cb, const Marvin::ErrorType& err, std::size_t bytes_read);
 
     void p_handle_resolve(
         const boost::system::error_code& err,

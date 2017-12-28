@@ -20,11 +20,17 @@ public:
     printer(boost::asio::io_service& io)
     : strand_(io),
     timer1_(io, boost::posix_time::seconds(1)),
-    timer2_(io, boost::posix_time::seconds(1)),
+    timer2_(io, boost::posix_time::seconds(100)),
     count_(0)
     {
-        timer1_.async_wait(strand_.wrap(boost::bind(&printer::print1, this)));
-        timer2_.async_wait(strand_.wrap(boost::bind(&printer::print2, this)));
+//#ifdef USE_STRAND
+#if 1
+        timer1_.async_wait(strand_.wrap(std::bind(&printer::print1, this, std::placeholders::_1)));
+        timer2_.async_wait(strand_.wrap(std::bind(&printer::print2, this, std::placeholders::_1)));
+#else
+        timer1_.async_wait(std::bind(&printer::print1, this, std::placeholders::_1));
+        timer2_.async_wait(std::bind(&printer::print2, this, std::placeholders::_1));
+#endif
     }
     
     ~printer()
@@ -32,8 +38,9 @@ public:
         std::cout << "Final count is " << count_ << std::endl;
     }
     
-    void print1()
+    void print1(const boost::system::error_code& err)
     {
+        timer2_.cancel();
         if (count_ < 100)
         {
             std::cout << "Timer 1: " << count_ << std::endl;
@@ -43,23 +50,24 @@ public:
 #ifdef USE_STRAND
             timer1_.async_wait(strand_.wrap(boost::bind(&printer::print1, this)));
 #else
-            timer1_.async_wait(strand_.wrap(boost::bind(&printer::print1, this)));
+            timer1_.async_wait(strand_.wrap(std::bind(&printer::print1, this, std::placeholders::_1)));
 #endif
             
         }
     }
     
-    void print2()
+    void print2(const boost::system::error_code& err)
     {
+        std::cout << err.message() << std::endl;
         if (count_ < 100)
         {
             std::cout << "Timer 2: " << count_ << std::endl;
             ++count_;
             timer2_.expires_at(timer2_.expires_at() + boost::posix_time::seconds(1));
 #ifdef USE_STRAND
-            timer2_.async_wait(strand_.wrap(boost::bind(&printer::print2, this)));
+            timer2_.async_wait(strand_.wrap(boost::bind(&printer::print2, this, std::placeholders::_1)));
 #else
-            timer2_.async_wait(boost::bind(&printer::print2, this));
+            timer2_.async_wait(std::bind(&printer::print2, this, std::placeholders::_1));
 #endif
         }
     }

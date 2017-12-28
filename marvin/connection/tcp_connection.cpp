@@ -168,6 +168,7 @@ void TCPConnection::asyncConnect(ConnectCallbackType connect_cb)
  */
 void TCPConnection::asyncRead(Marvin::MBuffer& buffer, AsyncReadCallbackType cb)
 {
+#if 1
     auto handler = m_strand.wrap([this, cb, &buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         Marvin::ErrorType m_err = err;
@@ -175,6 +176,16 @@ void TCPConnection::asyncRead(Marvin::MBuffer& buffer, AsyncReadCallbackType cb)
         p_post_read_cb(cb, m_err, bytes_transfered);
     });
     m_boost_socket.async_read_some(boost::asio::buffer(buffer.data(), buffer.capacity()), handler);
+#else
+    auto h = m_strand.wrap(std::bind(&TCPConnection::p_read_handler, this, buffer, cb, std::placeholders::_1, std::placeholders::_2));
+    m_boost_socket.async_read_some(boost::asio::buffer(buffer.data(), buffer.capacity()), h);
+#endif
+}
+void TCPConnection::p_read_handler(Marvin::MBuffer& buffer, AsyncReadCallbackType cb, const Marvin::ErrorType& err, std::size_t bytes_transfered)
+{
+        Marvin::ErrorType m_err = err;
+        buffer.setSize(bytes_transfered);
+        p_post_read_cb(cb, m_err, bytes_transfered);
 }
 /**
  * write
