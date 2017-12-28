@@ -87,7 +87,7 @@ public:
      * Create a client that is not connected - however give a url it needs
      * to try and establish a connection.
      * @param io - an io service
-     * @param url - a string like "https://username:password@www.google.com/path1/path2:433?one=1111"
+     * @param uri - a string like "https://username:password@www.google.com/path1/path2:433?one=1111"
      */
     Client(boost::asio::io_service& io, std::string uri);
 

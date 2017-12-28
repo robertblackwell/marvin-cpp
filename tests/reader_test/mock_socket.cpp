@@ -2,13 +2,12 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "catch.hpp"
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "testcase.hpp"
-#include "mock_read_socket.hpp"
+#include "mock_socket.hpp"
 
 //MockReadSocket::MockReadSocket(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.get_case(tc))
 MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): io_(io), _tcObj(tcObj)
@@ -31,7 +30,7 @@ void MockReadSocket::startRead()
 //
 // New buffer strategy make the upper level provide the buffer. All we do is check the size
 //
-void MockReadSocket::asyncRead(MBuffer& mb, AsyncReadCallback cb)
+void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
 {
     LogDebug("");
     char* buf;
@@ -57,12 +56,12 @@ void MockReadSocket::asyncRead(MBuffer& mb, AsyncReadCallback cb)
         } else {
             buf = (char*)s.c_str();
             len = strlen(buf);
-            std::size_t buf_max = mb.capacity();
+            std::size_t buf_max = mb->capacity();
             if( buf_max < len + 1){
                 LogError("MockReadSocket:asyncRead error buffer too small");
                 throw "MockReadSocket:asyncRead error buffer too small";
             }
-            void* rawPtr = mb.data();
+            void* rawPtr = mb->data();
             memcpy(rawPtr, buf, len);
             ((char*)rawPtr)[len] = (char)0;
             
@@ -97,10 +96,22 @@ void MockReadSocket::asyncRead(MBuffer& mb, AsyncReadCallback cb)
     {
         LogDebug("test case finished");
         //  we have run out of test data so simulate an end of input - read of length zero
-        ((char*)mb.data())[0] = (char)0;
+        ((char*)mb->data())[0] = (char)0;
         auto pf = std::bind(cb, Marvin::make_error_eom(), (std::size_t) 0);
         io_.post(pf);
         return;
     }
 }
+void MockReadSocket::asyncWrite(std::string& str, AsyncWriteCallbackType cb){ assert(false);}
+void MockReadSocket::asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallback){ assert(false);}
+void MockReadSocket::asyncWrite(Marvin::BufferChainSPtr chain_sptr, AsyncWriteCallback){ assert(false);}
+void MockReadSocket::asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb){ assert(false);}
+void MockReadSocket::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback){ assert(false);}
+void MockReadSocket::asyncConnect(ConnectCallbackType cb){ assert(false);}
+void MockReadSocket::asyncAccept(
+    boost::asio::ip::tcp::acceptor& acceptor,
+    std::function<void(const boost::system::error_code& err)> cb
+){ assert(false);}
+void MockReadSocket::shutdown(){ assert(false);}
+void MockReadSocket::close(){ assert(false);}
 

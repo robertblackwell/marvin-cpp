@@ -197,7 +197,7 @@ void MessageReader::p_read_some_headers()
     LogDebug(" fd: ", m_read_sock->nativeSocketFD());
     assert( m_header_buffer_sptr != nullptr );
     auto h = std::bind(&MessageReader::p_handle_header_read, this, std::placeholders::_1, std::placeholders::_2);
-    m_read_sock->asyncRead(*m_header_buffer_sptr, h);
+    m_read_sock->asyncRead(m_header_buffer_sptr, h);
 }
 /**
 * Step two in an async loop to read all headers. This is the async completion
@@ -276,7 +276,7 @@ void MessageReader::p_read_some_body()
 {
     LogDebug(" fd: ", m_read_sock->nativeSocketFD());
     auto h = std::bind(&MessageReader::p_handle_body_read, this, std::placeholders::_1, std::placeholders::_2);
-    m_read_sock->asyncRead(*m_body_buffer_sptr, h);
+    m_read_sock->asyncRead(m_body_buffer_sptr, h);
 }
 /**
 * Step two of the async loop that reads all body data. This is the async
@@ -329,7 +329,7 @@ void MessageReader::p_read_body_chunk()
         p_make_new_body_buffer();
 //        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     }
-    m_read_sock->asyncRead(*m_body_buffer_sptr, h);
+    m_read_sock->asyncRead(m_body_buffer_sptr, h);
 }
 /**
 * Completion handler for reading a single chunk of body data.

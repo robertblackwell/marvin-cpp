@@ -159,6 +159,11 @@
 			<key>orderHint</key>
 			<integer>20</integer>
 		</dict>
+		<key>test_reader copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>49</integer>
+		</dict>
 		<key>test_reader.xcscheme</key>
 		<dict>
 			<key>orderHint</key>

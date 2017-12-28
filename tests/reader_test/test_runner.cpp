@@ -3,7 +3,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "test_runner.hpp"
 
-std::string chain_to_string(BufferChain chain)
+std::string chain_to_string(Marvin::BufferChain chain)
 {
     return chain.to_string();
 }
@@ -17,7 +17,7 @@ void Testrunner::makeReader()
 * Constructor - tcIndex is an index into the set of testcases
 * that the class TestCases knows about
 */
-Testrunner::Testrunner(boost::asio::io_service& io, IReadSocketSPtr rd_sock, Testcase tcObj)
+Testrunner::Testrunner(boost::asio::io_service& io, ISocketSPtr rd_sock, Testcase tcObj)
     : io_(io),
     _tcObj(tcObj)
 {
@@ -59,7 +59,7 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     auto desc = _tcObj.getDescription();
 //    std::cout << "TestRunner::readMessage Success for testcase " << _tcObj.getDescription() <<std::endl;
 }
-void Testrunner::onBody(Marvin::ErrorType er, BufferChain chunk)
+void Testrunner::onBody(Marvin::ErrorType er, Marvin::BufferChain chunk)
 {
     LogDebug(" entry");
     // are we done - if not hang another read

@@ -37,7 +37,7 @@ class IReadSocket;
 */
 class IReadSocket{
 public:
-    virtual void asyncRead(Marvin::MBuffer& mb, AsyncReadCallback cb) = 0;
+    virtual void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb) = 0;
 };
 
 class IWriteSocket;

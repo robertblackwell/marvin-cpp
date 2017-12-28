@@ -43,6 +43,7 @@ void Timeout::cancelTimeout(std::function<void()> handler)
 {
     LogDebug(" m_active: ", m_active);
     m_cancel_handler = handler;
+    m_timer.expires_from_now(boost::posix_time::pos_infin);
     if( ! m_active) {
         assert(m_expire_handler == nullptr);
         assert(m_cancel_handler != nullptr);
@@ -58,6 +59,7 @@ void Timeout::setTimeout(long interval_millisecs, std::function<void()> handler)
 {
     LogDebug(" interval millisecs: ", interval_millisecs);
     m_expire_handler = handler;
+    m_cancel_handler = nullptr;
     m_active = true;
     auto whandler = m_strand.wrap(std::bind(&Timeout::p_handle_timeout, this, std::placeholders::_1));
     m_timer.expires_from_now(boost::posix_time::milliseconds(interval_millisecs));

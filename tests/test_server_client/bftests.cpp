@@ -106,6 +106,7 @@ std::vector<body_format::Testcase> make_cases()
     };
 
 }
+#if 1
 // run each test on a separate io_service
 TEST_P(BFOneshot, 001)
 {
@@ -117,9 +118,10 @@ TEST_P(BFOneshot, 001)
     io_service.run();
 }
 
-INSTANTIATE_TEST_CASE_P(BFconsecutive, BFOneshot, testing::Values(tcase01, tcase02, tcase03));
+INSTANTIATE_TEST_CASE_P(BFconsecutive, BFOneshot, testing::Values(tcase01));
+#endif
 
-
+#if 1
 // run all request on a single io_service at the same time
 // but all as separate request streams and separate connections
 TEST(BFMultiple, alltogether)
@@ -134,7 +136,8 @@ TEST(BFMultiple, alltogether)
     }
     io_service.run();
 }
-
+#endif
+#if 1
 TEST(BFMultiple, pipeline)
 {
     boost::asio::io_service io_service;
@@ -143,4 +146,4 @@ TEST(BFMultiple, pipeline)
     tst.exec();
     io_service.run();
 }
-
+#endif

@@ -21,7 +21,7 @@ void Pipeline::handler(Marvin::ErrorType err, MessageReaderSPtr rdr)
 {
     if(!err) {
         MessageReaderSPtr b = _client_sptr->getResponse();
-        BufferChain buf_chain = b->get_body_chain();
+        Marvin::BufferChain buf_chain = b->get_body_chain();
         std::string bdy = buf_chain.to_string();
         std::string sss = err.message();
 //        std::cout << bdy << std::endl;

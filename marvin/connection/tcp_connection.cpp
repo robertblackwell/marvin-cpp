@@ -32,7 +32,7 @@ using boost::asio::io_service;
 
 #pragma mark - timeout interval config
 long TCPConnection::s_connect_timeout_interval_ms = 5000;
-long TCPConnection::s_read_timeout_interval_ms = 5000;
+long TCPConnection::s_read_timeout_interval_ms = 15000;
 long TCPConnection::s_write_timeout_interval_ms = 5000;
 void TCPConnection::setConfig_connectTimeOut(long millisecs)
 {
@@ -74,6 +74,7 @@ TCPConnection::TCPConnection(
             :
             m_io(io_service),
             m_strand(m_io),
+            m_timeout(m_io, m_strand),
             m_resolver(m_io),
             m_boost_socket(m_io),
             m_scheme(scheme),
@@ -81,7 +82,6 @@ TCPConnection::TCPConnection(
             m_port(port),
             m_connect_cb(nullptr),
             m_closed_already(false),
-            m_timer(m_io),
             m_connect_timeout_interval_ms(s_connect_timeout_interval_ms),
             m_read_timeout_interval_ms(s_read_timeout_interval_ms),
             m_write_timeout_interval_ms(s_write_timeout_interval_ms)
@@ -97,9 +97,9 @@ TCPConnection::TCPConnection(
     ):
         m_io(io_service),
         m_strand(m_io),
+        m_timeout(m_io, m_strand),
         m_resolver(m_io), // dont really need this
         m_boost_socket(m_io),
-        m_timer(m_io),
         m_connect_timeout_interval_ms(s_connect_timeout_interval_ms),
         m_read_timeout_interval_ms(s_read_timeout_interval_ms),
         m_write_timeout_interval_ms(s_write_timeout_interval_ms)
@@ -157,35 +157,45 @@ void TCPConnection::asyncConnect(ConnectCallbackType connect_cb)
     m_connect_cb = connect_cb; // save the connect callback
 
     tcp::resolver::query query(this->m_server, m_port);
-    
+#if 1
+    m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
+        m_boost_socket.cancel();
+    });
+    auto h = m_strand.wrap([this](const error_code& err, tcp::resolver::iterator endpoint_iterator) {
+        m_timeout.cancelTimeout([this, err, endpoint_iterator](){
+            p_handle_resolve(err, endpoint_iterator);
+        });
+    });
+    m_resolver.async_resolve(query, h);
+#else
     auto handler = m_strand.wrap(std::bind(&TCPConnection::p_handle_resolve,this, std::placeholders::_1, std::placeholders::_2));
-    
     m_resolver.async_resolve(query, handler);
+#endif
 }
 
 /**
  * read
  */
-void TCPConnection::asyncRead(Marvin::MBuffer& buffer, AsyncReadCallbackType cb)
+void TCPConnection::asyncRead(Marvin::MBufferSPtr buffer, AsyncReadCallbackType cb)
 {
-#if 1
-    auto handler = m_strand.wrap([this, cb, &buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
-    {
-        Marvin::ErrorType m_err = err;
-        buffer.setSize(bytes_transfered);
-        p_post_read_cb(cb, m_err, bytes_transfered);
+    /// a bit of explanation -
+    /// -   set a time out with a handler, the handler knows what to do, in this case cancel outstanding
+    ///     ops on the socket
+    m_timeout.setTimeout(m_read_timeout_interval_ms, [this](){
+        m_boost_socket.cancel();
     });
-    m_boost_socket.async_read_some(boost::asio::buffer(buffer.data(), buffer.capacity()), handler);
-#else
-    auto h = m_strand.wrap(std::bind(&TCPConnection::p_read_handler, this, buffer, cb, std::placeholders::_1, std::placeholders::_2));
-    m_boost_socket.async_read_some(boost::asio::buffer(buffer.data(), buffer.capacity()), h);
-#endif
-}
-void TCPConnection::p_read_handler(Marvin::MBuffer& buffer, AsyncReadCallbackType cb, const Marvin::ErrorType& err, std::size_t bytes_transfered)
-{
-        Marvin::ErrorType m_err = err;
-        buffer.setSize(bytes_transfered);
-        p_post_read_cb(cb, m_err, bytes_transfered);
+    auto handler = m_strand.wrap([this, cb, buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    {
+        /// when a handler is called the first thing to do is call timeout.cancel()
+        /// when timeout object is finshed it will call the CB and then we can conlete
+        /// out processing knowing that both the IO and tineout are both done
+        m_timeout.cancelTimeout([this, cb, buffer, err, bytes_transfered](){
+            Marvin::ErrorType m_err = err;
+            buffer->setSize(bytes_transfered);
+            p_post_read_cb(cb, m_err, bytes_transfered);
+        });
+    });
+    m_boost_socket.async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
 }
 /**
  * write
@@ -273,9 +283,23 @@ void TCPConnection::p_handle_resolve(
         LogDebug("resolve OK","so now connect");
         tcp::endpoint endpoint = *endpoint_iterator;
         
+#if 1
+        m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
+            m_boost_socket.cancel();
+        });
+        auto next_iter = ++endpoint_iterator;
+        auto h = m_strand.wrap([this, next_iter](const error_code& err) {
+            m_timeout.cancelTimeout([this, err, next_iter](){
+                p_handle_connect(err, next_iter);
+            });
+        });
+        m_boost_socket.async_connect(endpoint, h);
+#else
+//        auto handler = m_strand.wrap(bind(&TCPConnection::p_handle_connect, this, _1, ++endpoint_iterator));
+        /// a bit clumsy - incrementing the iterator before passing it
         auto handler = m_strand.wrap(bind(&TCPConnection::p_handle_connect, this, _1, ++endpoint_iterator));
-        
         m_boost_socket.async_connect(endpoint, handler);
+#endif
         LogDebug("leaving");
     }
 }
@@ -295,10 +319,24 @@ void TCPConnection::p_handle_connect(
     else if (endpoint_iterator != tcp::resolver::iterator())
     {
         LogDebug("try next iterator");
-        m_boost_socket.close();
+        m_boost_socket.close(); /// \todo why close ??
         tcp::endpoint endpoint = *endpoint_iterator;
+#if 1
+        m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
+            m_boost_socket.cancel();
+        });
+        auto next_iter = ++endpoint_iterator;
+        auto h = m_strand.wrap([this, next_iter](const error_code& err) {
+            m_timeout.cancelTimeout([this, err, next_iter](){
+                p_handle_connect(err, next_iter);
+            });
+        });
+        m_boost_socket.async_connect(endpoint, h);
+
+#else
         auto handler = m_strand.wrap(boost::bind(&TCPConnection::p_handle_connect, this, _1, ++endpoint_iterator));
         m_boost_socket.async_connect(endpoint, handler);
+#endif
     }
     else
     {
@@ -321,32 +359,6 @@ void TCPConnection::p_async_write(void* data, std::size_t size, AsyncWriteCallba
 
     boost::asio::async_write((this->m_boost_socket), boost::asio::buffer(data, size), handler);
 }
-#pragma mark - timeout handler
-
-void TCPConnection::p_handle_timeout(const boost::system::error_code& err)
-{
-    if( err == boost::asio::error::operation_aborted) {
-        // timeout was cancelled - presumably by a successful i/o operation
-    } else if ( err) {
-        // some other error - close down ?
-        m_boost_socket.cancel();
-    } else {
-        // no error - timeout
-        m_boost_socket.cancel();
-    }
-}
-void TCPConnection::p_cancel_timeout()
-{
-    m_timer.cancel();
-    m_timer.expires_from_now(boost::posix_time::pos_infin);
-}
-void TCPConnection::p_set_timeout(long interval_millisecs)
-{
-    auto handler = m_strand.wrap(std::bind(&TCPConnection::p_handle_timeout, this, std::placeholders::_1));
-    m_timer.expires_from_now(boost::posix_time::milliseconds(interval_millisecs));
-    m_timer.async_wait(handler);
-}
-
 #pragma mark - post result of async ops through various callbacks
 #define USE_POST 1
 

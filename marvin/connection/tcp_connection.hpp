@@ -14,6 +14,7 @@
 #include "callback_typedefs.hpp"
 #include "buffer.hpp"
 #include "i_socket.hpp"
+#include "timeout.hpp"
 
 using namespace boost;
 using namespace boost::system;
@@ -113,7 +114,7 @@ class TCPConnection : public ISocket
     void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb);
     void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback);
 
-    void asyncRead(Marvin::MBuffer& mb,  AsyncReadCallbackType cb);
+    void asyncRead(Marvin::MBufferSPtr mb,  AsyncReadCallbackType cb);
     void shutdown();
     void close();
     
@@ -126,8 +127,6 @@ class TCPConnection : public ISocket
     std::string service();
     
 private:
-    void p_read_handler(Marvin::MBuffer& buffer, AsyncReadCallbackType cb, const Marvin::ErrorType& err, std::size_t bytes_read);
-
     void p_handle_resolve(
         const boost::system::error_code& err,
         tcp::resolver::iterator endpoint_iterator
@@ -153,11 +152,6 @@ private:
 
     void p_io_post(std::function<void()> noParam_cb);
     
-    void p_handle_timeout(const boost::system::error_code& err);
-    void p_cancel_timeout();
-    void p_set_timeout(long interval_millisecs);
-
-
     std::string                     m_scheme;
     std::string                     m_server;
     std::string                     m_port;
@@ -167,7 +161,7 @@ private:
     boost::asio::ip::tcp::socket    m_boost_socket;
     ConnectCallbackType             m_connect_cb;
     bool                            m_closed_already;
-    boost::asio::deadline_timer     m_timer;
+    Timeout                         m_timeout;
     long                            m_connect_timeout_interval_ms;
     long                            m_read_timeout_interval_ms;
     long                            m_write_timeout_interval_ms;

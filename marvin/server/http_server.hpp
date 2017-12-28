@@ -62,7 +62,7 @@ public:
 
     /**
     ** @brief Construct the server to listen on the specified TCP address and port.
-    ** @param long port defaults to 9991
+    ** @param port defaults to 9991
     */
     explicit HTTPServer(RequestHandlerFactory factory);
     ~HTTPServer();

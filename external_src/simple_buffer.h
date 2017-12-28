@@ -18,7 +18,7 @@ extern "C"
 {
 #endif
 
-simple_buffer_t*    sb_create();
+simple_buffer_t*    sb_create(void);
 void                sb_free(simple_buffer_t* sb);
 void                sb_append(simple_buffer_t* sb, char* at, size_t length );
 int                 sb_get_used(simple_buffer_t* sb);

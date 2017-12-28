@@ -1,5 +1,5 @@
 #ifndef test_message_server_hpp
-#define Test_message_server_hpp
+#define test_message_server_hpp
 
 #include <iostream>
 #include <sstream>
