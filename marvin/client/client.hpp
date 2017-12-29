@@ -9,8 +9,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
+#include "boost_stuff.hpp"
 #include "buffer.hpp"
 #include "http_header.hpp"
 #include "message_writer.hpp"

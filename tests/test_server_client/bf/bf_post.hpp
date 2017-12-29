@@ -6,8 +6,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
+#include "boost_stuff.hpp"
 #include <gtest/gtest.h>
 #include "rb_logger.hpp"
 #include "buffer.hpp"

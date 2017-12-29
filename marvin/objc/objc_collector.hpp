@@ -7,11 +7,10 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-
+#include "boost_stuff.hpp"
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"

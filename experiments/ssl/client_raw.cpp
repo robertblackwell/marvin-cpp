@@ -10,15 +10,10 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
-#include <boost/filesystem.hpp>
+#include "boost_stuff.hpp"
 
 using namespace boost::asio;
 
-//#include "i_socket.hpp"
-//#include "tls_connection.hpp"
 
 #define REQUEST "GET https://ssllabs.com/ HTTP/1.1\r\nHost: www.ssllabs.com\r\n\r\n";
 #define MAX_LENGTH 1024

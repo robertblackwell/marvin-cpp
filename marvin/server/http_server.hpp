@@ -2,11 +2,11 @@
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
 
-#include <boost/asio.hpp>
 #include <string>
 #include <signal.h>
 #include <utility>
 
+#include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
 #include "request_handler_base.hpp"
@@ -46,7 +46,7 @@ class HTTPServer
 public:
 
     /**
-    * This is for testing only and should be called after all clients have finished
+    * \brief This is for testing only and should be called after all clients have finished
     * to verify that all connections are closed, all connection handlers have been deleted
     * and all sockets are freed up
     */
@@ -74,10 +74,10 @@ public:
     void terminate();
 private:
 
-    static int __numberOfThreads;
-    static int __numberOfConnections;
-    static int __heartbeat_interval_ms;
-    static HTTPServer* __instance;
+    static int s_numberOfThreads;
+    static int s_numberOfConnections;
+    static int s_heartbeat_interval_ms;
+    static HTTPServer* s_instance;
 
     /**
     ** @brief just as it says - init the server ready to list
@@ -115,17 +115,17 @@ private:
     void on_heartbeat(const boost::system::error_code& ec);
 
     
-    int                                             _heartbeat_interval_ms;
-    int                                             _numberOfThreads;
-    int                                             _numberOfConnections;
-    long                                            _port;
-    boost::asio::io_service                         _io;
-    boost::asio::strand                             _serverStrand;
-    boost::asio::signal_set                         _signals;
-    boost::asio::ip::tcp::acceptor                  _acceptor;
-    ServerConnectionManager                         _connectionManager;
-    RequestHandlerFactory                           _factory;
-    boost::asio::deadline_timer                     _heartbeat_timer;
-    bool                                            _terminate_requested; // heartbeat will terminate server if this is set
+    int                                             m_heartbeat_interval_ms;
+    int                                             m_numberOfThreads;
+    int                                             m_numberOfConnections;
+    long                                            m_port;
+    boost::asio::io_service                         m_io;
+    boost::asio::strand                             m_serverStrand;
+    boost::asio::signal_set                         m_signals;
+    boost::asio::ip::tcp::acceptor                  m_acceptor;
+    ServerConnectionManager                         m_connectionManager;
+    RequestHandlerFactory                           m_factory;
+    boost::asio::deadline_timer                     m_heartbeat_timer;
+    bool                                            m_terminate_requested; // heartbeat will terminate server if this is set
 };
 #endif // HTTP_SERVER_HPP

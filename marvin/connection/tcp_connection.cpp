@@ -266,7 +266,8 @@ void TCPConnection::p_handle_resolve(
     /// iterator empty ?
     tcp::resolver::iterator end;
     auto iter_empty = (endpoint_iterator == end);
-    std::cout << err.message() << std::endl;
+    Marvin::ErrorType ec = err;
+    std::cout << std::string(__FUNCTION__) + " " <<  Marvin::make_error_description(ec) << std::endl;
     if (iter_empty && (!err)) {
         LogDebug("empry but no error");
         // empty iter but no error (unlikely)
@@ -309,7 +310,8 @@ void TCPConnection::p_handle_connect(
                     const boost::system::error_code& err,
                     tcp::resolver::iterator endpoint_iterator)
 {
-    LogDebug("entry");
+    Marvin::ErrorType  ec = err;
+    LogDebug("entry: ", Marvin::make_error_description(ec));
     if (!err)
     {
         LogFDTrace(nativeSocketFD());

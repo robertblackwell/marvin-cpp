@@ -6,9 +6,8 @@
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
 #include <iostream>
-#include <boost/asio.hpp>
-
 #include <gtest/gtest.h>
+#include "boost_stuff.hpp"
 #include "buffer.hpp"
 #include "rb_logger.hpp"
 

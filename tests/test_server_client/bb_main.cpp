@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
+#include "boost_stuff.hpp"
 #include <thread>
 #include <pthread.h>
 #include <gtest/gtest.h>
@@ -41,7 +41,7 @@ int main( int argc, char* argv[] )
     testing::InitGoogleTest(&_argc, _argv);
     auto res = RUN_ALL_TESTS();
 #ifdef EX_RUNNER
-    sleep(2);
+    sleep(1);
     s_runner.teardown();
 #endif
     return res;

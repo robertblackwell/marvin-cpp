@@ -1,4 +1,3 @@
-
 #ifndef marvin_socket_factory_hpp
 #define marvin_socket_factory_hpp
 /**
@@ -9,9 +8,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
-//#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "i_socket.hpp"

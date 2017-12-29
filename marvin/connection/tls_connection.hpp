@@ -8,12 +8,6 @@
 #include <istream>
 #include <ostream>
 #include <string>
-
-//#include <boost/asio.hpp>
-//#include <boost/asio/ssl.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/function.hpp>
-
 #include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"

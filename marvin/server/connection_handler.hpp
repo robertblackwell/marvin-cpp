@@ -10,10 +10,8 @@
 #define marvin_connection_handler_hpp
 /// \ingroup Server
 #include <stdio.h>
-#include <boost/asio.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
+
+#include "boost_stuff.hpp"
 #include "server_context.hpp"
 #include "message_reader.hpp"
 #include "message_writer.hpp"

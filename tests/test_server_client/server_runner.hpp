@@ -6,11 +6,10 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <thread>
 #include <pthread.h>
 #include <gtest/gtest.h>
-
+#include "boost_stuff.hpp"
 
 #include "http_server.hpp"
 #include <gtest/gtest.h>
@@ -57,7 +56,6 @@ void ServerRunner<Handler>::setup()
 template<class Handler>
 void ServerRunner<Handler>::teardown()
 {
-    sleep(2);
     this->server_ptr->terminate();
     this->server_thread_ptr->join();
 }

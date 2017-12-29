@@ -6,7 +6,6 @@
 //
 #include <iostream>
 #include <sstream>
-//#include <boost/filesystem.hpp>
 #include "rb_logger.hpp"
 
 bool RBLogging::logger_enabled = true;

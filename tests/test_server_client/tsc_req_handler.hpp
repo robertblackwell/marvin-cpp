@@ -7,14 +7,8 @@
 #include <pthread.h>
 
 #include "boost_stuff.hpp"
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
-
 #include "rb_logger.hpp"
 #include "http_header.hpp"
-//#include "UriParser.hpp"
-//#include "url.hpp"
 #include "http_server.hpp"
 #include "server_context.hpp"
 #include "request_handler_base.hpp"

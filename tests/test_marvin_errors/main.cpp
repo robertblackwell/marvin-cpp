@@ -7,11 +7,9 @@
 //
 
 #include <iostream>
-#include <boost/system/error_code.hpp>
-#include <boost/system/linux_error.hpp>
-#include <boost/asio.hpp>
 #include <string>
 #include <iostream>
+#include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "test_error.hpp"
 typedef boost::system::error_code NError;

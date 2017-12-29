@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <boost/asio.hpp>
+#include "boost_stuff.hpp"
 #include <pthread.h>
 #include "rb_logger.hpp"
 //RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)

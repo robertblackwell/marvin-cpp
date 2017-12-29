@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
+#include "boost_stuff.hpp"
 #include <pthread.h>
 #include "rb_logger.hpp"
 #include "error.hpp"

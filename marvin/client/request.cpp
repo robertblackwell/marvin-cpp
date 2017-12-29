@@ -6,9 +6,6 @@
 #include <string>
 #include <cassert>
 #include "boost_stuff.hpp"
-//#include <boost/asio.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/function.hpp>
 #include "url.hpp"
 #include "UriParser.hpp"
 #include "rb_logger.hpp"

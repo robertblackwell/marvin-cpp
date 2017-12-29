@@ -4,9 +4,7 @@
  #include <iterator>
  #include <algorithm>
  #include <stdexcept>
- #include <boost/asio.hpp>
- #include <boost/bind.hpp>
- #include <boost/date_time/posix_time/posix_time.hpp>
+ #include "boost_stuff.hpp"
  #include <cassert>
  #include <vector>
  #include "m_buffer.hpp"

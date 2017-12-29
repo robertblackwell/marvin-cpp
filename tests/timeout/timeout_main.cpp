@@ -9,13 +9,7 @@
 //
 
 #include <iostream>
-#include <boost/system/system_error.hpp>
-#include <boost/system/error_code.hpp>
-#include <boost/asio.hpp>
-#include <boost/asio/error.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost_stuff.hpp"
 #include <gtest/gtest.h>
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)

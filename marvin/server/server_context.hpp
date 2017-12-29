@@ -10,11 +10,11 @@
 #define server_context_hpp
 
 #if 0
-#include <boost/asio.hpp>
 #include <string>
 #include <signal.h>
 #include <utility>
 
+#include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "http_server.hpp"
 #include "server_connection_manager.hpp"

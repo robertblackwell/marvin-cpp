@@ -13,7 +13,10 @@
 #include <string>
 #include <memory>
 #include <cassert>
+#pragma clang diagnostic push
+#pragma clang diagnostic ignore "_Wall"
 #include "boost_stuff.hpp"
+#pragma clang diagnostic pop
 #include "url.hpp"
 #include "UriParser.hpp"
 #include "rb_logger.hpp"

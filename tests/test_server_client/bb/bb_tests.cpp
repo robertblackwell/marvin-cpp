@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
+#include "boost_stuff.hpp"
 #include <thread>
 #include <pthread.h>
 #include <gtest/gtest.h>

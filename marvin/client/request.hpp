@@ -6,8 +6,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
+#include "boost_stuff.hpp"
 #include "message_writer.hpp"
 #include "message_reader.hpp"
 #include "i_socket.hpp"

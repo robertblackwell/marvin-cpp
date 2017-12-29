@@ -30,9 +30,6 @@
 */
 #if 0
 
-#include <boost/asio/ssl/context.hpp>
-#include <wincrypt.h>
-
 void add_windows_root_certs(boost::asio::ssl::context &ctx)
 {
     HCERTSTORE hStore = CertOpenSystemStore(0, "ROOT");
@@ -83,10 +80,7 @@ ssl::stream<boost::asio::ip::tcp::socket> socket(io, ctx);
 #include <cstdlib>
 #include <iostream>
 #include <set>
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
-#include <boost/unordered_set.hpp>
+#include "boost_stuff.hpp"
 
 const int max_read_buffer_length = 1024;
 const bool debug_trace = false;

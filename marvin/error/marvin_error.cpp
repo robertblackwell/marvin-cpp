@@ -48,7 +48,7 @@ namespace Marvin{
     {
         return boost::system::error_condition(static_cast<int>(e), cat);
     }
-    std::string make_error_description(Marvin::ErrorType& err)
+    std::string make_error_description(const Marvin::ErrorType& err)
     {
         std::stringstream ss;
         ss << "Error v: " << err.value()

@@ -64,7 +64,7 @@ namespace Marvin{
     /// \ingroup OriginalErrors
     ErrorType make_error_parse();
     /// \ingroup OriginalErrors
-    std::string make_error_description(Marvin::ErrorType& err);
+    std::string make_error_description(const Marvin::ErrorType& err);
 } // namespace Marvin
 
 namespace Marvin{

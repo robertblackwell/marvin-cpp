@@ -4,17 +4,12 @@
 #include <string>
 #include <unistd.h>
 #include <gtest/gtest.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "error.hpp"
 #include "repeating_timer.hpp"
-//#include "http_server.hpp"
-//#include "request_handler_base.hpp"
-//#include "request.hpp"
-//#include "tsc_client.hpp"
-//#include "tsc_server.hpp"
 #include "testcase.hpp"
 #include "tcp_connection.hpp"
 #include "message_reader.hpp"

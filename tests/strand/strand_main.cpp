@@ -9,10 +9,7 @@
 //
 
 #include <iostream>
-#include <boost/asio.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost_stuff.hpp"
 #define USE_STRANDx
 class printer
 {
