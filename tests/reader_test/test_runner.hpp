@@ -57,7 +57,7 @@ public:
 
     void makeReader();
     void onMessage(Marvin::ErrorType er);
-    void onBody(Marvin::ErrorType er, Marvin::BufferChain chunk);
+    void onBody(Marvin::ErrorType er, Marvin::BufferChainSPtr chunkSPtr);
     void onHeaders(Marvin::ErrorType er);
 };
 #endif

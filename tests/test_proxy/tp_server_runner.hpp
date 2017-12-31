@@ -8,12 +8,13 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-
+#include <gtest/gtest.h>
 #include "boost_stuff.hpp"
 
 #include "http_server.hpp"
+#include <gtest/gtest.h>
 /**
-* This class starts and stops a server with the given
+* This produces a class starts and stops a specified server instance with the given
 * request handler factory
 */
 template<class Handler>
@@ -24,7 +25,7 @@ public:
     std::thread* server_thread_ptr;
     ServerRunner();
     ~ServerRunner();
-    void setup();
+    void setup(long port);
     void teardown();
 };
 
@@ -35,16 +36,16 @@ template<class Handler>
 ServerRunner<Handler>::~ServerRunner(){}
 
 template<class Handler>
-void ServerRunner<Handler>::setup()
+void ServerRunner<Handler>::setup(long port)
 {
-    static std::thread* server_thread_ptr = new std::thread([this](){
+    static std::thread* server_thread_ptr = new std::thread([this, port](){
         try {
             HTTPServer* server_ptr = new HTTPServer([](boost::asio::io_service& io){
                 return new Handler(io);
             });
             this->server_ptr = server_ptr;
-            server_ptr->listen();
-            std::cout << __FUNCTION__ << " after listen" << std::endl;
+            server_ptr->listen(port);
+            std::cout << __FUNCTION__ << " after listen port: " << port << std::endl;
         } catch(std::exception & ex) {
             return;
         }

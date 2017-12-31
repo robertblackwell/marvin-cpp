@@ -45,6 +45,7 @@ public:
     
     void setUri(std::string u);
     std::string uri();
+    std::string getPath();
     
     void setHttpVersMajor(int major);
     int  httpVersMajor();
@@ -52,28 +53,32 @@ public:
     void setHttpVersMinor(int minor);
     int  httpVersMinor();
     
-    void setHeader(std::string key, std::string value);
+    std::map<std::string, std::string>& getHeaders();
     bool hasHeader( std::string key);
     std::string header(std::string key);
-    
-    void removeHeader( std::string key);
-    
     std::string getHeader(std::string key);
-
-    std::map<std::string, std::string>& getHeaders();
-    
-    std::string  str();
+    void setHeader(std::string key, std::string value);
+    void removeHeader( std::string key);
     void    dumpHeaders(std::ostream& os);
+    
     void    setTrailer(std::string key, std::string value);
     bool    hasTrailer( std::string key);
     std::string trailer(std::string key);
 
+    std::string  str();
+
     void    setIsRequest(bool flag);
     bool    isRequest();
     
+    /// \brief return and set the dechunked version of the message content
+    Marvin::BufferChainSPtr getBody();
+    void setBody(Marvin::BufferChainSPtr bufSPtr);
+    void setBody(std::string content);
+
     friend std::string traceMessage(MessageBase& msg);
     friend void serializeHeaders(MessageBase& msg, Marvin::MBuffer& buf);
 //    friend void serializeHeaders(MessageBase& msg, boost::asio::streambuf& buf);
+    friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);
 
 protected:
 
@@ -90,6 +95,8 @@ protected:
 
     HttpHeadersType                     m_headers;
     HttpHeadersType                     m_trailers;
+    
+    Marvin::BufferChainSPtr             m_body_chain_sptr;
     
 };
 

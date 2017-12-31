@@ -12,7 +12,8 @@ PostTest::PostTest(boost::asio::io_service& io, Testcase testcase): _io(io), _te
 }
 void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
-    std::string raw_body = rdr->get_body_chain().to_string();
+    Marvin::BufferChainSPtr bsp = rdr->getBody();
+    std::string raw_body = bsp->to_string();
     json j = json::parse(raw_body);
     std::string sx = j["req"]["body"];
     

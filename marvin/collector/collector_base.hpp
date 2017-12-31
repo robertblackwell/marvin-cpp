@@ -10,7 +10,6 @@
 #include <pthread.h>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
@@ -21,40 +20,41 @@ class CollectorBase
 {
     public:
         static bool             _firstTime;
-        static NullCollector*   _instance;
+        static CollectorBase*   _instance;
     
-        static NullCollector* getInstance(boost::asio::io_service& io);
+        static CollectorBase* getInstance(boost::asio::io_service& io);
         /**
         ** Delete copy constructors
         **/
-        NullCollector(NullCollector const&)   = delete;
-        void operator=(NullCollector const&)  = delete;
+        CollectorBase(CollectorBase const&)   = delete;
+        void operator=(CollectorBase const&)  = delete;
     
 
         /**
         ** Interface method for client code to call collect
         **/
-        void collect(std::string& host, MessageReaderSPtr req, MessageWriterSPtr resp);
+        void collect(std::string scheme, std::string host, MessageReaderSPtr req, MessageBaseSPtr resp);
     
     private:
-        NullCollector(boost::asio::io_service& io): _ioLoop(io), _myStrand(io);
+        CollectorBase(boost::asio::io_service& io);
         /**
         ** This method actually implements the collect function but run on a dedicated
         ** strand. Even if this method does IO-wait operations the other thread will
         ** keep going
         **/
         void postedCollect(
-            std::string& scheme,
-            std::string& host,
+            std::string scheme,
+            std::string host,
             MessageReaderSPtr req,
-            MessageWriterSPtr resp);
+            MessageBaseSPtr resp);
 
-        boost::asio::strand         _myStrand;
-        boost::asio::io_service&    _ioLoop;
-        std::ofstream               _outPipe;
-        bool                        _pipeOpen;
+        boost::asio::strand         m_my_strand;
+        boost::asio::io_service&    m_io;
+        std::ofstream               m_out_pipe;
+        bool                        m_pipe_open;
+    
+        static bool                 s_first_time;
+        static CollectorBase*       s_instance;
 };
-bool NullCollector::_firstTime = true;
-NullCollector* NullCollector::_instance = NULL;
 
 

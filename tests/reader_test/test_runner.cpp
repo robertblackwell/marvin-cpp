@@ -50,22 +50,22 @@ void Testrunner::onMessage(Marvin::ErrorType er)
 //    assert(_tcObj.result_headers() == rdr_->getHeaders());
     ASSERT_TRUE(_tcObj.result_headers() == rdr_->getHeaders());
     auto b1 = _tcObj.result_body();
-    auto b2 = rdr_->get_body_chain();
-    auto b3 = rdr_->get_raw_body_chain();
-    auto s2 = chain_to_string(b2);
-    auto s3 = chain_to_string(b3);
+    auto b2 = rdr_->getBody();
+//    auto b3 = rdr_->get_raw_body_chain();
+    auto s2 = b2->to_string();
+//    auto s3 = chain_to_string(b3);
 //    assert(b1 == s2);
     ASSERT_TRUE(b1 == s2);
     auto desc = _tcObj.getDescription();
 //    std::cout << "TestRunner::readMessage Success for testcase " << _tcObj.getDescription() <<std::endl;
 }
-void Testrunner::onBody(Marvin::ErrorType er, Marvin::BufferChain chunk)
+void Testrunner::onBody(Marvin::ErrorType er, Marvin::BufferChainSPtr chunkSPtr)
 {
     LogDebug(" entry");
     // are we done - if not hang another read
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
     bool done = (er == Marvin::make_error_eom());
-    body_accumulator += chain_to_string(chunk);
+    body_accumulator += chunkSPtr->to_string();
     if( done )
     {
         std::string expectedBody = _tcObj.result_body();

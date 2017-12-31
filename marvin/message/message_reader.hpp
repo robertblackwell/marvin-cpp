@@ -72,7 +72,7 @@ class MessageReader : public Parser, public MessageBase
 public:
 
     using ReadMessageCallback = std::function<void(Marvin::ErrorType err)>;
-    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChain chunk)>;
+    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChainSPtr chunkSPtr)>;
 
     static void configSet_HeaderBufferSize(long bsize);
     static void configSet_BodyBufferSize(long bsize);
@@ -106,7 +106,7 @@ public:
     *
     *  The BufferChain will release all the embedded buffers when the value goes out of scope.
     */
-    void readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChain chunk)>);
+    void readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChainSPtr chunkSPtr)> bodyCb);
     
     /*!
     * This method starts the read of a full message including the body of the message. Use of this method
@@ -127,8 +127,8 @@ public:
     * !!! need to do better
     */
     
-    Marvin::BufferChain  get_body_chain();
-    Marvin::BufferChain  get_raw_body_chain();
+//    Marvin::BufferChain  get_body_chain();
+//    Marvin::BufferChain  get_raw_body_chain();
     
     friend std::string traceReader(MessageReader& rdr);
     
@@ -151,8 +151,9 @@ protected:
     
 
     void p_make_new_body_buffer();
+    void p_make_new_body_buffer_chain();
     void p_post_message_cb(Marvin::ErrorType er);
-    void p_post_body_chunk_cb(Marvin::ErrorType er, Marvin::BufferChain chain);
+    void p_post_body_chunk_cb(Marvin::ErrorType er, Marvin::BufferChainSPtr chainSPtr);
     bool p_parser_ok(int nparsed, Marvin::MBuffer& mb);
 
     /**
@@ -183,15 +184,15 @@ protected:
 //    std::function<void(Marvin::ErrorType err)> m_read_message_cb;
     ReadMessageCallback m_read_message_cb;
 
-    std::function<void(Marvin::ErrorType err, Marvin::BufferChain chunk)> m_read_body_cb;
+    ReadBodyCallback                m_read_body_cb;
     
     /// @TODO - there is redundancy here needs to be cleaned up
     int                             m_total_bytes_read;
     Marvin::MBufferSPtr             m_header_buffer_sptr;
     Marvin::MBufferSPtr             m_body_buffer_sptr;
 
-    Marvin::BufferChain             m_raw_body_buffer_chain;
-    Marvin::BufferChain             m_body_buffer_chain;
+    Marvin::BufferChainSPtr         m_raw_body_buffer_chain_sptr;
+    Marvin::BufferChainSPtr         m_body_buffer_chain_sptr;
 
     std::size_t                     m_body_buffer_size;
     std::size_t                     m_header_buffer_size;

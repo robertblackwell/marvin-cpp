@@ -52,6 +52,9 @@ MessageReader::MessageReader( boost::asio::io_service& io, ISocketSPtr read_sock
     m_body_buffer_size   = s_bodyBufferSize;
     m_header_buffer_size = s_headerBufferSize;
     m_header_buffer_sptr = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(m_header_buffer_size));
+    m_body_buffer_chain_sptr = std::make_shared<Marvin::BufferChain>();
+    this->setBody(m_body_buffer_chain_sptr);
+    m_raw_body_buffer_chain_sptr = std::make_shared<Marvin::BufferChain>();
 }
 
 /**
@@ -68,18 +71,18 @@ MessageReader::~MessageReader()
 
 /*!
 * accesses the BufferChain containing the de-chunked body data
-*/
+*
 Marvin::BufferChain MessageReader::get_body_chain()
 {
     return m_body_buffer_chain;
-}
+}*/
 /*!
 * accesses the BufferChain containing the raw (not de-chunked) body data
-*/
+*
 Marvin::BufferChain MessageReader::get_raw_body_chain()
 {
     return m_raw_body_buffer_chain;
-}
+}*/
 #pragma mark - public interface read methods
 /**
 * An interface method that is called to initiate the read of an entire
@@ -102,13 +105,16 @@ void MessageReader::readHeaders(std::function<void(Marvin::ErrorType)> cb)
 * An interface method that is called to initiate an async read of some body data.
 * Result is returned via the callback
 */
-void MessageReader::readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChain chunk)> cb)
+void MessageReader::readBody(ReadBodyCallback cb)
+//void MessageReader::readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChainSPtr chunkSPtr)> cb)
 {
+//    assert(false); /// not yet tested
     m_read_body_cb = cb;
     m_reading_body = true;
-    if (m_body_buffer_chain.size() > 0) {
-       p_post_body_chunk_cb(Marvin::make_error_ok(), m_body_buffer_chain);
-        m_body_buffer_chain.clear();
+    if (m_body_buffer_chain_sptr->size() > 0) {
+       p_post_body_chunk_cb(Marvin::make_error_ok(), m_body_buffer_chain_sptr);
+       m_body_buffer_chain_sptr = std::make_shared<Marvin::BufferChain>();
+//        m_body_buffer_chain_sptr->clear();
     } else {
         p_read_body_chunk();
     }
@@ -137,7 +143,7 @@ void MessageReader::OnHeadersComplete(MessageInterface* msg, void* body_start_pt
     if (remainder > 0) {
         Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(remainder));
         tmp->append(body_start_ptr, remainder);
-        m_raw_body_buffer_chain.push_back(tmp);
+        m_raw_body_buffer_chain_sptr->push_back(tmp);
     }
     LogDebug("");
 }
@@ -155,7 +161,7 @@ void MessageReader::OnBodyData(void* buf, int len)
 {
     Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(len));
     tmp->append(buf, len);
-    m_body_buffer_chain.push_back(tmp);
+    m_body_buffer_chain_sptr->push_back(tmp);
 }
 
 void MessageReader::OnChunkBegin(int chunkLength) { LogDebug("");}
@@ -266,6 +272,7 @@ void MessageReader::p_read_all_body()
 {
 //    _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     p_make_new_body_buffer();
+    
     p_read_some_body();
 }
 /**
@@ -297,7 +304,7 @@ void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_t
     Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(bytes_transfered));
     tmp->append(m_body_buffer_sptr->data(), m_body_buffer_sptr->size());
 //    std::cout << std::endl << __FUNCTION__ << ": " << tmp->toString() << std::endl;
-    m_raw_body_buffer_chain.push_back(tmp);
+    m_raw_body_buffer_chain_sptr->push_back(tmp);
     
     Marvin::MBuffer& mb = *m_body_buffer_sptr;
     int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
@@ -342,28 +349,28 @@ void MessageReader::p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_
     * otherwise (err && (bytes_transfered > 0)) return with error
     */
     if(er && (bytes_transfered > 0)) {
-        p_post_body_chunk_cb(er, m_body_buffer_chain);
+        p_post_body_chunk_cb(er, m_body_buffer_chain_sptr);
         LogError("", er.message());
     }
     
     m_body_buffer_sptr->setSize(bytes_transfered);
     Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(bytes_transfered));
-    m_raw_body_buffer_chain.push_back(tmp);
+    m_raw_body_buffer_chain_sptr->push_back(tmp);
     
     Marvin::MBuffer& mb = *m_body_buffer_sptr;
     int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
     if( ! p_parser_ok(nparsed, mb)) {
-        p_post_body_chunk_cb(Marvin::make_error_parse(), m_body_buffer_chain);
+        p_post_body_chunk_cb(Marvin::make_error_parse(), m_body_buffer_chain_sptr);
         return;
     }
     
 
     if( isFinishedMessage()) {
-        p_post_body_chunk_cb(Marvin::make_error_eom(), m_body_buffer_chain);
-        m_body_buffer_chain.clear();
+        p_post_body_chunk_cb(Marvin::make_error_eom(), m_body_buffer_chain_sptr);
+        p_make_new_body_buffer_chain();
     } else {
-        p_post_body_chunk_cb(Marvin::make_error_ok(), m_body_buffer_chain);
-        m_body_buffer_chain.clear();
+        p_post_body_chunk_cb(Marvin::make_error_ok(), m_body_buffer_chain_sptr);
+        p_make_new_body_buffer_chain();
 //        _make_new_body_buffer();
 //        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     }
@@ -375,6 +382,12 @@ void MessageReader::p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_
 void MessageReader::p_make_new_body_buffer()
 {
     m_body_buffer_sptr = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(m_body_buffer_size));
+    /// make the MessageBase body buffer refer to the same buffer -
+    /// \warning - this needs rethinking
+}
+void MessageReader::p_make_new_body_buffer_chain()
+{
+    m_body_buffer_chain_sptr = std::make_shared<Marvin::BufferChain>();
 }
 
 #pragma mark - post method for scheduling a callback to run later on the runloop
@@ -395,9 +408,9 @@ void MessageReader::p_post_message_cb(Marvin::ErrorType er)
 * _read_body_cb is a property that stores the address of the
 * callback provided to readBody();
 */
-void MessageReader::p_post_body_chunk_cb(Marvin::ErrorType er, Marvin::BufferChain chain)
+void MessageReader::p_post_body_chunk_cb(Marvin::ErrorType er, Marvin::BufferChainSPtr chain_sptr)
 {
-    auto pf = std::bind(m_read_body_cb, er, chain);
+    auto pf = std::bind(m_read_body_cb, er, chain_sptr);
     m_io.post(pf);
 }
 #pragma mark - error related functions

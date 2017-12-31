@@ -59,7 +59,7 @@ public:
         HandlerDoneCallbackType done) = 0;
     
     protected:
-        boost::asio::io_service&    _io;
+        boost::asio::io_service&    m_io;
 };
 
 

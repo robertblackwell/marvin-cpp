@@ -71,7 +71,7 @@ TEST_P( ReaderFixture, mockfullmessage)
     io_service.run();
     delete tr;
 }
-
+#if 0
 TEST_P( ReaderFixture, mockstreaming)
 {
     boost::asio::io_service io_service;
@@ -109,8 +109,10 @@ TEST_P(ReaderFixture, sockettest)
     LogDebug("");
 
 }
-INSTANTIATE_TEST_CASE_P( ReaderSocketBufTest, ReaderFixture, testing::ValuesIn(tc_make_buffering()));
-INSTANTIATE_TEST_CASE_P( ReaderSocketEOFTest, ReaderFixture, testing::ValuesIn(tc_make_eof()));
+#endif
+//INSTANTIATE_TEST_CASE_P( ReaderSocketBufTest, ReaderFixture, testing::ValuesIn(tc_make_buffering()));
+//INSTANTIATE_TEST_CASE_P( ReaderSocketEOFTest, ReaderFixture, testing::ValuesIn(tc_make_eof()));
+INSTANTIATE_TEST_CASE_P( ReaderSocketEOFTest, ReaderFixture, testing::ValuesIn(tc_make_hv()));
 
 int main(int argc, char * argv[])
 {

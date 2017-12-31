@@ -1,6 +1,7 @@
 #include <string>
 #include <map>
 #include <sstream>
+#include <boost/algorithm/string/trim.hpp>
 #include "http_parser.h"
 #include "http_header.hpp"
 #include "message.hpp"
@@ -120,7 +121,9 @@ MessageBase::httpVersMinor(){return m_http_minor; }
 void
 MessageBase::setHeader(std::string key, std::string value){
     HttpHeader::canonicalKey(key);
-    m_headers[key] = value;
+    std::string v(value);
+    std::string v2 = boost::algorithm::trim_copy(v);
+    m_headers[key] = v2;
 };
 
 bool
@@ -136,8 +139,15 @@ MessageBase::header(std::string key){
 }
 
 void
-MessageBase::removeHeader( std::string key){
+MessageBase::removeHeader( std::string keyIn){
+    std::string key(keyIn);
+    
     HttpHeader::canonicalKey(key);
+    auto e = m_headers.end();
+    auto x = m_headers.find(key);
+    auto y = hasHeader(key);
+    auto z = m_headers[key];
+    auto zz = getHeader(key);
     if( m_headers.find(key) != m_headers.end()  )
         m_headers.erase(key);
 }
@@ -158,7 +168,11 @@ MessageBase::getHeaders(){
 std::string
 MessageBase::str(){
     std::ostringstream ss;
-    ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
+    if( isRequest() ) {
+        ss << getMethodAsString() << " " << uri() <<  " HTTP/" << httpVersMajor() << "." << httpVersMinor() << std::endl;
+    } else {
+        ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
+    }
     std::map<std::string, std::string>::iterator it = m_headers.begin();
     while(it != m_headers.end())
     {
@@ -168,6 +182,23 @@ MessageBase::str(){
     ss << "\r\n";
     return ss.str();
 }
+Marvin::BufferChainSPtr
+MessageBase::getBody()
+{
+    return m_body_chain_sptr;
+}
+void
+MessageBase::setBody(Marvin::BufferChainSPtr bufSPtr)
+{
+    m_body_chain_sptr = bufSPtr;
+    setHeader(HttpHeader::Name::ContentLength, std::to_string(bufSPtr->size()));
+}
+void MessageBase::setBody(std::string content)
+{
+    m_body_chain_sptr = Marvin::BufferChain::makeSPtr(content);
+    setHeader(HttpHeader::Name::ContentLength, std::to_string(m_body_chain_sptr->size()));
+}
+
 void
 MessageBase::dumpHeaders(std::ostream& os)
 {
@@ -186,3 +217,8 @@ MessageBase::hasTrailer( std::string key){ return ( m_trailers.find(key) != m_tr
 std::string
 MessageBase::trailer(std::string key){if( hasTrailer(key) ){return m_trailers[key];} else{ return nullptr;} }
     
+std::ostream &operator<< (std::ostream &os, MessageBase &msg)
+{
+    os << msg.str() ;
+    return os;
+}

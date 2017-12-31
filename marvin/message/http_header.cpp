@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 #include <set>
-
+#include <boost/algorithm/string/case_conv.hpp>
 std::set<std::string> s{"one","two"};
 
 #include "http_header.hpp"
@@ -27,9 +27,10 @@ namespace HttpHeader
     }
     void canonicalKey(std::string& key)
     {
-        for (auto & c: key){
-            c = toupper(c);
-        }
+        boost::algorithm::to_upper(key);
+//        for (auto & c: key){
+//            c = toupper(c);
+//        }
     }
     void filterOut(HttpHeadersType& hdrs, std::set<std::string> filterList)
     {

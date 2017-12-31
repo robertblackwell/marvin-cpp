@@ -19,8 +19,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "tsc_req_handler.hpp"
 nlohmann::json jsonize_request(TscRequestHandler* req_handler, ServerContext& server_context, MessageReaderSPtr req)
 {
-    Marvin::BufferChainSPtr bsp = req->getBody();
-    std::string bodyString = bsp->to_string();
+    std::string bodyString = (req->getBody())->to_string();
     nlohmann::json j;
     j["req"] = {
         {"method", req->getMethodAsString()},
@@ -61,6 +60,7 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(body.length() ));
     return msg;
 }
+
 
 bool apply_connection_close(MessageReaderSPtr req, MessageBaseSPtr response)
 {
@@ -155,8 +155,8 @@ void TscRequestHandler::handle_post_timeout(
 )
 {
 //    nlohmann::json j = jsonize_request(this, server_context, req);
-    Marvin::BufferChainSPtr bsp = req->getBody();
-    std::string bodyString = bsp->to_string();
+    auto chain = req->getBody();
+    std::string bodyString = (req->getBody())->to_string();
     nlohmann::json j = nlohmann::json::parse(bodyString);
     long timeout_interval = j["timeout"].get<int>();
 

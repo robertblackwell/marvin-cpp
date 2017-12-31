@@ -59,15 +59,18 @@ namespace HttpHeader
     typedef std::string Keys;
     /// \ingroup HttpMessage
     namespace Name{
-        static const std::string Host = "HOST";
+        static const std::string AcceptEncoding = "ACCEPT-ENCODING";
+        static const std::string Authorization = "AUTHORIZATION";
         static const std::string Connection = "CONNECTION";
+        static const std::string ConnectionHandlerId = "CONNECT-HANDLER-ID";
         static const std::string ContentLength = "CONTENT-LENGTH";
         static const std::string ContentType = "CONTENT-TYPE";
-        static const std::string AcceptEncoding = "ACCEPT-ENCODING";
+        static const std::string Date = "DATE";
+        static const std::string Host = "HOST";
         static const std::string ProxyConnection = "PROXY-CONNECTION";
+        static const std::string TE = "TE";
         static const std::string TransferEncoding = "TRANSFER-ENCODING";
         static const std::string ETag = "ETAG";
-        static const std::string ConnectionHandlerId = "CONNECT-HANDLER-ID";
         static const std::string RequestHandlerId = "REQUEST-HANDLER-ID";
     };
     /// \ingroup HttpMessage

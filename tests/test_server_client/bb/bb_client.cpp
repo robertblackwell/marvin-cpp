@@ -116,18 +116,18 @@ void TClient::onMessage(Marvin::ErrorType er)
     auto h1 = _testcase.result_headers();
     auto h2 = _rdr->getHeaders();
     bool hh = (h1 == h2);
-    std::string raw_body = _rdr->get_body_chain().to_string();
+    std::string raw_body = _rdr->getBody()->to_string();
     json j = json::parse(raw_body);
     std::string req_body = j["req"]["body"];
     std::string ch_uuid = j["xtra"]["connection_handler_uuid"];
     std::string rh_uuid = j["xtra"]["request_handler_uuid"];
 
-    std::string sx = _rdr->get_body_chain().to_string();
+    std::string sx = _rdr->getBody()->to_string();
     auto b1 = _testcase.result_body();
-    auto b2 = _rdr->get_body_chain();
-    auto b3 = _rdr->get_raw_body_chain();
-    auto s2 = b2.to_string();
-    auto s3 = b3.to_string();
+//    auto b2 = _rdr->getBody()();
+//    auto b3 = _rdr->get_raw_body_chain();
+//    auto s2 = b2.to_string();
+//    auto s3 = b3.to_string();
     assert(b1 == req_body);
     EXPECT_TRUE(b1 == req_body);
     auto desc = _testcase.getDescription();

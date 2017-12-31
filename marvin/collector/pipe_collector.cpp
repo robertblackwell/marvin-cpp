@@ -53,33 +53,33 @@ static bool testPipeReaderExists(char* pipeName)
         static bool             _firstTime;
         static PipeCollector*   _instance;
 
-PipeCollector::PipeCollector(boost::asio::io_service& io): _ioLoop(io), _myStrand(io)
+PipeCollector::PipeCollector(boost::asio::io_service& io): m_io(io), m_my_strand(io)
 {
     LogTorTrace();
-    std::string& tmpPath = _pipePath;
-    int fdw = open(_pipePath.c_str(), O_WRONLY | O_NONBLOCK);
+    std::string& tmpPath = s_pipe_path;
+    int fdw = open(s_pipe_path.c_str(), O_WRONLY | O_NONBLOCK);
     
-    char* n = (char*)_pipePath.c_str();
+    char* n = (char*)s_pipe_path.c_str();
     
-    if( testPipeReaderExists( (char*)_pipePath.c_str()) ){
-        _outPipe.open("/Users/rob/marvin_collect", std::ios_base::out);
-        _pipeOpen = true;
+    if( testPipeReaderExists( (char*)s_pipe_path.c_str()) ){
+        m_out_pipe.open("/Users/rob/marvin_collect", std::ios_base::out);
+        m_pipe_open = true;
     }else{
-        _pipeOpen = false;
+        m_pipe_open = false;
     }
 }
     
 PipeCollector* PipeCollector::getInstance(boost::asio::io_service& io)
 {
-    if( _firstTime ){
-        _firstTime = false;
-        _instance = new PipeCollector(io);
+    if( s_first_time ){
+        s_first_time = false;
+        s_instance = new PipeCollector(io);
     }
-    return _instance;
+    return s_instance;
 }
 void PipeCollector::configSet_PipePath(std::string path)
 {
-    _pipePath = path;
+    s_pipe_path = path;
 }
 /**
 ** This method actually implements the collect function but run on a dedicated
@@ -87,10 +87,10 @@ void PipeCollector::configSet_PipePath(std::string path)
 ** keep going
 **/
 void PipeCollector::postedCollect(
-    std::string& scheme,
-    std::string& host,
+    std::string scheme,
+    std::string host,
     MessageReaderSPtr req,
-    MessageWriterSPtr resp)
+    MessageBaseSPtr resp)
 {
     
     std::vector<std::regex> regexs;
@@ -125,20 +125,20 @@ void PipeCollector::postedCollect(
     /**
     ** Now write out that description
     **/
-    if(! _pipeOpen )
+    if(! m_pipe_open )
         return;
 
-    _outPipe << temp.str();
-    _outPipe.flush();
+    m_out_pipe << temp.str();
+    m_out_pipe.flush();
 }
 /**
 ** Interface method for client code to call collect
 **/
 void PipeCollector::collect(
-    std::string& scheme,
-    std::string& host,
+    std::string scheme,
+    std::string host,
     MessageReaderSPtr req,
-    MessageWriterSPtr resp)
+    MessageBaseSPtr resp)
 {
     std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
 
@@ -147,12 +147,12 @@ void PipeCollector::collect(
     ** leave that for postedCollect
     **/
 
-    auto pf = _myStrand.wrap(std::bind(&PipeCollector::postedCollect, this, scheme, host, req, resp));
-    _ioLoop.post(pf);
+    auto pf = m_my_strand.wrap(std::bind(&PipeCollector::postedCollect, this, scheme, host, req, resp));
+    m_io.post(pf);
 }
     
-bool PipeCollector::_firstTime = true;
-PipeCollector* PipeCollector::_instance = NULL;
-std::string PipeCollector::_pipePath = "";
+bool PipeCollector::s_first_time = true;
+PipeCollector* PipeCollector::s_instance = NULL;
+std::string PipeCollector::s_pipe_path = "";
 
 

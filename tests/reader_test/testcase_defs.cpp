@@ -428,4 +428,37 @@ std::vector<Testcase> tc_make_eof()
     
     return tcases;
 }
-
+std::vector<Testcase> tc_make_hv()
+{
+    std::vector<Testcase> tcases;
+     tcases.push_back(
+            Testcase(
+                "index 0 - terminate with eof(shutdown) - no message length",
+                // raw message text
+                std::vector<std::string> {
+                    "HTTP/1.1 200 OK 11Reason Phrase\r\n",
+                    "Connection: keep-alive , TE, somethingelse\r\n",
+                    "Host: ahost\r\n",
+                    "Proxy-Connection: keep-alive\r\n",
+                    "\r\n",
+                    "01234567890",
+                    "eof"
+                },
+                // expected first line
+                std::string("HTTP/1.1 200 OK 11Reason Phrase"),
+                // expected status code
+                200,
+                // expect error code in onHeader
+                Marvin::make_error_ok(),
+                // expexted headers
+                std::map< std::string, std::string >{
+                    {HttpHeader::Name::Host, "ahost"},
+                    {HttpHeader::Name::Connection,"keep-alive"},
+                    {HttpHeader::Name::ProxyConnection,"keep-alive"}
+                },
+                 // expected body
+                 std::string("01234567890")
+            )
+    );
+    return tcases;
+}

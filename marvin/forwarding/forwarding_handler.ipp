@@ -1,3 +1,5 @@
+#include "forwarding_handler.hpp"
+#include "forward_helpers.hpp"
 
 enum class ConnectAction{
     TUNNEL=11,
@@ -6,22 +8,22 @@ enum class ConnectAction{
 };
 
 template<class TCollector>
-std::vector<std::regex> ForwardingHandler<TCollector>::__httpsHosts = std::vector<std::regex>();
+std::vector<std::regex> ForwardingHandler<TCollector>::s_https_hosts = std::vector<std::regex>();
 
 template<class TCollector>
-std::vector<int> ForwardingHandler<TCollector>::__httpsPorts = std::vector<int>();
+std::vector<int> ForwardingHandler<TCollector>::s_https_ports = std::vector<int>();
 
 
 template<class TCollector>
 void ForwardingHandler<TCollector>::configSet_HttpsHosts(std::vector<std::regex> re)
 {
-    __httpsHosts = re;
+    s_https_hosts = re;
 }
 
 template<class TCollector>
 void ForwardingHandler<TCollector>::configSet_HttpsPorts(std::vector<int> ports)
 {
-    __httpsPorts = ports;
+    s_https_ports = ports;
 }
 
 #pragma mark - Forward handler class
@@ -31,8 +33,8 @@ ForwardingHandler<TCollector>::ForwardingHandler(
 ): RequestHandlerBase(io)
 {
     LogTorTrace();
-    _httpsHosts = __httpsHosts;
-    _httpsPorts = __httpsPorts;
+    m_https_hosts = s_https_hosts;
+    m_https_ports = s_https_ports;
 }
 
 template<class TCollector>
@@ -44,9 +46,10 @@ ForwardingHandler<TCollector>::~ForwardingHandler()
 #pragma mark - handle upgrade request
 
 template<class TCollector>
-void ForwardingHandler<TCollector>::handleUpgrade()
+void ForwardingHandler<TCollector>::p_handle_upgrade()
 {
     // deny the upgrade
+#if 0
     _resp->setStatus("Forbidden");
     _resp->setStatusCode(403);
     std::string n("");
@@ -54,6 +57,7 @@ void ForwardingHandler<TCollector>::handleUpgrade()
     _resp->asyncWrite([this](Marvin::ErrorType& err){
         _doneCallback(err, false);
     });
+#endif
 }
 
 #pragma mark - handle connect request
@@ -79,35 +83,28 @@ void ForwardingHandler<TCollector>::handleConnect(
         ISocketSPtr     connPtr,
         HandlerDoneCallbackType     done
 ){
-    LogInfo("");
-    _req = req;
-    _downStreamConnection  = connPtr;
-    _doneCallback = done;
-    _initialResponseBuf = std::unique_ptr<MBuffer>(new MBuffer(1000));
+    m_req = req;
+    m_downstream_connection  = connPtr;
+    m_done_callback = done;
+    m_initial_response_buf = std::unique_ptr<Marvin::MBuffer>(new Marvin::MBuffer(1000));
     int x = 2;
     //
     // Parse the url to determine were we have to send the "upstream" request
     //
     
-    std::string __url = _req->uri();
-    http::url _u = http::ParseHttpUrl(__url);
-    LogDebug(" uri:", _req->uri());
-    LogDebug(" scheme:", _u.protocol);
-    LogDebug(" host:", _u.host);
-    LogDebug(" port:", _u.port);
-    LogDebug(" path:", _u.path);
-    LogDebug(" query:", _u.search);
-    
-    _scheme = _u.protocol;
-    _host = _u.host;
-    _port = _u.port;
-    _doneCallback = done;
-    _collector = TCollector::getInstance(_io);
-    ConnectAction action = determineConnecAction(_host, _port);
+    std::string tmp_url = m_req->uri();
+    http::url tmp_u = http::ParseHttpUrl(tmp_url);
+   
+    m_scheme = tmp_u.protocol;
+    m_host = tmp_u.host;
+    m_port = tmp_u.port;
+    m_done_callback = done;
+    m_collector = TCollector::getInstance(m_io);
+    ConnectAction action = m_determine_connec_action(m_host, m_port);
 
     switch(action){
         case ConnectAction::TUNNEL :
-            initiateTunnel();
+            p_initiate_tunnel();
             break;
         case ConnectAction::MITM :
             assert(false);
@@ -119,18 +116,19 @@ void ForwardingHandler<TCollector>::handleConnect(
     
 };
 template<class TCollector>
-void ForwardingHandler<TCollector>::initiateTunnel()
+void ForwardingHandler<TCollector>::p_initiate_tunnel()
 {
+#if 0
     // first lets try and connect to the upstream host
     // to do that we need an upstream connection
-    _resp = std::shared_ptr<MessageWriter>(new MessageWriter(_io, false));
-    _resp->setWriteSock(_downStreamConnection.get());
+    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
+    m_resp->setWriteSock(_downStreamConnection.get());
     
-    LogInfo("scheme:", _scheme, " host:", _host, " port:", _port);
-    _upstreamConnection =
-        std::shared_ptr<TCPConnection>(new TCPConnection(_io, _scheme, _host, std::to_string(_port)));
+    LogInfo("scheme:", m_scheme, " host:", m_host, " port:", m_port);
+    m_upstream_connection =
+        std::shared_ptr<TCPConnection>(new TCPConnection(m_io, m_scheme, m_host, std::to_string(m_port)));
     
-    _upstreamConnection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
+    m_upstream_connection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
         if( err ){
             LogWarn("initiateTunnel: FAILED scheme:", this->_scheme, " host:", this->_host, " port:", this->_port);
             response502Badgateway(*_resp);
@@ -164,7 +162,7 @@ void ForwardingHandler<TCollector>::initiateTunnel()
             });
         }
     });
-    
+#endif
 }
 #pragma mark - handle a "normal" request
 ///
@@ -178,189 +176,81 @@ void ForwardingHandler<TCollector>::initiateTunnel()
 ///
 template<class TCollector>
 void ForwardingHandler<TCollector>::handleRequest(
+        ServerContext&   server_context,
         MessageReaderSPtr req,
-        MessageWriterSPtr resp,
+        MessageWriterSPtr respWrtr,
         HandlerDoneCallbackType done
 ){
-    LogInfo("");
-    _req = req;
-    _resp = resp;
-    _doneCallback = done;
-    _collector = TCollector::getInstance(_io);
-    handleRequest_Upstream(req, [this, req, resp](Marvin::ErrorType& err){
-
-        handleUpstreamResponseReceived(err);
-
-        _collector->collect(_scheme, _host, _req, _resp);
-
-        _resp->asyncWrite([this](Marvin::ErrorType& err){
-            LogInfo("");
-            if( err ){
-                LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
-                // got an error sending response to downstream client - what can we do ? Nothing
-                auto pf = std::bind(_doneCallback, err, false);
-                _io.post(pf);
-            }else{
-                auto pf = std::bind(_doneCallback, err, true);
-                _io.post(pf);
-            }
+    m_req = req;
+    m_resp_wrtr = respWrtr;
+    m_done_callback = done;
+    m_collector = TCollector::getInstance(m_io);
+    
+    auto u = helpers::decodeUri(req);
+    m_host = u.host;
+    m_port = u.port;
+    m_scheme = u.protocol;
+    assert( ! m_req->hasHeader("Upgrade") );
+    p_round_trip_upstream(req, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
+        /// get here with a message suitable for transmission to down stream client
+        m_resp = downMsg;
+        Marvin::BufferChainSPtr responseBodySPtr = downMsg->getBody();
+        /// perform the MITM collection
+        m_collector->collect(m_scheme, m_host, m_req, m_resp);
+        /// write response to downstream client
+        m_resp_wrtr->asyncWrite(m_resp, responseBodySPtr, [this](Marvin::ErrorType& err){
+//            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+            auto pf = std::bind(m_done_callback, err, (! err) );
+            m_io.post(pf);
         });
 
     });
 }
-/// This method kicks off the forwarding process by pasing the request upstream
+/// \brief Perform the proxy forwarding process; and produces a response suitable
+/// for downstream transmission; the result of this method is a response to send back to the client
 template<class TCollector>
-void ForwardingHandler<TCollector>::handleRequest_Upstream(
+void ForwardingHandler<TCollector>::p_round_trip_upstream(
         MessageReaderSPtr req,
-        std::function<void(Marvin::ErrorType& err)> upstreamCb
+        std::function<void(Marvin::ErrorType& err, MessageBaseSPtr downstreamReplyMsg)> upstreamCb
 ){
-    LogInfo("");
-    //
-    // Parse the url to determine were we have to send the "upstream" request
-    //
-    std::string __url = _req->uri();
-    http::url _u = http::ParseHttpUrl(__url);
-    LogDebug(" uri:", _req->uri());
-    LogDebug(" scheme:", _u.protocol);
-    LogDebug(" host:", _u.host);
-    LogDebug(" port:", _u.port);
-    LogDebug(" path:", _u.path);
-    LogDebug(" query:", _u.search);
+    /// a client object to manage the round trip of request and response to
+    /// the final destination
+    m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_scheme, m_host, std::to_string(m_port)));
+    /// the MessageBase that will be the up stream request
+    m_upstream_request_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
+    /// format upstream msg for transmission
+    helpers::makeUpstreamRequest(m_upstream_request_msg_sptr, req);
+    assert( ! m_req->hasHeader("Upgrade") );
+    Marvin::BufferChainSPtr content = req->getBody();
     
-    _host = _u.host;
-    _scheme = _u.protocol;
-    
-    _upStreamRequestUPtr = RequestUPtr(new Request(_io));
-    LogInfo("",traceReader(*_req));
-    
-//    _req->dumpHeaders(std::cerr);
-    
-    // filter out upgrade requests
-    if( _req->hasHeader("Upgrade") ){
-        handleUpgrade();
-        return;
-    }
-    
-    // set the method
-    _upStreamRequestUPtr->setMethod(_req->method());
-    // copy the headers
-    // should also test for manditory Host header
-    //
-    auto hdrs = _req->getHeaders();
-
-    HttpHeaderFilterSetType dontCopyList{
-        HttpHeader::Name::Host,
-        HttpHeader::Name::ProxyConnection,
-        HttpHeader::Name::Connection
-    };
-    
-    HttpHeader::filterNotInList(hdrs, dontCopyList, [this]( HttpHeadersType& hdrs,
-                                                        std::string k,
-                                                         std::string v)
+    m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
-        this->_upStreamRequestUPtr->setHeader(k,v);
-    });
-    // set the uri and host header
-    _upStreamRequestUPtr->setUrl(_req->uri());
-    // no keep alive
-    _upStreamRequestUPtr->setHeader("Connection", "close");
-    _upStreamRequestUPtr->setHeader("Accept-encoding", "identity");
-    // Http versions defaults to 1.1, so force it to the same as the request
-    _upStreamRequestUPtr->setHttpVersMinor(_req->httpVersMinor());
-    // now attach the body
-    _upStreamRequestUPtr->setContent(_req->getBody());
-    _upStreamRequestUPtr->go([this, upstreamCb](Marvin::ErrorType& err){
-        upstreamCb(err);
+        m_downstream_msg_sptr = std::make_shared<MessageBase>();
+        m_response_body_sptr = upstrmRdr->getBody();
+        helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
+        upstreamCb(ec, m_downstream_msg_sptr);
     });
     
 };
 
-template<class TCollector>
-void ForwardingHandler<TCollector>::handleUpstreamResponseReceived(Marvin::ErrorType& err)
-{
-    LogInfo("",traceRequest(*_upStreamRequestUPtr));
 
+template<class TCollector>
+void ForwardingHandler<TCollector>::p_on_complete(Marvin::ErrorType& err)
+{
     if( err ){
-        // this means we got an error NOT a response wit an error status code
-        // so we have to consttruct a response
-        makeDownstreamErrorResponse(err);
-        LogTrace(Marvin::make_error_description(err));
-    }else{
-        // Got a response from the upstream server
-        // use it to create the downstream response
-        makeDownstreamResponse();
-    }
-    _upStreamRequestUPtr->end(); ///!!!
-}
-
-template<class TCollector>
-void ForwardingHandler<TCollector>::makeDownstreamResponse()
-{
-    LogInfo("");
-    MessageReader& upStreamResponse = _upStreamRequestUPtr->getResponse();
-    LogTrace("got from server ", traceReader(upStreamResponse));
-    
-    // copy the headers
-    auto hdrs = upStreamResponse.getHeaders();
-    HttpHeaderFilterSetType dontCopyList{
-        HttpHeader::Name::Host,
-        HttpHeader::Name::ProxyConnection,
-        HttpHeader::Name::Connection,
-        HttpHeader::Name::TransferEncoding,
-        HttpHeader::Name::ETag
-    };
-    
-    HttpHeader::filterNotInList(hdrs, dontCopyList, [this]( HttpHeadersType& hdrs,
-                                                        std::string k,
-                                                         std::string v)
-    {
-        this->_resp->setHeader(k,v);
-    });
-
-    // set the uri and host header
-    _resp->setStatus(upStreamResponse.status());
-    _resp->setStatusCode(upStreamResponse.statusCode());
-    // no keep alive
-    _resp->setHeader("Connection", "close");
-    // Http versions defaults to 1.1, so force it to the same as the request
-    _resp->setHttpVersMinor(upStreamResponse.httpVersMinor());
-    // now attach the body
-    
-    std::size_t len;
-    if( (len = upStreamResponse.getBody().size()) > 0){
-        _resp->setContent(upStreamResponse.getBody());
-        _resp->setHeader("Content-length", std::to_string(len));
-    }
-}
-
-template<class TCollector>
-void ForwardingHandler<TCollector>::makeDownstreamErrorResponse(Marvin::ErrorType& err)
-{
-    LogDebug("");
-    // bad gateway 502
-    _resp->setStatus("Bad gateway");
-    _resp->setStatusCode(501);
-    std::string n("");
-    _resp->setContent(n);
-}
-template<class TCollector>
-void ForwardingHandler<TCollector>::onComplete(Marvin::ErrorType& err)
-{
-    LogInfo("");
-    if( err ){
-        LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+//       LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
         // got an error sending response to downstream client - what can we do ? Nothing
-        auto pf = std::bind(_doneCallback, err, false);
-        _io.post(pf);
+        auto pf = std::bind(m_done_callback, err, false);
+        m_io.post(pf);
     }else{
-        auto pf = std::bind(_doneCallback, err, true);
-        _io.post(pf);
+        auto pf = std::bind(m_done_callback, err, true);
+        m_io.post(pf);
     }
 }
 #pragma mark - bodies of utility functions
 
 template<class TCollector>
-ConnectAction ForwardingHandler<TCollector>::determineConnecAction(std::string host, int port)
+ConnectAction ForwardingHandler<TCollector>::p_determine_connection_action(std::string host, int port)
 {
     std::vector<std::regex>  regexs = this->_httpsHosts;
     std::vector<int>         ports  = this->_httpsPorts;
@@ -368,7 +258,7 @@ ConnectAction ForwardingHandler<TCollector>::determineConnecAction(std::string h
     return ConnectAction::TUNNEL;
 }
 
-
+#if 0
 template<class TCollector>
 void ForwardingHandler<TCollector>::response403Forbidden(MessageWriter& writer)
 {
@@ -393,3 +283,4 @@ void ForwardingHandler<TCollector>::response502Badgateway(MessageWriter& writer)
     std::string n("");
     writer.setContent(n);
 }
+#endif

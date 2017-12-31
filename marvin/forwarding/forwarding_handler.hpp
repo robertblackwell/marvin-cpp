@@ -6,8 +6,8 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef forwarding_handler_hpp
-#define forwarding_handler_hpp
+#ifndef marvin_forwarding_handler_hpp
+#define marvin_forwarding_handler_hpp
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
@@ -16,7 +16,8 @@
 #include "request_handler_base.hpp"
 #include "rb_logger.hpp"
 #include "UriParser.hpp"
-#include "request.hpp"
+#include "client.hpp"
+#include "message.hpp"
 #include "tcp_connection.hpp"
 #include "http_header.hpp"
 #include "tunnel_handler.hpp"
@@ -46,63 +47,77 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
     
         void handleConnect(
             MessageReaderSPtr           req,
-            ISocketSPtr     connPtr,
+            ISocketSPtr                 connPtr,
             HandlerDoneCallbackType     done);
 
         void handleRequest(
+            ServerContext&   server_context,
             MessageReaderSPtr           req,
             MessageWriterSPtr           rep,
-            HandlerDoneCallbackType done);
+            HandlerDoneCallbackType done
+        );
     
     private:
     
-        static std::vector<std::regex>  __httpsHosts;
-        static std::vector<int>         __httpsPorts;
+        static std::vector<std::regex>  s_https_hosts;
+        static std::vector<int>         s_https_ports;
     
         // methods that are used in handleRequest
-        void handleRequest_Upstream(
+        void p_round_trip_upstream(
             MessageReaderSPtr req,
-            std::function<void(Marvin::ErrorType& err)> upstreamCb
+            std::function<void(Marvin::ErrorType& err, MessageBaseSPtr downstreamReplyMsg)> upstreamCb
         );
-        void handleUpstreamResponseReceived(Marvin::ErrorType& err);
-        void makeDownstreamResponse();
-        void makeDownstreamErrorResponse(Marvin::ErrorType& err);
-        void handleUpgrade();
-        void onComplete(Marvin::ErrorType& err);
+        void p_handle_upstream_response_received(Marvin::ErrorType& err);
+        void p_make_downstream_response();
+        void p_make_downstream_error_response(Marvin::ErrorType& err);
+        void p_handle_upgrade();
+        void p_on_complete(Marvin::ErrorType& err);
     
         // methods that are used in handleConnect
-        ConnectAction determineConnecAction(std::string host, int port);
-        void initiateTunnel();
+        ConnectAction p_determine_connection_action(std::string host, int port);
+        void p_initiate_tunnel();
     
         // utility methods
-        void response403Forbidden(MessageWriter& writer);
-        void response200OKConnected(MessageWriter& writer);
-        void response502Badgateway(MessageWriter& writer);
+        void p_response403Forbidden(MessageWriter& writer);
+        void p_response200OKConnected(MessageWriter& writer);
+        void p_response502Badgateway(MessageWriter& writer);
 
 
         /// @brief Only used by the handleConnect method
-        ISocketSPtr     _conn;
-        MessageReaderSPtr           _req;
-        MessageWriterSPtr           _resp;
-        RequestUPtr                 _upStreamRequestUPtr;
-        HandlerDoneCallbackType     _doneCallback;
+        ISocketSPtr                 m_conn;
+        /// reader of the initial request from downstream - passed in to our handleRequest method
+        MessageReaderSPtr           m_req;
+        /// writer of the final response tod own stream - passed in to our handler request method
+        MessageBaseSPtr             m_resp;
+        MessageWriterSPtr           m_resp_wrtr;
+        /// message object to hold final downstream response
+        MessageBaseSPtr             m_downstream_msg_sptr;
+        /// done callback - passed in to our handleRequest method
+        HandlerDoneCallbackType     m_done_callback;
+        Marvin::BufferChainSPtr     m_response_body_sptr;
+
+        /// Client instance to handle upstream round trip
+        ClientUPtr                  m_upstream_client_uptr;
+        MessageBaseSPtr             m_upstream_request_msg_sptr;
+
+    
         /// this will collect summaries of the req and resp
-        std::string                 _scheme;
-        std::string                 _host;
-        int                         _port;
-        TCollector*                 _collector;
+        std::string                 m_scheme;
+        std::string                 m_host;
+        int                         m_port;
+        TCollector*                 m_collector;
     
         /// used for handleConnect - tunnel
-        MBufferUPtr                 _initialResponseBuf;
-        TunnelHandlerSPtr           _tunnelHandler;
-        ISocketSPtr     _downStreamConnection; // used only for tunnel
-        TCPConnectionSPtr          _upstreamConnection; // used only for tunnels
+        Marvin::MBufferUPtr         m_initial_response_buf;
+        TunnelHandlerSPtr           m_tunnel_handler;
+        ISocketSPtr                 m_downstream_connection; // used only for tunnel
+        TCPConnectionSPtr           m_upstream_connection; // used only for tunnels
     
         /// regexs to define hosts that require mitm not tunnel
-        std::vector<std::regex>     _httpsHosts;
+        std::vector<std::regex>     m_https_hosts;
     
         /// list of port numbers that can be https mitm'd rather than tunneled
-        std::vector<int>            _httpsPorts;
+        std::vector<int>            m_https_ports;
 
 };
 
