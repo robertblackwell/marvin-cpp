@@ -45,6 +45,7 @@ tests_clean:
 tests_build:
 	@xcodebuild -quiet -scheme test_server_client_body_buffering build
 	@ xcodebuild -quiet -scheme test_server_client_body_format build 
+	@ xcodebuild -quiet -scheme test_client_request build 
 	@ xcodebuild -quiet -scheme test_timeout build 
 	@ xcodebuild -quiet -scheme test_connect build 
 	@ xcodebuild -quiet -scheme test_reader build 
