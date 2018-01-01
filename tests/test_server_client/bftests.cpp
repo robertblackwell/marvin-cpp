@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
@@ -21,36 +21,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "test_server_client/bf/bf_testcase.hpp"
 #include "test_server_client/tsc_req_handler.hpp"
 #include "server_runner.hpp"
-#include "bf_fix_multiple.hpp"
 using namespace body_format;
-static Testcase tcase01(
-        TestType::WITH_STRING,
-        "With string - 2 buffers",
-        {
-            "12345987654",
-            "93hdiuybk"
-        }
-    );
-static Testcase  tcase02(
-        TestType::WITH_MBUFFER,
-        "With mbuffer - 2 buffers",
-        {
-            "1234567890",
-            "oiuhgre76",
-            "HGYTRESAWQ"
-        }
-    );
-static Testcase tcase03(
-        TestType::WITH_BUFFER_CHAIN,
-        "With buffer chain - 2 buffers",
-        {
-            "1234567890",
-            "1m2j3k4i5u6",
-            "qkjgtaitsko",
-            "2"
-        }
-    );
-
 
 namespace {
 
@@ -90,41 +61,34 @@ std::vector<body_format::Testcase> make_cases()
     };
     return cases;
 }
-    /**
-    * Parameterized fixture for testing each message stand alone
-    * which requires a server to be started
-    */
-    class BFOneshot : public ::testing::Test, public ::testing::WithParamInterface<body_format::Testcase>
-    {
-        public:
-        BFOneshot(): _tc(GetParam())
-        {}
-        ~BFOneshot(){}
-        virtual void SetUp(){}
-        virtual void TearDown() {}
-        body_format::Testcase   _tc;
-    };
 
-}
+} // namespace
 #if 1
 // run each test on a separate io_service
-TEST_P(BFOneshot, 001)
+void oneShot( const Testcase& testcase)
 {
-    const body_format::Testcase& testcase = GetParam();
     boost::asio::io_service io_service;
     body_format::PostTest tst(io_service, testcase);
     tst.exec();
-    std::cout << testcase._description << std::endl;
+//    std::cout << testcase._description << std::endl;
     io_service.run();
 }
-
-INSTANTIATE_TEST_CASE_P(BFconsecutive, BFOneshot, testing::Values(tcase01, tcase02, tcase03));
+void multiple(std::vector<Testcase> tcs)
+{
+    for(auto const& testcase: tcs) {
+        oneShot(testcase);
+    }
+}
+TEST_CASE("Oneshots","")
+{
+    multiple(make_cases());
+}
 #endif
 
 #if 1
 // run all request on a single io_service at the same time
 // but all as separate request streams and separate connections
-TEST(BFMultiple, alltogether)
+TEST_CASE("Multiple-alltogether","")
 {
     boost::asio::io_service io_service;
     std::vector<body_format::Testcase> cases = make_cases();
@@ -138,7 +102,7 @@ TEST(BFMultiple, alltogether)
 }
 #endif
 #if 1
-TEST(BFMultiple, pipeline)
+TEST_CASE("Multiple_pipeline","")
 {
     boost::asio::io_service io_service;
     std::vector<body_format::Testcase> cases = make_cases();

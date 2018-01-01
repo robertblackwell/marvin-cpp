@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include <pthread.h>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"

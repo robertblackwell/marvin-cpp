@@ -8,7 +8,8 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#include <gtest/gtest.h>
+#define CATCH_CONFIG_RUNNER
+#include <catch/catch.hpp>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 
@@ -23,68 +24,98 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "t_client.hpp"
 #include "testcase_defs.hpp"
 
-namespace {
-
-    /**
-    * Global setup/teardown for testcases
-    */
-    class Environment : public ::testing::Environment
-    {
-        public:
-            virtual ~Environment() {}
-            // Override this to define how to set up the environment.
-            virtual void SetUp() { std::cout << "global setup" << std::endl;}
-            // Override this to define how to tear down the environment.
-            virtual void TearDown() { std::cout << "global teardown" << std::endl;}
-    };
-    /**
-    * Fixture for testing the message_reader.hpp/cpp.
-    *
-    * Two test uses a mock object for reader_socket and test in turn reading a whole
-    * message in on go, and reading headers and then the body chunk by chunk
-    *
-    * Another test uses specila purpose client and server connected via a tcp socket
-    * and has the server read messages sent by the client. This test also verifies the
-    * function of TCPConnection which is used to implement the underlying transport.
-    */
-    class ReaderFixture : public ::testing::TestWithParam<Testcase>
-    {
-        public:
-        ReaderFixture(): _tc(GetParam()){}
-        ~ReaderFixture(){}
-        static void SetUpTestCase(){ std::cout << "test case setup" << std::endl;}
-        virtual void SetUp(){}
-        virtual void TearDown() {}
-        static void TearDownTestCase(){ std::cout << "test case teardown" << std::endl;}
-        Testcase _tc;
-    };
-
-
-}
-TEST_P( ReaderFixture, mockfullmessage)
+void test_fullmessage(std::vector<Testcase> tcs)
 {
-    boost::asio::io_service io_service;
-    Testcase testcase = GetParam();
-    MockReadSocketSPtr msock_ptr = std::shared_ptr<MockReadSocket>(new MockReadSocket(io_service, testcase));
-    auto tr = new Testrunner(io_service, msock_ptr, testcase);
-    tr->run_FullMessageRead();
-    io_service.run();
-    delete tr;
+    for(auto const& testcase : tcs) {
+        boost::asio::io_service io_service;
+        MockReadSocketSPtr msock_ptr = std::shared_ptr<MockReadSocket>(new MockReadSocket(io_service, testcase));
+        auto tr = new Testrunner(io_service, msock_ptr, testcase);
+        tr->run_FullMessageRead();
+        io_service.run();
+        delete tr;
+    }
+}
+void test_streamingBody(std::vector<Testcase> tcs)
+{
+    for(auto const& testcase : tcs) {
+        boost::asio::io_service io_service;
+        MockReadSocketSPtr msock_ptr = std::shared_ptr<MockReadSocket>(new MockReadSocket(io_service, testcase));
+        auto tr = new Testrunner(io_service, msock_ptr, testcase);
+        tr->run_StreamingBodyRead();
+        io_service.run();
+        delete tr;
+    }
+}
+TEST_CASE( "Reader_buffering_fullmessage", "")
+{
+    test_fullmessage(tc_make_buffering());
+}
+TEST_CASE( "Reader_eof_fullmessage", "")
+{
+    test_fullmessage(tc_make_eof());
+}
+TEST_CASE( "Reader_hv_fullmessage", "")
+{
+    test_fullmessage(tc_make_hv());
+}
+TEST_CASE( "Reader_buffering_streaming","")
+{
+    test_streamingBody(tc_make_buffering());
+}
+
+void testcase_socketReader(Testcase tc)
+{
+//    std::cout << "TEST_F::MyFixture::_data " <<  std::endl;
+//    Testcase tc = GetParam();
+//    runTestcase(tc);
+    LogDebug("");
+    boost::asio::io_service io;
+    /**
+    * The server reads and verifies the message. Note the server needs
+    * the testcase object to know what a correct message is
+    */
+    TServerSPtr srv = std::shared_ptr<TServer>(new TServer(io, tc));
+    srv->listen(9991, [](MessageReaderSPtr rdr) {
+        //go here is a win
+    });
+    /**
+    * The client sends the message
+    */
+    TClientSPtr client = std::shared_ptr<TClient>(new TClient(io, "http", "localhost", "9991", tc));
+    client->send_testcase_buffers([](Marvin::ErrorType err){
+        //printf("all buffers have been sent\n");
+    });
+    io.run();
+    LogDebug("");
+}
+void test_vector_socketReader(std::vector<Testcase> tcs)
+{
+    for(auto const& testcase : tcs) {
+        testcase_socketReader(testcase);
+    }
+}
+TEST_CASE("Reader_socket_buffering")
+{
+    printf("START %s[%d]\n", __FILE__, __LINE__);
+    test_vector_socketReader(tc_make_buffering());
+    printf("END %s[%d]\n", __FILE__, __LINE__);
+}
+TEST_CASE("Reader_socket_eof")
+{
+    printf("START %s[%d]\n", __FILE__, __LINE__);
+    test_vector_socketReader(tc_make_eof());
+    printf("END %s[%d]\n", __FILE__, __LINE__);
+}
+TEST_CASE("Reader_socket_hv")
+{
+    printf("START %s[%d]\n", __FILE__, __LINE__);
+    test_vector_socketReader(tc_make_hv());
+    printf("END %s[%d]\n", __FILE__, __LINE__);
 }
 #if 0
-TEST_P( ReaderFixture, mockstreaming)
+TEST_CASE("ReaderFixture_sockettest","")
 {
-    boost::asio::io_service io_service;
-    Testcase testcase = GetParam();
-    MockReadSocketSPtr msock_ptr = std::shared_ptr<MockReadSocket>(new MockReadSocket(io_service, testcase));
-    auto tr = new Testrunner(io_service, msock_ptr, testcase);
-    tr->run_StreamingBodyRead();
-    io_service.run();
-    delete tr;
-}
-
-TEST_P(ReaderFixture, sockettest)
-{
+    printf("%s[%d]\n", __FILE__, __LINE__);
 //    std::cout << "TEST_F::MyFixture::_data " <<  std::endl;
     Testcase tc = GetParam();
 //    runTestcase(tc);
@@ -109,21 +140,20 @@ TEST_P(ReaderFixture, sockettest)
     LogDebug("");
 
 }
-#endif
+
 //INSTANTIATE_TEST_CASE_P( ReaderSocketBufTest, ReaderFixture, testing::ValuesIn(tc_make_buffering()));
 //INSTANTIATE_TEST_CASE_P( ReaderSocketEOFTest, ReaderFixture, testing::ValuesIn(tc_make_eof()));
 INSTANTIATE_TEST_CASE_P( ReaderSocketEOFTest, ReaderFixture, testing::ValuesIn(tc_make_hv()));
-
+#endif
 int main(int argc, char * argv[])
 {
     RBLogging::setEnabled(false);
 
-    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    testing::InitGoogleTest(&_argc, _argv);
-    Environment* rdr_env = new Environment();
-    ::testing::Environment* tmp = ::testing::AddGlobalTestEnvironment(rdr_env);
-    auto ret = RUN_ALL_TESTS();
-    return ret;
+    char* _argv[] = {argv[0], (char*)"-s", (char*)"-r", (char*)"junit"}; // change the filter to restrict the tests that are executed
+    int _argc = 4;
+    printf("%s\n", __FILE__);
+    int result = Catch::Session().run( argc, argv );
+    printf("%s\n", __FILE__);
+    return result;
 }
 

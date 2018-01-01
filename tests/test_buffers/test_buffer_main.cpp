@@ -6,7 +6,8 @@
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
 #include <iostream>
-#include <gtest/gtest.h>
+#define CATCH_CONFIG_RUNNER
+#include <catch/catch.hpp>
 #include "boost_stuff.hpp"
 #include "buffer.hpp"
 #include "rb_logger.hpp"
@@ -16,7 +17,7 @@
 //void test_fbuffer_01();
 //void test_fbuffer_02();
 using namespace Marvin;
-TEST(buffer_chain, assignment)
+TEST_CASE("buffer_chain_assignment","")
 {
     MBuffer mb(100);
     boost::asio::mutable_buffer bt = boost::asio::buffer(mb.data(), mb.capacity());
@@ -35,7 +36,7 @@ TEST(buffer_chain, assignment)
     std::cout << "" << std::endl;
     std::cout << "" << std::endl;
 }
-TEST(buffer_chain, makeboostbuffer)
+TEST_CASE("buffer_chain_makeboostbuffer","")
 {
     BufferChain chain1;
     BufferChain chain2;
@@ -60,28 +61,13 @@ TEST(buffer_chain, makeboostbuffer)
 }
 
 
-
-void doSomething()
-{
-    auto f = [](){
-        ASSERT_TRUE(2 == 2);
-    };
-    f();
-}
-
-TEST(doit, something)
-{
-    doSomething();
-}
-
 #pragma mark - main
 int main(int argc, char * argv[]) {
     RBLogging::setEnabled(false);
-    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
     int _argc = 2;
-    testing::InitGoogleTest(&_argc, _argv);
-    return RUN_ALL_TESTS();
+    int result = Catch::Session().run( argc, argv );
 
-    return 0;
+    return result;
 }
 

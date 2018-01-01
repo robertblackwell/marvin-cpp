@@ -15,8 +15,8 @@ void GetTest::exec()
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 
-        std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
-        std::cout << "request " << std::hex << _client.get() << std::endl;
+//        std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
+//        std::cout << "request " << std::hex << _client.get() << std::endl;
 //        std::cout << "request " << std::hex << &resp << std::endl;
 //        std::cout << "request " << resp.statusCode() << " " << resp.status() << std::endl;
 //        std::cout << "request " << resp.getBody() << std::endl;
@@ -31,7 +31,7 @@ void GetTest::exec()
 #pragma clang diagnostic pop
 
 #endif
-        std::cout << "get request code = " << code << " success " << std::endl;
+//        std::cout << "get request code = " << code << " success " << std::endl;
     };
     _client->asyncWrite(_msg, f);
 

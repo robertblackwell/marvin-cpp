@@ -1,6 +1,19 @@
 #include <boost/asio.hpp>
 #include "server_runner.hpp"
 #include "tsc_req_handler.hpp"
+
+static std::shared_ptr<ServerRunner> serverRunnerSPtr;
+void startTestServer(long port)
+{
+    serverRunnerSPtr = std::make_shared<ServerRunner>();
+    serverRunnerSPtr->setup(port);
+}
+void stopTestServer()
+{
+    serverRunnerSPtr->teardown();
+}
+
+
 ServerRunner::ServerRunner(){}
 ServerRunner::~ServerRunner(){}
 
@@ -13,7 +26,7 @@ void ServerRunner::setup(long port)
             });
             this->server_ptr = server_ptr;
             server_ptr->listen(port);
-            std::cout << __FUNCTION__ << " after listen" << std::endl;
+//            std::cout << __FUNCTION__ << " after listen" << std::endl;
         } catch(std::exception & ex) {
             return;
         }

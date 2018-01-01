@@ -1,7 +1,7 @@
 #ifndef marvin_tsc_req_handler_hpp
 #define marvin_tsc_req_handler_hpp
 
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>

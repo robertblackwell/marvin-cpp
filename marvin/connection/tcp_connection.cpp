@@ -32,7 +32,7 @@ using boost::asio::io_service;
 
 #pragma mark - timeout interval config
 long TCPConnection::s_connect_timeout_interval_ms = 5000;
-long TCPConnection::s_read_timeout_interval_ms = 15000;
+long TCPConnection::s_read_timeout_interval_ms = 5000;
 long TCPConnection::s_write_timeout_interval_ms = 5000;
 void TCPConnection::setConfig_connectTimeOut(long millisecs)
 {
@@ -267,7 +267,7 @@ void TCPConnection::p_handle_resolve(
     tcp::resolver::iterator end;
     auto iter_empty = (endpoint_iterator == end);
     Marvin::ErrorType ec = err;
-    std::cout << std::string(__FUNCTION__) + " " <<  Marvin::make_error_description(ec) << std::endl;
+    LogDebug(std::string(__FUNCTION__) + " " + Marvin::make_error_description(ec) );
     if (iter_empty && (!err)) {
         LogDebug("empry but no error");
         // empty iter but no error (unlikely)
@@ -279,7 +279,7 @@ void TCPConnection::p_handle_resolve(
     } else {
         // all is good
         tcp::endpoint ep = *endpoint_iterator;
-        std::cout << ep.address().to_string() << std::endl;
+        LogDebug( ep.address().to_string());
         // always use the first iterator result
         LogDebug("resolve OK","so now connect");
         tcp::endpoint endpoint = *endpoint_iterator;

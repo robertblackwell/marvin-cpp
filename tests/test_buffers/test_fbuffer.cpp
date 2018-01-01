@@ -6,7 +6,7 @@
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
 #include <iostream>
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include "buffer.hpp"
 #include "rb_logger.hpp"
 using namespace Marvin;

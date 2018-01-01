@@ -11,6 +11,10 @@
 #include <thread>
 #include "boost_stuff.hpp"
 #include "http_server.hpp"
+void startTestServer(long port=9991);
+void stopTestServer();
+
+
 /*
 * This class starts and stops a server with the given
 * request handler factory

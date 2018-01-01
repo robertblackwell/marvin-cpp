@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include "json.hpp"
 #include "bf_pipeline.hpp"
 
@@ -27,10 +27,10 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     std::string connection_hdr = rdr->getHeader(HttpHeader::Name::Connection);
     if(_msg_index < (_testcase.size() - 1)) {
         assert(connection_hdr == HttpHeader::Value::ConnectionKeepAlive);
-        ASSERT_TRUE(connection_hdr == HttpHeader::Value::ConnectionKeepAlive);
+        REQUIRE(connection_hdr == HttpHeader::Value::ConnectionKeepAlive);
     } else {
         assert(connection_hdr == HttpHeader::Value::ConnectionClose);
-        ASSERT_TRUE(connection_hdr == HttpHeader::Value::ConnectionClose);
+        REQUIRE(connection_hdr == HttpHeader::Value::ConnectionClose);
     }
     /**
     * Test that the server is using the same connection handler and request handler for each request
@@ -46,8 +46,8 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     } else {
         assert(ch_uuid == _ch_uuid);
         assert(rh_uuid == _rh_uuid);
-        ASSERT_TRUE(ch_uuid == _ch_uuid);
-        ASSERT_TRUE(rh_uuid == _rh_uuid);
+        REQUIRE(ch_uuid == _ch_uuid);
+        REQUIRE(rh_uuid == _rh_uuid);
     }
     
     std::string sx = rdr->getBody()->to_string();
@@ -59,10 +59,10 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 #endif
     assert(rdr->statusCode() == 200);
     assert(req_body == expected_req_body);
-    ASSERT_TRUE(rdr->statusCode() == 200);
-    ASSERT_TRUE(req_body == expected_req_body);
+    REQUIRE(rdr->statusCode() == 200);
+    REQUIRE(req_body == expected_req_body);
 
-    std::cout << "Pipeline::" << _testcase[_msg_index]._description <<  std::endl;
+//    std::cout << "Pipeline::" << _testcase[_msg_index]._description <<  std::endl;
     _msg_index++;
     if (_msg_index < _testcase.size()) {
         exec();

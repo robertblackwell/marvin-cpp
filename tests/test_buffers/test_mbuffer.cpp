@@ -8,12 +8,12 @@
 #include <iostream>
 #include "buffer.hpp"
 #include "rb_logger.hpp"
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 
 using namespace Marvin;
 
 #pragma mark - testcase_mbuffer
-TEST(mbuffer, 01)
+TEST_CASE("mbuffer_01","")
 {
     std::vector<std::string> v {
         "1234567890",
@@ -29,16 +29,16 @@ TEST(mbuffer, 01)
         mb->append((void*)s.c_str(), s.size());
     }
     
-    ASSERT_TRUE(mb->size() == 50);
+    REQUIRE(mb->size() == 50);
 //    std::cout << *mb << std::endl;
     
     auto constb = mb_as_const_buffer(*mb);
-    ASSERT_TRUE(boost::asio::buffer_size(constb) == mb->size());
-    ASSERT_TRUE(boost::asio::buffer_cast<const void*>(constb) == mb->data());
+    REQUIRE(boost::asio::buffer_size(constb) == mb->size());
+    REQUIRE(boost::asio::buffer_cast<const void*>(constb) == mb->data());
     
     auto mut_b = mb_as_mutable_buffer(*mb);
-    ASSERT_TRUE(boost::asio::buffer_size(mut_b) == mb->size());
-    ASSERT_TRUE(boost::asio::buffer_cast<void*>(mut_b) == mb->data());
+    REQUIRE(boost::asio::buffer_size(mut_b) == mb->size());
+    REQUIRE(boost::asio::buffer_cast<void*>(mut_b) == mb->data());
 
     delete mb;
 }

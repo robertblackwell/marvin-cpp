@@ -27,7 +27,7 @@ void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::Al
     assert(m_callback == nullptr);
     if( m_connections.size() > m_maxNumberOfConnections ) {
         m_callback = cb;
-        std::cout << "ServerConnectionManager::waiting server" << std::endl;
+//        std::cout << "ServerConnectionManager::waiting server" << std::endl;
     } else {
         cb();
     }
@@ -105,7 +105,7 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
     m_fd_list.erase(fd);
     if (m_callback && (m_connections.size() < m_maxNumberOfConnections)) {
         LogDebug("");
-        std::cout << "ServerConnectionManager::releasing callback" << std::endl;
+//        std::cout << "ServerConnectionManager::releasing callback" << std::endl;
         auto tmp = m_callback;
         m_callback = nullptr;
         m_io.post(tmp);

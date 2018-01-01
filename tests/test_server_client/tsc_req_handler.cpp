@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -160,8 +160,9 @@ void TscRequestHandler::handle_post_timeout(
     nlohmann::json j = nlohmann::json::parse(bodyString);
     long timeout_interval = j["timeout"].get<int>();
 
-    std::cout << j.dump() << std::endl;
-
+//    std::cout << j.dump() << std::endl;
+    /// since we are simulating a timeout we dont need to do the rest of this
+#if 0
     MessageBaseSPtr msg = make_200_response(j.dump());
     bool keep_alive = apply_keepalive_rules(req, msg);
     std::string json_body = j.dump();
@@ -172,6 +173,7 @@ void TscRequestHandler::handle_post_timeout(
         _timer.expires_from_now(boost::posix_time::pos_infin);
         send_response();
     });
+#endif
 }
 void TscRequestHandler::handle_post_echo(
     ServerContext&   server_context,

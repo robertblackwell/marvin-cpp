@@ -77,8 +77,8 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory)
 #if 0
     auto handler = [this]( const boost::system::error_code& error, int signal_number)
     {
-      std::cout << "Handler Got signal " << signal_number << "; "
-                   "stopping io_service." << std::endl;
+//      std::cout << "Handler Got signal " << signal_number << "; "
+//                   "stopping io_service." << std::endl;
       this->_io.stop();
     };
     _signals.async_wait(handler);
@@ -187,7 +187,7 @@ void HTTPServer::terminate()
         auto hf = std::bind(&ConnectionHandler::serve, connHandler);
         m_io.post(hf);
     }else{
-        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
+//        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
         LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         m_io.stop();
         return;
@@ -222,7 +222,7 @@ void HTTPServer::terminate()
  void HTTPServer::doStop(const Marvin::ErrorType& err)
 {
     LogDebug("");
-    std::cout << "doStop" << std::endl;
+//    std::cout << "doStop" << std::endl;
     m_io.stop();
     m_acceptor.close();
 //  connection_manager_.stop_all();

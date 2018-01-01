@@ -26,7 +26,7 @@ public:
     {}
     ~AsyncComposedOp()
     {
-        std::cout << "Final count is " << m_count << std::endl;
+//        std::cout << "Final count is " << m_count << std::endl;
     }
     void cancel()
     {

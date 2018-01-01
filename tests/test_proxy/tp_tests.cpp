@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include "buffer.hpp"
 #include "pipe_collector.hpp"
 #include "http_server.hpp"
@@ -91,30 +91,30 @@ void verifyResponse_01(MessageBaseSPtr msg)
     auto trim = [](std::string s) -> std::string {
         return boost::algorithm::trim_copy(s);
     };
-    EXPECT_TRUE(msg->status() == "OK");
-    EXPECT_TRUE(msg->statusCode() == 200);
-    EXPECT_TRUE(msg->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose);
+    REQUIRE(msg->status() == "OK");
+    REQUIRE(msg->statusCode() == 200);
+    REQUIRE(msg->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose);
     auto xx = msg->getHeader("Cache-Control");
-    EXPECT_TRUE(msg->getHeader("Cache-Control") == trim(" max-age=604800"));
-    EXPECT_TRUE(msg->getHeader("Content-Type") == trim(" text/html"));
-    EXPECT_TRUE(msg->getHeader("Date") == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
-    EXPECT_TRUE(msg->getHeader(HttpHeader::Name::Date) == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
+    REQUIRE(msg->getHeader("Cache-Control") == trim(" max-age=604800"));
+    REQUIRE(msg->getHeader("Content-Type") == trim(" text/html"));
+    REQUIRE(msg->getHeader("Date") == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
+    REQUIRE(msg->getHeader(HttpHeader::Name::Date) == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
     /// ETag just not passed down
-    EXPECT_TRUE( ! msg->hasHeader("Etag"));
-    EXPECT_TRUE( ! msg->hasHeader(HttpHeader::Name::ETag));
+    REQUIRE( ! msg->hasHeader("Etag"));
+    REQUIRE( ! msg->hasHeader(HttpHeader::Name::ETag));
     /// proxy transforms chunked encoding to content-length style
-    EXPECT_TRUE( ! msg->hasHeader("Transfer-Encoding"));
-    EXPECT_TRUE( ! msg->hasHeader(HttpHeader::Name::TransferEncoding));
-    EXPECT_TRUE(msg->hasHeader("Content-Length"));
-    EXPECT_TRUE(msg->hasHeader(HttpHeader::Name::ContentLength));
+    REQUIRE( ! msg->hasHeader("Transfer-Encoding"));
+    REQUIRE( ! msg->hasHeader(HttpHeader::Name::TransferEncoding));
+    REQUIRE(msg->hasHeader("Content-Length"));
+    REQUIRE(msg->hasHeader(HttpHeader::Name::ContentLength));
     /// and we force connection close
-    EXPECT_TRUE(msg->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose);
+    REQUIRE(msg->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose);
 
-    EXPECT_TRUE(msg->getHeader("Expires") == trim(" Sun, 01 Dec 2013 01:38:41 GMT"));
-    EXPECT_TRUE(msg->getHeader("Last-Modified") == trim(" Fri, 09 Aug 2013 23:54:35 GMT"));
-    EXPECT_TRUE(msg->getHeader("Server") == trim(" ECS (mia/41C4)"));
-    EXPECT_TRUE(msg->getHeader("X-Cache") == trim(" HIT"));
-    EXPECT_TRUE(msg->getHeader("x-ec-custom-error") == trim(" 1"));
+    REQUIRE(msg->getHeader("Expires") == trim(" Sun, 01 Dec 2013 01:38:41 GMT"));
+    REQUIRE(msg->getHeader("Last-Modified") == trim(" Fri, 09 Aug 2013 23:54:35 GMT"));
+    REQUIRE(msg->getHeader("Server") == trim(" ECS (mia/41C4)"));
+    REQUIRE(msg->getHeader("X-Cache") == trim(" HIT"));
+    REQUIRE(msg->getHeader("x-ec-custom-error") == trim(" 1"));
 //    std::string s = "012345678956";
 //    Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
 //    msgRdr->setBody(bdy);
@@ -153,16 +153,16 @@ void fillMsgRdrAsRequest02(MessageReaderSPtr msgRdr)
 }
 void verifyRequest_02(MessageBaseSPtr msgSPtr)
 {
-    EXPECT_TRUE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
-    EXPECT_TRUE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:80" );
-    EXPECT_TRUE(msgSPtr->getHeader(HttpHeader::Name::AcceptEncoding) == "identity");
-    EXPECT_TRUE(msgSPtr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose);
-    EXPECT_TRUE(msgSPtr->getHeader(HttpHeader::Name::TE) == "");
-    EXPECT_TRUE(msgSPtr->getHeader("User-Agent") =="Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
-    EXPECT_TRUE(msgSPtr->getHeader("Accept-Language") == "en");
-    EXPECT_TRUE(msgSPtr->getHeader("Accept-Charset") == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    EXPECT_TRUE( ! msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding));
-    EXPECT_TRUE( ! msgSPtr->hasHeader(HttpHeader::Name::ETag));
+    REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
+    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:80" );
+    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::AcceptEncoding) == "identity");
+    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose);
+    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::TE) == "");
+    REQUIRE(msgSPtr->getHeader("User-Agent") =="Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
+    REQUIRE(msgSPtr->getHeader("Accept-Language") == "en");
+    REQUIRE(msgSPtr->getHeader("Accept-Charset") == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
+    REQUIRE( ! msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding));
+    REQUIRE( ! msgSPtr->hasHeader(HttpHeader::Name::ETag));
 }
 #pragma mark - verify minimum requirements for a request
 void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
@@ -177,37 +177,39 @@ void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
 bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 {
     auto meth = msgSPtr->getMethodAsString();
-    EXPECT_FALSE(meth == "");
+    REQUIRE_FALSE(meth == "");
 //    if (meth == "") return false;
     auto uri = msgSPtr->uri();
-    EXPECT_FALSE(uri == "");
+    REQUIRE_FALSE(uri == "");
 //    if (uri == "") return false;
-    EXPECT_TRUE( msgSPtr->hasHeader(HttpHeader::Name::Host));
+    REQUIRE( msgSPtr->hasHeader(HttpHeader::Name::Host));
 //    if( ! msgSPtr->hasHeader(HttpHeader::Name::Host)) return false;
-    EXPECT_TRUE( msgSPtr->hasHeader(HttpHeader::Name::Connection));
-
-    EXPECT_TRUE( (msgSPtr->hasHeader(HttpHeader::Name::ContentLength)) || (msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding)));
+    REQUIRE( msgSPtr->hasHeader(HttpHeader::Name::Connection));
+    {
+    auto bb = ( (msgSPtr->hasHeader(HttpHeader::Name::ContentLength)) || (msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding)));
+    REQUIRE(bb);
+    }
 //    if( ! msgSPtr->hasHeader(HttpHeader::Name::ContentLength)
 //        || (msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding))) return false;
     if(msgSPtr->hasHeader(HttpHeader::Name::ContentLength) && (msgSPtr->getHeader(HttpHeader::Name::ContentLength) != "0" )){
         int cl = std::stoi(msgSPtr->getHeader(HttpHeader::Name::ContentLength));
         auto contentChain = msgSPtr->getBody();
-        EXPECT_TRUE(contentChain != nullptr);
+        REQUIRE(contentChain != nullptr);
         if( contentChain != nullptr) {
-            EXPECT_TRUE(contentChain->size() == cl);
+            REQUIRE(contentChain->size() == cl);
         }
     }
     return true;
 }
 #pragma mark - TEST
-TEST(Helpers, example)
+TEST_CASE("Helpers_Example", "[example]")
 {
     MessageReaderSPtr msg = makeMock();
     fillMsgRdrAsRequest(msg);
     verifyRequest_MimimumRequirements(msg);
     std::cout << msg->str() << std::endl;
 }
-TEST(Helpers, downstream01)
+TEST_CASE("Helpers_downstream01", "[downstream01]")
 {
     MessageReaderSPtr msgRdr = makeMock();
     fillMsgRdrAsResponse_01(msgRdr);
@@ -218,7 +220,7 @@ TEST(Helpers, downstream01)
     verifyResponse_01(msgSPtr);
     std::cout << msgSPtr->str() << std::endl;
 }
-TEST(Helpers, upstream02)
+TEST_CASE("Helpers_upstream02", "[upstream02]")
 {
     MessageReaderSPtr msgRdr = makeMock();
     fillMsgRdrAsRequest02(msgRdr);

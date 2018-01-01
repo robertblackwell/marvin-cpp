@@ -6,13 +6,17 @@
 #include "tp_proxy_runner.hpp"
 
 static std::shared_ptr<ServerRunner> serverRunnerSPtr;
-static std::shared_ptr<ProxyRunner> proxyRunnerSPtr;
 
 void startTestServer(long port)
 {
     serverRunnerSPtr = std::make_shared<ServerRunner>();
     serverRunnerSPtr->setup(port);
 }
+void stopTestServer()
+{
+    serverRunnerSPtr->teardown();
+}
+static std::shared_ptr<ProxyRunner> proxyRunnerSPtr;
 void startProxyServer(long port)
 {
     PipeCollector::configSet_PipePath("/Users/rob/marvin_collect");
@@ -23,10 +27,6 @@ void startProxyServer(long port)
     ForwardingHandler::configSet_HttpsHosts(re);
     proxyRunnerSPtr = std::make_shared<ProxyRunner>();
     proxyRunnerSPtr->setup(port);
-}
-void stopTestServer()
-{
-    serverRunnerSPtr->teardown();
 }
 void stopProxyServer()
 {

@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include "json.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
@@ -58,8 +58,14 @@ void TClient::write_line()
     LogDebug(" line: ", line);
     if (line == "eof" ) {
         _conn_sptr->shutdown();
+        auto erok = Marvin::make_error_ok();
+        std::size_t bytes = line.size();
+        handle_write_complete(erok, bytes);
     } else if (line == "close") {
         _conn_sptr->close();
+        auto erok = Marvin::make_error_ok();
+        std::size_t bytes = line.size();
+        handle_write_complete(erok, bytes);
     } else {
         auto hf = std::bind(&TClient::handle_write_complete, this, std::placeholders::_1, std::placeholders::_2);
         _conn_sptr->asyncWrite(line, hf);
@@ -106,37 +112,45 @@ void TClient::onMessage(Marvin::ErrorType er)
 {
     LogDebug("");
     Marvin::ErrorType expected_err = _testcase.result_onheaders_err();
-    std::string exp_s = expected_err.message();
-    std::string ers = er.message();
+    std::string exp_s = Marvin::make_error_description(expected_err);
+    std::string ers = Marvin::make_error_description(er);
     if( er != expected_err){
         std::cout << "bad" << std::endl;
     }
-    assert(_rdr->statusCode() == _testcase.result_status_code());
-    EXPECT_TRUE(_rdr->statusCode() == _testcase.result_status_code());
-    auto h1 = _testcase.result_headers();
-    auto h2 = _rdr->getHeaders();
-    bool hh = (h1 == h2);
-    std::string raw_body = _rdr->getBody()->to_string();
-    json j = json::parse(raw_body);
-    std::string req_body = j["req"]["body"];
-    std::string ch_uuid = j["xtra"]["connection_handler_uuid"];
-    std::string rh_uuid = j["xtra"]["request_handler_uuid"];
+    assert(er == expected_err);
+    REQUIRE(er == expected_err);
+    if( er) {
+        /// got the expected error code  - its an error so the response
+        /// message will be meaningless
+//        std::cout << "TestRunner::readMessage Success error as expected[" << ers << "] for testcase " << _testcase.getDescription() <<std::endl;
+    } else {
+        assert(_rdr->statusCode() == _testcase.result_status_code());
+        REQUIRE(_rdr->statusCode() == _testcase.result_status_code());
+        auto h1 = _testcase.result_headers();
+        auto h2 = _rdr->getHeaders();
+        bool hh = (h1 == h2);
+        std::string raw_body = _rdr->getBody()->to_string();
+        json j = json::parse(raw_body);
+        std::string req_body = j["req"]["body"];
+        std::string ch_uuid = j["xtra"]["connection_handler_uuid"];
+        std::string rh_uuid = j["xtra"]["request_handler_uuid"];
 
-    std::string sx = _rdr->getBody()->to_string();
-    auto b1 = _testcase.result_body();
-//    auto b2 = _rdr->getBody()();
-//    auto b3 = _rdr->get_raw_body_chain();
-//    auto s2 = b2.to_string();
-//    auto s3 = b3.to_string();
-    assert(b1 == req_body);
-    EXPECT_TRUE(b1 == req_body);
-    auto desc = _testcase.getDescription();
-    if(_rdr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {
-        // should close here - but client does not know how to do that cleanly.
-        this->_conn_sptr->close();
-        this->_rdr = nullptr;
+        std::string sx = _rdr->getBody()->to_string();
+        auto b1 = _testcase.result_body();
+    //    auto b2 = _rdr->getBody()();
+    //    auto b3 = _rdr->get_raw_body_chain();
+    //    auto s2 = b2.to_string();
+    //    auto s3 = b3.to_string();
+        assert(b1 == req_body);
+        REQUIRE(b1 == req_body);
+        auto desc = _testcase.getDescription();
+        if(_rdr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {
+            // should close here - but client does not know how to do that cleanly.
+            this->_conn_sptr->close();
+            this->_rdr = nullptr;
+        }
+//        std::cout << "TestRunner::readMessage Success for testcase " << _testcase.getDescription() <<std::endl;
     }
-    std::cout << "TestRunner::readMessage Success for testcase " << _testcase.getDescription() <<std::endl;
 }
 
 #if 0
@@ -169,10 +183,10 @@ void TClient::onBody(Marvin::ErrorType er, BufferChain chunk)
         bool vb = _testcase.verify_body(body_accumulator);
         assert(vb);
         assert(er == Marvin::make_error_eom());
-        EXPECT_TRUE(vb);
-        EXPECT_TRUE(er == Marvin::make_error_eom());
+        REQUIRE(vb);
+        REQUIRE(er == Marvin::make_error_eom());
         auto desc = _testcase.getDescription();
-        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << _testcase.getDescription() <<std::endl;
+//        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << _testcase.getDescription() <<std::endl;
 
     }else{
         _rdr->readBody(bh);
@@ -186,14 +200,14 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     std::string ers = er.message();
     assert(er == expected_err);
     assert(_rdr->statusCode() == _testcase.result_status_code());
-    EXPECT_TRUE(er == expected_err);
-    EXPECT_TRUE(_rdr->statusCode() == _testcase.result_status_code());
+    REQUIRE(er == expected_err);
+    REQUIRE(_rdr->statusCode() == _testcase.result_status_code());
     auto h1 = _testcase.result_headers();
     auto h2 = _rdr->getHeaders();
     bool hhh = _testcase.verify_headers(h2);
     assert(hhh);
-    EXPECT_TRUE(hhh);
-    EXPECT_TRUE(h1 == h2);
+    REQUIRE(hhh);
+    REQUIRE(h1 == h2);
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
 //        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << tcObj.getDescription() <<std::endl;
     _rdr->readBody(bh);

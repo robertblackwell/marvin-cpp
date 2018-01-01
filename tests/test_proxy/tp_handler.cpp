@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>

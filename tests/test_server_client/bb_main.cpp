@@ -9,7 +9,8 @@
 #include "boost_stuff.hpp"
 #include <thread>
 #include <pthread.h>
-#include <gtest/gtest.h>
+#define CATCH_CONFIG_RUNNER
+#include <catch/catch.hpp>
 
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
@@ -31,18 +32,16 @@ int main( int argc, char* argv[] )
     /// limit the number of simultaneous connections
     /// this set of tests will exercise connection wait logic
     HTTPServer::configSet_NumberOfConnections(2);
-#define EX_RUNNER
-#ifdef EX_RUNNER
-    ServerRunner<TscRequestHandler> s_runner;
-    s_runner.setup();
-#endif
-    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    startTestServer();
+    char* _argv[2] = {argv[0], (char*)""}; // change the filter to restrict the tests that are executed
+//    char* _argv[2] = {argv[0], (char*)"[tc]"}; // change the filter to restrict the tests that are executed
+//    char* _argv[2] = {argv[0], (char*)"[parallelall]"}; // change the filter to restrict the tests that are executed
+//    char* _argv[2] = {argv[0], (char*)"[parallel2]"}; // change the filter to restrict the tests that are executed
+//    char* _argv[2] = {argv[0], (char*)"[to]"}; // change the filter to restrict the tests that are executed
     int _argc = 2;
-    testing::InitGoogleTest(&_argc, _argv);
-    auto res = RUN_ALL_TESTS();
-#ifdef EX_RUNNER
-    sleep(1);
-    s_runner.teardown();
-#endif
-    return res;
+    printf("%s\n",__FILE__);
+    int result = Catch::Session().run( argc, argv );
+    stopTestServer();
+    printf("%s\n",__FILE__);
+    return result;
 }

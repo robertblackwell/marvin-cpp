@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 #include "marvin_error.hpp"
 #include "http_header.hpp"
 #include "error.hpp"

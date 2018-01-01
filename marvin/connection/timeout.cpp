@@ -86,7 +86,7 @@ void Timeout::p_handle_timeout(const boost::system::error_code& err)
     } else {
         // no error - timeout
         assert(m_active);
-        assert(m_cancel_handler == nullptr);
+//        assert(m_cancel_handler == nullptr);
         assert(m_expire_handler != nullptr);
         m_active = false;
         auto h = m_expire_handler;

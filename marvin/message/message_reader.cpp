@@ -53,7 +53,8 @@ MessageReader::MessageReader( boost::asio::io_service& io, ISocketSPtr read_sock
     m_header_buffer_size = s_headerBufferSize;
     m_header_buffer_sptr = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(m_header_buffer_size));
     m_body_buffer_chain_sptr = std::make_shared<Marvin::BufferChain>();
-    this->setBody(m_body_buffer_chain_sptr);
+//    this->setBody(m_body_buffer_chain_sptr); /// \warning - this also sets content-length which is wrong
+    m_body_chain_sptr = m_body_buffer_chain_sptr; // synchronizes reader buffer and message content
     m_raw_body_buffer_chain_sptr = std::make_shared<Marvin::BufferChain>();
 }
 

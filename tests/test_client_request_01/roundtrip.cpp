@@ -44,7 +44,7 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
         MessageReaderSPtr b = client->getResponse();
         std::string bdy = b->getBody();
         auto st = b->statusCode();
-        ASSERT_TRUE(b->statusCode() == 200);
+        REQUIRE(b->statusCode() == 200);
         
 #endif
     };
@@ -53,7 +53,7 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
 }
 
 
-TEST(ClientRoundTrip, SixTimes)
+TEST_CASE("ClientRoundTrip-SixTimes","")
 {
     boost::asio::io_service io_service;
     std::vector<std::shared_ptr<Client>> rt;

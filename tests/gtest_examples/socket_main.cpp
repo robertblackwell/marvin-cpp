@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#include <gtest/gtest.h>
+#include <catch/catch.h>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 
@@ -159,7 +159,7 @@ int main(int argc, char * argv[])
 {
     RBLogging::setEnabled(false);
     tc_defs = makeTestcaseDefinitions_01();
-    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
     int _argc = 2;
     testing::InitGoogleTest(&_argc, _argv);
     auto ret = RUN_ALL_TESTS();

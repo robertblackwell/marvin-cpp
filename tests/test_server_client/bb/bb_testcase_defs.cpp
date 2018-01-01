@@ -25,8 +25,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                     "Connection: close\r\n",
                     "Proxy-Connection: close\r\n",
                     "Content-length: 11\r\n\r\n",
-                    "01234567890",
-                    "eof"
+                    "01234567890"
                 },
                 // expected first line
                 std::string("HTTP/1.1 200 OK 11Reason Phrase"),
@@ -387,9 +386,12 @@ std::vector<body_buffering::Testcase> body_buffering::make_timeout_cases()
 {
     std::vector<Testcase> tcases;
     nlohmann::json j;
-    j["timeout"] = 6600;
+    j["timeout"] = 10000;
     std::string body = j.dump();
     std::string len = std::to_string(body.size());
+    /// this is the error code for timeout
+    auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
+
      tcases.push_back(
             Testcase(
                 "index 0 - timeout on waiting for response",
@@ -407,7 +409,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_timeout_cases()
                 // expected status code
                 200,
                 // expect error code in onHeader
-                Marvin::make_error_ok(),
+                asio_op_aborted,
                 // expexted headers
                 std::map< std::string, std::string >{
                     {HttpHeader::Name::Host, "ahost"},

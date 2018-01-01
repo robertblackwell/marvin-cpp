@@ -433,7 +433,7 @@ std::vector<Testcase> tc_make_hv()
     std::vector<Testcase> tcases;
      tcases.push_back(
             Testcase(
-                "index 0 - terminate with eof(shutdown) - no message length",
+                "index 0 - has hop by hop values in connect header",
                 // raw message text
                 std::vector<std::string> {
                     "HTTP/1.1 200 OK 11Reason Phrase\r\n",
@@ -453,7 +453,7 @@ std::vector<Testcase> tc_make_hv()
                 // expexted headers
                 std::map< std::string, std::string >{
                     {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
+                    {HttpHeader::Name::Connection,"keep-alive , TE, somethingelse"},
                     {HttpHeader::Name::ProxyConnection,"keep-alive"}
                 },
                  // expected body

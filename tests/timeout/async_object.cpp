@@ -15,7 +15,7 @@ public:
     {}
     ~AsyncObject()
     {
-        std::cout << "Final count is " << m_count << std::endl;
+//        std::cout << "Final count is " << m_count << std::endl;
     }
     void cancel()
     {
@@ -44,7 +44,7 @@ public:
             /// the only way we should come into this function with an error is if we
             /// were tiimed out - so test that
             auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
-            ASSERT_TRUE(ec == asio_op_aborted);
+            REQUIRE(ec == asio_op_aborted);
         }
         std::string s = Marvin::make_error_description(ec);
         LogDebug(" err: ", s);

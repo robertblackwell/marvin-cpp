@@ -29,7 +29,7 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
         MessageReaderSPtr b = client->getResponse();
         std::string bdy = b->getBody();
         auto st = b->statusCode();
-        ASSERT_TRUE(b->statusCode() == 200);
+        REQUIRE(b->statusCode() == 200);
         
 #endif
     };
@@ -37,7 +37,7 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
     return client;
 }
 
-TEST(Request, MultipleConsecutiveTimes)
+TEST_CASE("Request_MultipleConsecutiveTimes","")
 {
     boost::asio::io_service io_service;
     {
