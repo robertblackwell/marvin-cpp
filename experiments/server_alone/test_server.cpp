@@ -40,7 +40,7 @@ public:
     
     void handleConnect(
         MessageReaderSPtr           req,
-        ConnectionInterfaceSPtr     connPtr,
+        ISocketSPtr     connPtr,
         HandlerDoneCallbackType    done)
     {
         LogDebug("");

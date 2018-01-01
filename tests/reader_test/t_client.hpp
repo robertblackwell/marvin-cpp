@@ -5,14 +5,14 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 
 class TClient;
 typedef std:: shared_ptr<TClient> TClientSPtr;

@@ -2,19 +2,19 @@
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
 
-#include <boost/asio.hpp>
 #include <string>
 #include <signal.h>
 #include <utility>
 
+#include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "server_connection_manager.hpp"
 #include "request_handler_base.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "tcp_connection.hpp"
 #include "tls_connection.hpp"
-#include "message_reader_v2.hpp"
-#include "message_writer_v2.hpp"
+#include "message_reader.hpp"
+#include "message_writer.hpp"
 #include "rb_logger.hpp"
 #include "connection_handler.hpp"
 
@@ -41,30 +41,43 @@
 *       the server does not get overloaded.
 *
 */
-template<class TRequestHandler> class HTTPServer
+class HTTPServer
 {
 public:
 
-    static void configSet_NumberOfThreads(int num);
+    /**
+    * \brief This is for testing only and should be called after all clients have finished
+    * to verify that all connections are closed, all connection handlers have been deleted
+    * and all sockets are freed up
+    */
+    static bool verify();
 
+    static void configSet_NumberOfConnections(int num);
+    static void configSet_NumberOfThreads(int num);
+    static void configSet_HeartbeatInterval(int millisecs);
+    static HTTPServer* get_instance();
+    
     HTTPServer(const HTTPServer&) = delete;
     HTTPServer& operator=(const HTTPServer&) = delete;
 
     /**
     ** @brief Construct the server to listen on the specified TCP address and port.
-    ** @param long port defaults to 9991
+    ** @param port defaults to 9991
     */
-    explicit HTTPServer();
+    explicit HTTPServer(RequestHandlerFactory factory);
     ~HTTPServer();
     /**
     ** @brief starts the listen process on the servers port, and from there
     ** dispatches instances of TRequestHandler to service the connection
     */
     void listen(long port = 9991);
-    
+    void terminate();
 private:
 
-    static int __numberOfThreads;
+    static int s_numberOfThreads;
+    static int s_numberOfConnections;
+    static int s_heartbeat_interval_ms;
+    static HTTPServer* s_instance;
 
     /**
     ** @brief just as it says - init the server ready to list
@@ -82,7 +95,7 @@ private:
     **          completed accept call.
     ** @param err a boost errorcide that described any error condition
     */
-    void handleAccept(ConnectionHandler<TRequestHandler>* handler, const boost::system::error_code& err);
+    void handleAccept(ConnectionHandler* handler, const boost::system::error_code& err);
 
     /**
     ** @brief encapsulates the process of posting a callback fn to the servcers strand
@@ -98,18 +111,21 @@ private:
     ** @brief IS the signal callback
     */
     void doStop(const Marvin::ErrorType& err);
+    void start_heartbeat();
+    void on_heartbeat(const boost::system::error_code& ec);
+
     
-    int                                             _numberOfThreads;
-    long                                            _port;
-    boost::asio::io_service                         _io;
-    boost::asio::strand                             _serverStrand;
-    boost::asio::signal_set                         _signals;
-    boost::asio::ip::tcp::acceptor                  _acceptor;
-    ServerConnectionManager<ConnectionHandler<TRequestHandler>>   _connectionManager;
-
+    int                                             m_heartbeat_interval_ms;
+    int                                             m_numberOfThreads;
+    int                                             m_numberOfConnections;
+    long                                            m_port;
+    boost::asio::io_service                         m_io;
+    boost::asio::strand                             m_serverStrand;
+    boost::asio::signal_set                         m_signals;
+    boost::asio::ip::tcp::acceptor                  m_acceptor;
+    ServerConnectionManager                         m_connectionManager;
+    RequestHandlerFactory                           m_factory;
+    boost::asio::deadline_timer                     m_heartbeat_timer;
+    bool                                            m_terminate_requested; // heartbeat will terminate server if this is set
 };
-template <class TRequestHandler>
-using Server_Template =  typename HTTPServer<TRequestHandler>::Server;
-
-#include "http_server.ipp"
 #endif // HTTP_SERVER_HPP

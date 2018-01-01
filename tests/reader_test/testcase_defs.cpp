@@ -27,6 +27,13 @@ TestcaseDefinitions::get_case(int index)
     auto c = cases[index];
     return c;
 }
+Testcase*
+TestcaseDefinitions::get_case_ptr(int index)
+{
+
+    auto c = &(cases[index]);
+    return c;
+}
 
 std::vector<std::string> make_header(std::string key, std::string value){
     return std::vector<std::string>{key, value};
@@ -37,14 +44,15 @@ TestcaseDefinitions::TestcaseDefinitions(){}
 
 /**
 * Create a set of testcases (a TestcaseDefinitions object) consiting of single messages with
-* various buffer arrangements to test that MessageReaderV2 paser works correctly
-* regardless of how the incoming data is buffered.
+* various buffer arrangements to test that MessageReader parser works correctly
+* regardless of how the incoming data is buffered. Does messages with a content-length
+* header and chunk-encoded messages
 */
-TestcaseDefinitions makeTestcaseDefinitions_01()
+std::vector<Testcase> tc_make_buffering()
 {
-    TestcaseDefinitions tcases;
+    std::vector<Testcase> tcases;
     // case 0
-     tcases.add_case(
+     tcases.push_back(
             Testcase(
                 "index 0 - simple 200 body length 10",
                 // raw message text
@@ -54,8 +62,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
                     "Connection: keep-alive\r\n",
                     "Proxy-Connection: keep-alive\r\n",
                     "Content-length: 11\r\n\r\n",
-                    "01234567890",
-                    "eof"
+                    "01234567890"
                 },
                 // expected first line
                 std::string("HTTP/1.1 200 OK 11Reason Phrase"),
@@ -75,7 +82,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
             )
     );
 //    // index 1 -- EOH is signalled by a blank line
-    tcases.add_case(
+     tcases.push_back(
             Testcase(
                 "index 1 - simple 200 body length 11 no body data in header buffer",
                 std::vector<std::string>  {
@@ -103,7 +110,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
         )
     );
 //    // 2 EOH comes with some body data
-    tcases.add_case(
+     tcases.push_back(
             Testcase(
                 "index 2 - 201 body length 10 SOME body data in header buffer",
                 std::vector<std::string>  {
@@ -132,7 +139,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
     );
  
     // 3 EOH and EOM at the same time
-    tcases.add_case(
+     tcases.push_back(
             Testcase(
                 "index 3 - simple 201 body length 10 SOME body data in with black line buffer",
                 std::vector<std::string>  {
@@ -162,7 +169,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
     
 //
 //    // 4 Chunked with headers on a boundary
-    tcases.add_case(
+     tcases.push_back(
         Testcase(
                 "index 4 - 201 body chunked encoding NO body data in header buffer",
                 std::vector<std::string> {
@@ -202,7 +209,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
     );
 //
 //    // 5 Chunked with headers with some body data - chunks not broken
-    tcases.add_case(
+     tcases.push_back(
             Testcase(
                 "index 5 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
@@ -241,7 +248,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
     );
 
 //    // 6 Chunked with headers with some body data - BROKEN chunks
-    tcases.add_case(
+     tcases.push_back(
                 Testcase(
                 "index 6 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
@@ -281,7 +288,7 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
     );
 
 //    // 7 Chunked with headers with some body data - BROKEN chunks
-    tcases.add_case(
+     tcases.push_back(
                 Testcase(
                 "index 7 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
                 std::vector<std::string> {
@@ -322,10 +329,14 @@ TestcaseDefinitions makeTestcaseDefinitions_01()
     );
     return tcases;
 }
-TestcaseDefinitions makeTCS_eof()
+/**
+* Make testcases for testing how reader handles messages being terminated with
+* a close/eof
+*/
+std::vector<Testcase> tc_make_eof()
 {
-    TestcaseDefinitions tcases;
-     tcases.add_case(
+    std::vector<Testcase> tcases;
+     tcases.push_back(
             Testcase(
                 "index 0 - terminate with eof(shutdown) - no message length",
                 // raw message text
@@ -354,7 +365,8 @@ TestcaseDefinitions makeTCS_eof()
                  std::string("01234567890")
             )
     );
-     tcases.add_case(
+#if 1
+     tcases.push_back(
             Testcase(
                 "index 1 - terminate with close - no message length",
                 // raw message text
@@ -383,7 +395,8 @@ TestcaseDefinitions makeTCS_eof()
                  std::string("01234567890")
             )
     );
-     tcases.add_case(
+
+     tcases.push_back(
             Testcase(
                 "index 0 - terminate with eof - no message length and no body",
                 // raw message text
@@ -411,8 +424,41 @@ TestcaseDefinitions makeTCS_eof()
                  std::string("")
             )
     );
-
+#endif
     
     return tcases;
 }
-
+std::vector<Testcase> tc_make_hv()
+{
+    std::vector<Testcase> tcases;
+     tcases.push_back(
+            Testcase(
+                "index 0 - has hop by hop values in connect header",
+                // raw message text
+                std::vector<std::string> {
+                    "HTTP/1.1 200 OK 11Reason Phrase\r\n",
+                    "Connection: keep-alive , TE, somethingelse\r\n",
+                    "Host: ahost\r\n",
+                    "Proxy-Connection: keep-alive\r\n",
+                    "\r\n",
+                    "01234567890",
+                    "eof"
+                },
+                // expected first line
+                std::string("HTTP/1.1 200 OK 11Reason Phrase"),
+                // expected status code
+                200,
+                // expect error code in onHeader
+                Marvin::make_error_ok(),
+                // expexted headers
+                std::map< std::string, std::string >{
+                    {HttpHeader::Name::Host, "ahost"},
+                    {HttpHeader::Name::Connection,"keep-alive , TE, somethingelse"},
+                    {HttpHeader::Name::ProxyConnection,"keep-alive"}
+                },
+                 // expected body
+                 std::string("01234567890")
+            )
+    );
+    return tcases;
+}

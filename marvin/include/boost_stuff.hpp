@@ -22,10 +22,17 @@
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/system/error_code.hpp>
+#include <boost/asio/error.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/unordered_set.hpp>
+
 #pragma clang diagnostic pop
 
 #endif /* boost_stuff_h */

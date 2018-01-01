@@ -7,15 +7,13 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-
+#include "boost_stuff.hpp"
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handlerV2.hpp"
+#include "forwarding_handler.hpp"
 
 ///
 /// This class is a singleton, but it must be given a reference to the servers io_service object
@@ -42,8 +40,8 @@ class ObjcCollector
         ** Interface method for client code to call collect
         **/
         void collect(
-                std::string& scheme,
-                std::string& host,
+                std::string scheme,
+                std::string host,
                 MessageReaderSPtr req,
                 MessageWriterSPtr resp);
     

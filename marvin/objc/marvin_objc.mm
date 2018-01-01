@@ -11,7 +11,7 @@
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handlerV2.hpp"
+#include "forwarding_handler.hpp"
 #include "objc_collector.hpp"
 
 #import "marvin_delegate_objc.h"
@@ -22,7 +22,7 @@ void RunMitmServer()
     MarvinDelegateObjc *delegate = [[MarvinDelegateObjc alloc]init];
     ObjcCollector::setDelegate((__bridge void*)delegate);
     
-    HTTPServer<ForwardingHandlerV2<ObjcCollector>> server;
+    HTTPServer<ForwardingHandler<ObjcCollector>> server;
     server.listen(9991);
     NSLog(@"Done with RunMitmServer");
 }
@@ -39,7 +39,7 @@ void RunMitmServer()
 - (void) run
 {
     ObjcCollector::setDelegate((__bridge void*)_delegateObj);
-    HTTPServer<ForwardingHandlerV2<ObjcCollector>> server;
+    HTTPServer<ForwardingHandler<ObjcCollector>> server;
     server.listen(9991);
     NSLog(@"Done with RunMitmServer");
 }

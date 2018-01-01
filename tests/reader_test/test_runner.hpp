@@ -7,33 +7,33 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "catch.hpp"
+#include <catch/catch.hpp>
 #include "marvin_error.hpp"
 #include "http_header.hpp"
 #include "error.hpp"
-#include "bufferV2.hpp"
-#include "message_reader_v2.hpp"
+#include "buffer.hpp"
+#include "message_reader.hpp"
 #include "testcase.hpp"
-#include "mock_read_socket.hpp"
+#include "mock_socket.hpp"
 
 class Testrunner;
 typedef std::shared_ptr<Testrunner> TestrunnerSPtr;
 
-std::string chain_to_string(BufferChain chain);
+std::string chain_to_string(Marvin::BufferChain chain);
 /**
-* Class TestRunner - Creates an instance of MessageReaderV2 using
-* its ReadSocketInterface and then exercises that MessageReaderV2
+* Class TestRunner - Creates an instance of MessageReader using
+* its IReadSocket and then exercises that MessageReader
 * using a single Testcase.
 * Can either:
-*   -   use the MessageREaderV2 to read an entire message
+*   -   use the MessageReader to read an entire message
 *   -   read the headers and then read chunks of body as separate reads
 */
 class Testrunner
 {
     
 public:
-    MessageReaderV2SPtr         rdr_;
-    ReadSocketInterfaceSPtr     conn_;
+    MessageReaderSPtr           rdr_;
+    ISocketSPtr                 conn_;
     boost::asio::io_service&    io_;
     std::string                 body;
     std::ostringstream          bodyStream;
@@ -44,7 +44,7 @@ public:
     * Constructor - tcIndex is an index into the set of testcases
     * that the class TestCases knows about
     */
-    Testrunner(boost::asio::io_service& io, ReadSocketInterfaceSPtr rd_sock, Testcase tcObj);
+    Testrunner(boost::asio::io_service& io, ISocketSPtr rd_sock, Testcase tcObj);
     ~Testrunner();
     /**
     * runs a test that reads reads a full message
@@ -57,7 +57,7 @@ public:
 
     void makeReader();
     void onMessage(Marvin::ErrorType er);
-    void onBody(Marvin::ErrorType er, BufferChain chunk);
+    void onBody(Marvin::ErrorType er, Marvin::BufferChainSPtr chunkSPtr);
     void onHeaders(Marvin::ErrorType er);
 };
 #endif

@@ -11,12 +11,12 @@
 #include "half_tunnel.hpp"
 
 TunnelHandler::TunnelHandler(
-    ConnectionInterfaceSPtr     downstreamConnection,
+    ISocketSPtr     downstreamConnection,
     TCPConnectionSPtr          upstreamConnection
 )
 {
     _downstreamConnection   = downstreamConnection;
-    _upstreamConnection     = (ConnectionInterfaceSPtr)upstreamConnection;
+    _upstreamConnection     = (ISocketSPtr)upstreamConnection;
     
     _upstreamHalfTunnel     =  std::unique_ptr<HalfTunnel>( new HalfTunnel(_downstreamConnection, _upstreamConnection));
     _downstreamHalfTunnel   =  std::unique_ptr<HalfTunnel>(new HalfTunnel(_upstreamConnection, _downstreamConnection ));

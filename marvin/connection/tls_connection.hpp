@@ -1,39 +1,36 @@
 
-#ifndef tls_connection_hpp
-#define tls_connection_hpp
-
+#ifndef marvin_tls_connection_hpp
+#define marvin_tls_connection_hpp
+/**
+* \ingroup SocketIO
+*/
 #include <iostream>
 #include <istream>
 #include <ostream>
 #include <string>
-
-//#include <boost/asio.hpp>
-//#include <boost/asio/ssl.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/function.hpp>
-
 #include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
-#include "read_socket_interface.hpp"
-#include "bufferV2.hpp"
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
+#include "buffer.hpp"
+#include "i_socket.hpp"
 
-//using namespace boost;
-//using namespace boost::system;
-//using namespace boost::asio;
-//
-//
-//using ip::tcp;
-//using system::error_code;
-//using boost::asio::ip::tcp;
-////namespace ssl = boost::asio::ssl;
-typedef boost::asio::ssl::stream<tcp::socket> SslSocketType;
+using namespace boost;
+using namespace boost::system;
+using namespace boost::asio;
 
-//--------------------------------------------------------------------------------------------------
-// SSL/TLS Connection
-//--------------------------------------------------------------------------------------------------
-class TLSConnection : public ConnectionInterface
+
+using ip::tcp;
+using system::error_code;
+using boost::asio::ip::tcp;
+//namespace ssl = boost::asio::ssl;
+using SslSocketType = boost::asio::ssl::stream<boost::asio::ip::tcp::socket>;
+
+/**
+* \ingroup SocketIO
+* \brief Provides a bi-directional TLS connection that carries TCP traffic.
+*/
+class TLSConnection : public ISocket
 {
     public:
     // client socket needs to know who to connect to
@@ -53,11 +50,10 @@ class TLSConnection : public ConnectionInterface
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     
-    void asyncWrite(MBuffer& fb, AsyncWriteCallbackType cb);
-    void asyncWrite(FBuffer& fb, AsyncWriteCallbackType cb);
+    void asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallbackType cb);
     void asyncWriteStreamBuf(boost::asio::streambuf& sb, AsyncWriteCallback);
 
-    void asyncRead(MBuffer& mb,  AsyncReadCallbackType cb);
+    void asyncRead(Marvin::MBuffer& mb,  AsyncReadCallbackType cb);
     void shutdown();
     void close();
     

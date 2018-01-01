@@ -6,14 +6,11 @@
 #include <string>
 #include <cassert>
 #include "boost_stuff.hpp"
-//#include <boost/asio.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/function.hpp>
 #include "url.hpp"
 #include "UriParser.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 
 #include "request.hpp"
 #include "tcp_connection.hpp"
@@ -42,7 +39,7 @@ Request::~Request()
     LogInfo("");
 }
 
-Request::Request(boost::asio::io_service& io): _io(io), MessageWriterV2(io, true)
+Request::Request(boost::asio::io_service& io): _io(io), MessageWriter(io, true)
 {
     LogInfo("");
     _writeSock = nullptr;
@@ -164,12 +161,12 @@ void Request::go(std::function<void(Marvin::ErrorType& err)> cb)
 
 //    asyncGetWriteSocket(cf);
 
-//    ConnectionInterface* conn = connectionFactory(_io, _scheme, _server, _port);
-    ConnectionInterface* conn = (ConnectionInterface*) new TCPConnection(_io, _scheme, _server, _port);
+//    ISocket* conn = socketFactory(_io, _scheme, _server, _port);
+    ISocket* conn = (ISocket*) new TCPConnection(_io, _scheme, _server, _port);
     //
     // a bunch of logic here about find existing, add to connection table etc
     //
-    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ConnectionInterface* conn){
+    conn->asyncConnect([this, conn, cb](Marvin::ErrorType& ec, ISocket* conn){
     std::string er_s = Marvin::make_error_description(ec);
         LogInfo(" conn", (long)conn, " er: ", er_s);
         this->haveConnection(ec, conn);
@@ -204,7 +201,7 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
                 scheme,
                 server,
                 service,
-        [this, connectCb](Marvin::ErrorType& ec, ConnectionInterface* conn){
+        [this, connectCb](Marvin::ErrorType& ec, ISocket* conn){
             if( ec ){
                 LogWarn("", (long)this, " connection: ", (long)conn);
                 Marvin::ErrorType m_er = ec;
@@ -226,7 +223,7 @@ void Request::asyncGetWriteSocket(ConnectCallbackType connectCb)
 //--------------------------------------------------------------------------------
 // we are connected start read and write
 //--------------------------------------------------------------------------------
-void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
+void Request::haveConnection(Marvin::ErrorType& err, ISocket* conn)
 {
     if( !err ){
     
@@ -237,7 +234,7 @@ void Request::haveConnection(Marvin::ErrorType& err, ConnectionInterface* conn)
         LogInfo("", (long)this, " connection: ", (long)_connection, " FD:",_connection->nativeSocketFD());
 
         // create a MessageReader with a read socket
-        this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, conn));
+        this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(_io, conn));
         // set up read also
         LogInfo("", traceRequest(*this), traceWriter(*this));
         auto cf = std::bind(&Request::fullWriteHandler, this, std::placeholders::_1);

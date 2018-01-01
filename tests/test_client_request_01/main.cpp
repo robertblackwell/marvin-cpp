@@ -18,7 +18,8 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <gtest/gtest.h>
+#define CATCH_CONFIG_RUNNER
+#include <catch/catch.hpp>
 
 #include "boost_stuff.hpp"
 
@@ -39,10 +40,9 @@ int main(int argc, char* argv[]){
     RBLogging::setEnabled(false);
 //    testcase_pipeline();
 
-    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
     int _argc = 2;
-    testing::InitGoogleTest(&_argc, _argv);
-    return RUN_ALL_TESTS();
-    
-    return 0;
+    int result = Catch::Session().run( argc, argv );
+
+    return result;
 }

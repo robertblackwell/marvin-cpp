@@ -13,7 +13,10 @@
 #include <string>
 #include <memory>
 #include <cassert>
+#pragma clang diagnostic push
+#pragma clang diagnostic ignore "_Wall"
 #include "boost_stuff.hpp"
+#pragma clang diagnostic pop
 #include "url.hpp"
 #include "UriParser.hpp"
 #include "rb_logger.hpp"
@@ -33,9 +36,7 @@ using boost::asio::streambuf;
 
 Client::Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port)
 : _io(io), _scheme(scheme), _server(server), _port(port)
-{
-
-}
+{}
 
 Client::Client(boost::asio::io_service& io, std::string url)
 : _io(io), _url(url)
@@ -43,10 +44,8 @@ Client::Client(boost::asio::io_service& io, std::string url)
     setupUrl(url);
 }
 
-Client::Client(boost::asio::io_service& io, ConnectionInterface* conn) : _io(io)
-{
-
-}
+Client::Client(boost::asio::io_service& io, ISocket* conn) : _io(io)
+{}
 
 
 Client::~Client()
@@ -68,7 +67,7 @@ void Client::asyncConnect(ErrorOnlyCallbackType cb)
     TCPConnection* ptr = new TCPConnection(_io, _scheme, _server, _port);
     
     _conn_shared_ptr = std::shared_ptr<TCPConnection>(ptr);
-    auto f = [this, cb](Marvin::ErrorType& ec, ConnectionInterface* c) {
+    auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);
         LogInfo(" conn", (long)_conn_shared_ptr.get(), " er: ", er_s);
         cb(ec);
@@ -84,22 +83,22 @@ void Client::asyncConnect(ErrorOnlyCallbackType cb)
 //--------------------------------------------------------------------------------
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb)
 {
-    _body_mbuffer_sptr = m_buffer(body);
+    _body_mbuffer_sptr = Marvin::MBuffer::makeSPtr(body);
     _async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  MBufferSPtr body, ResponseHandlerCallbackType cb)
+void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body, ResponseHandlerCallbackType cb)
 {
     _body_mbuffer_sptr = body;
     _async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb)
+void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb)
 {
     _body_mbuffer_sptr = chain_sptr->amalgamate();
     _async_write(requestMessage, cb);
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
-    _body_mbuffer_sptr  = m_buffer(""); // no body
+    _body_mbuffer_sptr  = Marvin::MBuffer::makeSPtr(""); // no body
     _async_write(requestMessage, cb);
 }
 void Client::_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
@@ -126,10 +125,10 @@ void Client::internalConnect()
         if(!ec) {
 
 #ifndef RDR_WRTR_ONESHOT
-            this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_conn_ptr, _io));
+            this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(_conn_ptr, _io));
             // get a writer
             TCPConnection& conRef = *_conn_uniq_ptr;
-            this->_wrtr = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, conRef));
+            this->_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(_io, conRef));
 #endif
             internalWrite();
         } else {
@@ -147,49 +146,37 @@ void Client::internalWrite()
 #ifdef RDR_WRTR_ONESHOT
     // set up the read of the response
     // create a MessageReader with a read socket
-    this->_rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _conn_shared_ptr));
+    this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(_io, _conn_shared_ptr));
     // get a writer
-    this->_wrtr = std::shared_ptr<MessageWriterV2>(new MessageWriterV2(_io, _conn_shared_ptr));
+    this->_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(_io, _conn_shared_ptr));
 #endif
-
-    if( _on_headers_handler != nullptr ) {
-        this->_rdr->readHeaders([this](Marvin::ErrorType ec){
-            if (!ec) {
-                this->_on_headers_handler(ec, _rdr);
-                if( _on_data_handler != nullptr ) {
-                    this->_rdr->readBody([this](Marvin::ErrorType err, BufferChain buf_chain){
-                        _on_data_handler(err, buf_chain);
-                    });
-                }
-            } else {
-                this->_on_headers_handler(ec, _rdr);
-            }
-        });
-
-    } else {
-        this->_rdr->readMessage([this](Marvin::ErrorType ec){
-            if (!ec) {
-                this->_response_handler(ec, _rdr);
-            } else {
-                this->_response_handler(ec, _rdr);
-            }
-        });
-    }
-    
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     setContentLength();
-    LogInfo("",traceWriterV2(*_wrtr));
+    LogInfo("",traceWriter(*_wrtr));
     
     assert(_body_mbuffer_sptr != nullptr);
     _wrtr->asyncWrite(_current_request, _body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {
-            // do nothing - let the read happen
-            LogDebug("do nothing");
+            LogDebug("start read");
+            this->_rdr->readMessage([this](Marvin::ErrorType ec){
+                if (!ec) {
+                    this->_response_handler(ec, _rdr);
+                } else {
+                    this->_response_handler(ec, _rdr);
+                }
+            });
         } else {
             this->_response_handler(ec, _rdr);
         }
     });
+}
+void Client::close()
+{
+    _conn_shared_ptr->close();
+    _rdr = nullptr;
+    _wrtr = nullptr;
+    _conn_shared_ptr = nullptr;
 }
 void Client::end()
 {
@@ -306,17 +293,7 @@ void Client::setContentLength()
     }
     msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(len));
 }
-MessageReaderV2SPtr Client::getResponse()
+MessageReaderSPtr Client::getResponse()
 {
     return _rdr;
-}
-
-void Client::setOnHeaders(ResponseHandlerCallbackType cb)
-{
-    _on_headers_handler = cb;
-}
-
-void Client::setOnData(ClientDataHandlerCallbackType cb)
-{
-    _on_data_handler = cb;
 }

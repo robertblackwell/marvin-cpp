@@ -11,7 +11,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 
 #include "boost_stuff.hpp"
 
@@ -32,7 +32,7 @@ class Pipeline
     MessageBaseSPtr _msg_sptr;
     Pipeline(boost::asio::io_service& io);
     void setup();
-    void handler(Marvin::ErrorType err, MessageReaderV2SPtr rdr);
+    void handler(Marvin::ErrorType err, MessageReaderSPtr rdr);
 };
 
 #endif

@@ -1,12 +1,6 @@
-//
-//  BRNHTTPParser.h
-//  http-parse-test
-//
-//  Created by ROBERT BLACKWELL on 7/17/14.
-//  Copyright (c) 2014 Blackwellapps. All rights reserved.
-//
-#ifndef http_parser_hpp
-#define http_parser_hpp
+
+#ifndef marvin_http_parser_hpp
+#define marvin_http_parser_hpp
 
 #include <map>
 #include <iostream>
@@ -19,14 +13,16 @@
 #define kHEADER_STATE_FIELD   11
 #define kHEADER_STATE_VALUE   12
 
+/// \ingroup HttpMessage
 struct ParserError {
     std::string         name;
     std::string         description;
     enum http_errno     err_number;
 };
 
-/*
- *  This ABSTRACT class parses streams of data into http Message objects 
+/**
+* \ingroup HttpMessage
+* \brief This ABSTRACT class parses streams of data into http Message objects 
  *  (or at least the first line + headers - message body is a little more complicated).
  *
  *  This class is ABSTRACT and the expectation is that this class will be used as a base class

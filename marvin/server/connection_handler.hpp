@@ -6,72 +6,61 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef CONNECTION_HANDLER_HPP
-#define CONNECTION_HANDLER_HPP
-
+#ifndef marvin_connection_handler_hpp
+#define marvin_connection_handler_hpp
+/// \ingroup Server
 #include <stdio.h>
-#include <boost/asio.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
-#include "message_reader_v2.hpp"
-#include "message_writer_v2.hpp"
-#include "connection_interface.hpp"
-#include "server_connection_manager.hpp"
+#include "boost_stuff.hpp"
+#include "server_context.hpp"
+#include "message_reader.hpp"
+#include "message_writer.hpp"
+#include "request_handler_base.hpp"
+#include "connection_handler.hpp"
+#include "i_socket.hpp"
 
+class ServerConnectionManager;
+class ConnectionHandler;
+/// \ingroup Server
+using ConnectionHandlerSPtr = std::shared_ptr<ConnectionHandler>;
 
-//
-// If these are defined we use unique_ptr to hold Connection, MessageReader, MessageWriter
-//
-#define CH_SMARTPOINTER
-#define CON_SMARTPOINTER
-/// TRequestHandler must conform to RequestHandlerBase
-template<class TRequestHandler> class ConnectionHandler
+/// \ingroup Server
+/// \brief An instance of this class is created by the server foor every open client connection;
+/// this instance manages the life time and invocation of the request handler that actually services the
+/// client request.
+class ConnectionHandler
 {
     public:
         ConnectionHandler(
-            boost::asio::io_service&                                        io,
-            ServerConnectionManager<ConnectionHandler<TRequestHandler>>&    connectionManager,
-            ConnectionInterface*                                            conn
+            boost::asio::io_service&     io,
+            ServerConnectionManager&     connectionManager,
+            ISocket*                     conn,
+            RequestHandlerFactory        factory
         );
     
         ~ConnectionHandler();
     
         void serve();
-        void close();
         long nativeSocketFD();
+        std::string uuid();
     private:
     
-        void serveAnother();
-        void readMessageHandler(Marvin::ErrorType err);
-        void requestComplete(Marvin::ErrorType err, bool keepAlive);
-        void handlerComplete(Marvin::ErrorType err);
-        void handleConnectComplete(bool hijack);
-
-        boost::uuids::uuid                                  _uuid;
-        boost::asio::io_service&                            _io;
-//        boost::asio::strand&                                _serverStrand;
-//        ConnectionInterface*                                _conn;
-        ServerConnectionManager<ConnectionHandler>&         _connectionManager;
-        TRequestHandler*                                    _requestHandlerPtr;
-        std::unique_ptr<TRequestHandler>                    _requestHandlerUnPtr;
+        void p_serve_another();
+        void p_read_message_handler(Marvin::ErrorType err);
+        void p_request_complete(Marvin::ErrorType err, bool keepAlive);
+        void p_handler_complete(Marvin::ErrorType err);
+        void p_handle_connect_complete(bool hijack);
+        
+        boost::uuids::uuid                     m_uuid;
+        boost::asio::io_service&               m_io;
+        ServerConnectionManager&               m_connectionManager;
+        std::unique_ptr<RequestHandlerBase>    m_requestHandlerUnPtr;
+        RequestHandlerFactory                  m_factory;
     
-#ifdef CON_SMARTPOINTER
-        ConnectionInterfaceSPtr                             _connection;
-#else
-        ConnectionInterface*                         _connection;
-#endif
-
-#ifdef CH_SMARTPOINTER
-        MessageReaderV2SPtr   _reader;
-        MessageWriterV2SPtr   _writer;
-#else
-        MessageReaderV2*      _reader;
-        MessageWriterV2*      _writer;
-#endif
+        ISocketSPtr                            m_connection;
+        MessageReaderSPtr                      m_reader;
+        MessageWriterSPtr                      m_writer;
+        ServerContext                          m_server_context;
 };
-
-#include "connection_handler.ipp"
 
 #endif /* ConnectionHandler_hpp */

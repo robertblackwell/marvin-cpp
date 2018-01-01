@@ -6,7 +6,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <gtest/gtest.h>
+#include <catch/catch.hpp>
 
 #include "boost_stuff.hpp"
 

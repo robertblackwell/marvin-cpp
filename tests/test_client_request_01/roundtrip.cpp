@@ -33,7 +33,7 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
     
     msg->setMethod(HttpMethod::GET);
     
-    std::function<void(Marvin::ErrorType& er, MessageReaderV2SPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderV2SPtr rdr) {
+    std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
 #ifdef VERBOSE
         std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
         std::cout << "request " << std::hex << client.get() << std::endl;
@@ -41,10 +41,10 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
 //        std::cout << "request " << resp.statusCode() << " " << resp.status() << std::endl;
 //        std::cout << "request " << resp.getBody() << std::endl;
 //        std::cout << "request " << std::hex << req.get() << std::endl;
-        MessageReaderV2SPtr b = client->getResponse();
+        MessageReaderSPtr b = client->getResponse();
         std::string bdy = b->getBody();
         auto st = b->statusCode();
-        ASSERT_TRUE(b->statusCode() == 200);
+        REQUIRE(b->statusCode() == 200);
         
 #endif
     };
@@ -53,7 +53,7 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
 }
 
 
-TEST(ClientRoundTrip, SixTimes)
+TEST_CASE("ClientRoundTrip-SixTimes","")
 {
     boost::asio::io_service io_service;
     std::vector<std::shared_ptr<Client>> rt;

@@ -3,20 +3,15 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
-//#include "http_server.hpp"
-//#include "request_handler_base.hpp"
-//#include "request.hpp"
-//#include "tsc_client.hpp"
-//#include "tsc_server.hpp"
 #include "testcase.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 #include "t_client.hpp"
 
 
@@ -37,7 +32,7 @@ void TClient::send_testcase_buffers(SysErrorCb cb)
 void TClient::connect()
 {
     LogDebug("");
-    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ConnectionInterface* conn) {
+    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
         LogDebug("connected");
         if( ! err ){
             auto wbf = std::bind(&TClient::wait_before_write, this);

@@ -12,12 +12,6 @@
 #include <istream>
 #include <ostream>
 #include <string>
-
-//#include <boost/asio.hpp>
-//#include <boost/asio/ssl.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/function.hpp>
-
 #include "boost_stuff.hpp"
 
 #include "marvin_error.hpp"
@@ -25,7 +19,7 @@
 #include "rb_logger.hpp"
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "connection_interface.hpp"
+#include "i_socket.hpp"
 #include "tls_connection.hpp"
 #include <cassert>
 
@@ -270,7 +264,7 @@ void TLSConnection::completeWithSuccess()
  * read
  */
 //----------------------------------------------------------------------------
-void TLSConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
+void TLSConnection::asyncRead(Marvin::MBuffer& buffer, AsyncReadCallbackType cb)
 {
     // if a read is active - throw an exception
     //    async_read(this->socket_, buf, )
@@ -290,7 +284,7 @@ void TLSConnection::asyncRead(MBuffer& buffer, AsyncReadCallbackType cb)
  * write
  */
 //----------------------------------------------------------------------------
-void TLSConnection::asyncWrite(MBuffer& buffer, AsyncWriteCallbackType cb)
+void TLSConnection::asyncWrite(Marvin::MBuffer& buffer, AsyncWriteCallbackType cb)
 {
 }
 //----------------------------------------------------------------------------

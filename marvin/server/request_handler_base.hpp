@@ -6,13 +6,18 @@
 #include <iostream>
 
 #include "boost_stuff.hpp"
-#include "message_reader_v2.hpp"
-#include "message_writer_v2.hpp"
+#include "message_reader.hpp"
+#include "message_writer.hpp"
+#include "server_context.hpp"
 
 class RequestHandlerBase;
 
 typedef std::shared_ptr<RequestHandlerBase> RequestHandlerBaseSPtr;
-typedef std::function<RequestHandlerBaseSPtr()> RequestHandlerFactory;
+typedef std::unique_ptr<RequestHandlerBase> RequestHandlerBaseUPtr;
+
+typedef std::function<RequestHandlerBase*(boost::asio::io_service& io)> RequestHandlerFactory;
+typedef std::function<RequestHandlerBaseSPtr(boost::asio::io_service& io)> RequestHandlerSPtrFactory;
+typedef std::function<RequestHandlerBaseUPtr(boost::asio::io_service& io)> RequestHandlerUPtrFactory;
 
 typedef std::function<void(Marvin::ErrorType& err, bool keepAlive)> HandlerDoneCallbackType;
 typedef std::function<void(bool hijackConnectioin)> ConnectHandlerHijackCallbackType;
@@ -41,18 +46,20 @@ public:
     virtual ~RequestHandlerBase();
     
     virtual void handleConnect(
-        MessageReaderV2SPtr           req,
-        ConnectionInterfaceSPtr     connPtr,
+        ServerContext&   server_context,
+        MessageReaderSPtr           req,
+        ISocketSPtr     connPtr,
         HandlerDoneCallbackType     done)
         { auto err = Marvin::make_error_ok(); done(err,false);}
     
     virtual void handleRequest(
-        MessageReaderV2SPtr           req,
-        MessageWriterV2SPtr           rep,
+        ServerContext&   server_context,
+        MessageReaderSPtr           req,
+        MessageWriterSPtr           rep,
         HandlerDoneCallbackType done) = 0;
     
     protected:
-        boost::asio::io_service&    _io;
+        boost::asio::io_service&    m_io;
 };
 
 

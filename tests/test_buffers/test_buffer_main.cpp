@@ -6,13 +6,18 @@
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
 #include <iostream>
-#include <boost/asio.hpp>
-#include <gtest/gtest.h>
-#include "bufferV2.hpp"
+#define CATCH_CONFIG_RUNNER
+#include <catch/catch.hpp>
+#include "boost_stuff.hpp"
+#include "buffer.hpp"
 #include "rb_logger.hpp"
 
 #pragma mark - BufferChain
-TEST( BufferChain, assignment)
+//void test_mbuffer_01();
+//void test_fbuffer_01();
+//void test_fbuffer_02();
+using namespace Marvin;
+TEST_CASE("buffer_chain_assignment","")
 {
     MBuffer mb(100);
     boost::asio::mutable_buffer bt = boost::asio::buffer(mb.data(), mb.capacity());
@@ -31,7 +36,7 @@ TEST( BufferChain, assignment)
     std::cout << "" << std::endl;
     std::cout << "" << std::endl;
 }
-TEST( BufferChain, makeboostbuffer)
+TEST_CASE("buffer_chain_makeboostbuffer","")
 {
     BufferChain chain1;
     BufferChain chain2;
@@ -56,38 +61,13 @@ TEST( BufferChain, makeboostbuffer)
 }
 
 
-
-int doSomething()
-{
-    auto f = [](){
-        EXPECT_TRUE(false);
-    };
-    f();
-    return 2;
-}
-TEST(DUMMY, one)
-{
-    doSomething();
-}
-
-
 #pragma mark - main
 int main(int argc, char * argv[]) {
     RBLogging::setEnabled(false);
-    BufferChain chain;
-//    void* p1 = malloc(100);
-//    void* p2 = malloc(200);
-//    boost::asio::mutable_buffer b1(p1, 100);
-//    boost::asio::mutable_buffer b2(p2, 200);
-//    auto b3 = b2 + 10;
-
-//    testcase_mbuffer();
-//    testcase_fbuffer();
-//    testcase_fbuffer2();
-    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
     int _argc = 2;
-    testing::InitGoogleTest(&_argc, _argv);
-    return RUN_ALL_TESTS();
+    int result = Catch::Session().run( argc, argv );
 
-    return 0;
+    return result;
 }
+

@@ -3,20 +3,16 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
+#include <catch/catch.hpp>
 #include <pthread.h>
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "error.hpp"
 #include "repeating_timer.hpp"
-//#include "http_server.hpp"
-//#include "request_handler_base.hpp"
-//#include "request.hpp"
-//#include "tsc_client.hpp"
-//#include "tsc_server.hpp"
 #include "testcase.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 #include "t_server.hpp"
 
 TServer::TServer(boost::asio::io_service& io, Testcase tc): _io(io), _tc(tc), _acceptor(_io)
@@ -49,7 +45,7 @@ TServer::~TServer()
 {
     LogTorTrace();
 }
-void TServer::listen(long port, std::function<void(MessageReaderV2SPtr rdr)> cb)
+void TServer::listen(long port, std::function<void(MessageReaderSPtr rdr)> cb)
 {
     _port = port;
     initialize();
@@ -66,8 +62,8 @@ void TServer::startAccept()
 {
     LogInfo("");
     _conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(_io));
-//    ReadSocketInterface* rd_sock_ifce = _conn_sptr.get();
-    _rdr = std::shared_ptr<MessageReaderV2>(new MessageReaderV2(_io, _conn_sptr));
+//    IReadSocket* rd_sock_ifce = _conn_sptr.get();
+    _rdr = std::shared_ptr<MessageReader>(new MessageReader(_io, _conn_sptr));
     auto hf = std::bind(&TServer::handleAccept, this, std::placeholders::_1);
     _conn_sptr->asyncAccept(_acceptor, hf);
 }

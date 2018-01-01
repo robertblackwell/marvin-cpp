@@ -16,6 +16,39 @@ MYINSTALLS=$(HOME)/MyInstalls
 OPENSSL_DIR=$(MYINSTALLS)/openssl/openssl-1.0.1g
 OPENSSL_INCLUDE = $(OPENSSL_DIR)/include
 OPENSSL_LIBS=$(OPENSSL_DIR)
+JSON=https://github.com/nlohmann/json.git
+BIN=~/MyCurrentProjects/Pixie/MarvinCpp/DerivedData/MarvinCpp/Build/Products/Debug
+
+.PHONY: run_tests
+tests_run:
+	$(BIN)/test_server_client_body_format
+	$(BIN)/test_server_client_body_buffering
+	$(BIN)/test_timeout
+	$(BIN)/test_connect
+	$(BIN)/test_reader
+	$(BIN)/test_client_request
+
+.PHONY: tests_all
+tests_all: tests_clean tests_build
+
+.PHONY: tests_clean
+tests_clean:
+	xcodebuild -scheme test_server_client_body_buffering clean 
+	xcodebuild -scheme test_server_client_body_format clean
+	xcodebuild -scheme test_timeout clean
+	xcodebuild -scheme test_connect clean
+	xcodebuild -scheme test_reader clean
+	xcodebuild -scheme test_client_request clean
+
+
+.PHONY: tests_build
+tests_build:
+	@xcodebuild -quiet -scheme test_server_client_body_buffering build
+	@ xcodebuild -quiet -scheme test_server_client_body_format build 
+	@ xcodebuild -quiet -scheme test_timeout build 
+	@ xcodebuild -quiet -scheme test_connect build 
+	@ xcodebuild -quiet -scheme test_reader build 
+	# this was tricky - watch the escaping
 
 $(CLONE_DIR):
 	mkdir $(CLONE_DIR)
@@ -28,6 +61,10 @@ $(CXXURL_DIR):
 
 $(URLPARSER_DIR):	
 	mkdir $(URLPARSER_DIR)
+json:
+	rm -rfv $(CLONE_DIR)/json
+	git clone $(JSON) --branch master --single-branch  $(CLONE_DIR)/json
+	cp $(CLONE_DIR)/json/src/json.hpp $(SRC)/
 
 catch2:
 	rm -rfv $(CLONE_DIR)/Catch2

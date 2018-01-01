@@ -7,8 +7,8 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
@@ -26,16 +26,16 @@ bool testPipeReaderExists(char* pipeName)
     return true;
 }
 
-        static bool             _firstTime;
-        static NullCollector*   _instance;
+bool             CollectorBase::s_first_time;
+CollectorBase*   CollectorBase::s_instance;
     
-static CollectorBase::CollectorBase* getInstance(boost::asio::io_service& io)
+CollectorBase* CollectorBase::getInstance(boost::asio::io_service& io)
 {
-    if( _firstTime ){
-        _firstTime = false;
-        _instance = new NullCollector(io);
+    if( s_first_time ){
+        s_first_time = false;
+        s_instance = new CollectorBase(io);
     }
-    return _instance;
+    return s_instance;
 }
     
 /**
@@ -44,48 +44,45 @@ static CollectorBase::CollectorBase* getInstance(boost::asio::io_service& io)
 ** keep going
 **/
 void CollectorBase::postedCollect(
-        std::string& scheme,
-        std::string& host,
+        std::string scheme,
+        std::string host,
         MessageReaderSPtr req,
-        MessageWriterSPtr resp)
+        MessageBaseSPtr resp)
 {
     
     /**
     ** Here implement the transmission of any data using sync or async IO
     **/
-    _outPipe << "ZXCVBNNM<HJKJLK" << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
+    m_out_pipe << "ZXCVBNNM<HJKJLK" << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
 }
 /**
 ** Interface method for client code to call collect
 **/
 void CollectorBase::collect(
-        std::string& scheme,
-        std::string& host,
+        std::string scheme,
+        std::string host,
         MessageReaderSPtr req,
-        MessageWriterSPtr resp)
+        MessageBaseSPtr resp)
 {
     std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
-    if(! _pipeOpen )
+    if(! m_pipe_open )
         return;
     /**
     ** In here implement the creation the summary records but dont do any IO or sending
     ** leave that for postedCollect
     **/
-    auto pf = _myStrand.wrap(std::bind(&NullCollector::postedCollect, this, scheme, host, req, resp));
-    _ioLoop.post(pf);
+    auto pf = m_my_strand.wrap(std::bind(&CollectorBase::postedCollect, this, scheme, host, req, resp));
+    m_io.post(pf);
 }
     
-CollectorBase::CollectorBase(boost::asio::io_service& io): _ioLoop(io), _myStrand(io)
+CollectorBase::CollectorBase(boost::asio::io_service& io): m_io(io), m_my_strand(io)
 {
     if( testPipeReaderExists((char*)"/Users/rob/marvin_collect") ){
-        _outPipe.open("/Users/rob/marvin_collect", std::ios_base::out);
-        _pipeOpen = true;
+        m_out_pipe.open("/Users/rob/marvin_collect", std::ios_base::out);
+        m_pipe_open = true;
     }else{
-        _pipeOpen = false;
+        m_pipe_open = false;
     }
 }
-
-bool NullCollector::_firstTime = true;
-NullCollector* NullCollector::_instance = NULL;
 
 

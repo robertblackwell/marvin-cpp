@@ -6,7 +6,6 @@
 //
 #include <iostream>
 #include <sstream>
-//#include <boost/filesystem.hpp>
 #include "rb_logger.hpp"
 
 bool RBLogging::logger_enabled = true;
@@ -96,7 +95,7 @@ void RBLogging::Logger::torTraceLog(
 
 
         os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
-        os << "::"<< func_name << "[" << line_number << "]:" << std::hex << (long)this_arg << std::dec << std::endl;;
+        os << "::"<< func_name << "[" << line_number << "]: " << std::hex << (long)this_arg << std::dec << std::endl;;
         //
         // Only use the stream in the last step and this way we can send the log record somewhere else
         // easily
@@ -108,7 +107,7 @@ void RBLogging::Logger::fdTraceLog(
               const char* file_name,
               const char* func_name,
               int line_number,
-              int fd_arg)
+              long fd_arg)
 {
     if (enabled()) {
         std::ostringstream os;
@@ -123,7 +122,7 @@ void RBLogging::Logger::fdTraceLog(
 
 
         os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
-        os << "::"<< func_name << "[" << line_number << "]:" << fd_arg << std::endl;;
+        os << "::"<< func_name << "[" << line_number << "] fd:" << fd_arg << std::endl;;
         //
         // Only use the stream in the last step and this way we can send the log record somewhere else
         // easily

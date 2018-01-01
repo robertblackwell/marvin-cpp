@@ -1,24 +1,19 @@
 #ifndef test_message_server_hpp
-#define Test_message_server_hpp
+#define test_message_server_hpp
 
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <boost/asio.hpp>
 #include <pthread.h>
+#include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 #include "error.hpp"
 #include "repeating_timer.hpp"
-//#include "http_server.hpp"
-//#include "request_handler_base.hpp"
-//#include "request.hpp"
-//#include "tsc_client.hpp"
-//#include "tsc_server.hpp"
 #include "testcase.hpp"
 #include "test_runner.hpp"
 #include "tcp_connection.hpp"
-#include "message_reader_v2.hpp"
+#include "message_reader.hpp"
 
 class TServer;
 typedef std:: shared_ptr<TServer> TServerSPtr;
@@ -29,7 +24,7 @@ class TServer
     public:
         explicit TServer(boost::asio::io_service& io, Testcase tc);
         ~TServer();
-        void listen(long port, std::function<void(MessageReaderV2SPtr rdr)> cb);
+        void listen(long port, std::function<void(MessageReaderSPtr rdr)> cb);
     
     protected:
         void initialize();
@@ -42,7 +37,7 @@ class TServer
         boost::asio::io_service&                         _io;
         boost::asio::ip::tcp::acceptor                  _acceptor;
         TCPConnectionSPtr                               _conn_sptr;
-        MessageReaderV2SPtr                             _rdr;
+        MessageReaderSPtr                             _rdr;
         Testcase                                        _tc;
         TestrunnerSPtr                                  _runner_sptr;
 };

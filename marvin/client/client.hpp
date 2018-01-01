@@ -1,51 +1,50 @@
-//
-//  client.hpp
-//  all
-//
-//  Created by ROBERT BLACKWELL on 11/24/17.
-//  Copyright © 2017 Blackwellapps. All rights reserved.
-//
 
 #ifndef client_hpp
 #define client_hpp
-
+/**
+* \defgroup Client
+*/
 
 #include <iostream>
 #include <istream>
 #include <ostream>
 #include <string>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include "bufferV2.hpp"
+#include "boost_stuff.hpp"
+#include "buffer.hpp"
 #include "http_header.hpp"
-#include "message_writer_v2.hpp"
-#include "message_reader_v2.hpp"
+#include "message_writer.hpp"
+#include "message_reader.hpp"
 #include "tcp_connection.hpp"
 #include "url.hpp"
 
 using boost::asio::ip::tcp;
 class Client;
-typedef std::shared_ptr<Client> ClientSPtr;
-typedef std::unique_ptr<Client> ClientUPtr;
+/// \ingroup Client
+using ClientSPtr = std::shared_ptr<Client>;
+/// \ingroup Client
+using ClientUPtr = std::unique_ptr<Client>;
 /**
-* This is the type signature of callbacks that receive a fully or partially complete
+* \ingroup Client
+* \brief This is the type signature of callbacks that receive a fully or partially complete
 * response
 */
-typedef std::function<void(Marvin::ErrorType& err, MessageReaderV2SPtr msg)> ResponseHandlerCallbackType;
+using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)>;
 
 /**
-* This is the type signature of callbacks that receive chunks of body data
+* \ingroup Client
+* \brief This is the type signature of callbacks that receive chunks of body data
 */
-typedef std::function<void(Marvin::ErrorType& err, BufferChain buf_chain)>  ClientDataHandlerCallbackType;
+using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err, Marvin::BufferChain buf_chain)>;
 
 /**
-* determines whether a new MessageReaderV2 and MessageWriterV2
+* determines whether a new MessageReader and MessageWriter
 * are allocated for each new roundtrip. 
 */
 #define RDR_WRTR_ONESHOT 1
 
 /**
-* This class implements an http client that can send a request message and wait for a response.
+* \ingroup Client
+* \brief This class implements an http client that can send a request message and wait for a response.
 *
 * Two modes of transmission operation are provided for:
 *
@@ -87,7 +86,7 @@ public:
      * Create a client that is not connected - however give a url it needs
      * to try and establish a connection.
      * @param io - an io service
-     * @param url - a string like "https://username:password@www.google.com/path1/path2:433?one=1111"
+     * @param uri - a string like "https://username:password@www.google.com/path1/path2:433?one=1111"
      */
     Client(boost::asio::io_service& io, std::string uri);
 
@@ -95,7 +94,7 @@ public:
     * Create a client with an established connection. In this case a call to
     * connect will fail with an exception - as it is a logic error
     */
-    Client(boost::asio::io_service& io, ConnectionInterface* conn);
+    Client(boost::asio::io_service& io, ISocket* conn);
 
     Client(const Client& other) = delete;
     Client& operator=(const Client&) = delete;
@@ -104,7 +103,7 @@ public:
     
 #pragma mark - getters and setters
     
-    MessageReaderV2SPtr  getResponse();
+    MessageReaderSPtr  getResponse();
     
     void setUrl(std::string url);    
     void setContent(std::string& contentStr);
@@ -165,12 +164,8 @@ public:
     * asyncWrite
     */
     void asyncWrite(MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandlerCallbackType cb);
-    void asyncWrite(MessageBaseSPtr requestMessage,  MBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
-    void asyncWrite(MessageBaseSPtr requestMessage,  BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb);
-    /**
-    * The FBuffer is fragmented and requires multiple asyncWrite operations to send it
-    */
-    void asyncWrite(MessageBaseSPtr requestMessage,  FBufferSharedPtr body, ResponseHandlerCallbackType cb);
+    void asyncWrite(MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
+    void asyncWrite(MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb);
 
     /**
     * Sends the first line and headers of the request message only
@@ -223,10 +218,11 @@ public:
     /**
     * close - called to signal that connection::close has been received
     * and that the net round trip should use a different connection
+    * for the next message. This invalidates _connection, _rdr, _wrtr
     *
     * @TODO - not sure we need this - just delete the client object
     */
-//    close();
+    void close();
     
 #pragma mark - friend utility functions
    
@@ -256,14 +252,13 @@ protected:
 
     boost::asio::io_service&                        _io;
     MessageBaseSPtr                                 _current_request;
-    MBufferSPtr                                     _body_mbuffer_sptr;
-    FBufferSharedPtr                                _body_fbuffer_sptr;
-    std::shared_ptr<MessageWriterV2>                  _wrtr;
-    std::shared_ptr<MessageReaderV2>                  _rdr;
+    Marvin::MBufferSPtr                             _body_mbuffer_sptr;
+    std::shared_ptr<MessageWriter>                  _wrtr;
+    std::shared_ptr<MessageReader>                  _rdr;
     
 //    TCPConnection*                                  _conn_ptr;
     std::shared_ptr<TCPConnection>                  _conn_shared_ptr;
-    ReadSocketInterface*                            _readSock;
+    IReadSocket*                                    _readSock;
     
     std::function<void(Marvin::ErrorType& err)>     _goCb;
     ResponseHandlerCallbackType                     _response_handler;
