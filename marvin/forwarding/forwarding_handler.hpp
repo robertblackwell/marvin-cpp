@@ -8,6 +8,7 @@
 
 #ifndef marvin_forwarding_handler_hpp
 #define marvin_forwarding_handler_hpp
+
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
@@ -21,6 +22,7 @@
 #include "tcp_connection.hpp"
 #include "http_header.hpp"
 #include "tunnel_handler.hpp"
+#include "i_collector.hpp"
 
 enum class ConnectAction;
 
@@ -35,14 +37,14 @@ enum class ConnectAction;
 *  Along the way it captures (via template parameter TCapture) a summary of the original request and
 *  upstream server response and distributes that according to the rules of the particular TCapture object
 */
-template<class TCollector> class ForwardingHandler : public RequestHandlerBase
+class ForwardingHandler : public RequestHandlerBase
 {
     public:
         // these are configuration settings
         static void configSet_HttpsHosts(std::vector<std::regex> re);
         static void configSet_HttpsPorts(std::vector<int> ports);
     
-        ForwardingHandler(boost::asio::io_service& io);
+        ForwardingHandler(boost::asio::io_service& io, ICollector& collector);
         ~ForwardingHandler();
     
         void handleConnect(
@@ -105,7 +107,7 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
         std::string                 m_scheme;
         std::string                 m_host;
         int                         m_port;
-        TCollector*                 m_collector;
+        ICollector&                 m_collector;
     
         /// used for handleConnect - tunnel
         Marvin::MBufferUPtr         m_initial_response_buf;
@@ -118,9 +120,7 @@ template<class TCollector> class ForwardingHandler : public RequestHandlerBase
     
         /// list of port numbers that can be https mitm'd rather than tunneled
         std::vector<int>            m_https_ports;
+        std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)>       m_collect_function;
 
 };
-
-#include "forwarding_handler.ipp"
-
 #endif /* forwarding_handler_hpp */

@@ -2,21 +2,19 @@
 // Start both a server and a number of client tthreads and have each of the client
 // threads make a number of requests from the server.
 //
+#ifndef marvin_server_runner_hpp
+#define marvin_server_runner_hpp
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <unistd.h>
 #include <thread>
-#include <pthread.h>
-
 #include "boost_stuff.hpp"
-
 #include "http_server.hpp"
-/**
+/*
 * This class starts and stops a server with the given
 * request handler factory
 */
-template<class Handler>
 class ServerRunner
 {
 public:
@@ -24,37 +22,7 @@ public:
     std::thread* server_thread_ptr;
     ServerRunner();
     ~ServerRunner();
-    void setup();
+    void setup(long port = 9991);
     void teardown();
 };
-
-template<class Handler>
-ServerRunner<Handler>::ServerRunner(){}
-
-template<class Handler>
-ServerRunner<Handler>::~ServerRunner(){}
-
-template<class Handler>
-void ServerRunner<Handler>::setup()
-{
-    static std::thread* server_thread_ptr = new std::thread([this](){
-        try {
-            HTTPServer* server_ptr = new HTTPServer([](boost::asio::io_service& io){
-                return new Handler(io);
-            });
-            this->server_ptr = server_ptr;
-            server_ptr->listen();
-            std::cout << __FUNCTION__ << " after listen" << std::endl;
-        } catch(std::exception & ex) {
-            return;
-        }
-    });
-    this->server_thread_ptr = server_thread_ptr;
-}
-
-template<class Handler>
-void ServerRunner<Handler>::teardown()
-{
-    this->server_ptr->terminate();
-    this->server_thread_ptr->join();
-}
+#endif

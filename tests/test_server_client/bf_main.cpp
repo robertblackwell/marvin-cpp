@@ -16,14 +16,28 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "tsc_req_handler.hpp"
 #include "server_runner.hpp"
+//#include "bf_fix_multiple.hpp"
 
+#if 0
+int main( int argc, char* argv[] )
+{
+    // global setup - run a server
+    RBLogging::setEnabled(false);
+    char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
+    int _argc = 2;
+    testing::InitGoogleTest(&_argc, _argv);
+    auto res = RUN_ALL_TESTS();
+    return res;
+}
+
+#else
 int main( int argc, char* argv[] )
 {
     // global setup - run a server
     RBLogging::setEnabled(false);
 #define EX_RUNNER
 #ifdef EX_RUNNER
-    ServerRunner<TscRequestHandler> s_runner;
+    ServerRunner s_runner;
     s_runner.setup();
 #endif
     char* _argv[2] = {argv[0], (char*)"--gtest_filter=*.*"}; // change the filter to restrict the tests that are executed
@@ -36,3 +50,4 @@ int main( int argc, char* argv[] )
 #endif
     return res;
 }
+#endif

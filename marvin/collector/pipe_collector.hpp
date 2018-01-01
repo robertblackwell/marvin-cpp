@@ -1,7 +1,8 @@
 //
 // The main entry point for Marvin - a mitm proxy for http/https 
 //
-
+#ifndef marvin_pipe_collector_hpp
+#define marvin_pipe_collector_hpp
 
 #include <iostream>
 #include <sstream>
@@ -14,7 +15,8 @@
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
-#include "forwarding_handler.hpp"
+#include "i_collector.hpp"
+//#include "forwarding_handler.hpp"
 
 ///
 /// This class is a singleton that requires to be primed with the servers io_service object so that
@@ -29,16 +31,19 @@
 /// to prevent this delaying the entire proxy process the server should start an additional thread and connect it
 /// to the general io_service to aleviate this issue.
 ///
-class PipeCollector
+class PipeCollector : public ICollector
 {
     public:
-        static bool             s_first_time;
-        static PipeCollector*   s_instance;
-        static std::string      s_pipe_path;
+        static std::atomic<PipeCollector*>  s_atomic_instance;
+        static std::mutex                   s_mutex;
+        static std::string                  s_pipe_path;
     
-        static PipeCollector* getInstance(boost::asio::io_service& io);
+        static PipeCollector& getInstance(boost::asio::io_service& io);
+//        static PipeCollector* getInstance(boost::asio::io_service& io);
         static void configSet_PipePath(std::string path);
-        /**
+        
+         PipeCollector(boost::asio::io_service& io);
+       /**
         ** Delete copy constructors
         **/
         PipeCollector(PipeCollector const&)   = delete;
@@ -55,7 +60,6 @@ class PipeCollector
             MessageBaseSPtr resp);
     
     private:
-        PipeCollector(boost::asio::io_service& io);
         /**
         ** This method actually implements the collect function but run on a dedicated
         ** strand. Even if this method does IO-wait operations the other thread will
@@ -72,7 +76,7 @@ class PipeCollector
         std::ofstream               m_out_pipe;
         bool                        m_pipe_open;
 };
-
+#endif
 
 
 

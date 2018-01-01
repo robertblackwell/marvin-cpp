@@ -1,10 +1,10 @@
 
 #include "buffer_chain.hpp"
 #include "rb_logger.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
 
 using namespace Marvin;
 namespace Marvin {
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
 
 
 #pragma mark - BufferChain

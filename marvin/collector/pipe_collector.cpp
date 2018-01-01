@@ -50,8 +50,10 @@ static bool testPipeReaderExists(char* pipeName)
     return true;
 }
 
-        static bool             _firstTime;
-        static PipeCollector*   _instance;
+std::atomic<PipeCollector*> PipeCollector::s_atomic_instance{nullptr};
+std::mutex PipeCollector::s_mutex;
+std::string PipeCollector::s_pipe_path = "";
+
 
 PipeCollector::PipeCollector(boost::asio::io_service& io): m_io(io), m_my_strand(io)
 {
@@ -68,14 +70,20 @@ PipeCollector::PipeCollector(boost::asio::io_service& io): m_io(io), m_my_strand
         m_pipe_open = false;
     }
 }
-    
-PipeCollector* PipeCollector::getInstance(boost::asio::io_service& io)
+/// \see http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/
+//PipeCollector* PipeCollector::getInstance(boost::asio::io_service& io)
+PipeCollector& PipeCollector::getInstance(boost::asio::io_service& io)
 {
-    if( s_first_time ){
-        s_first_time = false;
-        s_instance = new PipeCollector(io);
+    PipeCollector* tmp = s_atomic_instance.load();
+    if (tmp == nullptr) {
+        std::lock_guard<std::mutex> lock(s_mutex);
+        tmp = s_atomic_instance.load();
+        if (tmp == nullptr) {
+            tmp = new PipeCollector(io);
+            s_atomic_instance.store(tmp);
+        }
     }
-    return s_instance;
+    return *tmp;
 }
 void PipeCollector::configSet_PipePath(std::string path)
 {
@@ -151,8 +159,4 @@ void PipeCollector::collect(
     m_io.post(pf);
 }
     
-bool PipeCollector::s_first_time = true;
-PipeCollector* PipeCollector::s_instance = NULL;
-std::string PipeCollector::s_pipe_path = "";
-
 

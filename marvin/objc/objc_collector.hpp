@@ -9,7 +9,6 @@
 #include <unistd.h>
 #include <pthread.h>
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "boost_stuff.hpp"
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
@@ -41,8 +40,8 @@ class ObjcCollector
         ** Interface method for client code to call collect
         **/
         void collect(
-                std::string& scheme,
-                std::string& host,
+                std::string scheme,
+                std::string host,
                 MessageReaderSPtr req,
                 MessageWriterSPtr resp);
     

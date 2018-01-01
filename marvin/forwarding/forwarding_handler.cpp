@@ -1,5 +1,7 @@
 #include "forwarding_handler.hpp"
 #include "forward_helpers.hpp"
+#include "rb_logger.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 enum class ConnectAction{
     TUNNEL=11,
@@ -7,46 +9,47 @@ enum class ConnectAction{
     REJECT
 };
 
-template<class TCollector>
-std::vector<std::regex> ForwardingHandler<TCollector>::s_https_hosts = std::vector<std::regex>();
 
-template<class TCollector>
-std::vector<int> ForwardingHandler<TCollector>::s_https_ports = std::vector<int>();
+std::vector<std::regex> ForwardingHandler::s_https_hosts = std::vector<std::regex>();
 
 
-template<class TCollector>
-void ForwardingHandler<TCollector>::configSet_HttpsHosts(std::vector<std::regex> re)
+std::vector<int> ForwardingHandler::s_https_ports = std::vector<int>();
+
+
+
+void ForwardingHandler::configSet_HttpsHosts(std::vector<std::regex> re)
 {
     s_https_hosts = re;
 }
 
-template<class TCollector>
-void ForwardingHandler<TCollector>::configSet_HttpsPorts(std::vector<int> ports)
+
+void ForwardingHandler::configSet_HttpsPorts(std::vector<int> ports)
 {
     s_https_ports = ports;
 }
 
 #pragma mark - Forward handler class
-template<class TCollector>
-ForwardingHandler<TCollector>::ForwardingHandler(
-    boost::asio::io_service& io
-): RequestHandlerBase(io)
+
+ForwardingHandler::ForwardingHandler(
+    boost::asio::io_service& io,
+    ICollector& collector
+): RequestHandlerBase(io), m_collector(collector)
 {
     LogTorTrace();
     m_https_hosts = s_https_hosts;
     m_https_ports = s_https_ports;
 }
 
-template<class TCollector>
-ForwardingHandler<TCollector>::~ForwardingHandler()
+
+ForwardingHandler::~ForwardingHandler()
 {
     LogTorTrace();
 }
 
 #pragma mark - handle upgrade request
 
-template<class TCollector>
-void ForwardingHandler<TCollector>::p_handle_upgrade()
+
+void ForwardingHandler::p_handle_upgrade()
 {
     // deny the upgrade
 #if 0
@@ -77,8 +80,8 @@ void ForwardingHandler<TCollector>::p_handle_upgrade()
 /// BEFORE this method returns so that the server does not close the client connection.
 ///
 /// done(true) signals to the server that this method is "hijacking" the connection
-template<class TCollector>
-void ForwardingHandler<TCollector>::handleConnect(
+
+void ForwardingHandler::handleConnect(
         MessageReaderSPtr           req,
         ISocketSPtr     connPtr,
         HandlerDoneCallbackType     done
@@ -87,7 +90,6 @@ void ForwardingHandler<TCollector>::handleConnect(
     m_downstream_connection  = connPtr;
     m_done_callback = done;
     m_initial_response_buf = std::unique_ptr<Marvin::MBuffer>(new Marvin::MBuffer(1000));
-    int x = 2;
     //
     // Parse the url to determine were we have to send the "upstream" request
     //
@@ -99,8 +101,8 @@ void ForwardingHandler<TCollector>::handleConnect(
     m_host = tmp_u.host;
     m_port = tmp_u.port;
     m_done_callback = done;
-    m_collector = TCollector::getInstance(m_io);
-    ConnectAction action = m_determine_connec_action(m_host, m_port);
+//    m_collector = TCollector::getInstance(m_io);
+    ConnectAction action = p_determine_connection_action(m_host, m_port);
 
     switch(action){
         case ConnectAction::TUNNEL :
@@ -115,8 +117,8 @@ void ForwardingHandler<TCollector>::handleConnect(
     };
     
 };
-template<class TCollector>
-void ForwardingHandler<TCollector>::p_initiate_tunnel()
+
+void ForwardingHandler::p_initiate_tunnel()
 {
 #if 0
     // first lets try and connect to the upstream host
@@ -174,8 +176,8 @@ void ForwardingHandler<TCollector>::p_initiate_tunnel()
 /// and the reader and writer
 /// @param req
 ///
-template<class TCollector>
-void ForwardingHandler<TCollector>::handleRequest(
+
+void ForwardingHandler::handleRequest(
         ServerContext&   server_context,
         MessageReaderSPtr req,
         MessageWriterSPtr respWrtr,
@@ -184,8 +186,7 @@ void ForwardingHandler<TCollector>::handleRequest(
     m_req = req;
     m_resp_wrtr = respWrtr;
     m_done_callback = done;
-    m_collector = TCollector::getInstance(m_io);
-    
+   
     auto u = helpers::decodeUri(req);
     m_host = u.host;
     m_port = u.port;
@@ -196,7 +197,7 @@ void ForwardingHandler<TCollector>::handleRequest(
         m_resp = downMsg;
         Marvin::BufferChainSPtr responseBodySPtr = downMsg->getBody();
         /// perform the MITM collection
-        m_collector->collect(m_scheme, m_host, m_req, m_resp);
+        m_collector.collect(m_scheme, m_host, m_req, m_resp);
         /// write response to downstream client
         m_resp_wrtr->asyncWrite(m_resp, responseBodySPtr, [this](Marvin::ErrorType& err){
 //            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
@@ -208,8 +209,8 @@ void ForwardingHandler<TCollector>::handleRequest(
 }
 /// \brief Perform the proxy forwarding process; and produces a response suitable
 /// for downstream transmission; the result of this method is a response to send back to the client
-template<class TCollector>
-void ForwardingHandler<TCollector>::p_round_trip_upstream(
+
+void ForwardingHandler::p_round_trip_upstream(
         MessageReaderSPtr req,
         std::function<void(Marvin::ErrorType& err, MessageBaseSPtr downstreamReplyMsg)> upstreamCb
 ){
@@ -234,8 +235,8 @@ void ForwardingHandler<TCollector>::p_round_trip_upstream(
 };
 
 
-template<class TCollector>
-void ForwardingHandler<TCollector>::p_on_complete(Marvin::ErrorType& err)
+
+void ForwardingHandler::p_on_complete(Marvin::ErrorType& err)
 {
     if( err ){
 //       LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
@@ -249,34 +250,34 @@ void ForwardingHandler<TCollector>::p_on_complete(Marvin::ErrorType& err)
 }
 #pragma mark - bodies of utility functions
 
-template<class TCollector>
-ConnectAction ForwardingHandler<TCollector>::p_determine_connection_action(std::string host, int port)
+
+ConnectAction ForwardingHandler::p_determine_connection_action(std::string host, int port)
 {
-    std::vector<std::regex>  regexs = this->_httpsHosts;
-    std::vector<int>         ports  = this->_httpsPorts;
+    std::vector<std::regex>  regexs = this->m_https_hosts;
+    std::vector<int>         ports  = this->m_https_ports;
     /// !!! this needs to be upgraded
     return ConnectAction::TUNNEL;
 }
 
 #if 0
-template<class TCollector>
-void ForwardingHandler<TCollector>::response403Forbidden(MessageWriter& writer)
+
+void ForwardingHandler::response403Forbidden(MessageWriter& writer)
 {
     writer.setStatus("Forbidden");
     writer.setStatusCode(403);
     std::string n("");
     writer.setContent(n);
 }
-template<class TCollector>
-void ForwardingHandler<TCollector>::response200OKConnected(MessageWriter& writer)
+
+void ForwardingHandler::response200OKConnected(MessageWriter& writer)
 {
     writer.setStatus("OK");
     writer.setStatusCode(200);
     std::string n("");
     writer.setContent(n);
 }
-template<class TCollector>
-void ForwardingHandler<TCollector>::response502Badgateway(MessageWriter& writer)
+
+void ForwardingHandler::response502Badgateway(MessageWriter& writer)
 {
     writer.setStatus("BAD GATEWAY");
     writer.setStatusCode(503);

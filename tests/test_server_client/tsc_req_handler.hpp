@@ -1,11 +1,11 @@
-#ifndef tsc_req_handler_hpp
-#define tsc_req_handler_hpp
+#ifndef marvin_tsc_req_handler_hpp
+#define marvin_tsc_req_handler_hpp
 
+#include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <pthread.h>
-
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 #include "http_header.hpp"

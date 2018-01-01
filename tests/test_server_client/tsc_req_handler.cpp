@@ -1,3 +1,4 @@
+#include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -15,7 +16,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "request_handler_base.hpp"
 #include "request.hpp"
 #include "uri_query.hpp"
-
 #include "tsc_req_handler.hpp"
 nlohmann::json jsonize_request(TscRequestHandler* req_handler, ServerContext& server_context, MessageReaderSPtr req)
 {

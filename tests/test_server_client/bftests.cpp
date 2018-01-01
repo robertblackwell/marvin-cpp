@@ -21,8 +21,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "test_server_client/bf/bf_testcase.hpp"
 #include "test_server_client/tsc_req_handler.hpp"
 #include "server_runner.hpp"
+#include "bf_fix_multiple.hpp"
 using namespace body_format;
-
 static Testcase tcase01(
         TestType::WITH_STRING,
         "With string - 2 buffers",
@@ -118,7 +118,7 @@ TEST_P(BFOneshot, 001)
     io_service.run();
 }
 
-INSTANTIATE_TEST_CASE_P(BFconsecutive, BFOneshot, testing::Values(tcase01));
+INSTANTIATE_TEST_CASE_P(BFconsecutive, BFOneshot, testing::Values(tcase01, tcase02, tcase03));
 #endif
 
 #if 1

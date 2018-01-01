@@ -20,7 +20,8 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "forward_helpers.hpp"
 #include "tp_handler.hpp"
-#include "tp_server_runner.hpp"
+#include "server_runner.hpp"
+#include "tp_proxy_runner.hpp"
 #endif 
 #pragma mark - MessageBase helpers
 bool hasContentLength(MessageBase& msg)
