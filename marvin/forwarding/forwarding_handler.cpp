@@ -195,7 +195,7 @@ void ForwardingHandler::handleRequest(
     p_round_trip_upstream(req, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_resp = downMsg;
-        Marvin::BufferChainSPtr responseBodySPtr = downMsg->getBody();
+        Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
         /// perform the MITM collection
         m_collector.collect(m_scheme, m_host, m_req, m_resp);
         /// write response to downstream client
@@ -222,12 +222,12 @@ void ForwardingHandler::p_round_trip_upstream(
     /// format upstream msg for transmission
     helpers::makeUpstreamRequest(m_upstream_request_msg_sptr, req);
     assert( ! m_req->hasHeader("Upgrade") );
-    Marvin::BufferChainSPtr content = req->getBody();
+    Marvin::BufferChainSPtr content = req->getContentBuffer();
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
         m_downstream_msg_sptr = std::make_shared<MessageBase>();
-        m_response_body_sptr = upstrmRdr->getBody();
+        m_response_body_sptr = upstrmRdr->getContentBuffer();
         helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
         upstreamCb(ec, m_downstream_msg_sptr);
     });

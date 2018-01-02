@@ -19,6 +19,5 @@ void setContentLength(MessageBase& msg, std::size_t length)
 }
 void setContent(MessageBase& msg, Marvin::BufferChainSPtr content)
 {
-    msg.setBody(content);
-    setContentLength(msg, content->size());
+    msg.setContent(content);
 }

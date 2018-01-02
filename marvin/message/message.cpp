@@ -183,19 +183,32 @@ MessageBase::str(){
     return ss.str();
 }
 Marvin::BufferChainSPtr
-MessageBase::getBody()
+MessageBase::getContentBuffer()
 {
     return m_body_chain_sptr;
 }
 void
-MessageBase::setBody(Marvin::BufferChainSPtr bufSPtr)
+MessageBase::setContentBuffer(Marvin::BufferChainSPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
+//    setHeader(HttpHeader::Name::ContentLength, std::to_string(bufSPtr->size()));
+}
+Marvin::BufferChainSPtr
+MessageBase::getContent()
+{
+    return m_body_chain_sptr;
+}
+void
+MessageBase::setContent(Marvin::BufferChainSPtr bufSPtr)
+{
+    m_body_chain_sptr = bufSPtr;
+    removeHeader(HttpHeader::Name::TransferEncoding);
     setHeader(HttpHeader::Name::ContentLength, std::to_string(bufSPtr->size()));
 }
-void MessageBase::setBody(std::string content)
+void MessageBase::setContent(std::string content)
 {
     m_body_chain_sptr = Marvin::BufferChain::makeSPtr(content);
+    removeHeader(HttpHeader::Name::TransferEncoding);
     setHeader(HttpHeader::Name::ContentLength, std::to_string(m_body_chain_sptr->size()));
 }
 

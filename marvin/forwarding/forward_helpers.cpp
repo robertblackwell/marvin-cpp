@@ -48,7 +48,14 @@ void helpers::fillRequestFromUri(MessageBase& msg, std::string uri_in, bool abso
     }
     assert(port_int != 0);
     std::string host_header = us.host+":"+std::to_string(port_int);
-    std::string path_value = us.path +"?"+ us.search;
+    std::string path_value;
+    if( (us.path == "") && (us.search == "")) {
+        path_value = "/";
+    }else if( us.path == "") {
+        path_value = "/?" + us.search;
+    } else {
+        path_value = us.path +"?"+ us.search;
+    }
     if (absolute) {
         path_value = us.protocol+"://"+host_header+path_value;
     }
@@ -129,8 +136,8 @@ void helpers::makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReader
     result->setHeader(HttpHeader::Name::TE, "");
     // Http versions defaults to 1.1, so force it to the same as the request
     result->setHttpVersMinor(req->httpVersMinor());
-    result->setBody(req->getBody());
-    result->setHeader(HttpHeader::Name::ContentLength, std::to_string(req->getBody()->size()));
+    result->setContent(req->getContentBuffer());
+//    result->setHeader(HttpHeader::Name::ContentLength, std::to_string(req->getBody()->size()));
 
 }
 
@@ -163,9 +170,9 @@ void helpers::makeDownstreamGoodResponse(MessageBaseSPtr downstream, MessageRead
     result->setHttpVersMinor(resp->httpVersMinor());
     // now attach the body
     std::size_t len;
-    if( (len = responseSPtr->getBody()->size()) > 0){
-        resp->setBody(responseSPtr->getBody());
-        resp->setHeader(HttpHeader::Name::ContentLength, std::to_string(len));
+    if( (len = responseSPtr->getContentBuffer()->size()) > 0){
+        resp->setContent(responseSPtr->getContentBuffer());
+//        resp->setHeader(HttpHeader::Name::ContentLength, std::to_string(len));
     }
 
 }
@@ -215,18 +222,18 @@ void response403Forbidden(MessageBaseSPtr msg)
 {
     msg->setStatus("Forbidden");
     msg->setStatusCode(403);
-    msg->setBody("");
+    msg->setContent("");
 }
 void response200OKConnected(MessageBaseSPtr msg)
 {
     msg->setStatus("OK");
     msg->setStatusCode(200);
-    msg->setBody("");
+    msg->setContent("");
 }
 void response502Badgateway(MessageBaseSPtr msg)
 {
     msg->setStatus("BAD GATEWAY");
     msg->setStatusCode(503);
-    msg->setBody("");
+    msg->setContent("");
 }
 

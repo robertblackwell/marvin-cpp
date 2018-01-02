@@ -70,10 +70,20 @@ public:
     void    setIsRequest(bool flag);
     bool    isRequest();
     
-    /// \brief return and set the dechunked version of the message content
-    Marvin::BufferChainSPtr getBody();
-    void setBody(Marvin::BufferChainSPtr bufSPtr);
-    void setBody(std::string content);
+    /// \brief return the current dechunked conent buffer
+    Marvin::BufferChainSPtr getContentBuffer();
+    /// \vrief sets the dechunked content buffer but does not set the CONTENT-LENGTH headers;
+    /// this is because even for chunked incoming messages the de-chunked buffer is attached
+    void setContentBuffer(Marvin::BufferChainSPtr bufSPtr);
+
+    /// \brief return the current dechunked conent buffer
+    Marvin::BufferChainSPtr getContent();
+    /// \brief sets the dechunked content buffer and aslo updates the content-length field;
+    /// use this method when preparing an outgoing message
+    void setContent(Marvin::BufferChainSPtr bufSPtr);
+    /// \brief sets the dechunked content buffer and aslo updates the content-length field;
+    /// use this method when preparing an outgoing message
+    void setContent(std::string content);
 
     friend std::string traceMessage(MessageBase& msg);
     friend void serializeHeaders(MessageBase& msg, Marvin::MBuffer& buf);

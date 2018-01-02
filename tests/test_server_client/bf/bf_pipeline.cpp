@@ -9,11 +9,13 @@ PipelineTest::PipelineTest(boost::asio::io_service& io, std::vector<Testcase> te
 {
     _msg_index = 0;
     std::string url = _testcase[0]._url;
+    /// \todo - this is the place to fill the message so that client does not have
+    /// to do it.
     _client = std::shared_ptr<Client>(new Client(_io, url));
 }
 void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
-    std::string raw_body = rdr->getBody()->to_string();
+    std::string raw_body = rdr->getContentBuffer()->to_string();
     json j = json::parse(raw_body);
     std::string req_body = j["req"]["body"];
     std::string ch_uuid = j["xtra"]["connection_handler_uuid"];
@@ -50,7 +52,7 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
         REQUIRE(rh_uuid == _rh_uuid);
     }
     
-    std::string sx = rdr->getBody()->to_string();
+    std::string sx = rdr->getContentBuffer()->to_string();
     std::string expected_req_body = _testcase[_msg_index].buffers_as_string();
 
 #ifdef _VERBOSE

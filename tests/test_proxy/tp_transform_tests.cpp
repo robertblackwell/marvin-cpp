@@ -86,7 +86,7 @@ void fillMsgRdrAsResponse_01(MessageReaderSPtr msgRdr)
     msgRdr->setHeader("Transfer-Encoding"," chunk");
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
-    msgRdr->setBody(bdy);
+    msgRdr->setContentBuffer(bdy);
 }
 void verifyResponse_01(MessageBaseSPtr msg)
 {
@@ -123,8 +123,7 @@ void verifyResponse_01(MessageBaseSPtr msg)
 
 }
 #pragma mark - sample filling of upstream request
-
-void fillMsgRdrAsRequest02(MessageReaderSPtr msgRdr)
+void fillMsgRdrAsRequest01(MessageReaderSPtr msgRdr)
 {
 // GET / HTTPS/1.1
 // Host: example.org
@@ -153,7 +152,12 @@ void fillMsgRdrAsRequest02(MessageReaderSPtr msgRdr)
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     setContent(*msgRdr, bdy);
 }
-void verifyRequest_02(MessageBaseSPtr msgSPtr)
+
+void fillMsgRequest02(MessageBaseSPtr msgSPtr)
+{
+    helpers::fillRequestFromUri(*msgSPtr, "http://example.org:9999");
+}
+void verifyRequest_01(MessageBaseSPtr msgSPtr)
 {
     REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
     REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:80" );
@@ -165,6 +169,11 @@ void verifyRequest_02(MessageBaseSPtr msgSPtr)
     REQUIRE(msgSPtr->getHeader("Accept-Charset") == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
     REQUIRE( ! msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding));
     REQUIRE( ! msgSPtr->hasHeader(HttpHeader::Name::ETag));
+}
+void verifyRequest_02(MessageBaseSPtr msgSPtr)
+{
+    REQUIRE(msgSPtr->uri() == "/");
+    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:9999" );
 }
 #pragma mark - verify minimum requirements for a request
 void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
@@ -195,7 +204,7 @@ bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 //        || (msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding))) return false;
     if(msgSPtr->hasHeader(HttpHeader::Name::ContentLength) && (msgSPtr->getHeader(HttpHeader::Name::ContentLength) != "0" )){
         int cl = std::stoi(msgSPtr->getHeader(HttpHeader::Name::ContentLength));
-        auto contentChain = msgSPtr->getBody();
+        auto contentChain = msgSPtr->getContentBuffer();
         REQUIRE(contentChain != nullptr);
         if( contentChain != nullptr) {
             REQUIRE(contentChain->size() == cl);
@@ -222,14 +231,21 @@ TEST_CASE("Helpers_downstream01", "[downstream01]")
     verifyResponse_01(msgSPtr);
 //    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("Helpers_upstream02", "[upstream02]")
+TEST_CASE("Helpers_upstream01", "[upstream01]")
 {
     MessageReaderSPtr msgRdr = makeMock();
-    fillMsgRdrAsRequest02(msgRdr);
+    fillMsgRdrAsRequest01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     helpers::makeUpstreamRequest(msgSPtr, msgRdr);
-    verifyRequest_02(msgSPtr);
+    verifyRequest_01(msgSPtr);
 //    std::cout << msgSPtr->str() << std::endl;
+}
+TEST_CASE("Helpers_upstream02", "[upstream02]")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgRequest02(msgSPtr);
+    verifyRequest_02(msgSPtr);
+    std::cout << msgSPtr->str() << std::endl;
 }
 

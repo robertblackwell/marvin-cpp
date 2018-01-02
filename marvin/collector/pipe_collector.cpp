@@ -117,7 +117,7 @@ void PipeCollector::postedCollect(
     auto reqHeaders = req->getHeaders();
     req->dumpHeaders(temp);
     if( bodyIsCollectable(*req, regexs) ){
-        temp << req->getBody();
+        temp << (req->getContentBuffer())->to_string();
     }
     temp << std::endl;
     temp << "RESPONSE : ========" << std::endl;
@@ -126,7 +126,7 @@ void PipeCollector::postedCollect(
     auto respHeaders = resp->getHeaders();
     resp->dumpHeaders(temp);
     if( bodyIsCollectable(*resp, regexs) ){
-        temp << resp->getBody() << std::endl;
+        temp << (resp->getContentBuffer())->to_string() << std::endl;
     }
 
     temp << "------------------------------------------------" << std::endl;

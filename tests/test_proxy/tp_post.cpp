@@ -15,12 +15,12 @@ PostTest::PostTest(boost::asio::io_service& io, tp::TestcaseSPtr testcaseSPtr): 
 }
 void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
-    Marvin::BufferChainSPtr bsp = rdr->getBody();
+    Marvin::BufferChainSPtr bsp = rdr->getContentBuffer();
     std::string raw_body = bsp->to_string();
     json j = json::parse(raw_body);
     std::string sx = j["req"]["body"];
     
-    std::string sy = (m_testcase_sptr->m_msg_sptr->getBody() )->to_string();
+    std::string sy = (m_testcase_sptr->m_msg_sptr->getContentBuffer())->to_string();
 #ifdef _VERBOSE
 //        std::cout << "echo'ed body " << sx << std::endl;
 //        std::cout << "testcasebody " << testcase.buffers_as_string() << std::endl;
@@ -46,7 +46,7 @@ void PostTest::exec()
 
     auto f = std::bind(&PostTest::handler, this, std::placeholders::_1, std::placeholders::_2);
 
-    auto buf = m_testcase_sptr->m_msg_sptr->getBody();
+    auto buf = m_testcase_sptr->m_msg_sptr->getContentBuffer();
     m_client_sptr->asyncWrite(m_msg_sptr, buf, f);
 
 }

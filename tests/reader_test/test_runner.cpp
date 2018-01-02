@@ -50,7 +50,7 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     assert(_tcObj.result_headers() == rdr_->getHeaders());
     REQUIRE(_tcObj.result_headers() == rdr_->getHeaders());
     auto b1 = _tcObj.result_body();
-    auto b2 = rdr_->getBody();
+    auto b2 = rdr_->getContentBuffer();
 //    auto b3 = rdr_->get_raw_body_chain();
     auto s2 = b2->to_string();
 //    auto s3 = chain_to_string(b3);

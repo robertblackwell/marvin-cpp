@@ -12,7 +12,7 @@ PostTest::PostTest(boost::asio::io_service& io, Testcase testcase): _io(io), _te
 }
 void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
-    Marvin::BufferChainSPtr bsp = rdr->getBody();
+    Marvin::BufferChainSPtr bsp = rdr->getContentBuffer();
     std::string raw_body = bsp->to_string();
     json j = json::parse(raw_body);
     std::string sx = j["req"]["body"];
@@ -39,6 +39,8 @@ void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 void PostTest::exec()
 {
     auto url = _testcase._url;
+    /// \todo - this is the place to fill the message so that client does not have
+    /// to do it.
     _client = std::shared_ptr<Client>(new Client(_io, url));
     _msg = std::shared_ptr<MessageBase>(new MessageBase());
     _msg->setMethod(HttpMethod::POST);
