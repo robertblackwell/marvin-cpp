@@ -122,6 +122,17 @@
 		D43A26A71FF836D90099E815 /* collector_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D407A0F01E13FD9700A8A312 /* collector_base.cpp */; };
 		D43A26A81FF836DD0099E815 /* pipe_collector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D407A0F21E13FD9700A8A312 /* pipe_collector.cpp */; };
 		D43A26A91FF836E20099E815 /* forward_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4216BCB1FF702C500086478 /* forward_helpers.cpp */; };
+		D43FA0611FFB35A600B6EA82 /* tp_pipeline.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D43FA0561FFB35A400B6EA82 /* tp_pipeline.hpp */; };
+		D43FA0631FFB35A600B6EA82 /* tp_proxy_tests.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D43FA0581FFB35A500B6EA82 /* tp_proxy_tests.hpp */; };
+		D43FA0661FFB35A600B6EA82 /* tp_testcase.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D43FA05B1FFB35A500B6EA82 /* tp_testcase.hpp */; };
+		D43FA0681FFB35A600B6EA82 /* tp_helpers.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D43FA05D1FFB35A600B6EA82 /* tp_helpers.hpp */; };
+		D43FA06B1FFB35A600B6EA82 /* tp_post.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D43FA0601FFB35A600B6EA82 /* tp_post.hpp */; };
+		D43FA06C1FFB35FF00B6EA82 /* tsc_req_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4562A341FD79B3E00479074 /* tsc_req_handler.cpp */; };
+		D43FA0701FFB362200B6EA82 /* tp_proxy_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA05F1FFB35A600B6EA82 /* tp_proxy_tests.cpp */; };
+		D43FA0711FFB362700B6EA82 /* tp_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA05C1FFB35A600B6EA82 /* tp_helpers.cpp */; };
+		D43FA0731FFB363B00B6EA82 /* tp_testcase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA0591FFB35A500B6EA82 /* tp_testcase.cpp */; };
+		D43FA0741FFB364600B6EA82 /* tp_transform_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA0571FFB35A500B6EA82 /* tp_transform_tests.cpp */; };
+		D43FA0751FFB419C00B6EA82 /* tp_post.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA05A1FFB35A500B6EA82 /* tp_post.cpp */; };
 		D4439C751FA2631700EF9D41 /* x509_cert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C731FA2631700EF9D41 /* x509_cert.cpp */; };
 		D4439C781FA2645400EF9D41 /* x509_pkey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C761FA2645400EF9D41 /* x509_pkey.cpp */; };
 		D4439C7B1FA2646A00EF9D41 /* x509_conf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C791FA2646A00EF9D41 /* x509_conf.cpp */; };
@@ -137,7 +148,6 @@
 		D44A211B1FF6E73B003CF16C /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
 		D44A211C1FF6E73B003CF16C /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D44A211D1FF6E73B003CF16C /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
-		D44A21231FF6E78E003CF16C /* tp_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44A21061FF6E731003CF16C /* tp_handler.cpp */; };
 		D44A21251FF6E794003CF16C /* tp_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44A21081FF6E731003CF16C /* tp_main.cpp */; };
 		D44C3D1D1FF40E1D0034DA00 /* timeout.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D44C3D121FF40E1D0034DA00 /* timeout.hpp */; };
 		D44C3D1E1FF40E1D0034DA00 /* timeout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44C3D1C1FF40E1D0034DA00 /* timeout.cpp */; };
@@ -284,7 +294,6 @@
 		D47B434D1E16BEDA00B0254A /* CapturedTraffic-delegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B434B1E16BEDA00B0254A /* CapturedTraffic-delegate.m */; };
 		D4848DB01FFA294600330379 /* server_runner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3F2601FF9B9810076C7BF /* server_runner.cpp */; };
 		D4848DB31FFAB8A900330379 /* utest.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D4848DB21FFAB8A900330379 /* utest.hpp */; };
-		D4848DB61FFABEEB00330379 /* dt_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4848DB51FFABEEB00330379 /* dt_main.cpp */; };
 		D4848DB91FFABF2000330379 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
 		D4848DBC1FFABF2000330379 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D4848DBD1FFABF2000330379 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
@@ -354,7 +363,6 @@
 		D4A03EAB1FE4AA3A0069CBCC /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D4A03EAE1FE4AA780069CBCC /* marvin_error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614531DFA526100E3FAB0 /* marvin_error.cpp */; };
 		D4A09B681E11FE770011ACC4 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
-		D4A6DC631FF96C4300F9711C /* tp_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43A26AA1FF969ED0099E815 /* tp_tests.cpp */; };
 		D4A6DC661FF9947900F9711C /* i_collector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A6DC641FF9947900F9711C /* i_collector.cpp */; };
 		D4A6DC671FF9947900F9711C /* i_collector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D4A6DC651FF9947900F9711C /* i_collector.hpp */; };
 		D4A6DC681FF9978600F9711C /* forwarding_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4300B591E17E7720063FA82 /* forwarding_handler.cpp */; };
@@ -404,12 +412,10 @@
 		D4ADCE051FF9C48100A63CF5 /* server_runner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3F2601FF9B9810076C7BF /* server_runner.cpp */; };
 		D4ADCE081FF9D6AD00A63CF5 /* runners.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D4ADCE061FF9D6AC00A63CF5 /* runners.hpp */; };
 		D4ADCE0B1FF9DDBE00A63CF5 /* test_macros.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D4ADCE0A1FF9DDBE00A63CF5 /* test_macros.hpp */; };
-		D4ADCE0E1FF9E22300A63CF5 /* tester_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4ADCE0D1FF9E22300A63CF5 /* tester_main.cpp */; };
 		D4ADCE111FF9E22C00A63CF5 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
 		D4ADCE141FF9E22C00A63CF5 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D4ADCE151FF9E22C00A63CF5 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
 		D4ADCE1B1FF9E24B00A63CF5 /* tester_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4ADCE0D1FF9E22300A63CF5 /* tester_main.cpp */; };
-		D4ADCE1C1FFA073F00A63CF5 /* runners.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4ADCE071FF9D6AC00A63CF5 /* runners.cpp */; };
 		D4AF58D71DE6DD93001AC0A1 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D4B6C5201FE0C0BF006E1548 /* testcase_defs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43778FA1FD24A2100057DCE /* testcase_defs.cpp */; };
 		D4B6C5211FE0C0D2006E1548 /* testcase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614591DFA567000E3FAB0 /* testcase.cpp */; };
@@ -933,7 +939,17 @@
 		D43778F81FD1381F00057DCE /* test_runner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_runner.hpp; sourceTree = "<group>"; };
 		D43778F91FD24A2100057DCE /* testcase_defs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = testcase_defs.hpp; sourceTree = "<group>"; };
 		D43778FA1FD24A2100057DCE /* testcase_defs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testcase_defs.cpp; sourceTree = "<group>"; };
-		D43A26AA1FF969ED0099E815 /* tp_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_tests.cpp; sourceTree = "<group>"; };
+		D43FA0561FFB35A400B6EA82 /* tp_pipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tp_pipeline.hpp; sourceTree = "<group>"; };
+		D43FA0571FFB35A500B6EA82 /* tp_transform_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_transform_tests.cpp; sourceTree = "<group>"; };
+		D43FA0581FFB35A500B6EA82 /* tp_proxy_tests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tp_proxy_tests.hpp; sourceTree = "<group>"; };
+		D43FA0591FFB35A500B6EA82 /* tp_testcase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_testcase.cpp; sourceTree = "<group>"; };
+		D43FA05A1FFB35A500B6EA82 /* tp_post.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_post.cpp; sourceTree = "<group>"; };
+		D43FA05B1FFB35A500B6EA82 /* tp_testcase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tp_testcase.hpp; sourceTree = "<group>"; };
+		D43FA05C1FFB35A600B6EA82 /* tp_helpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_helpers.cpp; sourceTree = "<group>"; };
+		D43FA05D1FFB35A600B6EA82 /* tp_helpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tp_helpers.hpp; sourceTree = "<group>"; };
+		D43FA05E1FFB35A600B6EA82 /* tp_pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_pipeline.cpp; sourceTree = "<group>"; };
+		D43FA05F1FFB35A600B6EA82 /* tp_proxy_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_proxy_tests.cpp; sourceTree = "<group>"; };
+		D43FA0601FFB35A600B6EA82 /* tp_post.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tp_post.hpp; sourceTree = "<group>"; };
 		D4439C731FA2631700EF9D41 /* x509_cert.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_cert.cpp; sourceTree = "<group>"; };
 		D4439C741FA2631700EF9D41 /* x509_cert.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = x509_cert.hpp; sourceTree = "<group>"; };
 		D4439C761FA2645400EF9D41 /* x509_pkey.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_pkey.cpp; sourceTree = "<group>"; };
@@ -1727,7 +1743,17 @@
 		D44A20FC1FF6E703003CF16C /* test_proxy */ = {
 			isa = PBXGroup;
 			children = (
-				D43A26AA1FF969ED0099E815 /* tp_tests.cpp */,
+				D43FA05C1FFB35A600B6EA82 /* tp_helpers.cpp */,
+				D43FA05D1FFB35A600B6EA82 /* tp_helpers.hpp */,
+				D43FA05E1FFB35A600B6EA82 /* tp_pipeline.cpp */,
+				D43FA0561FFB35A400B6EA82 /* tp_pipeline.hpp */,
+				D43FA05A1FFB35A500B6EA82 /* tp_post.cpp */,
+				D43FA0601FFB35A600B6EA82 /* tp_post.hpp */,
+				D43FA05F1FFB35A600B6EA82 /* tp_proxy_tests.cpp */,
+				D43FA0581FFB35A500B6EA82 /* tp_proxy_tests.hpp */,
+				D43FA0591FFB35A500B6EA82 /* tp_testcase.cpp */,
+				D43FA05B1FFB35A500B6EA82 /* tp_testcase.hpp */,
+				D43FA0571FFB35A500B6EA82 /* tp_transform_tests.cpp */,
 				D44A21061FF6E731003CF16C /* tp_handler.cpp */,
 				D44A21071FF6E731003CF16C /* tp_handler.hpp */,
 				D44A21081FF6E731003CF16C /* tp_main.cpp */,
@@ -2318,14 +2344,19 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D43FA0611FFB35A600B6EA82 /* tp_pipeline.hpp in Headers */,
 				D4ADCE0B1FF9DDBE00A63CF5 /* test_macros.hpp in Headers */,
 				D4216BCE1FF702C500086478 /* forward_helpers.hpp in Headers */,
 				D4A6DC671FF9947900F9711C /* i_collector.hpp in Headers */,
 				D44C3D1D1FF40E1D0034DA00 /* timeout.hpp in Headers */,
 				D4848DB31FFAB8A900330379 /* utest.hpp in Headers */,
+				D43FA0681FFB35A600B6EA82 /* tp_helpers.hpp in Headers */,
+				D43FA0661FFB35A600B6EA82 /* tp_testcase.hpp in Headers */,
+				D43FA06B1FFB35A600B6EA82 /* tp_post.hpp in Headers */,
 				D4ADCE081FF9D6AD00A63CF5 /* runners.hpp in Headers */,
 				D44A210B1FF6E731003CF16C /* tp_handler.hpp in Headers */,
 				D44A210D1FF6E731003CF16C /* tp_proxy_runner.hpp in Headers */,
+				D43FA0631FFB35A600B6EA82 /* tp_proxy_tests.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3320,15 +3351,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D44A21231FF6E78E003CF16C /* tp_handler.cpp in Sources */,
+				D43FA06C1FFB35FF00B6EA82 /* tsc_req_handler.cpp in Sources */,
 				D43A26A71FF836D90099E815 /* collector_base.cpp in Sources */,
 				D43A26A81FF836DD0099E815 /* pipe_collector.cpp in Sources */,
 				D4A6DC681FF9978600F9711C /* forwarding_handler.cpp in Sources */,
 				D43A26A91FF836E20099E815 /* forward_helpers.cpp in Sources */,
 				D476ECCE1FF9AE120002B9B7 /* tp_proxy_runner.cpp in Sources */,
-				D4A6DC631FF96C4300F9711C /* tp_tests.cpp in Sources */,
-				D4ADCE1C1FFA073F00A63CF5 /* runners.cpp in Sources */,
 				D4ADCE051FF9C48100A63CF5 /* server_runner.cpp in Sources */,
+				D43FA0741FFB364600B6EA82 /* tp_transform_tests.cpp in Sources */,
+				D43FA0731FFB363B00B6EA82 /* tp_testcase.cpp in Sources */,
+				D43FA0701FFB362200B6EA82 /* tp_proxy_tests.cpp in Sources */,
+				D43FA0751FFB419C00B6EA82 /* tp_post.cpp in Sources */,
+				D43FA0711FFB362700B6EA82 /* tp_helpers.cpp in Sources */,
 				D44A21251FF6E794003CF16C /* tp_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3749,13 +3783,11 @@
 				D4BE4F831FF3700900A0281C /* simple_buffer.c in Sources */,
 				D4BE4F821FF3700500A0281C /* rb_logger.cpp in Sources */,
 				D4BE4F811FF3700100A0281C /* http_parser.c in Sources */,
-				D4848DB61FFABEEB00330379 /* dt_main.cpp in Sources */,
 				D4BE4F6F1FF36F9300A0281C /* buffer_chain.cpp in Sources */,
 				D44C3D991FF4C9910034DA00 /* UriCodec.cpp in Sources */,
 				D4A6DC661FF9947900F9711C /* i_collector.cpp in Sources */,
 				D4BE4F701FF36F9600A0281C /* m_buffer.cpp in Sources */,
 				D44C3D1E1FF40E1D0034DA00 /* timeout.cpp in Sources */,
-				D4ADCE0E1FF9E22300A63CF5 /* tester_main.cpp in Sources */,
 				D4BE4F731FF36FA500A0281C /* tcp_connection.cpp in Sources */,
 				D4BE4F711FF36F9B00A0281C /* client.cpp in Sources */,
 				D4BE4F721FF36FA100A0281C /* socket_factory.cpp in Sources */,

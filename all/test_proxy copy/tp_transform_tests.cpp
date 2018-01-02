@@ -1,6 +1,7 @@
-//
-// Start both a server and a number of client tthreads and have each of the client
-// threads make a number of requests from the server.
+///
+/// \brief in this file we test the functions that apply the proxy transform to
+/// requests going upstream to the end server and responses coming back from that server
+/// and going downstream to the initial client
 //
 #if 1
 #include <iostream>
@@ -19,31 +20,32 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "forward_helpers.hpp"
-#include "tp_handler.hpp"
+#include "tsc_req_handler.hpp"
 #include "server_runner.hpp"
+#include "tp_helpers.hpp"
 #include "tp_proxy_runner.hpp"
 #endif 
 #pragma mark - MessageBase helpers
-bool hasContentLength(MessageBase& msg)
-{
-    return (msg.hasHeader(HttpHeader::Name::ContentLength));
-}
-std::size_t getContentLength(MessageBase& msg)
-{
-    assert(msg.hasHeader(HttpHeader::Name::ContentLength));
-    int len = std::stoi(msg.getHeader(HttpHeader::Name::ContentLength));
-    return len;
-}
-
-void setContentLength(MessageBase& msg, std::size_t length)
-{
-    msg.setHeader(HttpHeader::Name::ContentLength, std::to_string(length));
-}
-void setContent(MessageBase& msg, Marvin::BufferChainSPtr content)
-{
-    msg.setBody(content);
-    setContentLength(msg, content->size());
-}
+//bool hasContentLength(MessageBase& msg)
+//{
+//    return (msg.hasHeader(HttpHeader::Name::ContentLength));
+//}
+//std::size_t getContentLength(MessageBase& msg)
+//{
+//    assert(msg.hasHeader(HttpHeader::Name::ContentLength));
+//    int len = std::stoi(msg.getHeader(HttpHeader::Name::ContentLength));
+//    return len;
+//}
+//
+//void setContentLength(MessageBase& msg, std::size_t length)
+//{
+//    msg.setHeader(HttpHeader::Name::ContentLength, std::to_string(length));
+//}
+//void setContent(MessageBase& msg, Marvin::BufferChainSPtr content)
+//{
+//    msg.setBody(content);
+//    setContentLength(msg, content->size());
+//}
 #pragma mark - mock up a MessageReader
 MessageReaderSPtr makeMock()
 {
@@ -207,7 +209,7 @@ TEST_CASE("Helpers_Example", "[example]")
     MessageReaderSPtr msg = makeMock();
     fillMsgRdrAsRequest(msg);
     verifyRequest_MimimumRequirements(msg);
-    std::cout << msg->str() << std::endl;
+//    std::cout << msg->str() << std::endl;
 }
 TEST_CASE("Helpers_downstream01", "[downstream01]")
 {
@@ -218,7 +220,7 @@ TEST_CASE("Helpers_downstream01", "[downstream01]")
     Marvin::ErrorType err = Marvin::make_error_ok();
     helpers::makeDownstreamResponse(msgSPtr,msgRdr, err);
     verifyResponse_01(msgSPtr);
-    std::cout << msgSPtr->str() << std::endl;
+//    std::cout << msgSPtr->str() << std::endl;
 }
 TEST_CASE("Helpers_upstream02", "[upstream02]")
 {
@@ -228,6 +230,6 @@ TEST_CASE("Helpers_upstream02", "[upstream02]")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     helpers::makeUpstreamRequest(msgSPtr, msgRdr);
     verifyRequest_02(msgSPtr);
-    std::cout << msgSPtr->str() << std::endl;
+//    std::cout << msgSPtr->str() << std::endl;
 }
 
