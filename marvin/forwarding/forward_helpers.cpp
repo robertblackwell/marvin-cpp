@@ -74,7 +74,17 @@ void helpers::fillRequestFromUri(MessageBase& msg, std::string uri_in, bool abso
 
 void helpers::applyUri(MessageBaseSPtr msg, std::string uri)
 {
+    assert(false);
     http::url u = http::ParseHttpUrl(uri);
+}
+
+void helpers::applyUri(MessageBaseSPtr msg, Marvin::Uri& uri, bool proxy)
+{
+    if(proxy)
+        msg->setUri(uri.absolutePath());
+    else
+        msg->setUri(uri.relativePath());
+    msg->setHeader(HttpHeader::Name::Host, uri.host());
 }
 
 void helpers::removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue)
@@ -171,7 +181,7 @@ void helpers::makeDownstreamGoodResponse(MessageBaseSPtr downstream, MessageRead
     // now attach the body
     std::size_t len;
     if( (len = responseSPtr->getContentBuffer()->size()) > 0){
-        resp->setContent(responseSPtr->getContentBuffer());
+        result->setContent(responseSPtr->getContent());
 //        resp->setHeader(HttpHeader::Name::ContentLength, std::to_string(len));
     }
 

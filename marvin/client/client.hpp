@@ -15,7 +15,7 @@
 #include "message_writer.hpp"
 #include "message_reader.hpp"
 #include "tcp_connection.hpp"
-#include "url.hpp"
+#include "marvin_uri.hpp"
 
 using boost::asio::ip::tcp;
 class Client;
@@ -87,9 +87,12 @@ public:
      * to try and establish a connection.
      * @param io - an io service
      * @param uri - a string like "https://username:password@www.google.com/path1/path2:433?one=1111"
+     * \deprecated
      */
-    Client(boost::asio::io_service& io, std::string uri);
-
+//    Client(boost::asio::io_service& io, std::string uri);
+    
+    /// \brief Create a client that will copnnect to the server specified in the Marvin::Uri object
+    Client(boost::asio::io_service& io, Marvin::Uri uri);
     /**
     * Create a client with an established connection. In this case a call to
     * connect will fail with an exception - as it is a logic error
@@ -235,8 +238,6 @@ protected:
 
     void _async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     void putHeadersStuffInBuffer();
-    void setupUrl(std::string url);
-    void defaultHeaders();
     void setContentLength();
     
     std::string _url; // resource locator
@@ -247,8 +248,6 @@ protected:
     std::string _host_with_port; // as used in the headers eg localhost:9991 for example
     std::string _port;
     std::string _path;
-    Url::Query  _query;
-    std::string _queryStr;
 
     boost::asio::io_service&                        _io;
     MessageBaseSPtr                                 _current_request;

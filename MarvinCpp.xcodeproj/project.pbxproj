@@ -133,6 +133,8 @@
 		D43FA0731FFB363B00B6EA82 /* tp_testcase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA0591FFB35A500B6EA82 /* tp_testcase.cpp */; };
 		D43FA0741FFB364600B6EA82 /* tp_transform_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA0571FFB35A500B6EA82 /* tp_transform_tests.cpp */; };
 		D43FA0751FFB419C00B6EA82 /* tp_post.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA05A1FFB35A500B6EA82 /* tp_post.cpp */; };
+		D43FA0781FFBE70800B6EA82 /* marvin_uri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA0761FFBE70800B6EA82 /* marvin_uri.cpp */; };
+		D43FA0791FFBE70800B6EA82 /* marvin_uri.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D43FA0771FFBE70800B6EA82 /* marvin_uri.hpp */; };
 		D4439C751FA2631700EF9D41 /* x509_cert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C731FA2631700EF9D41 /* x509_cert.cpp */; };
 		D4439C781FA2645400EF9D41 /* x509_pkey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C761FA2645400EF9D41 /* x509_pkey.cpp */; };
 		D4439C7B1FA2646A00EF9D41 /* x509_conf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C791FA2646A00EF9D41 /* x509_conf.cpp */; };
@@ -277,6 +279,9 @@
 		D476ECCE1FF9AE120002B9B7 /* tp_proxy_runner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A6DC691FF9ABF100F9711C /* tp_proxy_runner.cpp */; };
 		D476FBB81FA05259008BA5F8 /* x509_req.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D476FBB61FA05259008BA5F8 /* x509_req.cpp */; };
 		D476FBB91FA055B8008BA5F8 /* x509_req.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D476FBB61FA05259008BA5F8 /* x509_req.cpp */; };
+		D4782B101FFEDD79003473FD /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
+		D4782B111FFEE03D003473FD /* forward_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4216BCB1FF702C500086478 /* forward_helpers.cpp */; };
+		D4782B121FFEE081003473FD /* forward_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4216BCB1FF702C500086478 /* forward_helpers.cpp */; };
 		D47923011DFE3EFB0077B91A /* UriCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47922FF1DFE3EFB0077B91A /* UriCodec.cpp */; };
 		D47923091DFF0A7C0077B91A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47923081DFF0A7C0077B91A /* main.cpp */; };
 		D479230D1DFF7E0A0077B91A /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
@@ -471,6 +476,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		D43FA07A1FFBEE2F00B6EA82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D4EA1EED1D1217E600D1EABC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4BE4F6A1FF36F2300A0281C;
+			remoteInfo = marvin;
+		};
+		D4782B0E1FFEDD66003473FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D4EA1EED1D1217E600D1EABC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4BE4F6A1FF36F2300A0281C;
+			remoteInfo = marvin;
+		};
 		D4A6E9E11E04777E0096441E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D4EA1EED1D1217E600D1EABC /* Project object */;
@@ -950,6 +969,8 @@
 		D43FA05E1FFB35A600B6EA82 /* tp_pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_pipeline.cpp; sourceTree = "<group>"; };
 		D43FA05F1FFB35A600B6EA82 /* tp_proxy_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tp_proxy_tests.cpp; sourceTree = "<group>"; };
 		D43FA0601FFB35A600B6EA82 /* tp_post.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tp_post.hpp; sourceTree = "<group>"; };
+		D43FA0761FFBE70800B6EA82 /* marvin_uri.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = marvin_uri.cpp; sourceTree = "<group>"; };
+		D43FA0771FFBE70800B6EA82 /* marvin_uri.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = marvin_uri.hpp; sourceTree = "<group>"; };
 		D4439C731FA2631700EF9D41 /* x509_cert.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_cert.cpp; sourceTree = "<group>"; };
 		D4439C741FA2631700EF9D41 /* x509_cert.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = x509_cert.hpp; sourceTree = "<group>"; };
 		D4439C761FA2645400EF9D41 /* x509_pkey.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_pkey.cpp; sourceTree = "<group>"; };
@@ -1225,6 +1246,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4782B101FFEDD79003473FD /* libmarvin.a in Frameworks */,
 				D40B75A31E0B70D200431E06 /* libcrypto.a in Frameworks */,
 				D40B75A41E0B70D200431E06 /* libssl.a in Frameworks */,
 				D42DB9A51E00DEA100B2AF60 /* libboost_filesystem.a in Frameworks */,
@@ -2000,6 +2022,8 @@
 				D46F227B1D12188B007F8F72 /* parser.cpp */,
 				D421D0D31E01CE2A00831883 /* uri_query.hpp */,
 				D421D0D21E01CE2A00831883 /* uri_query.cpp */,
+				D43FA0771FFBE70800B6EA82 /* marvin_uri.hpp */,
+				D43FA0761FFBE70800B6EA82 /* marvin_uri.cpp */,
 			);
 			path = message;
 			sourceTree = "<group>";
@@ -2352,6 +2376,7 @@
 				D4848DB31FFAB8A900330379 /* utest.hpp in Headers */,
 				D43FA0681FFB35A600B6EA82 /* tp_helpers.hpp in Headers */,
 				D43FA0661FFB35A600B6EA82 /* tp_testcase.hpp in Headers */,
+				D43FA0791FFBE70800B6EA82 /* marvin_uri.hpp in Headers */,
 				D43FA06B1FFB35A600B6EA82 /* tp_post.hpp in Headers */,
 				D4ADCE081FF9D6AD00A63CF5 /* runners.hpp in Headers */,
 				D44A210B1FF6E731003CF16C /* tp_handler.hpp in Headers */,
@@ -2493,6 +2518,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D4782B0F1FFEDD66003473FD /* PBXTargetDependency */,
 			);
 			name = test_client_request;
 			productName = main1;
@@ -2544,6 +2570,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D43FA07B1FFBEE2F00B6EA82 /* PBXTargetDependency */,
 			);
 			name = test_proxy;
 			productName = main1;
@@ -3303,6 +3330,7 @@
 			files = (
 				D44C3D811FF4C6340034DA00 /* m_buffer.cpp in Sources */,
 				D44C3D831FF4C6570034DA00 /* timeout.cpp in Sources */,
+				D4782B121FFEE081003473FD /* forward_helpers.cpp in Sources */,
 				D44C3D821FF4C6460034DA00 /* http_method.cpp in Sources */,
 				D44C3D801FF4C6300034DA00 /* buffer_chain.cpp in Sources */,
 				D42DB99A1E00DEA100B2AF60 /* http_parser.c in Sources */,
@@ -3780,6 +3808,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D44C3D9C1FF4CA360034DA00 /* url.cpp in Sources */,
+				D4782B111FFEE03D003473FD /* forward_helpers.cpp in Sources */,
+				D43FA0781FFBE70800B6EA82 /* marvin_uri.cpp in Sources */,
 				D4BE4F831FF3700900A0281C /* simple_buffer.c in Sources */,
 				D4BE4F821FF3700500A0281C /* rb_logger.cpp in Sources */,
 				D4BE4F811FF3700100A0281C /* http_parser.c in Sources */,
@@ -3818,6 +3848,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		D43FA07B1FFBEE2F00B6EA82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4BE4F6A1FF36F2300A0281C /* marvin */;
+			targetProxy = D43FA07A1FFBEE2F00B6EA82 /* PBXContainerItemProxy */;
+		};
+		D4782B0F1FFEDD66003473FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4BE4F6A1FF36F2300A0281C /* marvin */;
+			targetProxy = D4782B0E1FFEDD66003473FD /* PBXContainerItemProxy */;
+		};
 		D4A6E9E21E04777E0096441E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D466146D1DFB2A5F00E3FAB0 /* server_test */;
@@ -4978,7 +5018,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -5030,7 +5070,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;

@@ -27,7 +27,11 @@ namespace helpers {
 std::string base64Encode(std::string& source);
 
 http::url decodeUri(MessageReaderSPtr requestSPtr);
+
+void applyUri(MessageBaseSPtr msg, Marvin::Uri& uri, bool proxy=false);
+
 void applyUri(MessageBaseSPtr msg, std::string uri);
+
 void fillRequestFromUri(MessageBase& msg, std::string uri_in, bool absolute = false);
 
 void removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue);

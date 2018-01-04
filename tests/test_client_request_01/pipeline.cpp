@@ -1,50 +1,61 @@
+#include "forward_helpers.hpp"
 #include "pipeline.hpp"
 
-Pipeline::Pipeline(boost::asio::io_service& io) : _io(io)
+Pipeline::Pipeline(boost::asio::io_service& io, Marvin::Uri& uri)
+: m_io(io), m_uri(uri)
 {
-        _counter = 0;
-        _client_sptr = std::shared_ptr<Client>(new Client(io, "http://whiteacorn.com/posts/rtw" ));
+        m_counter = 0;
+        m_max_counter = 5;
+        m_client_sptr = std::shared_ptr<Client>(new Client(io, m_uri));
 }
 void Pipeline::setup()
 {
-    _msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
-    _msg_sptr->setMethod(HttpMethod::GET);
-    _msg_sptr->setHeader(HttpHeader::Name::Connection, "Keep-Alive");
-    auto h = std::bind(&Pipeline::handler, this, _1, _2, _3);
+    m_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
+    m_msg_sptr->setMethod(HttpMethod::GET);
+    helpers::applyUri(m_msg_sptr, m_uri);
+    if( m_counter < m_max_counter - 1)
+        m_msg_sptr->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionKeepAlive);
+    else
+        m_msg_sptr->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+    m_msg_sptr->setContent("");
+//    auto h = std::bind(&Pipeline::handler, this, _1, _2, _3);
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [this](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
         this->handler(ec, rdr);
     };
-    _client_sptr->asyncWrite(_msg_sptr, f);
+    m_client_sptr->asyncWrite(m_msg_sptr, f);
 
 }
 void Pipeline::handler(Marvin::ErrorType err, MessageReaderSPtr rdr)
 {
     if(!err) {
-        MessageReaderSPtr b = _client_sptr->getResponse();
+        MessageReaderSPtr b = m_client_sptr->getResponse();
         Marvin::BufferChainSPtr buf_chain_sptr = b->getContentBuffer();
         std::string bdy = buf_chain_sptr->to_string();
         std::string sss = err.message();
 //        std::cout << bdy << std::endl;
-#if 0
-        std::cout << "Successful message roundtrip counter: " << _counter << "http status: "
+#if 1
+        std::cout << "Successful message pipeline counter: " << m_counter << " max_counter: " << m_max_counter << " http status: "
             << b->status() << " err: "
             << err.message() << std::endl;
 #endif
-        REQUIRE(b->statusCode() == 200 );
-        if (_counter++ > 5)
+        CHECK(b->statusCode() == 200 );
+        if (m_counter++ > 5)
             return;
         this->setup();
     } else {
-        std::cout << "Failure Error : " << err.message() << std::endl;
+        std::cout << "Error : " << err.message() << " this is probably OK - the server should close the connection after the last response" << std::endl;
     }
 }
 /**
 * The test case
 */
+#if 1
 TEST_CASE("ClientPipeline_Test01","")
 {
+    Marvin::Uri uri("http://whiteacorn.com/posts/rtw");
     boost::asio::io_service io;
-    std::shared_ptr<Pipeline> pipeline_sptr = std::make_shared<Pipeline>(io);
+    std::shared_ptr<Pipeline> pipeline_sptr = std::make_shared<Pipeline>(io, uri);
     pipeline_sptr->setup();
     io.run();
 }
+#endif

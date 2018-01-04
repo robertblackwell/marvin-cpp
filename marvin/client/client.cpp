@@ -37,12 +37,17 @@ using boost::asio::streambuf;
 Client::Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port)
 : _io(io), _scheme(scheme), _server(server), _port(port)
 {}
-
-Client::Client(boost::asio::io_service& io, std::string url)
-: _io(io), _url(url)
+Client::Client(boost::asio::io_service& io, Marvin::Uri uri)
+: _io(io), _scheme(uri.scheme()), _server(uri.server()), _port(std::to_string(uri.port()))
 {
-    setupUrl(url);
+
 }
+
+//Client::Client(boost::asio::io_service& io, std::string url)
+//: _io(io), _url(url)
+//{
+//    setupUrl(url);
+//}
 
 Client::Client(boost::asio::io_service& io, ISocket* conn) : _io(io)
 {}
@@ -106,7 +111,6 @@ void Client::_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallba
     LogInfo("", (long)this);
     _response_handler = cb;
     _current_request = requestMessage;
-    defaultHeaders();
     
     bool already_connected = (_conn_shared_ptr != nullptr);
     
@@ -183,107 +187,6 @@ void Client::end()
 //    _connection = nullptr;
 }
 
-
-/*!--------------------------------------------------------------------------------
-* sets the url for the request, parses the url into components and saves them
-* in particular deduces
-*  -   scheme
-*  -   host - both with and without port appended
-*  -   port
-*  -   path/uri
-*  -   query string
-*--------------------------------------------------------------------------------*/
-void Client::setupUrl(std::string url)
-{
-    std::string __url(url);
-    http::url parsed = http::ParseHttpUrl(url);
-    Url u(__url);
-    std::string ___scheme = u.scheme();
-    //
-    // this user staff will go in the Auth header
-    //
-    std::string ___user = u.user_info();
-    std::string ___host = u.host();
-    std::string ___port = u.port();
-    std::string ___path = u.path();
-    Url::Query query = u.query();
-    
-    // only used by the browser never sendin the http message
-    std::string ___fragment = u.fragment();
-    
-    std::string __scheme = parsed.protocol;
-    std::string __host = parsed.host;
-    if( ___port == "") {
-        if( ___scheme == "http"){
-            _port = "80";
-//            _service = "http";
-        }else if(___scheme == "https"){
-            _port = "443";
-//            _service = "https";
-        }else{
-            assert(false);
-        }
-    }else{
-        _port = ___port;
-//        _service = ___port;
-    }
-    
-    std::string __path = ___path;
-    if( ___path == "" ) { __path = "/"; }
-    
-    _query = query;
-    std::string q_str("");
-    if( query.size() > 0 ){
-        for(auto const& keyVal: query){
-            if( q_str == "")
-                q_str += keyVal.key() + "=" + keyVal.val();
-            else
-                q_str += "&"+keyVal.key() + "=" + keyVal.val();
-        }
-        q_str = "?" + q_str;
-    }
-    _queryStr = q_str;
-    std::ostringstream host_s, path_s;
-    host_s << __host << ":" << _port ;
-
-    path_s << __path << _queryStr;
-    _scheme = __scheme;
-    _server = __host;
-    _host = host_s.str();
-//    _host = __host;
-    _host_with_port = host_s.str();
-    _uri = path_s.str();
-    _path = path_s.str();
-    _uri = _path;
-}
-
-//--------------------------------------------------------------------------------
-// set default values for headers if they have not already been set
-// does not know how to handle proxied requests
-// for the moment insists on Connection::close
-//--------------------------------------------------------------------------------
-void Client::defaultHeaders()
-{
-
-    MessageBaseSPtr msg = _current_request;
-    msg->setUri(_path);
-    msg->setIsRequest(true);
-    msg->setHeader("Host",_server);
-    msg->setHeader("User-agent", "Marvin-proxy");
-    if( ! msg->hasHeader("Connection") ) msg->setHeader("Connection", "close");
-    if( ! msg->hasHeader("Date") ){
-        time_t rawtime;
-        time (&rawtime);
-        struct tm * timeinfo;
-        char buffer [80];
-        timeinfo = localtime (&rawtime);
-
-        strftime (buffer,80,"%c %Z",timeinfo);
-
-        std::string s(buffer);
-        msg->setHeader("Date",s);
-    }
-}
 void Client::setContentLength()
 {
     long len = 0;

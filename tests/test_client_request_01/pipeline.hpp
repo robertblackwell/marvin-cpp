@@ -26,13 +26,18 @@
 class Pipeline
 {
     public:
-    int _counter;
-    boost::asio::io_service& _io;
-    std::shared_ptr<Client> _client_sptr;
-    MessageBaseSPtr _msg_sptr;
-    Pipeline(boost::asio::io_service& io);
+    Pipeline(boost::asio::io_service& io, Marvin::Uri& uri);
     void setup();
     void handler(Marvin::ErrorType err, MessageReaderSPtr rdr);
+
+    int                         m_counter;
+    int                         m_max_counter;
+    boost::asio::io_service&    m_io;
+    std::shared_ptr<Client>     m_client_sptr;
+    MessageBaseSPtr             m_msg_sptr;
+    Marvin::Uri                 m_uri;
+    std::string                 m_request_url;
+
 };
 
 #endif

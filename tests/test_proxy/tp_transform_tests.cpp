@@ -19,6 +19,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+#include "marvin_uri.hpp"
 #include "forward_helpers.hpp"
 #include "tsc_req_handler.hpp"
 #include "server_runner.hpp"
@@ -214,6 +215,19 @@ bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 }
 #pragma mark - TEST
 TEST_CASE("Helpers_Example", "[example]")
+{
+    Marvin::Uri u("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
+    CHECK(u.scheme() == "http");
+    CHECK(u.server() == "somewhere.com");
+    CHECK(u.host() == "somewhere.com:80");
+    CHECK(u.port() == 80);
+    CHECK(u.search() == "a=1111#fragment");
+    CHECK(u.relativePath() == "/subdirpath/index.php?a=1111#fragment");
+    CHECK(u.absolutePath() == "http://somewhere.com:80/subdirpath/index.php?a=1111#fragment");
+//    CHECK(u.absolutePath() == "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
+//    std::cout << msg->str() << std::endl;
+}
+TEST_CASE("Uri", "[uri, example]")
 {
     MessageReaderSPtr msg = makeMock();
     fillMsgRdrAsRequest(msg);

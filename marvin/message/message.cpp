@@ -56,7 +56,8 @@ void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
     std::string ss(boost::asio::buffers_begin(bufs), boost::asio::buffers_begin(bufs) + b.size() );
     mb.append((void*) ss.c_str(), ss.size());
 //    return b;
-    std::string sss = ss;
+//    std::string sss = ss;
+//    std::cout << __FUNCTION__ << ":" << ss << std::endl;
     
 }
 #pragma - http message base impl
