@@ -15,8 +15,44 @@
 std::set<std::string> s{"one","two"};
 
 #include "http_header.hpp"
+using namespace Marvin;
+using namespace Http;
+namespace Marvin {
+namespace Http {
+    void Headers::canonicalKey(char* key, int length)
+    {
+        for(int i = 0; i < length; i++)
+        {
+            key[i] = toupper(key[i]);
+        }
+    }
+    void Headers::canonicalKey(std::string& key) {  boost::algorithm::to_upper(key);}
 
-namespace HttpHeader
+    const std::string Headers::Name::AcceptEncoding = "ACCEPT-ENCODING";
+    const std::string Headers::Name::Authorization = "AUTHORIZATION";
+    const std::string Headers::Name::Connection = "CONNECTION";
+    const std::string Headers::Name::ConnectionHandlerId = "CONNECT-HANDLER-ID";
+    const std::string Headers::Name::ContentLength = "CONTENT-LENGTH";
+    const std::string Headers::Name::ContentType = "CONTENT-TYPE";
+    const std::string Headers::Name::Date = "DATE";
+    const std::string Headers::Name::Host = "HOST";
+    const std::string Headers::Name::ProxyConnection = "PROXY-CONNECTION";
+    const std::string Headers::Name::TE = "TE";
+    const std::string Headers::Name::TransferEncoding = "TRANSFER-ENCODING";
+    const std::string Headers::Name::ETag = "ETAG";
+    const std::string Headers::Name::RequestHandlerId = "REQUEST-HANDLER-ID";
+
+    const std::string Headers::Value::ConnectionClose = "CLOSE";
+    const std::string Headers::Value::ConnectionKeepAlive = "KEEP-ALIVE";
+
+    const std::string Headers::Scheme::https = "https";
+    const std::string Headers::Scheme::http = "http";
+
+
+} // namespace Http
+} //namespace Marvin
+
+namespace HttpHeaderXX
 {
     void canonicalKey(char* key, int length)
     {

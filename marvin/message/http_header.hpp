@@ -16,7 +16,48 @@ using HttpHeadersType = std::map<std::string, std::string>;
 using HttpHeaderFilterSetType = std::set<std::string>;
 
 /// \ingroup HttpMessage
-namespace HttpHeader
+namespace Marvin {
+namespace Http {
+    class Headers : public std::map<std::string, std::string>
+    {
+        public:
+            /// \ingroup HttpMessage
+            /// \brief Converts a c-string header key to canonical form
+            static void canonicalKey(char* key, int length);
+
+            /// \ingroup HttpMessage
+            /// \brief  Converts a std::string header key to canonical form
+            static void canonicalKey(std::string& key);
+            class Name {
+                static const std::string AcceptEncoding;
+                static const std::string Authorization;
+                static const std::string Connection;
+                static const std::string ConnectionHandlerId;
+                static const std::string ContentLength;
+                static const std::string ContentType;
+                static const std::string Date;
+                static const std::string Host;
+                static const std::string ProxyConnection;
+                static const std::string TE;
+                static const std::string TransferEncoding;
+                static const std::string ETag;
+                static const std::string RequestHandlerId;
+            };
+            /// \ingroup HttpMessage
+            class Value{
+                static const std::string ConnectionClose;
+                static const std::string ConnectionKeepAlive;
+            };
+            typedef std::string SchemeType;
+            class Scheme {
+                static const std::string https;
+                static const std::string http;
+            };
+
+    };
+}
+}
+namespace HttpHeaderXX
 {
     /// \ingroup HttpMessage
     /// \brief Converts a c-string header key to canonical form

@@ -61,10 +61,10 @@ public:
     std::string getHeader(std::string key);
     void setHeader(std::string key, std::string value);
     void removeHeader( std::string key);
-    void    dumpHeaders(std::ostream& os);
+    void dumpHeaders(std::ostream& os);
     
-    void    setTrailer(std::string key, std::string value);
-    bool    hasTrailer( std::string key);
+    void setTrailer(std::string key, std::string value);
+    bool hasTrailer( std::string key);
     std::string trailer(std::string key);
 
     std::string  str();
@@ -105,9 +105,11 @@ protected:
     int									m_http_major;
     int									m_http_minor;
 
-    HttpHeadersType                     m_headers;
-    HttpHeadersType                     m_trailers;
-    
+//    HttpHeadersType                     m_headers;
+//    HttpHeadersType                     m_trailers;
+    Marvin::Http::Headers               m_headers;
+    Marvin::Http::Headers               m_trailers;
+
     Marvin::BufferChainSPtr             m_body_chain_sptr;
     
 };
