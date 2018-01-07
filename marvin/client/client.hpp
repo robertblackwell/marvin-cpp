@@ -44,7 +44,24 @@ using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err,
 
 /**
 * \ingroup Client
-* \brief This class implements an http client that can send a request message and wait for a response.
+* \brief This class implements an http client that can send a request message and wait for a response;
+*  and can manage one or more such `round trips` to a server.
+*
+* This class connects to a server, then
+*  -   sends a message (MessageBase instance) to the server, and waits for a response in the
+*      form of a MessageReader instance.  This is a `round trip`.
+*  -   The connection is only established once and multiple independent round trips can be
+*      performed on that connection.
+*  -   each round trip requires the caller to provide an request in the form of a MessageBase
+*      instance and receives a response in the form of a MessageReadeer instance.
+*  -   the class can perform round trips directly to a server or via a proxy
+*  -   the request (MessageBase) provided by the caller must have a uri and host header
+*      that is compatible with the connected host and with the use or non use of a proxy.
+*  -   the Client instance DOES NOT check or modify the request MessageBase instance in any
+*      way(see exception below), getting the request correct is the callers responsibility.
+*  -   exception to the previous point is the content length header which some of the writeAsync
+*      set.
+*  -   @note the caller is responsible for managing connection keep-alive and close
 *
 * Two modes of transmission operation are provided for:
 *
@@ -64,34 +81,31 @@ using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err,
 *       connect call will be required.
 *   -   the other creates a client with an established connection.
 *
-* Handlers or callbacks
-*
 */
 class Client
 {
 public:
 #pragma mark - constructors and destructors
     /**
-     * Create a client that is not connected - however give it the info it needs
-     * to try and establish a connection
+     * \brief Create a client that is not connected; but provide the info it needs
+     * to try and establish a connection; if connectiing through a proxy the host/port
+     * should point at the proxy.
      *
      * @param io - an io service
      * @param scheme of type HttpHeader::SchemeType
      * @param server - a string like google.com
      * @param port - a string like "443"
+     * \deprecated
      */
     Client(boost::asio::io_service& io, HttpHeader::SchemeType scheme, std::string server, std::string port);
     
     /**
-     * Create a client that is not connected - however give a url it needs
-     * to try and establish a connection.
+     * @brief Conosttruct an not-yet-connected client instance and provide target host
+     * information in the form of a Marvin::Uriu instance.
+     *
      * @param io - an io service
-     * @param uri - a string like "https://username:password@www.google.com/path1/path2:433?one=1111"
-     * \deprecated
+     * @param uri - Marvin::Uri - contains details of the host to which the instance is to connect.
      */
-//    Client(boost::asio::io_service& io, std::string uri);
-    
-    /// \brief Create a client that will copnnect to the server specified in the Marvin::Uri object
     Client(boost::asio::io_service& io, Marvin::Uri uri);
     /**
     * Create a client with an established connection. In this case a call to
@@ -150,7 +164,7 @@ public:
     void asyncConnect(ErrorOnlyCallbackType cb);
     
     /**
-    * Writes the complete message to the connected host inlcuding body and trailers (if there are any).
+    * \brief Writes the complete message to the connected host inlcuding body and trailers (if there are any).
     *
     * If not connected will perform a connect before transmitting the message. Will wait for a response
     * and call the onResponseHandler CB when the response is complete.

@@ -425,7 +425,14 @@
 		D4B6C5231FE0C105006E1548 /* t_server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4045CDE1FD1071D00F6E4EC /* t_server.cpp */; };
 		D4B6C5241FE0C173006E1548 /* test_runner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4742CF81FCCBFE9001A0CD2 /* test_runner.cpp */; };
 		D4B6C5281FE1AA01006E1548 /* mock_socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614561DFA556900E3FAB0 /* mock_socket.cpp */; };
-		D4BA425A1FFFF45B001D2EC3 /* test_messsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BA42591FFFF45B001D2EC3 /* test_messsage.cpp */; };
+		D4B767182001CC40001BACC6 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
+		D4B7671B2001CC40001BACC6 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A09B691E12B9950011ACC4 /* libboost_thread.a */; };
+		D4B7671C2001CC40001BACC6 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
+		D4B7671D2001CC40001BACC6 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
+		D4B767232001CC5B001BACC6 /* new_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4B767142001CA64001BACC6 /* new_main.cpp */; };
+		D4B76726200260DF001BACC6 /* marvin_okv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4B76724200260DF001BACC6 /* marvin_okv.cpp */; };
+		D4B76727200260DF001BACC6 /* marvin_okv.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D4B76725200260DF001BACC6 /* marvin_okv.hpp */; };
+		D4B76728200261B3001BACC6 /* marvin_okv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4B76724200260DF001BACC6 /* marvin_okv.cpp */; };
 		D4BA425D1FFFF474001D2EC3 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
 		D4BA42601FFFF474001D2EC3 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A09B691E12B9950011ACC4 /* libboost_thread.a */; };
 		D4BA42611FFFF474001D2EC3 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
@@ -434,7 +441,6 @@
 		D4BA426B1FFFF51F001D2EC3 /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
 		D4BA426C1FFFF530001D2EC3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D4BA426D1FFFF530001D2EC3 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
-		D4BA426F1FFFF57F001D2EC3 /* test_message_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BA426E1FFFF57E001D2EC3 /* test_message_main.cpp */; };
 		D4BA42701FFFF582001D2EC3 /* test_message_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BA426E1FFFF57E001D2EC3 /* test_message_main.cpp */; };
 		D4BE4F5B1FF225A200A0281C /* test_error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49F82341FF217AA007E7BA1 /* test_error.cpp */; };
 		D4BE4F5C1FF225B000A0281C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D458EA321DF6413600E820A9 /* main.cpp */; };
@@ -868,6 +874,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		D4B7671E2001CC40001BACC6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		D4BA42631FFFF474001D2EC3 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1156,6 +1171,11 @@
 		D4ADCE1A1FF9E22C00A63CF5 /* test_tester */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_tester; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = deps/lib/libboost_system.a; sourceTree = "<group>"; };
 		D4B6C5261FE0F6DA006E1548 /* socket_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = socket_main.cpp; sourceTree = "<group>"; };
+		D4B767122001B8DB001BACC6 /* test_headers_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_headers_main.cpp; sourceTree = "<group>"; };
+		D4B767142001CA64001BACC6 /* new_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = new_main.cpp; sourceTree = "<group>"; };
+		D4B767222001CC40001BACC6 /* test_headers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_headers; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4B76724200260DF001BACC6 /* marvin_okv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = marvin_okv.cpp; sourceTree = "<group>"; };
+		D4B76725200260DF001BACC6 /* marvin_okv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marvin_okv.hpp; sourceTree = "<group>"; };
 		D4B8312F1FD66DBC004C2B63 /* bf_pipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bf_pipeline.hpp; sourceTree = "<group>"; };
 		D4B831391FD66DBD004C2B63 /* bf_pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bf_pipeline.cpp; sourceTree = "<group>"; };
 		D4BA42591FFFF45B001D2EC3 /* test_messsage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_messsage.cpp; sourceTree = "<group>"; };
@@ -1573,6 +1593,16 @@
 			files = (
 				D4ADCE141FF9E22C00A63CF5 /* libboost_system.a in Frameworks */,
 				D4ADCE151FF9E22C00A63CF5 /* libboost_filesystem.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4B7671A2001CC40001BACC6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4B7671B2001CC40001BACC6 /* libboost_thread.a in Frameworks */,
+				D4B7671C2001CC40001BACC6 /* libboost_system.a in Frameworks */,
+				D4B7671D2001CC40001BACC6 /* libboost_filesystem.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2300,6 +2330,17 @@
 			path = gtest_examples;
 			sourceTree = "<group>";
 		};
+		D4B767112001B881001BACC6 /* test_headers */ = {
+			isa = PBXGroup;
+			children = (
+				D4B76725200260DF001BACC6 /* marvin_okv.hpp */,
+				D4B76724200260DF001BACC6 /* marvin_okv.cpp */,
+				D4B767142001CA64001BACC6 /* new_main.cpp */,
+				D4B767122001B8DB001BACC6 /* test_headers_main.cpp */,
+			);
+			path = test_headers;
+			sourceTree = "<group>";
+		};
 		D4C266BC20015267009A1B3A /* test_helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -2320,6 +2361,7 @@
 			isa = PBXGroup;
 			children = (
 				D4C266BC20015267009A1B3A /* test_helpers */,
+				D4B767112001B881001BACC6 /* test_headers */,
 				D4782B131FFFF3F8003473FD /* test_message */,
 				D4848DB41FFABEBC00330379 /* doctest */,
 				D4ADCE0C1FF9E20600A63CF5 /* unit_tester */,
@@ -2415,6 +2457,7 @@
 				D4ADCE1A1FF9E22C00A63CF5 /* test_tester */,
 				D4848DC21FFABF2000330379 /* test_doctest */,
 				D4BA42671FFFF474001D2EC3 /* test_message */,
+				D4B767222001CC40001BACC6 /* test_headers */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2426,6 +2469,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4B76727200260DF001BACC6 /* marvin_okv.hpp in Headers */,
 				D43FA0611FFB35A600B6EA82 /* tp_pipeline.hpp in Headers */,
 				D4ADCE0B1FF9DDBE00A63CF5 /* test_macros.hpp in Headers */,
 				D4216BCE1FF702C500086478 /* forward_helpers.hpp in Headers */,
@@ -3098,6 +3142,23 @@
 			productReference = D4ADCE1A1FF9E22C00A63CF5 /* test_tester */;
 			productType = "com.apple.product-type.tool";
 		};
+		D4B767162001CC40001BACC6 /* test_headers */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4B7671F2001CC40001BACC6 /* Build configuration list for PBXNativeTarget "test_headers" */;
+			buildPhases = (
+				D4B767172001CC40001BACC6 /* Sources */,
+				D4B7671A2001CC40001BACC6 /* Frameworks */,
+				D4B7671E2001CC40001BACC6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test_headers;
+			productName = logger;
+			productReference = D4B767222001CC40001BACC6 /* test_headers */;
+			productType = "com.apple.product-type.tool";
+		};
 		D4BA425B1FFFF474001D2EC3 /* test_message */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D4BA42641FFFF474001D2EC3 /* Build configuration list for PBXNativeTarget "test_message" */;
@@ -3240,6 +3301,7 @@
 			projectRoot = "";
 			targets = (
 				D4BE4F6A1FF36F2300A0281C /* marvin */,
+				D4B767162001CC40001BACC6 /* test_headers */,
 				D4848DB71FFABF2000330379 /* test_doctest */,
 				D4ADCE0F1FF9E22C00A63CF5 /* test_tester */,
 				D4A03E991FE4A7380069CBCC /* test_connect */,
@@ -3878,6 +3940,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4B767172001CC40001BACC6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4B767182001CC40001BACC6 /* rb_logger.cpp in Sources */,
+				D4B76728200261B3001BACC6 /* marvin_okv.cpp in Sources */,
+				D4B767232001CC5B001BACC6 /* new_main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4BA425C1FFFF474001D2EC3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3897,7 +3969,6 @@
 				D43FA0781FFBE70800B6EA82 /* marvin_uri.cpp in Sources */,
 				D4BE4F831FF3700900A0281C /* simple_buffer.c in Sources */,
 				D4BE4F821FF3700500A0281C /* rb_logger.cpp in Sources */,
-				D4BA426F1FFFF57F001D2EC3 /* test_message_main.cpp in Sources */,
 				D4BE4F811FF3700100A0281C /* http_parser.c in Sources */,
 				D4BE4F6F1FF36F9300A0281C /* buffer_chain.cpp in Sources */,
 				D44C3D991FF4C9910034DA00 /* UriCodec.cpp in Sources */,
@@ -3913,10 +3984,10 @@
 				D4BE4F781FF36FC700A0281C /* message_writer.cpp in Sources */,
 				D4BE4F791FF36FCC00A0281C /* http_header.cpp in Sources */,
 				D4BE4F7A1FF36FD500A0281C /* message.cpp in Sources */,
-				D4BA425A1FFFF45B001D2EC3 /* test_messsage.cpp in Sources */,
 				D4BE4F7B1FF36FDA00A0281C /* parser.cpp in Sources */,
 				D4BE4F7C1FF36FDF00A0281C /* uri_query.cpp in Sources */,
 				D4BE4F7D1FF36FE500A0281C /* connection_handler.cpp in Sources */,
+				D4B76726200260DF001BACC6 /* marvin_okv.cpp in Sources */,
 				D4BE4F7E1FF36FE900A0281C /* server_connection_manager.cpp in Sources */,
 				D4BE4F7F1FF36FEE00A0281C /* request_handler_base.cpp in Sources */,
 				D4BE4F801FF36FF300A0281C /* server_context.cpp in Sources */,
@@ -5035,6 +5106,30 @@
 			};
 			name = Release;
 		};
+		D4B767202001CC40001BACC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D4B767212001CC40001BACC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		D4BA42651FFFF474001D2EC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5567,6 +5662,15 @@
 			buildConfigurations = (
 				D4ADCE181FF9E22C00A63CF5 /* Debug */,
 				D4ADCE191FF9E22C00A63CF5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4B7671F2001CC40001BACC6 /* Build configuration list for PBXNativeTarget "test_headers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4B767202001CC40001BACC6 /* Debug */,
+				D4B767212001CC40001BACC6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
