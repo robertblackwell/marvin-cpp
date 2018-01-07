@@ -31,9 +31,9 @@ using boost::system::error_code;
 using boost::asio::io_service;
 
 #pragma mark - timeout interval config
-long TCPConnection::s_connect_timeout_interval_ms = 5000;
-long TCPConnection::s_read_timeout_interval_ms = 5000;
-long TCPConnection::s_write_timeout_interval_ms = 5000;
+long TCPConnection::s_connect_timeout_interval_ms = 500000;
+long TCPConnection::s_read_timeout_interval_ms = 500000;
+long TCPConnection::s_write_timeout_interval_ms = 500000;
 void TCPConnection::setConfig_connectTimeOut(long millisecs)
 {
     s_connect_timeout_interval_ms = millisecs;

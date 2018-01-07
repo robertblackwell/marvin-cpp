@@ -35,6 +35,9 @@ namespace Marvin{
         }
         assert(port_int != 0);
         std::string host_header = us.host+":"+std::to_string(port_int);
+        if(port_int == 80) {
+            host_header = us.host;
+        }
         std::string path_value;
         if( (us.path == "") && (us.search == "")) {
             path_value = "/";

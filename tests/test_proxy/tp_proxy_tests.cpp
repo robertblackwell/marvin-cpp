@@ -1,11 +1,12 @@
 #include <catch/catch.hpp>
-#include "tp_helpers.hpp"
+#include "forward_helpers.hpp"
 #include "tp_proxy_tests.hpp"
 #include "tp_testcase.hpp"
 #include "tp_post.hpp"
 
 std::vector<tp::TestcaseSPtr> makeTestcases()
 {
+    /// this sends the request to our mitm proxy
     std::string pScheme = "http";
     std::string pHost = "localhost";
     std::string pPort = "9992";
@@ -16,8 +17,10 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         msg->setMethod(HTTP_POST);
         // note requests through a proxy must provide absolute uri on the first line
         // proxy mat turn that into a relative url
-        msg->setUri("/echo");
-        msg->setHeader(HttpHeader::Name::Host, "localhost:9991");
+        Marvin::Uri uri("http://whiteacorn/utests/echo/index.php");
+        helpers::applyUri(msg, uri, true);
+//        msg->setUri("http://localhost/echo");
+//        msg->setHeader(HttpHeader::Name::Host, "localhost:9991");
         msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
         msg->setHeader(
             "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
@@ -30,11 +33,12 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         msg->setHeader(HttpHeader::Name::ETag,"1928273tefadseercnbdh");
         std::string s = "012345678956";
         Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
-        setContent(*msg, bdy);
+        msg->setContent(bdy);
         tp::TestcaseSPtr tc = std::make_shared<tp::Testcase>(msg, pScheme, pHost, pPort);
         msgTable.push_back(tc);
     }
     return msgTable;
+#if 0
     {
         MessageBaseSPtr msg = std::make_shared<MessageBase>();
         msg->setMethod(HTTP_POST);
@@ -54,7 +58,7 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         msg->setHeader(HttpHeader::Name::ETag,"1928273tefadseercnbdh");
         std::string s = "012345678956";
         Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
-        setContent(*msg, bdy);
+        msg->setContent(bdy);
         tp::TestcaseSPtr tc = std::make_shared<tp::Testcase>(msg, pScheme, pHost, pPort);
         msgTable.push_back(tc);
     }
@@ -76,16 +80,16 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         msg->setHeader(HttpHeader::Name::ETag,"1928273tefadseercnbdh");
         std::string s = "012345678956";
         Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
-        setContent(*msg, bdy);
+        msg->setContent(bdy);
         tp::TestcaseSPtr tc = std::make_shared<tp::Testcase>(msg, pScheme, pHost, pPort);
         msgTable.push_back(tc);
     }
     
     return msgTable;
+#endif
 }
 TEST_CASE("mtim", "first")
 {
-    return;
     boost::asio::io_service io;
     auto vect = makeTestcases();
     auto v = vect[0];

@@ -12,7 +12,7 @@ void Pipeline::setup()
 {
     m_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
     m_msg_sptr->setMethod(HttpMethod::GET);
-    helpers::applyUri(m_msg_sptr, m_uri);
+    helpers::applyUriNonProxy(m_msg_sptr, m_uri);
     if( m_counter < m_max_counter - 1)
         m_msg_sptr->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionKeepAlive);
     else

@@ -19,7 +19,7 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
     
     msg->setMethod(HttpMethod::GET);
-    helpers::applyUri(msg, uri, false);
+    helpers::applyUriNonProxy(msg, uri);
     msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
     msg->setContent("");
 

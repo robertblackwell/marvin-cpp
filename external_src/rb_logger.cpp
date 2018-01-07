@@ -9,10 +9,16 @@
 #include "rb_logger.hpp"
 
 bool RBLogging::logger_enabled = true;
+RBLogging::LogLevelType RBLogging::globalThreshold = LOG_LEVEL_MAX; // enabled everything
 
 void RBLogging::setEnabled(bool on_off)
 {
     logger_enabled = on_off;
+}
+void RBLogging::enableForLevel(LogLevelType level)
+{
+    RBLogging::globalThreshold  = level;
+    logger_enabled = true;
 }
 
 std::string RBLogging::Logger::className(std::string& func_name){
@@ -132,11 +138,18 @@ void RBLogging::Logger::fdTraceLog(
 }
 bool RBLogging::Logger::enabled()
 {
-    return ( RBLogging::logger_enabled );
+    /// this function is only used for Trace functions
+    /// we want these active with DEBUG levels
+    LogLevelType lvl = LOG_LEVEL_DEBUG;
+    LogLevelType tmp = globalThreshold;
+    return ( ((int)lvl <= (int)tmp) && RBLogging::logger_enabled );
 }
 bool RBLogging::Logger::levelIsActive(LogLevelType lvl, LogLevelType threshold)
 {
-    return ( ((int)lvl <= (int)threshold) && RBLogging::logger_enabled );
+    /// use the lowest threshold - local or global
+    LogLevelType tmp = (threshold < globalThreshold) ? threshold : globalThreshold;
+    return ( ((int)lvl <= (int)tmp) && RBLogging::logger_enabled );
+//    return ( ((int)lvl <= (int)threshold) && RBLogging::logger_enabled );
 }
 void RBLogging::Logger::myprint(std::ostringstream& os)
 {

@@ -1,5 +1,6 @@
 #include <catch/catch.hpp>
 #include "json.hpp"
+#include "test_headers.hpp"
 #include "server_connection_manager.hpp"
 #include "tp_post.hpp"
 
@@ -17,20 +18,35 @@ void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 {
     Marvin::BufferChainSPtr bsp = rdr->getContentBuffer();
     std::string raw_body = bsp->to_string();
-    json j = json::parse(raw_body);
-    std::string sx = j["req"]["body"];
+//    std::cout << raw_body << std::endl;
+    json j;
+    /// the content of the respons should be json text
+    try{
+        j = json::parse(raw_body);
+    } catch(std::exception& e) {
+        std::cout << "json error " << e.what() << std::endl;
+        INFO("json parse failed");
+        CHECK(false);
+        return;
+    }
+    auto ra = j["req"];
+    auto echoed_headers = test::helpers::headersFromJson(j["req"]["headers"]);
+    auto original_headers = m_testcase_sptr->m_msg_sptr->getHeaders();
+    /// cannot test header equality as the mitm proxy has changed the headers
+//    auto b = test::helpers::checkHeaders(echoed_headers, original_headers);
+//    CHECK(b);
+    std::string echoedBody = j["req"]["body"];
     
-    std::string sy = (m_testcase_sptr->m_msg_sptr->getContentBuffer())->to_string();
+    std::string originalBody = (m_testcase_sptr->m_msg_sptr->getContentBuffer())->to_string();
+    
 #ifdef _VERBOSE
 //        std::cout << "echo'ed body " << sx << std::endl;
 //        std::cout << "testcasebody " << testcase.buffers_as_string() << std::endl;
-#endif
     assert(rdr->statusCode() == 200);
-    assert(sx == sy);
-    REQUIRE(rdr->statusCode() == 200);
-    REQUIRE(sx == sy);
-    
-//    std::cout << "SUCCESS: " << _testcase._description <<  std::endl;
+    assert(echoedBody == originalBody);
+#endif
+    CHECK(rdr->statusCode() == 200);
+    CHECK(echoedBody == originalBody);
     if(rdr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {
         m_client_sptr->close();
         m_client_sptr = nullptr;

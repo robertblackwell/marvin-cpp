@@ -4,13 +4,14 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace body_format;
 
-Testcase::Testcase(TestType type, std::string desc, std::vector<std::string> bufs) : _test_type(type), _description(desc), _body_buffers(bufs)
+Testcase::Testcase(TestType type, std::string desc, std::vector<std::string> bufs)
+: m_test_type(type), m_description(desc), m_body_buffers(bufs)
 {
-   _url = "http://localhost:9991";
+   m_url = "http://localhost:9991";
 }
 std::size_t     Testcase::chunks_count() const
 {
-    return _body_buffers.size();
+    return m_body_buffers.size();
 }
 Marvin::MBufferSPtr     Testcase::buffers_as_mbuffer() const
 {
@@ -20,7 +21,7 @@ Marvin::MBufferSPtr     Testcase::buffers_as_mbuffer() const
 std::string     Testcase::buffers_as_string() const
 {
     std::string res = "";
-    for(const std::string& s: _body_buffers) {
+    for(const std::string& s: m_body_buffers) {
         res += s;
     }
     return res;
@@ -29,7 +30,7 @@ Marvin::BufferChainSPtr Testcase::buffers_as_buffer_chain() const
 {
     std::string res = "";
     Marvin::BufferChainSPtr sp = std::make_shared<Marvin::BufferChain>();
-    for(const std::string& s: _body_buffers) {
+    for(const std::string& s: m_body_buffers) {
         res += s;
         Marvin::MBufferSPtr mb = Marvin::MBuffer::makeSPtr(s);
         sp->push_back(mb);
@@ -43,7 +44,7 @@ Marvin::MBufferSPtr     Testcase::chunk_as_mbuffer(std::size_t index)
 }
 std::string     Testcase::chunk_as_string(std::size_t index)
 {
-    return _body_buffers[index];
+    return m_body_buffers[index];
 }
 Marvin::BufferChainSPtr Testcase::chunk_as_buffer_chain(std::size_t index)
 {

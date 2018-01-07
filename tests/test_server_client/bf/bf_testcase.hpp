@@ -27,10 +27,10 @@ namespace body_format {
     class Testcase
     {
         public:
-        TestType                    _test_type;
-        std::vector<std::string>    _body_buffers;
-        std::string                 _url;
-        std::string                 _description;
+        TestType                    m_test_type;
+        std::vector<std::string>    m_body_buffers;
+        std::string                 m_url;
+        std::string                 m_description;
         
         Testcase(TestType type, std::string desc, std::vector<std::string>);
         std::size_t     chunks_count() const;

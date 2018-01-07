@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <cassert>
+#include <boost/algorithm/string/case_conv.hpp>
 #include "http_header.hpp"
 
 #include "rb_logger.hpp"
@@ -248,7 +249,7 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
     
     std::string n_str = std::string(name->buffer, name->used);
     std::string v_str = std::string(value->buffer, value->used);
-    
+    HttpHeader::canonicalKey(n_str);
     free(v_p);
     free(n_p);
     

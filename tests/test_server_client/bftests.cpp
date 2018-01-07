@@ -63,7 +63,7 @@ std::vector<body_format::Testcase> make_cases()
 }
 
 } // namespace
-#if 1
+
 // run each test on a separate io_service
 void oneShot( const Testcase& testcase)
 {
@@ -79,6 +79,13 @@ void multiple(std::vector<Testcase> tcs)
         oneShot(testcase);
     }
 }
+#if 1
+TEST_CASE("Oneshots1","")
+{
+    oneShot(make_cases()[0]);
+}
+#endif
+#if 1
 TEST_CASE("Oneshots","")
 {
     multiple(make_cases());

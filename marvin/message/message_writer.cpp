@@ -152,6 +152,7 @@ void MessageWriter::p_put_headers_stuff_in_buffer()
     MessageBaseSPtr msg = m_current_message;
     m_header_buf.empty();
     serializeHeaders(*msg, m_header_buf);
+//    std::cout << m_header_buf.toString() << std::endl;
     LogDebug("request size: ");
 }
 //

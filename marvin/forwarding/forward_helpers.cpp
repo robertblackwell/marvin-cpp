@@ -21,6 +21,7 @@ http::url helpers::decodeUri(MessageReaderSPtr requestSPtr)
     http::url tmp_u = http::ParseHttpUrl(tmp_url);
     return tmp_u;
 }
+#if 0
 void helpers::fillRequestFromUri(MessageBase& msg, std::string uri_in, bool absolute)
 {
     /// \note do nothing with user name and password. A proxy would not expect to see a uri with those
@@ -77,8 +78,8 @@ void helpers::applyUri(MessageBaseSPtr msg, std::string uri)
     assert(false);
     http::url u = http::ParseHttpUrl(uri);
 }
-
-void helpers::applyUri(MessageBaseSPtr msg, Marvin::Uri& uri, bool proxy)
+#endif
+void applyUri(MessageBaseSPtr msg, Marvin::Uri& uri, bool proxy)
 {
     if(proxy)
         msg->setUri(uri.absolutePath());
@@ -86,7 +87,14 @@ void helpers::applyUri(MessageBaseSPtr msg, Marvin::Uri& uri, bool proxy)
         msg->setUri(uri.relativePath());
     msg->setHeader(HttpHeader::Name::Host, uri.host());
 }
-
+void helpers::applyUriProxy(MessageBaseSPtr msgSPtr, Marvin::Uri& uri)
+{
+    applyUri(msgSPtr, uri, true);
+}
+void helpers::applyUriNonProxy(MessageBaseSPtr msgSPtr, Marvin::Uri& uri)
+{
+    applyUri(msgSPtr, uri, false);
+}
 void helpers::removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue)
 {
     char_separator<char> sep(",");
@@ -106,17 +114,10 @@ void helpers::makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReader
     MessageReaderSPtr req = requestSPtr;
     MessageBaseSPtr result = upstreamRequest;
     
-    std::string tmp_url = req->uri();
-    http::url tmp_u = http::ParseHttpUrl(tmp_url);
-    LogDebug(" uri:", req->uri());
-    LogDebug(" scheme:", tmp_u.protocol);
-    LogDebug(" host:", tmp_u.host);
-    LogDebug(" port:", tmp_u.port);
-    LogDebug(" path:", tmp_u.path);
-    LogDebug(" query:", tmp_u.search);
+    Marvin::Uri tmp_uri(req->uri());
     
-    result->setMethod(HttpMethod::GET);
-    helpers::fillRequestFromUri(*upstreamRequest, tmp_url);
+    helpers::applyUriNonProxy(upstreamRequest, tmp_uri);
+//    helpers::fillRequestFromUri(*upstreamRequest, tmp_url);
     // filter out upgrade requests
     assert( ! req->hasHeader("Upgrade") );
     

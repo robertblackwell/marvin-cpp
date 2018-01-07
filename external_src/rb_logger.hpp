@@ -14,7 +14,7 @@ enum class LogLevel {
     debug = 4,
     verbose = 5,
     tortrace = 6,
-    trace = 7,
+    trace = 7
 };
 
     
@@ -26,6 +26,7 @@ enum class LogLevel {
 #define LOG_LEVEL_VERBOSE   5
 #define LOG_LEVEL_TORTRACE  6
 #define LOG_LEVEL_TRACE     7
+#define LOG_LEVEL_MAX       7
     
 typedef long LogLevelType
     
@@ -36,7 +37,10 @@ typedef long LogLevelType
 #define LOG_LEVEL_INFO      RBLogging::LogLevel::info
 #define LOG_LEVEL_DEBUG     RBLogging::LogLevel::debug
 #define LOG_LEVEL_VERBOSE   RBLogging::LogLevel::verbose
-    
+#define LOG_LEVEL_TORTRACE  RBLogging::LogLevel::tortrace
+#define LOG_LEVEL_TRACE     RBLogging::LogLevel::trace
+#define LOG_LEVEL_MAX       RBLogging::LogLevel::trace
+
     typedef LogLevel LogLevelType;
     
 #endif
@@ -235,8 +239,11 @@ class Logger{
 #define  LogFDTrace(fd)         RBLOGFDTRACE(fd)
 
 extern bool logger_enabled;
-    
+extern LogLevelType globalThreshold;
+
 void setEnabled(bool on_off);
+
+void enableForLevel(LogLevelType level);
 
 #undef LOGGER_SINGLE
 #ifdef LOGGER_SINGLE

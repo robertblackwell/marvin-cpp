@@ -23,8 +23,10 @@ BIN=~/MyCurrentProjects/Pixie/MarvinCpp/DerivedData/MarvinCpp/Build/Products/Deb
 tests_run:
 	$(BIN)/test_server_client_body_format
 	$(BIN)/test_server_client_body_buffering
+	$(BIN)/test_buffers
 	$(BIN)/test_timeout
 	$(BIN)/test_connect
+	$(BIN)/test_message
 	$(BIN)/test_reader
 	$(BIN)/test_client_request
 
@@ -35,7 +37,9 @@ tests_all: tests_clean tests_build
 tests_clean:
 	xcodebuild -scheme test_server_client_body_buffering clean 
 	xcodebuild -scheme test_server_client_body_format clean
+	xcodebuild -scheme test_buffers clean
 	xcodebuild -scheme test_timeout clean
+	xcodebuild -scheme test_message clean
 	xcodebuild -scheme test_connect clean
 	xcodebuild -scheme test_reader clean
 	xcodebuild -scheme test_client_request clean
@@ -46,6 +50,8 @@ tests_build:
 	@xcodebuild -quiet -scheme test_server_client_body_buffering build
 	@ xcodebuild -quiet -scheme test_server_client_body_format build 
 	@ xcodebuild -quiet -scheme test_client_request build 
+	@ xcodebuild -quiet -scheme test_buffers build 
+	@ xcodebuild -quiet -scheme test_message build 
 	@ xcodebuild -quiet -scheme test_timeout build 
 	@ xcodebuild -quiet -scheme test_connect build 
 	@ xcodebuild -quiet -scheme test_reader build 

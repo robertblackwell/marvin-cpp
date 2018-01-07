@@ -23,31 +23,10 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "forward_helpers.hpp"
 #include "tsc_req_handler.hpp"
 #include "server_runner.hpp"
-#include "tp_helpers.hpp"
 #include "tp_proxy_runner.hpp"
 #endif 
-#pragma mark - MessageBase helpers
-//bool hasContentLength(MessageBase& msg)
-//{
-//    return (msg.hasHeader(HttpHeader::Name::ContentLength));
-//}
-//std::size_t getContentLength(MessageBase& msg)
-//{
-//    assert(msg.hasHeader(HttpHeader::Name::ContentLength));
-//    int len = std::stoi(msg.getHeader(HttpHeader::Name::ContentLength));
-//    return len;
-//}
-//
-//void setContentLength(MessageBase& msg, std::size_t length)
-//{
-//    msg.setHeader(HttpHeader::Name::ContentLength, std::to_string(length));
-//}
-//void setContent(MessageBase& msg, Marvin::BufferChainSPtr content)
-//{
-//    msg.setBody(content);
-//    setContentLength(msg, content->size());
-//}
 #pragma mark - mock up a MessageReader
+namespace {
 MessageReaderSPtr makeMock()
 {
     static boost::asio::io_service io;
@@ -123,7 +102,7 @@ void verifyResponse_01(MessageBaseSPtr msg)
 //    msgRdr->setBody(bdy);
 
 }
-#pragma mark - sample filling of upstream request
+#pragma mark - sample filling of upstream request should be a non procy request
 void fillMsgRdrAsRequest01(MessageReaderSPtr msgRdr)
 {
 // GET / HTTPS/1.1
@@ -138,8 +117,11 @@ void fillMsgRdrAsRequest01(MessageReaderSPtr msgRdr)
     msgRdr->setMethod(HTTP_POST);
     // note requests through a proxy must provide absolute uri on the first line
     // proxy mat turn that into a relative url
-    msgRdr->setUri("http://example.org/somepath/script.php?parm=123456#fragment");
-    msgRdr->setHeader(HttpHeader::Name::Host, "example.org");
+    Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
+    // proxy absolute uri
+    helpers::applyUriProxy(msgRdr, uri);
+//    msgRdr->setUri("http://example.org/somepath/script.php?parm=123456#fragment");
+//    msgRdr->setHeader(HttpHeader::Name::Host, "example.org");
     msgRdr->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
     msgRdr->setHeader("Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
     msgRdr->setHeader("Accept-Language","en");
@@ -151,17 +133,15 @@ void fillMsgRdrAsRequest01(MessageReaderSPtr msgRdr)
     msgRdr->setHeader(HttpHeader::Name::ETag,"1928273tefadseercnbdh");
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
-    setContent(*msgRdr, bdy);
+    msgRdr->setContent(bdy);
 }
 
-void fillMsgRequest02(MessageBaseSPtr msgSPtr)
-{
-    helpers::fillRequestFromUri(*msgSPtr, "http://example.org:9999");
-}
 void verifyRequest_01(MessageBaseSPtr msgSPtr)
 {
+    /// relative url
     REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
-    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:80" );
+    /// host name has port
+    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:9999" );
     REQUIRE(msgSPtr->getHeader(HttpHeader::Name::AcceptEncoding) == "identity");
     REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose);
     REQUIRE(msgSPtr->getHeader(HttpHeader::Name::TE) == "");
@@ -171,20 +151,43 @@ void verifyRequest_01(MessageBaseSPtr msgSPtr)
     REQUIRE( ! msgSPtr->hasHeader(HttpHeader::Name::TransferEncoding));
     REQUIRE( ! msgSPtr->hasHeader(HttpHeader::Name::ETag));
 }
+#pragma mark - request 02 test a procy request
+void fillMsgRequest02(MessageBaseSPtr msgSPtr)
+{
+    Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
+    // proxy full uri
+    helpers::applyUriProxy(msgSPtr, uri);
+//    helpers::fillRequestFromUri(*msgSPtr, "http://example.org:9999");
+}
 void verifyRequest_02(MessageBaseSPtr msgSPtr)
 {
-    REQUIRE(msgSPtr->uri() == "/");
+    REQUIRE(msgSPtr->uri() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
+    REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:9999" );
+}
+#pragma mark - request 03 non procy request
+void fillMsgRequest03(MessageBaseSPtr msgSPtr)
+{
+    Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
+    // non proxy relative uri
+    helpers::applyUriNonProxy(msgSPtr, uri);
+//    helpers::fillRequestFromUri(*msgSPtr, "http://example.org:9999");
+}
+void verifyRequest_03(MessageBaseSPtr msgSPtr)
+{
+    REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
     REQUIRE(msgSPtr->getHeader(HttpHeader::Name::Host) == "example.org:9999" );
 }
 #pragma mark - verify minimum requirements for a request
 void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
 {
     msgRdr->setMethod(HTTP_POST);
-    helpers::fillRequestFromUri(*msgRdr, "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
+    Marvin::Uri uri("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
+    helpers::applyUriProxy(msgRdr, uri);
+//    helpers::fillRequestFromUri(*msgRdr, "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
     msgRdr->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionKeepAlive);
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
-    setContent(*msgRdr, bdy);
+    msgRdr->setContent(bdy);
 }
 bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 {
@@ -213,17 +216,18 @@ bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
     }
     return true;
 }
-#pragma mark - TEST
+} //namespace
+#pragma mark - TEST_CASE 
 TEST_CASE("Helpers_Example", "[example]")
 {
     Marvin::Uri u("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
     CHECK(u.scheme() == "http");
     CHECK(u.server() == "somewhere.com");
-    CHECK(u.host() == "somewhere.com:80");
+    CHECK(u.host() == "somewhere.com");
     CHECK(u.port() == 80);
     CHECK(u.search() == "a=1111#fragment");
     CHECK(u.relativePath() == "/subdirpath/index.php?a=1111#fragment");
-    CHECK(u.absolutePath() == "http://somewhere.com:80/subdirpath/index.php?a=1111#fragment");
+    CHECK(u.absolutePath() == "http://somewhere.com/subdirpath/index.php?a=1111#fragment");
 //    CHECK(u.absolutePath() == "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
 //    std::cout << msg->str() << std::endl;
 }
@@ -255,11 +259,18 @@ TEST_CASE("Helpers_upstream01", "[upstream01]")
     verifyRequest_01(msgSPtr);
 //    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("Helpers_upstream02", "[upstream02]")
+TEST_CASE("HelpersRequest02", "[upstream02]")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest02(msgSPtr);
     verifyRequest_02(msgSPtr);
-    std::cout << msgSPtr->str() << std::endl;
+//    std::cout << msgSPtr->str() << std::endl;
+}
+TEST_CASE("HelpersRequest03", "[upstream03]")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgRequest03(msgSPtr);
+    verifyRequest_03(msgSPtr);
+//    std::cout << msgSPtr->str() << std::endl;
 }
 

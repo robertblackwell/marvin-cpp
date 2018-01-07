@@ -7,6 +7,7 @@ std::shared_ptr<Client> do_client_connect(std::string code, boost::asio::io_serv
     Marvin::Uri uri("http://whiteacorn/utests/echo/test.php");
     std::shared_ptr<Client> client = std::shared_ptr<Client>(new Client(io, uri));
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
+    helpers::applyUriProxy(msg, uri);
     client->asyncConnect([client, msg, code](Marvin::ErrorType& ec){
 #if 1 //VERBOSE
         std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
@@ -30,14 +31,17 @@ std::shared_ptr<Client> do_client_connect(std::string code, boost::asio::io_serv
 
 std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service& io)
 {
-    Marvin::Uri uri("http://whiteacorn.com/posts/rtw");
+    Marvin::Uri uri("http://whiteacorn/utests/echo/");
     std::shared_ptr<Client> client = std::shared_ptr<Client>(new Client(io, uri ));
     
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
     
     msg->setMethod(HttpMethod::GET);
-    helpers::applyUri(msg, uri);
+    helpers::applyUriProxy(msg, uri);
     msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+    msg->setHeader(HttpHeader::Name::AcceptEncoding, "identity");
+    msg->setHeader(HttpHeader::Name::TE, "");
+    // Http versions defaults to 1.1, so force it to the same as the request
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {

@@ -12,6 +12,8 @@
 #include <cassert>
 #include "UriParser.hpp"
 namespace Marvin{
+    class Uri;
+    using UriSPtr = std::shared_ptr<Uri>;
     class Uri
     {
         public:

@@ -9,6 +9,7 @@
 #include "boost_stuff.hpp"
 #include <catch/catch.hpp>
 #include "rb_logger.hpp"
+#include "marvin_uri.hpp"
 #include "buffer.hpp"
 #include "client.hpp"
 #include "bf_testcase.hpp"
@@ -25,10 +26,11 @@ namespace body_format {
             void handler(Marvin::ErrorType& er, MessageReaderSPtr rdr);
             void exec();
         protected:
-            boost::asio::io_service&    _io;
-            MessageBaseSPtr             _msg;
-            ClientSPtr                  _client;
-            Testcase                    _testcase;
+            boost::asio::io_service&    m_io;
+            MessageBaseSPtr             m_msg;
+            Marvin::UriSPtr             m_uri_sptr;
+            ClientSPtr                  m_client;
+            Testcase                    m_testcase;
     };
 }
 

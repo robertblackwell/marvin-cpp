@@ -212,7 +212,7 @@ protected:
     simple_buffer_t*   status_buf;
     simple_buffer_t*   name_buf;
     simple_buffer_t*   value_buf;
-    std::map<std::string, std::string> headers;
+    HttpHeadersType    headers;
     ////////////////////////////////////////////////////////////////////
     
     

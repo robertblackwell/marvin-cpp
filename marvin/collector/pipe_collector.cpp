@@ -43,7 +43,7 @@ static bool testPipeReaderExists(char* pipeName)
 
     int fdw = open(pipeName, O_WRONLY | O_NONBLOCK);
     if (fdw == -1){
-        perror("non-blocking open for write with no readers failed");
+        LogWarn("non-blocking open for write with no readers failed");
         return false;
     }
     close(fdw);
@@ -148,7 +148,7 @@ void PipeCollector::collect(
     MessageReaderSPtr req,
     MessageBaseSPtr resp)
 {
-    std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
+//    std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << "[" << (char*)__LINE__ << "]" <<   std::endl;
 
     /**
     ** In here implement the creation the summary records but dont do any IO or sending
