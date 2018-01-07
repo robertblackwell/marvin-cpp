@@ -1,6 +1,9 @@
 #include "forward_helpers.hpp"
 #include "pipeline.hpp"
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 Pipeline::Pipeline(boost::asio::io_service& io, Marvin::Uri& uri)
 : m_io(io), m_uri(uri)
 {

@@ -174,15 +174,15 @@ public:
     *
     * If the request is to have NO body use this method with the requestMessage.body == nullptr;
     */
-    void asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     /**
     * The following are three ways to add a body to a request. The first two take a string or
     * a shared pointer to an MBuffer - these are contiguous buffers and can be sent with a single
     * asyncWrite
     */
-    void asyncWrite(MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandlerCallbackType cb);
-    void asyncWrite(MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
-    void asyncWrite(MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandlerCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb);
 
     /**
     * Sends the first line and headers of the request message only
@@ -192,7 +192,7 @@ public:
     *
     * Dont use this method IF there is no body data, use asyncWrite
     */
-    void asyncWriteHeaders(MessageBaseSPtr requestMessage, WriteHeadersCallbackType cb);
+    void asyncWriteHeaders(Marvin::Http::MessageBaseSPtr requestMessage, WriteHeadersCallbackType cb);
     
     /**
     * Transmits a block of body data - the data should NOT be chunk encode
@@ -224,7 +224,7 @@ public:
     * do not inspect the trailers until this call nor does it keep a copy of the
     * original request
     */
-    void asyncWriteTrailers(MessageBaseSPtr requestMessage,  AsyncWriteCallbackType cb);
+    void asyncWriteTrailers(Marvin::Http::MessageBaseSPtr requestMessage,  AsyncWriteCallbackType cb);
     
     /**
     * Called to signal end-of-message. This function will
@@ -244,13 +244,13 @@ public:
 #pragma mark - friend utility functions
    
     friend std::string traceClient(Client& client);
-    friend std::string traceRequestMessage(MessageBase& request);
+    friend std::string traceRequestMessage(Marvin::Http::MessageBase& request);
 
 protected:
     void internalConnect();
     void internalWrite();
 
-    void _async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
+    void _async_write(Marvin::Http::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     void putHeadersStuffInBuffer();
     void setContentLength();
     
@@ -264,7 +264,7 @@ protected:
     std::string _path;
 
     boost::asio::io_service&                        _io;
-    MessageBaseSPtr                                 _current_request;
+    Marvin::Http::MessageBaseSPtr                   _current_request;
     Marvin::MBufferSPtr                             _body_mbuffer_sptr;
     std::shared_ptr<MessageWriter>                  _wrtr;
     std::shared_ptr<MessageReader>                  _rdr;

@@ -4,6 +4,9 @@
 #include "server_connection_manager.hpp"
 #include "bf_post.hpp"
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 using namespace body_format;
 using json = nlohmann::json;
 

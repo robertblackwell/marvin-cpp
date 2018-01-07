@@ -5,6 +5,10 @@
 #include "http_parser.h"
 #include "http_header.hpp"
 #include "message.hpp"
+using namespace Marvin;
+using namespace Marvin::Http;
+namespace Marvin{
+namespace Http{
 
 std::string traceMessage(MessageBase& msg)
 {
@@ -31,7 +35,7 @@ std::string traceMessage(MessageBase& msg)
 }
 
 //void serializeHeaders(MessageBase& msg, boost::asio::streambuf& b)
-void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
+void Marvin::Http::serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
 {
     boost::asio::streambuf b;
     std::ostream os(&b);
@@ -236,3 +240,6 @@ std::ostream &operator<< (std::ostream &os, MessageBase &msg)
     os << msg.str() ;
     return os;
 }
+
+} //namespace Http
+} //namespace Marvin

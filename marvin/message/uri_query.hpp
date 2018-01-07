@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string>
 #include <map>
+namespace Marvin {
 /// \ingroup HttpMessage
 void printMap(std::map<std::string, std::string> m);
 
@@ -20,5 +21,5 @@ private:
     std::map<std::string, std::string>  _keyValues;
     
 };
-
+} //namespace Marvin
 #endif /* query_parser_hpp */

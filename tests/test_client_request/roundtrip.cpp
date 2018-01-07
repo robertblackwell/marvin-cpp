@@ -2,6 +2,9 @@
 #include "forward_helpers.hpp"
 #include "roundtrip.hpp"
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 std::shared_ptr<Client> do_client_connect(std::string code, boost::asio::io_service& io)
 {
     Marvin::Uri uri("http://whiteacorn/utests/echo/test.php");

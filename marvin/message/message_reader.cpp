@@ -13,6 +13,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "i_socket.hpp"
 #include "message_reader.hpp"
 
+ using namespace Marvin;
+ using namespace Marvin::Http;
+
+
+
 #pragma mark - tracing functions
 std::string traceReader(MessageReader& rdr)
 {

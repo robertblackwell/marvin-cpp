@@ -34,18 +34,18 @@ public:
     MessageWriter(boost::asio::io_service& io, ISocketSPtr conn);
     ~MessageWriter();
     
-    void asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb);
-    void asyncWrite(MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb);
-    void asyncWrite(MessageBaseSPtr msg, Marvin::MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb);
-    void asyncWrite(MessageBaseSPtr msg, Marvin::BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr msg, WriteMessageCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr msg, Marvin::MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb);
+    void asyncWrite(Marvin::Http::MessageBaseSPtr msg, Marvin::BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb);
 
-    void asyncWriteHeaders(MessageBaseSPtr msg, WriteHeadersCallbackType cb);
+    void asyncWriteHeaders(Marvin::Http::MessageBaseSPtr msg, WriteHeadersCallbackType cb);
     void asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(Marvin::MBuffer& data, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(Marvin::BufferChainSPtr chain_ptr, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb);
 
-    void asyncWriteTrailers(MessageBaseSPtr msg, AsyncWriteCallbackType cb);
+    void asyncWriteTrailers(Marvin::Http::MessageBaseSPtr msg, AsyncWriteCallbackType cb);
     
     void end();
     
@@ -56,12 +56,12 @@ protected:
     void p_put_headers_stuff_in_buffer();
 
     boost::asio::io_service&    m_io;
-    ISocketSPtr                 m_write_sock;
-    MessageBaseSPtr             m_current_message;
-    Marvin::MBuffer             m_header_buf;
-    Marvin::MBufferSPtr         m_body_mbuffer_sptr;
-    std::string                 m_body_buffer_string;
-    Marvin::BufferChainSPtr     m_body_buffer_chain_sptr;
+    ISocketSPtr                     m_write_sock;
+    Marvin::Http::MessageBaseSPtr   m_current_message;
+    Marvin::MBuffer                 m_header_buf;
+    Marvin::MBufferSPtr             m_body_mbuffer_sptr;
+    std::string                     m_body_buffer_string;
+    Marvin::BufferChainSPtr         m_body_buffer_chain_sptr;
     
 };
 

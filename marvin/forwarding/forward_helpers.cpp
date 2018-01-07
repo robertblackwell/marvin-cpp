@@ -10,6 +10,9 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 std::string helpers::base64Encode(std::string& source)
 {
     return "["+source+"]";

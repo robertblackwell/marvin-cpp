@@ -2,6 +2,9 @@
 #include "multiple.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 /**
 * This file tests mutiple simultanious requests to by different client objects
 * to ensure isloation between instances

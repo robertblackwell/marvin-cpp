@@ -24,6 +24,9 @@
 #include "tunnel_handler.hpp"
 #include "i_collector.hpp"
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 enum class ConnectAction;
 
 /**

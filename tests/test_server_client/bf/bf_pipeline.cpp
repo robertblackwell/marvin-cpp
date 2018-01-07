@@ -3,6 +3,9 @@
 #include "json.hpp"
 #include "bf_pipeline.hpp"
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 using namespace body_format;
 using json = nlohmann::json;
 

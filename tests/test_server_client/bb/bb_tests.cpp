@@ -23,6 +23,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "test_server_client/bb/bb_testcase.hpp"
 #include "test_server_client/bb/bb_testcase_defs.hpp"
 
+using namespace Marvin;
+using namespace Http;
+
 namespace {
 // run each test on a separate io_service - tests that round trip
 // handles different buffering of the request and/or handles eof without

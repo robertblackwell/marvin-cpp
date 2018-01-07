@@ -26,6 +26,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "tp_proxy_runner.hpp"
 #endif 
 #pragma mark - mock up a MessageReader
+
+using namespace Marvin;
+using namespace Marvin::Http;
 namespace {
 MessageReaderSPtr makeMock()
 {

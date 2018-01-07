@@ -32,7 +32,8 @@ using boost::asio::ip::tcp;
 using boost::system::error_code;
 using boost::asio::io_service;
 using boost::asio::streambuf;
-
+using namespace Marvin;
+using namespace Marvin::Http;
 
 Client::Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port)
 : _io(io), _scheme(scheme), _server(server), _port(port)

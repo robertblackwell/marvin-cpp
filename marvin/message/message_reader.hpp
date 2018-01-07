@@ -67,7 +67,7 @@ typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
  *      sequence for i/o.
  *
  */
-class MessageReader : public Parser, public MessageBase
+class MessageReader : public Marvin::Http::Parser, public Marvin::Http::MessageBase
 {
 public:
 
@@ -159,9 +159,9 @@ protected:
     /**
     *  These methods are override for virtual methods in Paser
     */
-    MessageInterface* currentMessage();
-    void OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
-    void OnMessageComplete(MessageInterface* msg);
+    Marvin::Http::MessageInterface* currentMessage();
+    void OnHeadersComplete(Marvin::Http::MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
+    void OnMessageComplete(Marvin::Http::MessageInterface* msg);
     void OnBodyData(void* buf, int len);
     void OnChunkBegin(int chunkLength);
     void OnChunkData(void* buf, int len);

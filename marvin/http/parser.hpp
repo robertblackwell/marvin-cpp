@@ -13,6 +13,9 @@
 #define kHEADER_STATE_FIELD   11
 #define kHEADER_STATE_VALUE   12
 
+namespace Marvin {
+namespace Http {
+
 /// \ingroup HttpMessage
 struct ParserError {
     std::string         name;
@@ -218,6 +221,9 @@ protected:
     
 	
 };
+
+} // namespave Http
+} // namespace Marvin
 #endif
 
 

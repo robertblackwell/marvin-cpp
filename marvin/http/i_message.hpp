@@ -9,6 +9,8 @@
 #include "http_method.hpp"
 #pragma mark - http message interfaces
 
+namespace Marvin {
+namespace Http {
 /**
 * \ingroup HttpMessage
 * \brief Defines an interface that all representations of a Http Message should conform to.
@@ -46,4 +48,6 @@ public:
     virtual bool isRequest() = 0;
     
 };
+} //namespace Http
+} //namespace Marvin
 #endif

@@ -14,8 +14,13 @@
 #include "rb_logger.hpp"
 #include "parser.hpp"
 
-
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+
+using namespace Marvin;
+using namespace Http;
+
+namespace Marvin {
+namespace Http {
 
 /******************************************************************************/
 #pragma mark - forward decleration of parser c-language call back functions
@@ -435,4 +440,5 @@ message_complete_cb(http_parser* parser)
      */
     return 0;
 }
-
+} //namespace Http
+} //namespace Marvin

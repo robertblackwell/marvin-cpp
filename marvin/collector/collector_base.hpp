@@ -33,7 +33,7 @@ class CollectorBase
         /**
         ** Interface method for client code to call collect
         **/
-        void collect(std::string scheme, std::string host, MessageReaderSPtr req, MessageBaseSPtr resp);
+        void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::Http::MessageBaseSPtr resp);
     
     private:
         CollectorBase(boost::asio::io_service& io);
@@ -46,7 +46,7 @@ class CollectorBase
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,
-            MessageBaseSPtr resp);
+            Marvin::Http::MessageBaseSPtr resp);
 
         boost::asio::strand         m_my_strand;
         boost::asio::io_service&    m_io;

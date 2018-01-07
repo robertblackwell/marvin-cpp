@@ -31,30 +31,30 @@
         boost::uuids::uuid          _uuid;
         // these are the minimum requirements to send a response
         // the subordinate handlers fill these in
-        MessageBaseSPtr             response_msg;
-        std::string                 response_body;
-        bool                        keep_alive;
+        Marvin::Http::MessageBaseSPtr   response_msg;
+        std::string                     response_body;
+        bool                            keep_alive;
         
-        MessageWriterSPtr           _resp;
-        MessageBaseSPtr             _msg;
-        std::string                 _body;
-        HandlerDoneCallbackType     _done;
-        bool                        _keep_alive;
+        MessageWriterSPtr               _resp;
+        Marvin::Http::MessageBaseSPtr   _msg;
+        std::string                     _body;
+        HandlerDoneCallbackType         _done;
+        bool                            _keep_alive;
 
 
         TscRequestHandler(boost::asio::io_service& io);
         ~TscRequestHandler();
         
         void handleConnect(
-            ServerContext&   server_context,
+            ServerContext&              server_context,
             MessageReaderSPtr           req,
-            ISocketSPtr     connPtr,
-            HandlerDoneCallbackType    done);
+            ISocketSPtr                 connPtr,
+            HandlerDoneCallbackType     done);
         void prepare_send_response(
-           MessageWriterSPtr resp,
-           MessageBaseSPtr msg,
-           std::string body,
-           HandlerDoneCallbackType done,
+           MessageWriterSPtr                resp,
+           Marvin::Http::MessageBaseSPtr    msg,
+           std::string                      body,
+           HandlerDoneCallbackType          done,
            bool keep_alive
         );
         void send_response();

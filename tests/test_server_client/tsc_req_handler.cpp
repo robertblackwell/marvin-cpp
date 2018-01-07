@@ -17,6 +17,10 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "request.hpp"
 #include "uri_query.hpp"
 #include "tsc_req_handler.hpp"
+
+using namespace Marvin;
+using namespace Http;
+
 nlohmann::json jsonize_request(TscRequestHandler* req_handler, ServerContext& server_context, MessageReaderSPtr req)
 {
     Marvin::BufferChainSPtr bsp = req->getContentBuffer();

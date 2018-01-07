@@ -954,6 +954,8 @@
 		D40F343B1FD0F31400EC653F /* reader_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = reader_main.cpp; sourceTree = "<group>"; };
 		D40F34571FD0F5AD00EC653F /* test_reader */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_reader; sourceTree = BUILT_PRODUCTS_DIR; };
 		D416674C1F985119007375A9 /* client_raw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client_raw.cpp; sourceTree = "<group>"; };
+		D418D0A12002B7170065655C /* marvin_http.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = marvin_http.cpp; sourceTree = "<group>"; };
+		D418D0A22002B7170065655C /* marvin_http.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = marvin_http.hpp; sourceTree = "<group>"; };
 		D41BF68B1FE485590043E745 /* readme.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = readme.rtf; sourceTree = "<group>"; };
 		D41FD3CE1FDCCE4200FC1567 /* bb_testcase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bb_testcase.cpp; sourceTree = "<group>"; };
 		D41FD3CF1FDCCE4200FC1567 /* bb_testcase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bb_testcase.hpp; sourceTree = "<group>"; };
@@ -1707,6 +1709,20 @@
 			path = experiments/ssl;
 			sourceTree = "<group>";
 		};
+		D418D0A52002C95F0065655C /* http */ = {
+			isa = PBXGroup;
+			children = (
+				D418D0A22002B7170065655C /* marvin_http.hpp */,
+				D418D0A12002B7170065655C /* marvin_http.cpp */,
+				D4BE4F601FF312BD00A0281C /* i_message.hpp */,
+				D4BEEA011DE82FC800F61432 /* message.hpp */,
+				D46614621DFA5D7100E3FAB0 /* message.cpp */,
+				D46F227C1D12188B007F8F72 /* parser.hpp */,
+				D46F227B1D12188B007F8F72 /* parser.cpp */,
+			);
+			path = http;
+			sourceTree = "<group>";
+		};
 		D421D0CC1E01BFCB00831883 /* CxxUrl */ = {
 			isa = PBXGroup;
 			children = (
@@ -2051,6 +2067,7 @@
 				D407A0EF1E13FD9700A8A312 /* collector */,
 				D479C0E41FC665640013F0F3 /* error */,
 				D4487CAB1FC66ACE006D4DB7 /* forwarding */,
+				D418D0A52002C95F0065655C /* http */,
 				D479C0E31FC665340013F0F3 /* message */,
 				D4A7D37D1E146C1300748973 /* objc */,
 				D4487CAA1FC66A36006D4DB7 /* server */,
@@ -2083,7 +2100,6 @@
 		D479C0E31FC665340013F0F3 /* message */ = {
 			isa = PBXGroup;
 			children = (
-				D4BE4F601FF312BD00A0281C /* i_message.hpp */,
 				D4BE4F621FF3142D00A0281C /* http_method.hpp */,
 				D4BE4F631FF3150600A0281C /* http_method.cpp */,
 				D4069C421FC8D8AD00935F30 /* message_reader.hpp */,
@@ -2092,10 +2108,6 @@
 				D4069C441FC8D8AE00935F30 /* message_writer.cpp */,
 				D407D51A1E113FE7003E5F8E /* http_header.hpp */,
 				D407D5191E113FE7003E5F8E /* http_header.cpp */,
-				D4BEEA011DE82FC800F61432 /* message.hpp */,
-				D46614621DFA5D7100E3FAB0 /* message.cpp */,
-				D46F227C1D12188B007F8F72 /* parser.hpp */,
-				D46F227B1D12188B007F8F72 /* parser.cpp */,
 				D421D0D31E01CE2A00831883 /* uri_query.hpp */,
 				D421D0D21E01CE2A00831883 /* uri_query.cpp */,
 				D43FA0771FFBE70800B6EA82 /* marvin_uri.hpp */,
