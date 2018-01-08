@@ -26,11 +26,11 @@ namespace body_format {
             void handler(Marvin::ErrorType& er, MessageReaderSPtr rdr);
             void exec();
         protected:
-            boost::asio::io_service&    m_io;
-            MessageBaseSPtr             m_msg;
-            Marvin::UriSPtr             m_uri_sptr;
-            ClientSPtr                  m_client;
-            Testcase                    m_testcase;
+            boost::asio::io_service&        m_io;
+            Marvin::Http::MessageBaseSPtr   m_msg;
+            Marvin::UriSPtr                 m_uri_sptr;
+            ClientSPtr                      m_client;
+            Testcase                        m_testcase;
     };
 }
 

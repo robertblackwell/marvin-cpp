@@ -24,7 +24,7 @@ namespace body_buffering {
         std::string result_first_line,
         int status_code,
         Marvin::ErrorType result_onheader_err,
-        std::map<std::string, std::string> result_headers,
+        std::vector<std::pair<std::string, std::string>> result_headers,
         std::string result_body
     );
         std::string getDescription();
@@ -32,7 +32,7 @@ namespace body_buffering {
         std::vector<std::string> buffers();
         bool verify_first_line(std::string fl);
         
-        bool verify_headers(std::map<std::string, std::string> h);
+        bool verify_headers(Marvin::Http::Headers& h);
         
         bool verify_body(std::string b);
         
@@ -42,7 +42,7 @@ namespace body_buffering {
         
         Marvin::ErrorType result_onheaders_err();
 
-        std::map<std::string, std::string> result_headers();
+        Marvin::Http::Headers result_headers();
         
         std::string result_body();
         
@@ -54,15 +54,15 @@ namespace body_buffering {
         
         std::string case_result();
         
-        int                                     _index;
-        std::string                             _description;
-        std::vector<std::string>                _rawMessage;
-        int                                     _result_status_code;
-        Marvin::ErrorType                       _result_onheaders_err;
-        std::string                             _result_first_line;
-        std::map<std::string, std::string>      _result_headers_vec;
-        std::map<std::string, std::string>      _result_headers;
-        std::string                             _result_body;
+        int                                     m_index;
+        std::string                             m_description;
+        std::vector<std::string>                m_rawMessage;
+        int                                     m_result_status_code;
+        Marvin::ErrorType                       m_result_onheaders_err;
+        std::string                             m_result_first_line;
+        Marvin::Http::Headers::Initializer      m_result_headers_vec;
+        Marvin::Http::Headers                   m_result_headers;
+        std::string                             m_result_body;
     };
 }
 #endif

@@ -13,7 +13,8 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "pipe_collector.hpp"
-
+using namespace Marvin;
+using namespace Http;
 bool headerValueMatched(std::string& hv, std::vector<std::regex>& regexs)
 {
     bool capture = false;
@@ -31,8 +32,8 @@ bool bodyIsCollectable(MessageBase& msg, std::vector<std::regex>& regexs)
 {
     bool capture = false;
     std::string hv;
-    if( msg.hasHeader(HttpHeader::Name::ContentType) ){
-        hv = msg.getHeader(HttpHeader::Name::ContentType);
+    if( msg.hasHeader(Marvin::Http::Headers::Name::ContentType) ){
+        hv = msg.getHeader(Marvin::Http::Headers::Name::ContentType);
         capture = headerValueMatched(hv, regexs);
     }
     return capture;

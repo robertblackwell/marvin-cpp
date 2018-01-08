@@ -11,6 +11,9 @@
 #include <exception>
 #include "rb_logger.hpp"
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #define NO_CTORTRACE 1
 #define NO_FDTRACE 1

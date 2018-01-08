@@ -8,6 +8,7 @@
 
 #include "uri_query.hpp"
 #include <regex>
+using namespace Marvin;
 
 void printMap(std::map<std::string, std::string> m)
 {

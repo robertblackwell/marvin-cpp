@@ -21,6 +21,7 @@ BIN=~/MyCurrentProjects/Pixie/MarvinCpp/DerivedData/MarvinCpp/Build/Products/Deb
 
 .PHONY: run_tests
 tests_run:
+	$(BIN)/test_headers
 	$(BIN)/test_server_client_body_format
 	$(BIN)/test_server_client_body_buffering
 	$(BIN)/test_buffers
@@ -35,6 +36,7 @@ tests_all: tests_clean tests_build
 
 .PHONY: tests_clean
 tests_clean:
+	xcodebuild -scheme test_headers clean
 	xcodebuild -scheme test_server_client_body_buffering clean 
 	xcodebuild -scheme test_server_client_body_format clean
 	xcodebuild -scheme test_buffers clean
@@ -47,6 +49,7 @@ tests_clean:
 
 .PHONY: tests_build
 tests_build:
+	@ xcodebuild -quiet -scheme test_headers build 
 	@xcodebuild -quiet -scheme test_server_client_body_buffering build
 	@ xcodebuild -quiet -scheme test_server_client_body_format build 
 	@ xcodebuild -quiet -scheme test_client_request build 

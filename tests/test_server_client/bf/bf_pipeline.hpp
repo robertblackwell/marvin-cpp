@@ -25,14 +25,14 @@ namespace body_format {
             void handler(Marvin::ErrorType& er, MessageReaderSPtr rdr);
             void exec();
         protected:
-            boost::asio::io_service&    m_io;
-            MessageBaseSPtr             m_msg;
-            Marvin::UriSPtr             m_uri_sptr;
-            ClientSPtr                  m_client;
-            std::vector<Testcase>       m_testcase;
-            int                         m_msg_index;
-            std::string                 m_ch_uuid;
-            std::string                 m_rh_uuid;
+            boost::asio::io_service&        m_io;
+            Marvin::Http::MessageBaseSPtr   m_msg;
+            Marvin::UriSPtr                 m_uri_sptr;
+            ClientSPtr                      m_client;
+            std::vector<Testcase>           m_testcase;
+            int                             m_msg_index;
+            std::string                     m_ch_uuid;
+            std::string                     m_rh_uuid;
     };
 }
 

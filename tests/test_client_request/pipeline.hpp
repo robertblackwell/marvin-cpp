@@ -30,13 +30,13 @@ class Pipeline
     void setup();
     void handler(Marvin::ErrorType err, MessageReaderSPtr rdr);
 
-    int                         m_counter;
-    int                         m_max_counter;
-    boost::asio::io_service&    m_io;
-    std::shared_ptr<Client>     m_client_sptr;
-    MessageBaseSPtr             m_msg_sptr;
-    Marvin::Uri                 m_uri;
-    std::string                 m_request_url;
+    int                             m_counter;
+    int                             m_max_counter;
+    boost::asio::io_service&        m_io;
+    std::shared_ptr<Client>         m_client_sptr;
+    Marvin::Http::MessageBaseSPtr   m_msg_sptr;
+    Marvin::Uri                     m_uri;
+    std::string                     m_request_url;
 
 };
 

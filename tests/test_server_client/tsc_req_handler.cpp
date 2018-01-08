@@ -17,15 +17,21 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "request.hpp"
 #include "uri_query.hpp"
 #include "tsc_req_handler.hpp"
+
+using namespace Marvin;
+using namespace Http;
+
 nlohmann::json jsonize_request(TscRequestHandler* req_handler, ServerContext& server_context, MessageReaderSPtr req)
 {
     Marvin::BufferChainSPtr bsp = req->getContentBuffer();
     std::string bodyString = bsp->to_string();
     nlohmann::json j;
+    std::vector<std::pair<std::string, std::string>> jz = (req->getHeaders()).jsonizable();
+//    nlohmann::json jj{jz};
     j["req"] = {
         {"method", req->getMethodAsString()},
         {"uri", req->uri()},
-        {"headers", req->getHeaders()},
+        {"headers", (req->getHeaders())},
         {"body",bodyString}
     };
     j["xtra"] = {
@@ -45,7 +51,7 @@ MessageBaseSPtr make_200_response(std::string body)
     msg->setHttpVersMinor(1);
 
     Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
-    msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(body.length() ));
+    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 MessageBaseSPtr make_response(int status_code, std::string status, std::string body)
@@ -58,13 +64,13 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->setHttpVersMinor(1);
 
     Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
-    msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(body.length() ));
+    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 
 bool apply_connection_close(MessageReaderSPtr req, MessageBaseSPtr response)
 {
-    response->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+    response->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
     return false;
 }
 
@@ -72,12 +78,12 @@ bool apply_keepalive_rules(MessageReaderSPtr req, MessageBaseSPtr response)
 {
     /// correctly handle keep-alive/close
     bool keep_alive;
-    if(req->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionKeepAlive) {
+    if(req->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionKeepAlive) {
         keep_alive = true;
-        response->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionKeepAlive);
+        response->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionKeepAlive);
     } else {
         keep_alive = false;
-        response->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+        response->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
     }
     return keep_alive;
 }
@@ -232,7 +238,7 @@ void TscRequestHandler::handle_get(
     };
     std::string body = f(parm);
     MessageBaseSPtr msg = make_200_response(body);
-    msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
     resp->asyncWrite(msg, body, [this, done](Marvin::ErrorType& err)
     {
         done(err, false);

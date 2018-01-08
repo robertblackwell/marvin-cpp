@@ -57,7 +57,7 @@ class PipeCollector : public ICollector
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,
-            MessageBaseSPtr resp);
+            Marvin::Http::MessageBaseSPtr resp);
     
     private:
         /**
@@ -69,7 +69,7 @@ class PipeCollector : public ICollector
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,
-            MessageBaseSPtr resp);
+            Marvin::Http::MessageBaseSPtr resp);
 
         boost::asio::strand         m_my_strand;
         boost::asio::io_service&    m_io;

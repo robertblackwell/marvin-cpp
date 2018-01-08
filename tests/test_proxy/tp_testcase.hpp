@@ -27,9 +27,9 @@ namespace tp {
         std::string                 m_proxy_scheme;
         std::string                 m_proxy_host;
         std::string                 m_proxy_port;
-        MessageBaseSPtr             m_msg_sptr;
+        Marvin::Http::MessageBaseSPtr             m_msg_sptr;
         
-        Testcase(MessageBaseSPtr msgSPtr, std::string scheme, std::string proxyHost, std::string proxyPort);
+        Testcase(Marvin::Http::MessageBaseSPtr msgSPtr, std::string scheme, std::string proxyHost, std::string proxyPort);
     };
 }
 #endif

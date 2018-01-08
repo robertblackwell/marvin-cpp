@@ -19,7 +19,7 @@ class ICollector
         /**
         ** Interface method for client code to call collect
         **/
-        virtual void collect(std::string scheme, std::string host, MessageReaderSPtr req, MessageBaseSPtr resp) = 0;
+        virtual void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::Http::MessageBaseSPtr resp) = 0;
     
     private:
 };

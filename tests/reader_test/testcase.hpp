@@ -23,7 +23,7 @@ public:
     std::string result_first_line,
     int status_code,
     Marvin::ErrorType result_onheader_err,
-    std::map<std::string, std::string> result_headers,
+    Marvin::Http::Headers::Initializer result_headers,
     std::string result_body
 );
     std::string getDescription();
@@ -31,7 +31,7 @@ public:
     std::vector<std::string> buffers();
     bool verify_first_line(std::string fl);
     
-    bool verify_headers(HttpHeadersType h);
+    bool verify_headers(Marvin::Http::Headers& h);
     
     bool verify_body(std::string b);
     
@@ -41,7 +41,7 @@ public:
     
     Marvin::ErrorType result_onheaders_err();
 
-    std::map<std::string, std::string> result_headers();
+    Marvin::Http::Headers& result_headers();
     
     std::string result_body();
     
@@ -59,8 +59,8 @@ public:
     int                                     _result_status_code;
     Marvin::ErrorType                       _result_onheaders_err;
     std::string                             _result_first_line;
-    std::map<std::string, std::string>      _result_headers_vec;
-    std::map<std::string, std::string>      _result_headers;
+    Marvin::Http::Headers::Initializer      _result_headers_vec;
+    Marvin::Http::Headers                   _result_headers;
     std::string                             _result_body;
 };
 

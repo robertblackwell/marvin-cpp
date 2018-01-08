@@ -8,6 +8,8 @@
 #include "http_parser.h"
 #include "http_header.hpp"
 #include "i_message.hpp"
+namespace Marvin {
+namespace Http {
 /**
 * \defgroup HttpMessage
 * \brief This group deals with the structure, parsing and construction of HTTP/1.1 messages.
@@ -53,16 +55,16 @@ public:
     void setHttpVersMinor(int minor);
     int  httpVersMinor();
     
-    std::map<std::string, std::string>& getHeaders();
+    Marvin::Http::Headers& getHeaders();
     bool hasHeader( std::string key);
     std::string header(std::string key);
     std::string getHeader(std::string key);
     void setHeader(std::string key, std::string value);
     void removeHeader( std::string key);
-    void    dumpHeaders(std::ostream& os);
+    void dumpHeaders(std::ostream& os);
     
-    void    setTrailer(std::string key, std::string value);
-    bool    hasTrailer( std::string key);
+    void setTrailer(std::string key, std::string value);
+    bool hasTrailer( std::string key);
     std::string trailer(std::string key);
 
     std::string  str();
@@ -71,22 +73,22 @@ public:
     bool    isRequest();
     
     /// \brief return the current dechunked conent buffer
-    Marvin::BufferChainSPtr getContentBuffer();
+    ::Marvin::BufferChainSPtr getContentBuffer();
     /// \vrief sets the dechunked content buffer but does not set the CONTENT-LENGTH headers;
     /// this is because even for chunked incoming messages the de-chunked buffer is attached
-    void setContentBuffer(Marvin::BufferChainSPtr bufSPtr);
+    void setContentBuffer(::Marvin::BufferChainSPtr bufSPtr);
 
     /// \brief return the current dechunked conent buffer
-    Marvin::BufferChainSPtr getContent();
+    ::Marvin::BufferChainSPtr getContent();
     /// \brief sets the dechunked content buffer and aslo updates the content-length field;
     /// use this method when preparing an outgoing message
-    void setContent(Marvin::BufferChainSPtr bufSPtr);
+    void setContent(::Marvin::BufferChainSPtr bufSPtr);
     /// \brief sets the dechunked content buffer and aslo updates the content-length field;
     /// use this method when preparing an outgoing message
     void setContent(std::string content);
 
     friend std::string traceMessage(MessageBase& msg);
-    friend void serializeHeaders(MessageBase& msg, Marvin::MBuffer& buf);
+    friend void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
 //    friend void serializeHeaders(MessageBase& msg, boost::asio::streambuf& buf);
     friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);
 
@@ -103,11 +105,14 @@ protected:
     int									m_http_major;
     int									m_http_minor;
 
-    HttpHeadersType                     m_headers;
-    HttpHeadersType                     m_trailers;
-    
+//    Marvin::Http::Headers                     m_headers;
+//    Marvin::Http::Headers                     m_trailers;
+    Marvin::Http::Headers               m_headers;
+    Marvin::Http::Headers               m_trailers;
+
     Marvin::BufferChainSPtr             m_body_chain_sptr;
     
 };
-
+} // namespace Http
+} // namespace Marvin
 #endif

@@ -2,6 +2,9 @@
 #include "multiple.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
+using namespace Marvin;
+using namespace Marvin::Http;
+
 /**
 * This file tests mutiple simultanious requests to by different client objects
 * to ensure isloation between instances
@@ -20,7 +23,7 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
     
     msg->setMethod(HttpMethod::GET);
     helpers::applyUriNonProxy(msg, uri);
-    msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {

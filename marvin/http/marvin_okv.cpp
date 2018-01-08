@@ -1,8 +1,58 @@
 #include "marvin_okv.hpp"
-
+using namespace nlohmann;
 #pragma mark - implementation of Iterator
 using OKV = OrderedKeyValues;
 using OI = OrderedKeyValues::Iterator;
+
+void to_json(json& j, const OrderedKeyValues& h)
+{
+    auto jz = h.jsonizable();
+//    nlohmann::json j;
+    typedef std::vector<std::pair<std::string, std::string>> kvt;
+    for(kvt::iterator it = jz.begin(); it != jz.end(); it++) {
+        std::string f = (*it).first;
+        std::string s = (*it).second;
+        nlohmann::json jtmp({ {"key",f}, {"value", s}});
+//        std::cout << "" << jtmp.dump() << std::endl;
+        j.push_back(jtmp);
+    }
+}
+
+void from_json(const json& j, OrderedKeyValues& h)
+{
+    for (json::const_iterator it = j.cbegin(); it != j.cend(); ++it) {
+      auto k = (*it)["key"].get<std::string>();
+      auto v = (*it)["value"].get<std::string>();
+//      std::cout << "k: " << k << " v:" << v << std::endl;
+      h[k] = v;
+    }
+}
+
+void OKV::to_json(json& j, const OrderedKeyValues& h)
+{
+    auto jz = h.jsonizable();
+//    nlohmann::json j;
+    typedef std::vector<std::pair<std::string, std::string>> kvt;
+    for(kvt::iterator it = jz.begin(); it != jz.end(); it++) {
+        std::string f = (*it).first;
+        std::string s = (*it).second;
+        nlohmann::json jtmp({ {"key",f}, {"value", s}});
+        std::cout << "" << jtmp.dump() << std::endl;
+        j.push_back(jtmp);
+    }
+}
+
+void OKV::from_json(const json& j, OrderedKeyValues& h)
+{
+    for (json::const_iterator it = j.cbegin(); it != j.cend(); ++it) {
+      auto k = (*it)["key"].get<std::string>();
+      auto v = (*it)["value"].get<std::string>();
+      std::cout << "k: " << k << " v:" << v << std::endl;
+      h[k] = v;
+    }
+}
+
+
 OI::self_type OI::operator++()
 {
     self_type i = *this;
@@ -35,7 +85,7 @@ bool OI::operator!=(const self_type& rhs)
 OKV::OrderedKeyValues()
 {
 }
-
+#ifdef OKVMAP
 OKV::OrderedKeyValues(std::vector<std::pair<std::string, std::string>> initialValue)
 {
     typedef std::vector<std::pair<std::string, std::string>> okv_init;
@@ -43,6 +93,15 @@ OKV::OrderedKeyValues(std::vector<std::pair<std::string, std::string>> initialVa
         set((*it).first, (*it).second);
     }
 }
+#else
+OKV::OrderedKeyValues(std::map<std::string, std::string> initialValue)
+{
+    typedef std::map<std::string, std::string> okvm;
+    for(okvm::iterator it = initialValue.begin(); it != initialValue.end(); it++) {
+        set((*it).first, (*it).second);
+    }
+}
+#endif
 
 OKV::size_type OKV::size() const { return (size_type)m_keys.size(); }
 
@@ -119,6 +178,10 @@ void OKV::remove(std::vector<std::string> keys)
         index++;
     }
 }
+void OKV::erase(std::string k)
+{
+    remove(k);
+}
 OKV::Iterator OrderedKeyValues::find(std::string k)
 {
     auto vi = m_keys.find(k);
@@ -131,6 +194,17 @@ OKV::Iterator OrderedKeyValues::find(std::string k)
 bool OKV::has(std::string k)
 {
     return ! (find(k) == this->end());
+}
+std::vector<std::pair<std::string, std::string>> OKV::jsonizable() const
+{
+    std::vector<std::pair<std::string, std::string>> result;
+    typedef std::vector<KVPair> kva;
+    kva tmp = m_key_value_vec;
+    for(kva::const_iterator it = tmp.cbegin(); it != tmp.cend(); it++) {
+        std::pair<std::string, std::string> p{(*it).first, (*it).second};
+        result.push_back(p);
+    }
+    return result;
 }
 
 OKV::Iterator OrderedKeyValues::begin()

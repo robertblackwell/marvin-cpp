@@ -13,6 +13,9 @@
 #define kHEADER_STATE_FIELD   11
 #define kHEADER_STATE_VALUE   12
 
+namespace Marvin {
+namespace Http {
+
 /// \ingroup HttpMessage
 struct ParserError {
     std::string         name;
@@ -212,12 +215,15 @@ protected:
     simple_buffer_t*   status_buf;
     simple_buffer_t*   name_buf;
     simple_buffer_t*   value_buf;
-    HttpHeadersType    headers;
+    Marvin::Http::Headers    headers;
     ////////////////////////////////////////////////////////////////////
     
     
 	
 };
+
+} // namespave Http
+} // namespace Marvin
 #endif
 
 

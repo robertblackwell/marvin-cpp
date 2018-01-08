@@ -11,6 +11,7 @@
 #include "message.hpp"
 #include "tp_testcase.hpp"
 
-std::vector<tp::TestcaseSPtr> makeTestcases();
+std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases();
+std::vector<tp::TestcaseSPtr> makeTestServerTestcases();
 
 #endif /* tp_proxt_tests_hpp */

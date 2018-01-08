@@ -5,6 +5,10 @@
 #include "http_parser.h"
 #include "http_header.hpp"
 #include "message.hpp"
+using namespace Marvin;
+using namespace Marvin::Http;
+namespace Marvin{
+namespace Http{
 
 std::string traceMessage(MessageBase& msg)
 {
@@ -16,13 +20,13 @@ std::string traceMessage(MessageBase& msg)
     }else{
         ss << "HTTP/1." << msg.httpVersMinor() << " " << msg.statusCode() << " " << msg.status();
     }
-    if( msg.hasHeader(HttpHeader::Name::ContentLength) ){
-        ss << "ContentLen : " << msg.getHeader(HttpHeader::Name::ContentLength);
+    if( msg.hasHeader(Marvin::Http::Headers::Name::ContentLength) ){
+        ss << "ContentLen : " << msg.getHeader(Marvin::Http::Headers::Name::ContentLength);
     }else{
         ss << "No content length header";
     }
-    if( msg.hasHeader(HttpHeader::Name::TransferEncoding) ){
-        ss << "TransferEncodin : " << msg.getHeader(HttpHeader::Name::TransferEncoding);
+    if( msg.hasHeader(Marvin::Http::Headers::Name::TransferEncoding) ){
+        ss << "TransferEncodin : " << msg.getHeader(Marvin::Http::Headers::Name::TransferEncoding);
     }else{
         ss << "No transfer encoding";
     }
@@ -121,7 +125,7 @@ MessageBase::httpVersMinor(){return m_http_minor; }
 
 void
 MessageBase::setHeader(std::string key, std::string value){
-    HttpHeader::canonicalKey(key);
+    ::Marvin::Http::Headers::canonicalKey(key);
     std::string v(value);
     std::string v2 = boost::algorithm::trim_copy(v);
     m_headers[key] = v2;
@@ -129,13 +133,13 @@ MessageBase::setHeader(std::string key, std::string value){
 
 bool
 MessageBase::hasHeader( std::string key){
-    HttpHeader::canonicalKey(key);
+    ::Marvin::Http::Headers::canonicalKey(key);
     return ( m_headers.find(key) != m_headers.end() );
 };
 
 std::string
 MessageBase::header(std::string key){
-    HttpHeader::canonicalKey(key);
+    ::Marvin::Http::Headers::canonicalKey(key);
     if( hasHeader(key) ){ return m_headers[key]; } else { return nullptr;}
 }
 
@@ -143,7 +147,7 @@ void
 MessageBase::removeHeader( std::string keyIn){
     std::string key(keyIn);
     
-    HttpHeader::canonicalKey(key);
+    ::Marvin::Http::Headers::canonicalKey(key);
     auto e = m_headers.end();
     auto x = m_headers.find(key);
     auto y = hasHeader(key);
@@ -151,18 +155,19 @@ MessageBase::removeHeader( std::string keyIn){
     auto zz = getHeader(key);
     if( m_headers.find(key) != m_headers.end()  )
         m_headers.erase(key);
+//        m_headers.remove(key);
 }
 
 std::string
 MessageBase::getHeader(std::string key){
-    HttpHeader::canonicalKey(key);
+    ::Marvin::Http::Headers::canonicalKey(key);
     if( m_headers.find(key) != m_headers.end() ){
         return m_headers[key];
     }
     return nullptr;
 }
 //std::map<std::string, std::string>&
-HttpHeadersType&
+Marvin::Http::Headers&
 MessageBase::getHeaders(){
     return m_headers;
 }
@@ -174,7 +179,7 @@ MessageBase::str(){
     } else {
         ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
     }
-    std::map<std::string, std::string>::iterator it = m_headers.begin();
+    Headers::Iterator it = m_headers.begin();
     while(it != m_headers.end())
     {
         ss << it->first << ": " << it->second << "\r\n";
@@ -192,7 +197,7 @@ void
 MessageBase::setContentBuffer(Marvin::BufferChainSPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
-//    setHeader(HttpHeader::Name::ContentLength, std::to_string(bufSPtr->size()));
+//    setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(bufSPtr->size()));
 }
 Marvin::BufferChainSPtr
 MessageBase::getContent()
@@ -203,20 +208,20 @@ void
 MessageBase::setContent(Marvin::BufferChainSPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
-    removeHeader(HttpHeader::Name::TransferEncoding);
-    setHeader(HttpHeader::Name::ContentLength, std::to_string(bufSPtr->size()));
+    removeHeader(Marvin::Http::Headers::Name::TransferEncoding);
+    setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(bufSPtr->size()));
 }
 void MessageBase::setContent(std::string content)
 {
     m_body_chain_sptr = Marvin::BufferChain::makeSPtr(content);
-    removeHeader(HttpHeader::Name::TransferEncoding);
-    setHeader(HttpHeader::Name::ContentLength, std::to_string(m_body_chain_sptr->size()));
+    removeHeader(Marvin::Http::Headers::Name::TransferEncoding);
+    setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(m_body_chain_sptr->size()));
 }
 
 void
 MessageBase::dumpHeaders(std::ostream& os)
 {
-    std::map<std::string, std::string>::iterator it = m_headers.begin();
+    Headers::Iterator it = m_headers.begin();
     while(it != m_headers.end())
     {
         os<<it->first<<" : "<<it->second<<std::endl;
@@ -236,3 +241,6 @@ std::ostream &operator<< (std::ostream &os, MessageBase &msg)
     os << msg.str() ;
     return os;
 }
+
+} //namespace Http
+} //namespace Marvin

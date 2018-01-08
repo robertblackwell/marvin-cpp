@@ -47,7 +47,7 @@ void CollectorBase::postedCollect(
         std::string scheme,
         std::string host,
         MessageReaderSPtr req,
-        MessageBaseSPtr resp)
+        Marvin::Http::MessageBaseSPtr resp)
 {
     
     /**
@@ -62,7 +62,7 @@ void CollectorBase::collect(
         std::string scheme,
         std::string host,
         MessageReaderSPtr req,
-        MessageBaseSPtr resp)
+        Marvin::Http::MessageBaseSPtr resp)
 {
     std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << std::endl;
     if(! m_pipe_open )

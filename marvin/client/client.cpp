@@ -32,7 +32,8 @@ using boost::asio::ip::tcp;
 using boost::system::error_code;
 using boost::asio::io_service;
 using boost::asio::streambuf;
-
+using namespace Marvin;
+using namespace Marvin::Http;
 
 Client::Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port)
 : _io(io), _scheme(scheme), _server(server), _port(port)
@@ -194,7 +195,7 @@ void Client::setContentLength()
     if( _body_mbuffer_sptr != nullptr ) {
         len = _body_mbuffer_sptr->size();
     }
-    msg->setHeader(HttpHeader::Name::ContentLength, std::to_string(len));
+    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(len));
 }
 MessageReaderSPtr Client::getResponse()
 {

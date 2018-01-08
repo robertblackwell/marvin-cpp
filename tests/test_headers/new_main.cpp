@@ -11,10 +11,24 @@
 #include <cassert>
 #define CATCH_CONFIG_MAIN
 #include <catch/catch.hpp>
+#include "json.hpp"
 #include "marvin_okv.hpp"
+#include "http_header.hpp"
+
+using namespace nlohmann;
 
 TEST_CASE("OKV","")
 {
+    Marvin::Http::Headers hh;
+    Marvin::Http::Headers headers{{
+        {"aaa", "AAAAA"},
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"33","3333333"},
+        {"44","4444444"}
+    }};
     OrderedKeyValues hdrs{};
     OrderedKeyValues hdrs02{{
         {"aaa", "AAAAA"},
@@ -34,6 +48,17 @@ TEST_CASE("OKV","")
         {"33","3333333"},
         {"44","4444444"}
     });
+    std::map<std::string, std::string> vals{
+        {"aaa", "AAAAA"},
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"33","3333333"},
+        {"44","4444444"}
+    };
+//    Marvin::Http::Headers h(vals);
+//    OrderedKeyValues hdrs06(vals);
     hdrs["one"] = "headers1";
     hdrs["two"] = "headers2";
     hdrs["three"] = "headers3";
@@ -94,6 +119,58 @@ TEST_CASE("OKV","")
         auto hpk = h->key();
         auto hpv = h->value();
         CHECK(true);
+    }
+    SECTION("demonstrate_json")
+    {
+        auto jz = hdrs.jsonizable();
+        nlohmann::json j;
+        typedef std::vector<std::pair<std::string, std::string>> kvt;
+        for(kvt::iterator it = jz.begin(); it != jz.end(); it++) {
+            std::string f = (*it).first;
+            std::string s = (*it).second;
+            nlohmann::json jtmp({ {"key",f}, {"value", s}});
+            std::cout << "" << jtmp.dump() << std::endl;
+            j.push_back(jtmp);
+        }
+        std::cout << "" << j.dump() << std::endl;
+        std::string js = j.dump();
+        nlohmann::json jout = nlohmann::json::parse(js);
+        OrderedKeyValues kvOut;
+        for (nlohmann::json::iterator it = jout.begin(); it != jout.end(); ++it) {
+          auto k = (*it)["key"].get<std::string>();
+          auto v = (*it)["value"].get<std::string>();
+          std::cout << "k: " << k << " v:" << v << std::endl;
+          kvOut[k] = v;
+        }
+        auto b = (kvOut == hdrs);
+        std::cout << "done" << std::endl;
+    }
+    SECTION("json_with_fucntions")
+    {
+        nlohmann::json j;
+        OrderedKeyValues::to_json(j, hdrs);
+        std::cout << j.dump() << std::endl;
+        OrderedKeyValues kvout;
+        OrderedKeyValues::from_json(j,kvout);
+        auto b = (hdrs == kvout);
+        std::cout << "done" << std::endl;
+    }
+    SECTION("json the correct wayt")
+    {
+        nlohmann::json j(hdrs);
+        std::cout << j.dump() << std::endl;
+        nlohmann::json jout = nlohmann::json::parse(j.dump());
+        OrderedKeyValues kvout = jout.get<OrderedKeyValues>();
+        auto b = (hdrs == kvout);
+        std::cout << "done" << std::endl;
+    }
+    SECTION("json headers")
+    {
+        nlohmann::json j(headers);
+        std::cout << j.dump() << std::endl;
+        Marvin::Http::Headers h2 = j.get<Marvin::Http::Headers>();
+        std::cout << j.dump() << std::endl;
+
     }
 }
 
