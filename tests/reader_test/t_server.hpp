@@ -33,13 +33,13 @@ class TServer
         void read_full_message_test();
         void read_headers_body_test();
 
-        long                                            _port;
-        boost::asio::io_service&                         _io;
-        boost::asio::ip::tcp::acceptor                  _acceptor;
-        TCPConnectionSPtr                               _conn_sptr;
-        MessageReaderSPtr                             _rdr;
-        Testcase                                        _tc;
-        TestrunnerSPtr                                  _runner_sptr;
+        long                                            m_port;
+        boost::asio::io_service&                        m_io;
+        boost::asio::ip::tcp::acceptor                  m_acceptor;
+        TCPConnectionSPtr                               m_conn_sptr;
+        MessageReaderSPtr                               m_rdr;
+        Testcase                                        m_tc;
+        TestrunnerSPtr                                  m_runner_sptr;
 };
 
 #endif

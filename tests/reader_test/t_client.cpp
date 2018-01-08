@@ -16,31 +16,31 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 
 TClient::TClient(boost::asio::io_service& io, std::string scheme, std::string server, std::string port, Testcase tc)
-: _io(io), _scheme(scheme), _server(server), _port(port), _testcase(tc), _timer(_io)
+: m_io(io), m_scheme(scheme), m_server(server), m_port(port), m_testcase(tc), m_timer(m_io)
 {
-    _conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(_io, _scheme, _server, _port));
+    m_conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(m_io, m_scheme, m_server, m_port));
 }
 
 void TClient::send_testcase_buffers(SysErrorCb cb)
 {
     LogDebug("");
-    _buffer_index = 0;
-    _test_cb = cb;
+    m_buffer_index = 0;
+    m_test_cb = cb;
     connect();
 }
 
 void TClient::connect()
 {
     LogDebug("");
-    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
+    m_conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
         LogDebug("connected");
         if( ! err ){
             auto wbf = std::bind(&TClient::wait_before_write, this);
-            _io.post(wbf);
+            m_io.post(wbf);
         } else {
             Marvin::ErrorType me = err;
             LogError("error_value", err.value(), " message: ", err.message());
-            _test_cb(me);
+            m_test_cb(me);
         }
     });
 
@@ -49,41 +49,41 @@ void TClient::connect()
 void TClient::write_line()
 {
     LogDebug("");
-    std::string line = _testcase.lineAt(_buffer_index);
+    std::string line = m_testcase.lineAt(m_buffer_index);
     LogDebug(" line: ", line);
     if (line == "eof" ) {
-        _conn_sptr->shutdown();
+        m_conn_sptr->shutdown();
     } else if (line == "close") {
-        _conn_sptr->close();
+        m_conn_sptr->close();
     } else {
         auto hf = std::bind(&TClient::handle_write_complete, this, std::placeholders::_1, std::placeholders::_2);
         auto buf = boost::asio::buffer(line.c_str(), line.size());
         
-        _conn_sptr->asyncWrite(line, hf);
+        m_conn_sptr->asyncWrite(line, hf);
     }
 }
 void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
     LogDebug("");
     if( !err) {
-        _buffer_index++;
-        if(_buffer_index >= _testcase.buffers().size()) {
+        m_buffer_index++;
+        if(m_buffer_index >= m_testcase.buffers().size()) {
             Marvin::ErrorType err_val = err;
-            _test_cb(err_val);
+            m_test_cb(err_val);
         } else {
             write_line();
         }
     } else {
         Marvin::ErrorType err_val = err;
-        _test_cb(err_val);
+        m_test_cb(err_val);
     }
 }
 void TClient::wait_before_write()
 {
     LogDebug("");
-    _timer.expires_from_now(boost::posix_time::milliseconds(100));
+    m_timer.expires_from_now(boost::posix_time::milliseconds(100));
 //    auto ds = boost::bind(&TClient::write_line, this, std::placeholders::_1);
-    _timer.async_wait([this](const boost::system::error_code& err) {
+    m_timer.async_wait([this](const boost::system::error_code& err) {
         write_line();
     });
 

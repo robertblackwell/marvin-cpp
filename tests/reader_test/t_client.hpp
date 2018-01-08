@@ -47,15 +47,15 @@ class TClient
         */
         void wait_before_write();
     
-        boost::asio::io_service&    _io;
-        std::string                 _scheme;
-        std::string                 _server;
-        std::string                 _port;
-        Testcase                    _testcase;
-        TCPConnectionSPtr           _conn_sptr;
-        int                         _buffer_index; /// index into the vector of buffers in the test case
-        MarvinErrorCb               _test_cb;
-        boost::asio::deadline_timer _timer;
+        boost::asio::io_service&    m_io;
+        std::string                 m_scheme;
+        std::string                 m_server;
+        std::string                 m_port;
+        Testcase                    m_testcase;
+        TCPConnectionSPtr           m_conn_sptr;
+        int                         m_buffer_index; /// index into the vector of buffers in the test case
+        MarvinErrorCb               m_test_cb;
+        boost::asio::deadline_timer m_timer;
 
 };
 #endif

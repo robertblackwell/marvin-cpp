@@ -32,13 +32,13 @@ class Testrunner
 {
     
 public:
-    MessageReaderSPtr           rdr_;
-    ISocketSPtr                 conn_;
-    boost::asio::io_service&    io_;
-    std::string                 body;
-    std::ostringstream          bodyStream;
-    Testcase                    _tcObj;
-    std::string                 body_accumulator;
+    MessageReaderSPtr           m_rdr;
+    ISocketSPtr                 m_conn;
+    boost::asio::io_service&    m_io;
+    std::string                 m_body;
+    std::ostringstream          m_bodyStream;
+    Testcase                    m_tcObj;
+    std::string                 m_body_accumulator;
 
     /**
     * Constructor - tcIndex is an index into the set of testcases

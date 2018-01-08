@@ -15,7 +15,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "message_reader.hpp"
 #include "t_server.hpp"
 
-TServer::TServer(boost::asio::io_service& io, Testcase tc): _io(io), _tc(tc), _acceptor(_io)
+TServer::TServer(boost::asio::io_service& io, Testcase tc): m_io(io), m_tc(tc), m_acceptor(m_io)
 {
 
 }
@@ -35,10 +35,10 @@ void TServer::initialize()
 //
 //    waitForStop();
     
-    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), _port);
-    _acceptor.open(endpoint.protocol());
-    _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-    _acceptor.bind(endpoint);
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), m_port);
+    m_acceptor.open(endpoint.protocol());
+    m_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+    m_acceptor.bind(endpoint);
 
 }
 TServer::~TServer()
@@ -47,9 +47,9 @@ TServer::~TServer()
 }
 void TServer::listen(long port, std::function<void(MessageReaderSPtr rdr)> cb)
 {
-    _port = port;
+    m_port = port;
     initialize();
-    _acceptor.listen();
+    m_acceptor.listen();
     startAccept();
 //    // start the accept process on the _serverStrand
 //    auto hf = std::bind(&TServer::startAccept, this);
@@ -61,11 +61,11 @@ void TServer::listen(long port, std::function<void(MessageReaderSPtr rdr)> cb)
 void TServer::startAccept()
 {
     LogInfo("");
-    _conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(_io));
+    m_conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(m_io));
 //    IReadSocket* rd_sock_ifce = _conn_sptr.get();
-    _rdr = std::shared_ptr<MessageReader>(new MessageReader(_io, _conn_sptr));
+    m_rdr = std::shared_ptr<MessageReader>(new MessageReader(m_io, m_conn_sptr));
     auto hf = std::bind(&TServer::handleAccept, this, std::placeholders::_1);
-    _conn_sptr->asyncAccept(_acceptor, hf);
+    m_conn_sptr->asyncAccept(m_acceptor, hf);
 }
 
 //-------------------------------------------------------------------------------------
@@ -74,17 +74,17 @@ void TServer::startAccept()
 void TServer::handleAccept(const boost::system::error_code& err)
 {
     LogDebug("");
-    if (! _acceptor.is_open()){
+    if (! m_acceptor.is_open()){
         LogWarn("Accept is not open ???? WTF - lets TERM the server");
         return; // something is wrong
     }
     if (!err){
         LogInfo("got a client - start reading");
-        _runner_sptr = std::shared_ptr<Testrunner>(new Testrunner(_io, _conn_sptr, _tc));
+        m_runner_sptr = std::shared_ptr<Testrunner>(new Testrunner(m_io, m_conn_sptr, m_tc));
         if( true )
-            _runner_sptr->run_FullMessageRead();
+            m_runner_sptr->run_FullMessageRead();
         else
-            _runner_sptr->run_StreamingBodyRead();
+            m_runner_sptr->run_StreamingBodyRead();
     }else{
         LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
     }
