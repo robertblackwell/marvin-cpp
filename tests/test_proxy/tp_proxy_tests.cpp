@@ -1,10 +1,13 @@
 #include <catch/catch.hpp>
+#include "server_runner.hpp"
+#include "tp_proxy_runner.hpp"
 #include "forward_helpers.hpp"
 #include "tp_proxy_tests.hpp"
 #include "tp_testcase.hpp"
 #include "tp_post.hpp"
-
-std::vector<tp::TestcaseSPtr> makeTestcases()
+using namespace Marvin;
+using namespace Http;
+std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases()
 {
     /// this sends the request to our mitm proxy
     std::string pScheme = "http";
@@ -18,7 +21,7 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         // note requests through a proxy must provide absolute uri on the first line
         // proxy mat turn that into a relative url
         Marvin::Uri uri("http://whiteacorn/utests/echo/index.php");
-        helpers::applyUri(msg, uri, true);
+        helpers::applyUriProxy(msg, uri);
 //        msg->setUri("http://localhost/echo");
 //        msg->setHeader(Marvin::Http::Headers::Name::Host, "localhost:9991");
         msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
@@ -38,13 +41,22 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         msgTable.push_back(tc);
     }
     return msgTable;
-#if 0
+}
+std::vector<tp::TestcaseSPtr> makeTestServerTestcases()
+{
+    /// this sends the request to our mitm proxy
+    std::string pScheme = "http";
+    std::string pHost = "localhost";
+    std::string pPort = "9992";
+#if 1
+    std::vector<tp::TestcaseSPtr> msgTable;
     {
         MessageBaseSPtr msg = std::make_shared<MessageBase>();
         msg->setMethod(HTTP_POST);
         // note requests through a proxy must provide absolute uri on the first line
         // proxy mat turn that into a relative url
-        msg->setUri("http://localhost:9991/somepath/script.php?parm=123456#fragment");
+//        msg->setUri("http://localhost:9991/somepath/script.php?parm=123456#fragment");
+        msg->setUri("http://localhost:9991/echo");
         msg->setHeader(Marvin::Http::Headers::Name::Host, "localhost:9991");
         msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
         msg->setHeader(
@@ -88,13 +100,32 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
     return msgTable;
 #endif
 }
-TEST_CASE("mtim", "first")
+#if 1
+TEST_CASE("proxy_whiteacorn", "[wa]")
 {
+//    startProxyServer(9992);
     boost::asio::io_service io;
-    auto vect = makeTestcases();
+    auto vect = makeWhiteacornTestcases();
     auto v = vect[0];
-    tp::TestcaseSPtr tcSPtr = makeTestcases()[0];
+    tp::TestcaseSPtr tcSPtr = makeWhiteacornTestcases()[0];
     tp::PostTest r(io, tcSPtr);
     r.exec();
     io.run();
+//    stopProxyServer();
+//    sleep(10);
+}
+#endif
+TEST_CASE("proxy_testserver", "[ts]")
+{
+//    startTestServer(9991);
+//    startProxyServer(9992);
+    boost::asio::io_service io;
+    auto vect = makeTestServerTestcases();
+    auto v = vect[0];
+    tp::TestcaseSPtr tcSPtr = makeTestServerTestcases()[0];
+    tp::PostTest r(io, tcSPtr);
+    r.exec();
+    io.run();
+//    stopProxyServer();
+//    stopTestServer();
 }

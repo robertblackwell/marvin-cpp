@@ -25,13 +25,13 @@ namespace tp {
             void handler(Marvin::ErrorType& er, MessageReaderSPtr rdr);
             void exec();
         protected:
-            boost::asio::io_service&    m_io;
-            MessageBaseSPtr             m_msg_sptr;
-            ClientSPtr                  m_client_sptr;
-            TestcaseSPtr                m_testcase_sptr;
-            std::string                 m_scheme;
-            std::string                 m_proxy_host;
-            std::string                 m_proxy_port;
+            boost::asio::io_service&        m_io;
+            Marvin::Http::MessageBaseSPtr   m_msg_sptr;
+            ClientSPtr                      m_client_sptr;
+            TestcaseSPtr                    m_testcase_sptr;
+            std::string                     m_scheme;
+            std::string                     m_proxy_host;
+            std::string                     m_proxy_port;
     };
 }
 

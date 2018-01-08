@@ -12,11 +12,12 @@ namespace test{
 namespace helpers{
 Marvin::Http::Headers headersFromJson(nlohmann::json& j)
 {
-    std::map<std::string, std::string> result;
-    for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
-        std::cout << it.key() << " : " << it.value() << "\n";
-        result[it.key()] = it.value();
-    }
+   Marvin::Http::Headers result = j.get<Marvin::Http::Headers>();
+//;
+//    for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
+//        std::cout << it.key() << " : " << it.value() << "\n";
+//        result[it.key()] = it.value();
+//    }
     return result;
 }
 bool checkHeaders(Marvin::Http::Headers& h1, Marvin::Http::Headers h2)

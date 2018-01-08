@@ -24,14 +24,14 @@ int main( int argc, char* argv[] )
 //    RBLogging::setEnabled(false);
     RBLogging::enableForLevel(LOG_LEVEL_WARN);
     printf("%s\n", __FILE__);
-//    startTestServer(9992);
+    startTestServer(9991);
     startProxyServer(9992);
     
     char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
     int _argc = 2;
     int result = Catch::Session().run( argc, argv );
     
-//    stopTestServer();
+    stopTestServer();
     stopProxyServer();
     printf("%s\n", __FILE__);
     return result;
