@@ -34,7 +34,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -62,7 +62,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
 //                    {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -90,7 +90,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -119,7 +119,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"close"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -155,7 +155,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"close"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -195,7 +195,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                  // expected headers
-                std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -235,7 +235,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"close"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -276,7 +276,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"close"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"close"},
@@ -314,7 +314,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_eof_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"}
@@ -342,7 +342,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_eof_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"}
@@ -369,7 +369,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_eof_cases()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"}
@@ -411,7 +411,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_timeout_cases()
                 // expect error code in onHeader
                 asio_op_aborted,
                 // expexted headers
-                std::map< std::string, std::string >{
+                    Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"close"}

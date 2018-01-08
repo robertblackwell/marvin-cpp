@@ -26,10 +26,12 @@ nlohmann::json jsonize_request(TscRequestHandler* req_handler, ServerContext& se
     Marvin::BufferChainSPtr bsp = req->getContentBuffer();
     std::string bodyString = bsp->to_string();
     nlohmann::json j;
+    std::vector<std::pair<std::string, std::string>> jz = (req->getHeaders()).jsonizable();
+//    nlohmann::json jj{jz};
     j["req"] = {
         {"method", req->getMethodAsString()},
         {"uri", req->uri()},
-        {"headers", req->getHeaders()},
+        {"headers", (req->getHeaders())},
         {"body",bodyString}
     };
     j["xtra"] = {

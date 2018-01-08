@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include "json.hpp"
 #include "marvin_okv.hpp"
 
 /// \ingroup HttpMessage
@@ -15,13 +16,24 @@
 /// \ingroup HttpMessage
 
 using HttpHeaderFilterSetType = std::set<std::string>;
-
+using namespace nlohmann;
 /// \ingroup HttpMessage
 namespace Marvin {
 namespace Http {
-    class Headers : public std::map<std::string, std::string>
+    class Headers;
+    
+    void to_json(json& j, const Headers& h);
+    void from_json(const json& j, Headers& h);
+
+    class Headers : public  OrderedKeyValues    //std::map<std::string, std::string>
     {
         public:
+            Headers();
+
+            /// \brief typedef for STL type that can be used to initialize headers
+            typedef std::vector<std::pair<std::string, std::string>>  Initializer;
+
+            Headers(std::vector<std::pair<std::string, std::string>> vals);
             /// \ingroup HttpMessage
             /// \brief Converts a c-string header key to canonical form
             static void canonicalKey(char* key, int length);
@@ -32,39 +44,7 @@ namespace Http {
             /// \ingroup HttpMessage
             /// \brief  Filters a header map to remove all headers whose keys are IN the filterList
             static void copyExcept(Marvin::Http::Headers& source, Marvin::Http::Headers& dest, std::set<std::string> filterList);
-#if 0
-            /// \ingroup HttpMessage
-            /// \brief  Filters a header map to remove all headers whose keys are IN the filterList
-            static void removeInList(Marvin::Http::Headers& hdrs, std::vector<std::string> filterList);
-//
-//            static void removeHeadersInList(Marvin::Http::Headers& hdrs, std::vector<std::string> list);
-
-            /// \ingroup HttpMessage
-            /// \brief  Filters a header map to remove all headers whose keys are NOT IN the filterList;
-            static void keepInList(Marvin::Http::Headers& hdrs, std::set<std::string> filterList);
-//            static void removeHeadersNotInList(Marvin::Http::Headers& hdrs, std::vector<std::string> list);
-
-            /// \ingroup HttpMessage
-            /// \brief  Filters a header map, calls the cb function for all headers
-            /// whose keys ARE NOT IN the filterList
-            static void filterNotInList(
-                Marvin::Http::Headers&        hdrs,
-                HttpHeaderFilterSetType list,
-                std::function<void(Marvin::Http::Headers& hdrs,
-                                    std::string key,
-                                    std::string value)> cb);
-
-            /// \ingroup HttpMessage
-            /// \brief Filters a header map, calls the cb function for all headers
-            /// whose keys ARE IN the filterList
-            static void filterInList(
-                Marvin::Http::Headers&        hdrs,
-                HttpHeaderFilterSetType list,
-                std::function<void(Marvin::Http::Headers& hdrs,
-                                    std::string key,
-                                    std::string value)> cb);
-
-#endif
+        
         
             class Name {
                 public:

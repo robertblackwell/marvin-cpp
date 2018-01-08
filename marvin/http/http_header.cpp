@@ -12,13 +12,33 @@
 #include <vector>
 #include <set>
 #include <boost/algorithm/string/case_conv.hpp>
+#include "json.hpp"
 std::set<std::string> s{"one","two"};
 
 #include "http_header.hpp"
 using namespace Marvin;
 using namespace Http;
+using namespace nlohmann;
+
 namespace Marvin {
 namespace Http {
+    void to_json(json& j, const Headers& h)
+    {
+//        std::cout << __FUNCTION__ <<" " <<  __FILE__ <<  " " << __LINE__ <<std::endl;
+        const OrderedKeyValues& okv = h;
+        ::to_json(j, okv);
+    }
+    void from_json(const json& j, Headers& h)
+    {
+        OrderedKeyValues& okv = h;
+//        std::cout << __FUNCTION__ <<" " <<  __FILE__ <<  " " << __LINE__ <<std::endl;
+        ::from_json(j, okv);
+    }
+
+    Headers::Headers() : OrderedKeyValues() {}
+//    Headers::Headers(std::vector<std::pair<std::string, std::string>> vals) : OrderedKeyValues(vals) {}
+    Headers::Headers(Marvin::Http::Headers::Initializer vals) : OrderedKeyValues(vals) {}
+
     void Headers::canonicalKey(char* key, int length)
     {
         for(int i = 0; i < length; i++)

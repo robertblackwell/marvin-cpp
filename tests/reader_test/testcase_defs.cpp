@@ -71,7 +71,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -99,7 +99,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
 //                    {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -127,7 +127,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -156,7 +156,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -192,7 +192,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -232,7 +232,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                  // expected headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -272,7 +272,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -313,7 +313,7 @@ std::vector<Testcase> tc_make_buffering()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expected headers
-                    std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                         {Marvin::Http::Headers::Name::Host, "ahost"},
                         {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                         {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
@@ -356,7 +356,7 @@ std::vector<Testcase> tc_make_eof()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
@@ -386,7 +386,7 @@ std::vector<Testcase> tc_make_eof()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
@@ -415,7 +415,7 @@ std::vector<Testcase> tc_make_eof()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"keep-alive"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
@@ -451,9 +451,9 @@ std::vector<Testcase> tc_make_hv()
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
                 // expexted headers
-                std::map< std::string, std::string >{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                Marvin::Http::Headers::Initializer{
                     {Marvin::Http::Headers::Name::Connection,"keep-alive , TE, somethingelse"},
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
                 },
                  // expected body

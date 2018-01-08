@@ -6,18 +6,27 @@
 #include <algorithm>
 #include <iterator>
 #include <cassert>
+#include "json.hpp"
+
 //class KeyValue : public std::pair<std::string, std::string>
 //{
 //    public:
 //        std::string key() { return this->first;}
 //        std::string value() {return this->second;};
 //};
-/// \brief this class provides a collection key/value pairs that are iterable in, and retains, the order in which the
-/// key/values were added. This will be the basis of a http header data structure which needs to preserve order
+/// \brief This class provides a collection of key/value pairs that are iterable in, and retain, the order in which the
+/// key/values were added; this will be the basis of a http header data structure which needs to preserve order.
+class OrderedKeyValues;
+void to_json(nlohmann::json& j, const OrderedKeyValues& kv);
+void from_json(const nlohmann::json& j, OrderedKeyValues& kv);
 class OrderedKeyValues
 {
     public:
+        static void to_json(nlohmann::json& j, const OrderedKeyValues& kv);
+        static void from_json(const nlohmann::json& j, OrderedKeyValues& kv);
+
         typedef int size_type;
+        /// \brief holds an individual key/value pair
         class KVPair : public std::pair<std::string, std::string>
         {
             public:
@@ -49,9 +58,14 @@ class OrderedKeyValues
         };
 
         OrderedKeyValues();
-        /// \brief construct from a vector of key/value pairs
+        /// \brief This construct provide a means of initializing a OrderedKeyValues object
+        /// using a literal value; specifically a vector of pairs of string values.
+#define OKVMAP
+#ifdef OKVMAP
         OrderedKeyValues(std::vector<std::pair<std::string, std::string>> initialValue);
-
+#else
+        OrderedKeyValues(std::map<std::string, std::string> initialValue);
+#endif
         size_type size() const;
     
         std::string& operator[](std::string k);
@@ -60,9 +74,11 @@ class OrderedKeyValues
         std::string get(std::string k);
         void set(std::string k, std::string v);
         void remove(std::string k);
+        void erase(std::string k);
         void remove(std::vector<std::string> keys);
         Iterator find(std::string k);
         bool has(std::string k);
+        std::vector<std::pair<std::string, std::string>> jsonizable() const;
         Iterator begin();
         Iterator end();
 

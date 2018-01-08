@@ -47,8 +47,10 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     auto h1 = _tcObj.result_headers();
     auto h2 = rdr_->getHeaders();
     bool hh = (h1 == h2);
-    assert(_tcObj.result_headers() == rdr_->getHeaders());
-    REQUIRE(_tcObj.result_headers() == rdr_->getHeaders());
+    if( _tcObj.result_headers() != rdr_->getHeaders())
+        assert(_tcObj.result_headers() == rdr_->getHeaders());
+    bool catch_is_stupid = (_tcObj.result_headers() == rdr_->getHeaders() );
+    REQUIRE( catch_is_stupid );
     auto b1 = _tcObj.result_body();
     auto b2 = rdr_->getContentBuffer();
 //    auto b3 = rdr_->get_raw_body_chain();
@@ -96,7 +98,8 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     bool hhh = _tcObj.verify_headers(h2);
     //assert(hhh);
     REQUIRE(hhh);
-    REQUIRE(h1 == h2);
+    bool catch_is_stupid = (h1 == h2);
+    REQUIRE( catch_is_stupid );
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
 //        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << tcObj.getDescription() <<std::endl;
     rdr_->readBody(bh);

@@ -279,6 +279,7 @@
 		D4782B101FFEDD79003473FD /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
 		D4782B111FFEE03D003473FD /* forward_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4216BCB1FF702C500086478 /* forward_helpers.cpp */; };
 		D4782B121FFEE081003473FD /* forward_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4216BCB1FF702C500086478 /* forward_helpers.cpp */; };
+		D478CDEA2003D605003029C2 /* marvin_okv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4B76724200260DF001BACC6 /* marvin_okv.cpp */; };
 		D47923011DFE3EFB0077B91A /* UriCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47922FF1DFE3EFB0077B91A /* UriCodec.cpp */; };
 		D47923091DFF0A7C0077B91A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47923081DFF0A7C0077B91A /* main.cpp */; };
 		D479230D1DFF7E0A0077B91A /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
@@ -294,6 +295,7 @@
 		D47B43461E16BD9D00B0254A /* TrafficForHost.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B43431E16BD9D00B0254A /* TrafficForHost.m */; };
 		D47B434C1E16BEDA00B0254A /* CapturedTraffic-datasource.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B43491E16BEDA00B0254A /* CapturedTraffic-datasource.m */; };
 		D47B434D1E16BEDA00B0254A /* CapturedTraffic-delegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B434B1E16BEDA00B0254A /* CapturedTraffic-delegate.m */; };
+		D4812DA020033FAC0047E69E /* http_header.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D407D5191E113FE7003E5F8E /* http_header.cpp */; };
 		D4848DB01FFA294600330379 /* server_runner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3F2601FF9B9810076C7BF /* server_runner.cpp */; };
 		D4848DB31FFAB8A900330379 /* utest.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D4848DB21FFAB8A900330379 /* utest.hpp */; };
 		D4848DB91FFABF2000330379 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
@@ -3472,6 +3474,7 @@
 				D40F34401FD0F5AD00EC653F /* message_reader.cpp in Sources */,
 				D40F34421FD0F5AD00EC653F /* message.cpp in Sources */,
 				D40F344B1FD0F5AD00EC653F /* http_header.cpp in Sources */,
+				D478CDEA2003D605003029C2 /* marvin_okv.cpp in Sources */,
 				D40F34431FD0F5AD00EC653F /* repeating_timer.cpp in Sources */,
 				D40F34461FD0F5AD00EC653F /* marvin_error.cpp in Sources */,
 				D40F34471FD0F5AD00EC653F /* rb_logger.cpp in Sources */,
@@ -4010,6 +4013,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4B767182001CC40001BACC6 /* rb_logger.cpp in Sources */,
+				D4812DA020033FAC0047E69E /* http_header.cpp in Sources */,
 				D4B76728200261B3001BACC6 /* marvin_okv.cpp in Sources */,
 				D4B767232001CC5B001BACC6 /* new_main.cpp in Sources */,
 			);

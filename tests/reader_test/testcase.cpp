@@ -15,7 +15,7 @@ Testcase::Testcase(
     std::string result_first_line,
     int status_code,
     Marvin::ErrorType err,
-    std::map<std::string, std::string> result_headers,
+    Marvin::Http::Headers::Initializer result_headers,
     std::string result_body
 )
     :
@@ -63,7 +63,7 @@ Testcase::Testcase(
 
     Marvin::ErrorType Testcase::result_onheaders_err(){ return _result_onheaders_err; }
 
-    std::map<std::string, std::string> Testcase::result_headers(){
+    Marvin::Http::Headers& Testcase::result_headers(){
         return _result_headers;
     }
     std::string Testcase::result_body(){

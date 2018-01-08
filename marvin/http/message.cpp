@@ -155,6 +155,7 @@ MessageBase::removeHeader( std::string keyIn){
     auto zz = getHeader(key);
     if( m_headers.find(key) != m_headers.end()  )
         m_headers.erase(key);
+//        m_headers.remove(key);
 }
 
 std::string
@@ -178,7 +179,7 @@ MessageBase::str(){
     } else {
         ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
     }
-    std::map<std::string, std::string>::iterator it = m_headers.begin();
+    Headers::Iterator it = m_headers.begin();
     while(it != m_headers.end())
     {
         ss << it->first << ": " << it->second << "\r\n";
@@ -220,7 +221,7 @@ void MessageBase::setContent(std::string content)
 void
 MessageBase::dumpHeaders(std::ostream& os)
 {
-    std::map<std::string, std::string>::iterator it = m_headers.begin();
+    Headers::Iterator it = m_headers.begin();
     while(it != m_headers.end())
     {
         os<<it->first<<" : "<<it->second<<std::endl;
