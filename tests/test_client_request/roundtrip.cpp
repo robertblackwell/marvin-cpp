@@ -41,9 +41,9 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
     
     msg->setMethod(HttpMethod::GET);
     helpers::applyUriProxy(msg, uri);
-    msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
-    msg->setHeader(HttpHeader::Name::AcceptEncoding, "identity");
-    msg->setHeader(HttpHeader::Name::TE, "");
+    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
+    msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding, "identity");
+    msg->setHeader(Marvin::Http::Headers::Name::TE, "");
     // Http versions defaults to 1.1, so force it to the same as the request
     msg->setContent("");
 

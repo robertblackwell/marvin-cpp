@@ -48,7 +48,7 @@ Testcase::Testcase(
     {
         return (fl == _result_first_line);
     }
-    bool Testcase::verify_headers(std::map<std::string, std::string> h)
+    bool Testcase::verify_headers(::Marvin::Http::Headers& h)
     {
         return (_result_headers == h);
     }

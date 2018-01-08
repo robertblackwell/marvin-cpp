@@ -20,17 +20,17 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         Marvin::Uri uri("http://whiteacorn/utests/echo/index.php");
         helpers::applyUri(msg, uri, true);
 //        msg->setUri("http://localhost/echo");
-//        msg->setHeader(HttpHeader::Name::Host, "localhost:9991");
+//        msg->setHeader(Marvin::Http::Headers::Name::Host, "localhost:9991");
         msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
         msg->setHeader(
             "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
         msg->setHeader("Accept-Language","en");
         msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-        msg->setHeader(HttpHeader::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
-        msg->setHeader(HttpHeader::Name::Connection,"Keep-Alive, TE");
+        msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+        msg->setHeader(Marvin::Http::Headers::Name::Connection,"Keep-Alive, TE");
         msg->setHeader("TE","deflate, gzip, chunked, trailer");
-//        msg->setHeader(HttpHeader::Name::TransferEncoding,"chunked");
-        msg->setHeader(HttpHeader::Name::ETag,"1928273tefadseercnbdh");
+//        msg->setHeader(Marvin::Http::Headers::Name::TransferEncoding,"chunked");
+        msg->setHeader(Marvin::Http::Headers::Name::ETag,"1928273tefadseercnbdh");
         std::string s = "012345678956";
         Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
         msg->setContent(bdy);
@@ -45,17 +45,17 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         // note requests through a proxy must provide absolute uri on the first line
         // proxy mat turn that into a relative url
         msg->setUri("http://localhost:9991/somepath/script.php?parm=123456#fragment");
-        msg->setHeader(HttpHeader::Name::Host, "localhost:9991");
+        msg->setHeader(Marvin::Http::Headers::Name::Host, "localhost:9991");
         msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
         msg->setHeader(
             "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
         msg->setHeader("Accept-Language","en");
         msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-        msg->setHeader(HttpHeader::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
-        msg->setHeader(HttpHeader::Name::Connection,"Keep-Alive, TE");
+        msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+        msg->setHeader(Marvin::Http::Headers::Name::Connection,"Keep-Alive, TE");
         msg->setHeader("TE","deflate, gzip, chunked, trailer");
-//        msg->setHeader(HttpHeader::Name::TransferEncoding,"chunked");
-        msg->setHeader(HttpHeader::Name::ETag,"1928273tefadseercnbdh");
+//        msg->setHeader(Marvin::Http::Headers::Name::TransferEncoding,"chunked");
+        msg->setHeader(Marvin::Http::Headers::Name::ETag,"1928273tefadseercnbdh");
         std::string s = "012345678956";
         Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
         msg->setContent(bdy);
@@ -68,16 +68,16 @@ std::vector<tp::TestcaseSPtr> makeTestcases()
         // note requests through a proxy must provide absolute uri on the first line
         // proxy mat turn that into a relative url
         msg->setUri("http://localhost:9991/somepath/script.php?parm=123456#fragment");
-        msg->setHeader(HttpHeader::Name::Host, "localhost:9991");
+        msg->setHeader(Marvin::Http::Headers::Name::Host, "localhost:9991");
         msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
         msg->setHeader(
             "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
         msg->setHeader("Accept-Language","en");
         msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-        msg->setHeader(HttpHeader::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
-        msg->setHeader(HttpHeader::Name::Connection,"Keep-Alive, TE");
+        msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+        msg->setHeader(Marvin::Http::Headers::Name::Connection,"Keep-Alive, TE");
         msg->setHeader("TE","deflate, gzip, chunked, trailer");
-        msg->setHeader(HttpHeader::Name::ETag,"1928273tefadseercnbdh");
+        msg->setHeader(Marvin::Http::Headers::Name::ETag,"1928273tefadseercnbdh");
         std::string s = "012345678956";
         Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
         msg->setContent(bdy);

@@ -95,6 +95,10 @@ TEST_CASE("OKV","")
         auto hpv = h->value();
         CHECK(true);
     }
+    SECTION("copyExcept")
+    {
+    
+    }
 }
 
 #pragma mark - main

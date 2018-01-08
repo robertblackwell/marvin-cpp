@@ -10,7 +10,7 @@
 #include "test_headers.hpp"
 namespace test{
 namespace helpers{
-HttpHeadersType headersFromJson(nlohmann::json& j)
+Marvin::Http::Headers headersFromJson(nlohmann::json& j)
 {
     std::map<std::string, std::string> result;
     for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
@@ -19,11 +19,11 @@ HttpHeadersType headersFromJson(nlohmann::json& j)
     }
     return result;
 }
-bool checkHeaders(HttpHeadersType& h1, HttpHeadersType h2)
+bool checkHeaders(Marvin::Http::Headers& h1, Marvin::Http::Headers h2)
 {
     bool result = (h1.size() == h2.size());
     CHECK(h1.size() == h2.size());
-    HttpHeadersType tmp_h, other_h;
+    Marvin::Http::Headers tmp_h, other_h;
     if (h1.size() > h2.size()) {
         tmp_h = h1; other_h = h2;
     } else {

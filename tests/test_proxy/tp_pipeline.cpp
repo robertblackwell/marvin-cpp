@@ -24,13 +24,13 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     /// all but last response should be keep-alive
     /// last one should be close
     /// this echos what we sent
-    std::string connection_hdr = rdr->getHeader(HttpHeader::Name::Connection);
+    std::string connection_hdr = rdr->getHeader(Marvin::Http::Headers::Name::Connection);
     if(_msg_index < (_testcase.size() - 1)) {
-        assert(connection_hdr == HttpHeader::Value::ConnectionKeepAlive);
-        REQUIRE(connection_hdr == HttpHeader::Value::ConnectionKeepAlive);
+        assert(connection_hdr == Marvin::Http::Headers::Value::ConnectionKeepAlive);
+        REQUIRE(connection_hdr == Marvin::Http::Headers::Value::ConnectionKeepAlive);
     } else {
-        assert(connection_hdr == HttpHeader::Value::ConnectionClose);
-        REQUIRE(connection_hdr == HttpHeader::Value::ConnectionClose);
+        assert(connection_hdr == Marvin::Http::Headers::Value::ConnectionClose);
+        REQUIRE(connection_hdr == Marvin::Http::Headers::Value::ConnectionClose);
     }
     /**
     * Test that the server is using the same connection handler and request handler for each request
@@ -38,8 +38,8 @@ void PipelineTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     * instances of connection handler and request handler have their own uuid.
     * Request handler puts these in the response header
     */
-//    std::string ch_uuid = rdr->getHeader(HttpHeader::Name::ConnectionHandlerId);
-//    std::string rh_uuid = rdr->getHeader(HttpHeader::Name::RequestHandlerId);
+//    std::string ch_uuid = rdr->getHeader(Marvin::Http::Headers::Name::ConnectionHandlerId);
+//    std::string rh_uuid = rdr->getHeader(Marvin::Http::Headers::Name::RequestHandlerId);
     if( _msg_index == 0 ) {
         _ch_uuid = ch_uuid;
         _rh_uuid = rh_uuid;
@@ -83,9 +83,9 @@ void PipelineTest::exec()
     
     /// all but the last message are keep-alive
     if( _msg_index < (_testcase.size() - 1))
-        _msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionKeepAlive);
+        _msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionKeepAlive);
     else
-        _msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+        _msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
 
     auto f = std::bind(&PipelineTest::handler, this, std::placeholders::_1, std::placeholders::_2);
 

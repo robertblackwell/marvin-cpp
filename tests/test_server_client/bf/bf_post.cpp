@@ -32,7 +32,7 @@ void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     REQUIRE(sx == sy);
     
 //    std::cout << "SUCCESS: " << _testcase._description <<  std::endl;
-    if(rdr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {
+    if(rdr->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionClose) {
         m_client->close();
         m_client = nullptr;
     }
@@ -50,7 +50,7 @@ void PostTest::exec()
     m_msg = std::shared_ptr<MessageBase>(new MessageBase());
     m_msg->setMethod(HttpMethod::POST);
     helpers::applyUriNonProxy(m_msg, *m_uri_sptr);
-    m_msg->setHeader(HttpHeader::Name::Connection, HttpHeader::Value::ConnectionClose);
+    m_msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
 
     auto f = std::bind(&PostTest::handler, this, std::placeholders::_1, std::placeholders::_2);
 

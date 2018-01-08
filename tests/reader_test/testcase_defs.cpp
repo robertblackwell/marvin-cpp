@@ -72,10 +72,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                 // expexted headers
                 std::map< std::string, std::string >{
-                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                    {HttpHeader::Name::ContentLength,"11"}
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ContentLength,"11"}
                 },
                  // expected body
                  std::string("01234567890")
@@ -100,10 +100,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                 // expexted headers
                 std::map< std::string, std::string >{
-//                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                    {HttpHeader::Name::ContentLength,"11"}
+//                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ContentLength,"11"}
                 },
 
                 std::string("11234567890")                            // expected body
@@ -128,10 +128,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                 // expected headers
                 std::map< std::string, std::string >{
-                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                    {HttpHeader::Name::ContentLength,"10"}
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ContentLength,"10"}
                 },
                 // body
                 std::string("ABCDEFGHIJ")
@@ -157,10 +157,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                 // expected headers
                     std::map< std::string, std::string >{
-                        {HttpHeader::Name::Host, "ahost"},
-                        {HttpHeader::Name::Connection,"keep-alive"},
-                        {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                        {HttpHeader::Name::ContentLength,"10"}
+                        {Marvin::Http::Headers::Name::Host, "ahost"},
+                        {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::ContentLength,"10"}
                     },
                 //             },
                 std::string("ABCDEFGHIJ")
@@ -193,10 +193,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                 // expected headers
                     std::map< std::string, std::string >{
-                        {HttpHeader::Name::Host, "ahost"},
-                        {HttpHeader::Name::Connection,"keep-alive"},
-                        {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                        {HttpHeader::Name::TransferEncoding,"chunked"}
+                        {Marvin::Http::Headers::Name::Host, "ahost"},
+                        {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
                     },
 
                 // body
@@ -233,10 +233,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                  // expected headers
                 std::map< std::string, std::string >{
-                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                    {HttpHeader::Name::TransferEncoding,"chunked"}
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
                 },
                      // body
                      std::string("1234567890")
@@ -273,10 +273,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                 // expected headers
                     std::map< std::string, std::string >{
-                        {HttpHeader::Name::Host, "ahost"},
-                        {HttpHeader::Name::Connection,"keep-alive"},
-                        {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                        {HttpHeader::Name::TransferEncoding,"chunked"}
+                        {Marvin::Http::Headers::Name::Host, "ahost"},
+                        {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
                     },
                 // body
                 std::string("1234567890")
@@ -314,10 +314,10 @@ std::vector<Testcase> tc_make_buffering()
                 Marvin::make_error_ok(),
                 // expected headers
                     std::map< std::string, std::string >{
-                        {HttpHeader::Name::Host, "ahost"},
-                        {HttpHeader::Name::Connection,"keep-alive"},
-                        {HttpHeader::Name::ProxyConnection,"keep-alive"},
-                        {HttpHeader::Name::TransferEncoding,"chunked"}
+                        {Marvin::Http::Headers::Name::Host, "ahost"},
+                        {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"},
+                        {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
                     },
                 // body
                 std::string("1234567890")
@@ -357,9 +357,9 @@ std::vector<Testcase> tc_make_eof()
                 Marvin::make_error_ok(),
                 // expexted headers
                 std::map< std::string, std::string >{
-                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"}
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
                 },
                  // expected body
                  std::string("01234567890")
@@ -387,9 +387,9 @@ std::vector<Testcase> tc_make_eof()
                 Marvin::make_error_ok(),
                 // expexted headers
                 std::map< std::string, std::string >{
-                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"}
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
                 },
                  // expected body
                  std::string("01234567890")
@@ -416,9 +416,9 @@ std::vector<Testcase> tc_make_eof()
                 Marvin::make_error_ok(),
                 // expexted headers
                 std::map< std::string, std::string >{
-                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"}
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
                 },
                  // expected body
                  std::string("")
@@ -452,9 +452,9 @@ std::vector<Testcase> tc_make_hv()
                 Marvin::make_error_ok(),
                 // expexted headers
                 std::map< std::string, std::string >{
-                    {HttpHeader::Name::Host, "ahost"},
-                    {HttpHeader::Name::Connection,"keep-alive , TE, somethingelse"},
-                    {HttpHeader::Name::ProxyConnection,"keep-alive"}
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"keep-alive , TE, somethingelse"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"keep-alive"}
                 },
                  // expected body
                  std::string("01234567890")

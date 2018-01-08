@@ -14,8 +14,8 @@
 #include "json.hpp"
 namespace test {
 namespace helpers {
-    HttpHeadersType  headersFromJson(nlohmann::json& j);
-    bool checkHeaders(HttpHeadersType& h1, HttpHeadersType h2);
+    Marvin::Http::Headers  headersFromJson(nlohmann::json& j);
+    bool checkHeaders(Marvin::Http::Headers& h1, Marvin::Http::Headers h2);
 }
 }
 

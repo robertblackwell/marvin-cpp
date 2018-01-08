@@ -31,7 +31,7 @@ public:
     std::vector<std::string> buffers();
     bool verify_first_line(std::string fl);
     
-    bool verify_headers(HttpHeadersType h);
+    bool verify_headers(Marvin::Http::Headers& h);
     
     bool verify_body(std::string b);
     

@@ -97,7 +97,7 @@ public:
      * @param port - a string like "443"
      * \deprecated
      */
-    Client(boost::asio::io_service& io, HttpHeader::SchemeType scheme, std::string server, std::string port);
+    Client(boost::asio::io_service& io, Marvin::Http::Headers::SchemeType scheme, std::string server, std::string port);
     
     /**
      * @brief Conosttruct an not-yet-connected client instance and provide target host

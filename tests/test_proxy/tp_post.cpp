@@ -6,7 +6,7 @@
 
 using namespace tp;
 using json = nlohmann::json;
-namespace tp{
+namespace tp {
 PostTest::PostTest(boost::asio::io_service& io, tp::TestcaseSPtr testcaseSPtr): m_io(io), m_testcase_sptr(testcaseSPtr)
 {
     m_msg_sptr = m_testcase_sptr->m_msg_sptr;
@@ -47,7 +47,7 @@ void PostTest::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
 #endif
     CHECK(rdr->statusCode() == 200);
     CHECK(echoedBody == originalBody);
-    if(rdr->getHeader(HttpHeader::Name::Connection) == HttpHeader::Value::ConnectionClose) {
+    if(rdr->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionClose) {
         m_client_sptr->close();
         m_client_sptr = nullptr;
     }

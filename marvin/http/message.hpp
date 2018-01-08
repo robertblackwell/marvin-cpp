@@ -55,7 +55,7 @@ public:
     void setHttpVersMinor(int minor);
     int  httpVersMinor();
     
-    std::map<std::string, std::string>& getHeaders();
+    Marvin::Http::Headers& getHeaders();
     bool hasHeader( std::string key);
     std::string header(std::string key);
     std::string getHeader(std::string key);
@@ -105,8 +105,8 @@ protected:
     int									m_http_major;
     int									m_http_minor;
 
-//    HttpHeadersType                     m_headers;
-//    HttpHeadersType                     m_trailers;
+//    Marvin::Http::Headers                     m_headers;
+//    Marvin::Http::Headers                     m_trailers;
     Marvin::Http::Headers               m_headers;
     Marvin::Http::Headers               m_trailers;
 

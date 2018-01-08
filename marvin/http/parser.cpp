@@ -250,11 +250,11 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
     n = sb_to_string(name, &n_p);
     n = sb_to_string(value,&v_p);
     
-    HttpHeader::canonicalKey(name->buffer, name->used);
+    Marvin::Http::Headers::canonicalKey(name->buffer, name->used);
     
     std::string n_str = std::string(name->buffer, name->used);
     std::string v_str = std::string(value->buffer, value->used);
-    HttpHeader::canonicalKey(n_str);
+//    Marvin::Http::Headers::canonicalKey(n_str);
     free(v_p);
     free(n_p);
     
