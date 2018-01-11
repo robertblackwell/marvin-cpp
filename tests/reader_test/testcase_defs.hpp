@@ -38,6 +38,7 @@ std::vector<std::string> make_header(std::string key, std::string value);
 std::vector<Testcase> tc_make_buffering();
 std::vector<Testcase> tc_make_eof();
 std::vector<Testcase> tc_make_hv();
+std::vector<Testcase> tc_make_ssl();
 
 
 #endif

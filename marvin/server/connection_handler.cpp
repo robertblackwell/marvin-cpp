@@ -136,6 +136,7 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
 //        " msg: ", err.category().message(err.value()));
     std::string uuid_str = boost::uuids::to_string(m_uuid);
     if( err ){
+        std::string s = Marvin::make_error_description(err);
         LogError("error value: ", err.value(),
             " category: ", err.category().name(),
             " msg: ", err.category().message(err.value()));
@@ -146,7 +147,7 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
     } else{
         if(m_reader->method() == HttpMethod::CONNECT ){
             LogWarn("CONNECT request");
-             m_requestHandlerUnPtr->handleConnect(m_server_context, m_reader, m_connection, [this](Marvin::ErrorType& err, bool keepAlive){
+             m_requestHandlerUnPtr->handleConnect(m_server_context, m_reader, m_writer, m_connection, [this](Marvin::ErrorType& err, bool keepAlive){
                 this->p_request_complete(err, false);
              });
         } else {

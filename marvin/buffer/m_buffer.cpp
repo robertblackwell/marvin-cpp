@@ -1,7 +1,9 @@
 #include "buffer.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
-
+namespace {
+    const std::size_t MBUFMIN=1000;
+}
 using namespace Marvin;
 namespace  Marvin {
   
@@ -9,7 +11,8 @@ namespace  Marvin {
 #pragma mark - MBuffer implementation
 MBufferSPtr MBuffer::makeSPtr(std::size_t capacity)
 {
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(capacity));
+    std::size_t sz = (capacity > MBUFMIN) ? capacity : MBUFMIN ;
+    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(sz));
     return mbp;
 }
 MBufferSPtr MBuffer::makeSPtr(std::string s)
@@ -33,11 +36,12 @@ MBufferSPtr MBuffer::makeSPtr(MBuffer& mb)
 
 MBuffer::MBuffer(std::size_t cap)
 {
-    memPtr = malloc(cap);
+    std::size_t tmp_cap = (cap > MBUFMIN) ? cap : MBUFMIN ;
+    memPtr = malloc(tmp_cap);
     cPtr = (char*) memPtr;
     length_ = 0;
     size_ = 0;
-    capacity_ = cap;
+    capacity_ = tmp_cap;
 }
 
 MBuffer::~MBuffer()
@@ -116,6 +120,7 @@ MBufferSPtr m_buffer(std::size_t capacity)
 }
 MBufferSPtr m_buffer(std::string s)
 {
+    
     MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(s.size()));
     mbp->append((void*) s.c_str(), s.size());
     return mbp;

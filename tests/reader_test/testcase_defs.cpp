@@ -462,3 +462,34 @@ std::vector<Testcase> tc_make_hv()
     );
     return tcases;
 }
+std::vector<Testcase> tc_make_ssl()
+{
+    std::vector<Testcase> tcases;
+     tcases.push_back(
+            Testcase(
+                "index 0 - ssl request",
+                std::vector<std::string> {
+                    "GET / HTTP/1.1\r\n",
+                    "Host: ssllabs.com:443\r\n",
+                    "Connection: close\r\n",
+                    "Content-length: 0\r\n\r\n"
+                },
+                // expected first line
+                std::string("HTTP/1.1 200 OK 11Reason Phrase"),
+                // expected status code
+                200,
+                // expect error code in onHeader
+                Marvin::make_error_ok(),
+                // expexted headers
+                Marvin::Http::Headers::Initializer{
+                    {Marvin::Http::Headers::Name::Host, "ahost"},
+                    {Marvin::Http::Headers::Name::Connection,"close"},
+                    {Marvin::Http::Headers::Name::ProxyConnection,"close"},
+                    {Marvin::Http::Headers::Name::ContentLength,"11"}
+                },
+                 // expected body
+                 std::string("01234567890")
+            )
+    );
+    return tcases;
+}

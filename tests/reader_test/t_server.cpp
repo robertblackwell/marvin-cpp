@@ -7,7 +7,7 @@
 #include <pthread.h>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
@@ -34,7 +34,7 @@ void TServer::initialize()
 //    #endif // defined(SIGQUIT)
 //
 //    waitForStop();
-    
+    LogDebug("");
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), m_port);
     m_acceptor.open(endpoint.protocol());
     m_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
@@ -47,6 +47,7 @@ TServer::~TServer()
 }
 void TServer::listen(long port, std::function<void(MessageReaderSPtr rdr)> cb)
 {
+    LogDebug("");
     m_port = port;
     initialize();
     m_acceptor.listen();
@@ -60,7 +61,7 @@ void TServer::listen(long port, std::function<void(MessageReaderSPtr rdr)> cb)
 //-------------------------------------------------------------------------------------
 void TServer::startAccept()
 {
-    LogInfo("");
+    LogDebug("");
     m_conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(m_io));
 //    IReadSocket* rd_sock_ifce = _conn_sptr.get();
     m_rdr = std::shared_ptr<MessageReader>(new MessageReader(m_io, m_conn_sptr));

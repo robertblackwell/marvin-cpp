@@ -12,6 +12,7 @@
 #include <catch/catch.hpp>
 #include "boost_stuff.hpp"
 #include "tcp_connection.hpp"
+#include "socket_factory.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
@@ -68,7 +69,18 @@ TEST_CASE("connect_succeed","")
     });
     io.run();
 }
+TEST_CASE("ssl_connect", "")
+{
+    boost::asio::io_service io;
+    ISocketSPtr conn_sptr = socketFactory(false, io, "https", "google.com", "443");
+    conn_sptr->asyncConnect([](Marvin::ErrorType& err, ISocket* conn)
+    {
+        INFO(Marvin::make_error_description(err));
+        REQUIRE(! err);
+    });
+    io.run();
 
+}
 int main( int argc, char* argv[] )
 {
     // global setup - run a server

@@ -111,7 +111,7 @@ public:
     * Create a client with an established connection. In this case a call to
     * connect will fail with an exception - as it is a logic error
     */
-    Client(boost::asio::io_service& io, ISocket* conn);
+    Client(boost::asio::io_service& io, ISocketSPtr conn);
 
     Client(const Client& other) = delete;
     Client& operator=(const Client&) = delete;
@@ -254,29 +254,24 @@ protected:
     void putHeadersStuffInBuffer();
     void setContentLength();
     
-    std::string _url; // resource locator
-    std::string _uri; // really path
-    std::string _scheme;    // http or https
-    std::string _server;  // this is without the port localhost for example
-    std::string _host;           // as used in the headers eg localhost:9991 for example
-    std::string _host_with_port; // as used in the headers eg localhost:9991 for example
-    std::string _port;
-    std::string _path;
+    std::string m_url; // resource locator
+    std::string m_uri; // really path
+    std::string m_scheme;    // http or https
+    std::string m_server;  // this is without the port localhost for example
+    std::string m_host;           // as used in the headers eg localhost:9991 for example
+    std::string m_host_with_port; // as used in the headers eg localhost:9991 for example
+    std::string m_port;
+    std::string m_path;
 
-    boost::asio::io_service&                        _io;
-    Marvin::Http::MessageBaseSPtr                   _current_request;
-    Marvin::MBufferSPtr                             _body_mbuffer_sptr;
-    std::shared_ptr<MessageWriter>                  _wrtr;
-    std::shared_ptr<MessageReader>                  _rdr;
-    
-//    TCPConnection*                                  _conn_ptr;
-    std::shared_ptr<TCPConnection>                  _conn_shared_ptr;
-    IReadSocket*                                    _readSock;
-    
-    std::function<void(Marvin::ErrorType& err)>     _goCb;
-    ResponseHandlerCallbackType                     _response_handler;
-    ResponseHandlerCallbackType                     _on_headers_handler;
-    ClientDataHandlerCallbackType                   _on_data_handler;
+    boost::asio::io_service&                        m_io;
+    Marvin::Http::MessageBaseSPtr                   m_current_request;
+    Marvin::MBufferSPtr                             m_body_mbuffer_sptr;
+    MessageWriterSPtr                               m_wrtr;
+    MessageReaderSPtr                               m_rdr;
+    ISocketSPtr                                     m_conn_shared_ptr;
+    ResponseHandlerCallbackType                     m_response_handler;
+    ResponseHandlerCallbackType                     m_on_headers_handler;
+    ClientDataHandlerCallbackType                   m_on_data_handler;
 //    bool        _oneTripOnly;
 //    
 //    std::string _service;   //used by boost for resolve and connnect http/https or a port number

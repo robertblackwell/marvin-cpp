@@ -52,7 +52,8 @@ class TClient
         std::string                 m_server;
         std::string                 m_port;
         Testcase                    m_testcase;
-        TCPConnectionSPtr           m_conn_sptr;
+//        TCPConnectionSPtr           m_conn_sptr;
+        ISocketSPtr                 m_conn_sptr;
         int                         m_buffer_index; /// index into the vector of buffers in the test case
         MarvinErrorCb               m_test_cb;
         boost::asio::deadline_timer m_timer;

@@ -70,15 +70,16 @@ SSLConnection::SSLConnection(
             const std::string scheme,
             const std::string server,
             const std::string port,
-            boost::asio::ssl::context &ctx
+            boost::asio::ssl::context ctx
             )
             :
             m_io(io_service),
             m_strand(m_io),
             m_timeout(m_io, m_strand),
             m_resolver(m_io),
-            m_ssl_ctx(ctx),
+            m_ssl_ctx(std::move(ctx)),
             m_ssl_socket(m_io, m_ssl_ctx),
+            m_lowest_layer_sock(m_ssl_socket.lowest_layer()),
             m_scheme(scheme),
             m_server(server),
             m_port(port),
@@ -96,14 +97,15 @@ SSLConnection::SSLConnection(
 
 SSLConnection::SSLConnection(
     boost::asio::io_service& io_service,
-    boost::asio::ssl::context &ctx
+    boost::asio::ssl::context ctx
     ):
         m_io(io_service),
         m_strand(m_io),
         m_timeout(m_io, m_strand),
         m_resolver(m_io), // dont really need this
-        m_ssl_ctx(ctx),
+        m_ssl_ctx(std::move(ctx)),
         m_ssl_socket(m_io, m_ssl_ctx),
+        m_lowest_layer_sock(m_ssl_socket.lowest_layer()),
         m_connect_timeout_interval_ms(s_connect_timeout_interval_ms),
         m_read_timeout_interval_ms(s_read_timeout_interval_ms),
         m_write_timeout_interval_ms(s_write_timeout_interval_ms)
@@ -116,7 +118,7 @@ SSLConnection::~SSLConnection()
     LogTorTrace();
     if( ! m_closed_already) {
         LogFDTrace(nativeSocketFD());
-        m_boost_socket.close();
+        m_ssl_socket.lowest_layer().close();
     }
 }
 #pragma mark - public interface getters
@@ -126,7 +128,7 @@ std::string SSLConnection::service(){return m_port;}
 
 long SSLConnection::nativeSocketFD()
 {
-    return m_boost_socket.native_handle();
+    return m_lowest_layer_sock.native_handle();
 }
 
 #pragma mark - public interface connection management
@@ -135,13 +137,13 @@ void SSLConnection::close()
     LogFDTrace(nativeSocketFD());
     assert(! m_closed_already);
     m_closed_already = true;
-    m_boost_socket.cancel();
-    m_boost_socket.close();
+    m_lowest_layer_sock.cancel();
+    m_lowest_layer_sock.close();
 }
 void SSLConnection::shutdown()
 {
     assert(! m_closed_already);
-    m_boost_socket.shutdown(boost::asio::socket_base::shutdown_both);
+    m_lowest_layer_sock.shutdown(boost::asio::socket_base::shutdown_both);
 }
 #pragma mark - public interface async io operations
 void SSLConnection::asyncAccept(
@@ -150,7 +152,7 @@ void SSLConnection::asyncAccept(
 )
 {
 //    _boost_socket.non_blocking(true);
-    acceptor.async_accept(m_boost_socket, [cb, this](const boost::system::error_code& err) {
+    acceptor.async_accept(m_lowest_layer_sock, [cb, this](const boost::system::error_code& err) {
         LogFDTrace(this->nativeSocketFD());
         p_post_accept_cb(cb, err);
     });
@@ -163,7 +165,7 @@ void SSLConnection::asyncConnect(ConnectCallbackType connect_cb)
     tcp::resolver::query query(this->m_server, m_port);
 #if 1
     m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
-        m_boost_socket.cancel();
+        m_lowest_layer_sock.cancel();
     });
     auto h = m_strand.wrap([this](const error_code& err, tcp::resolver::iterator endpoint_iterator) {
         m_timeout.cancelTimeout([this, err, endpoint_iterator](){
@@ -186,7 +188,7 @@ void SSLConnection::asyncRead(Marvin::MBufferSPtr buffer, AsyncReadCallbackType 
     /// -   set a time out with a handler, the handler knows what to do, in this case cancel outstanding
     ///     ops on the socket
     m_timeout.setTimeout(m_read_timeout_interval_ms, [this](){
-        m_boost_socket.cancel();
+        m_lowest_layer_sock.cancel();
     });
     auto handler = m_strand.wrap([this, cb, buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
@@ -199,7 +201,7 @@ void SSLConnection::asyncRead(Marvin::MBufferSPtr buffer, AsyncReadCallbackType 
             p_post_read_cb(cb, m_err, bytes_transfered);
         });
     });
-    m_boost_socket.async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
+    m_ssl_socket.async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
 }
 /**
  * write
@@ -222,7 +224,7 @@ void SSLConnection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWrit
     {
         p_post_write_cb(cb, err, bytes_transfered);
     });
-    boost::asio::async_write((this->m_boost_socket), tmp, handler);
+    boost::asio::async_write((this->m_ssl_socket), tmp, handler);
 }
 #if 1
 void SSLConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback cb)
@@ -257,7 +259,7 @@ void SSLConnection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb
     {
         p_post_write_cb(cb, err, bytes_transfered);
     });
-    boost::asio::async_write((this->m_boost_socket), sb, handler);
+    boost::asio::async_write((this->m_ssl_socket), sb, handler);
 }
 #endif
 #pragma mark - internal methods
@@ -290,7 +292,7 @@ void SSLConnection::p_handle_resolve(
         
 #if 1
         m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
-            m_boost_socket.cancel();
+            m_lowest_layer_sock.cancel();
         });
         auto next_iter = ++endpoint_iterator;
         auto h = m_strand.wrap([this, next_iter](const error_code& err) {
@@ -298,7 +300,7 @@ void SSLConnection::p_handle_resolve(
                 p_handle_connect(err, next_iter);
             });
         });
-        m_boost_socket.async_connect(endpoint, h);
+        m_lowest_layer_sock.async_connect(endpoint, h);
 #else
 //        auto handler = m_strand.wrap(bind(&SSLConnection::p_handle_connect, this, _1, ++endpoint_iterator));
         /// a bit clumsy - incrementing the iterator before passing it
@@ -319,7 +321,7 @@ void SSLConnection::p_handle_connect(
     if (!err)
     {
         LogFDTrace(nativeSocketFD());
-        m_boost_socket.non_blocking(true);
+        m_lowest_layer_sock.non_blocking(true);
         ///
         /// now must do handshake - not return
         ///
@@ -329,11 +331,11 @@ void SSLConnection::p_handle_connect(
     else if (endpoint_iterator != tcp::resolver::iterator())
     {
         LogDebug("try next iterator");
-        m_boost_socket.close(); /// \todo why close ??
+        m_lowest_layer_sock.close(); /// \todo why close ??
         tcp::endpoint endpoint = *endpoint_iterator;
 #if 1
         m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
-            m_boost_socket.cancel();
+            m_lowest_layer_sock.cancel();
         });
         auto next_iter = ++endpoint_iterator;
         auto h = m_strand.wrap([this, next_iter](const error_code& err) {
@@ -341,7 +343,7 @@ void SSLConnection::p_handle_connect(
                 p_handle_connect(err, next_iter);
             });
         });
-        m_boost_socket.async_connect(endpoint, h);
+        m_lowest_layer_sock.async_connect(endpoint, h);
 
 #else
         auto handler = m_strand.wrap(boost::bind(&SSLConnection::p_handle_connect, this, _1, ++endpoint_iterator));
@@ -382,7 +384,7 @@ void SSLConnection::p_async_write(void* data, std::size_t size, AsyncWriteCallba
         p_post_write_cb(cb, err, bytes_transfered);
     });
 
-    boost::asio::async_write((this->m_boost_socket), boost::asio::buffer(data, size), handler);
+    boost::asio::async_write((this->m_ssl_socket), boost::asio::buffer(data, size), handler);
 }
 #pragma mark - post result of async ops through various callbacks
 #define USE_POST 1

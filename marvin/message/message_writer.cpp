@@ -1,10 +1,3 @@
-//
-//  message_writer.cpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/10/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
 #include "buffer.hpp"
 #include "message_writer.hpp"
 #include "marvin_error.hpp"
@@ -32,6 +25,7 @@ std::string traceWriter(MessageWriter& writer)
 MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock):m_io(io), m_write_sock(write_sock), m_header_buf(1000)
 {
     LogTorTrace();
+    m_current_message = nullptr;
 }
 
 #if 0
@@ -81,6 +75,7 @@ void
 MessageWriter::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
 {
     LogDebug("");
+    MessageBaseSPtr tmp = msg;
     m_current_message = msg;
     asyncWriteHeaders(msg, [this, cb](Marvin::ErrorType& ec){
         LogDebug(" cb: ", (long) &cb);

@@ -68,16 +68,17 @@ class SSLConnection : public ISocket
             const std::string scheme,
             const std::string server,
             const std::string port,
-            boost::asio::ssl::context &ctx)
+            boost::asio::ssl::context ctx
                );
     /**
     ** server socket will be connected via listen/accept
     */
     SSLConnection(
-        boost::asio::io_service& io_service
+        boost::asio::io_service& io_service,
+        boost::asio::ssl::context ctx
     );
     
-    ~TCPConnection();
+    ~SSLConnection();
     void asyncConnect(ConnectCallbackType cb);
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb);
     
@@ -135,9 +136,10 @@ private:
     boost::asio::ip::tcp::resolver  m_resolver;
 //    boost::asio::ip::tcp::socket    m_boost_socket;
 
-    boost::asio::ssl::context&      m_ssl_ctx;
+    /// our own copy not just a reference
+    boost::asio::ssl::context       m_ssl_ctx;
     boost::asio::ssl::stream<boost::asio::ip::tcp::socket> m_ssl_socket;
-
+    boost::asio::ip::tcp::socket::lowest_layer_type& m_lowest_layer_sock;// = ssl_sock.lowest_layer();
     ConnectCallbackType             m_connect_cb;
     bool                            m_closed_already;
     Timeout                         m_timeout;

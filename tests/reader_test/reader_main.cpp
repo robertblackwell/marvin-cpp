@@ -48,19 +48,27 @@ void test_streamingBody(std::vector<Testcase> tcs)
 }
 TEST_CASE( "Reader_buffering_fullmessage", "")
 {
+    printf("START %s[%d]\n", __FILE__, __LINE__);
     test_fullmessage(tc_make_buffering());
+    printf("END %s[%d]\n", __FILE__, __LINE__);
 }
 TEST_CASE( "Reader_eof_fullmessage", "")
 {
+    printf("START %s[%d]\n", __FILE__, __LINE__);
     test_fullmessage(tc_make_eof());
+    printf("END %s[%d]\n", __FILE__, __LINE__);
 }
 TEST_CASE( "Reader_hv_fullmessage", "")
 {
+    printf("START %s[%d]\n", __FILE__, __LINE__);
     test_fullmessage(tc_make_hv());
+    printf("END %s[%d]\n", __FILE__, __LINE__);
 }
 TEST_CASE( "Reader_buffering_streaming","")
 {
+    printf("START %s[%d]\n", __FILE__, __LINE__);
     test_streamingBody(tc_make_buffering());
+    printf("END %s[%d]\n", __FILE__, __LINE__);
 }
 
 void testcase_socketReader(Testcase tc)
@@ -112,39 +120,6 @@ TEST_CASE("Reader_socket_hv")
     test_vector_socketReader(tc_make_hv());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
-#if 0
-TEST_CASE("ReaderFixture_sockettest","")
-{
-    printf("%s[%d]\n", __FILE__, __LINE__);
-//    std::cout << "TEST_F::MyFixture::_data " <<  std::endl;
-    Testcase tc = GetParam();
-//    runTestcase(tc);
-    LogDebug("");
-    boost::asio::io_service io;
-    /**
-    * The server reads and verifies the message. Note the server needs
-    * the testcase object to know what a correct message is
-    */
-    TServerSPtr srv = std::shared_ptr<TServer>(new TServer(io, tc));
-    srv->listen(9991, [](MessageReaderSPtr rdr) {
-        //go here is a win
-    });
-    /**
-    * The client sends the message
-    */
-    TClientSPtr client = std::shared_ptr<TClient>(new TClient(io, "http", "localhost", "9991", tc));
-    client->send_testcase_buffers([](Marvin::ErrorType err){
-        //printf("all buffers have been sent\n");
-    });
-    io.run();
-    LogDebug("");
-
-}
-
-//INSTANTIATE_TEST_CASE_P( ReaderSocketBufTest, ReaderFixture, testing::ValuesIn(tc_make_buffering()));
-//INSTANTIATE_TEST_CASE_P( ReaderSocketEOFTest, ReaderFixture, testing::ValuesIn(tc_make_eof()));
-INSTANTIATE_TEST_CASE_P( ReaderSocketEOFTest, ReaderFixture, testing::ValuesIn(tc_make_hv()));
-#endif
 int main(int argc, char * argv[])
 {
     RBLogging::setEnabled(false);

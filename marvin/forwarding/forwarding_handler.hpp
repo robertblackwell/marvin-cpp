@@ -51,14 +51,16 @@ class ForwardingHandler : public RequestHandlerBase
         ~ForwardingHandler();
     
         void handleConnect(
-            MessageReaderSPtr           req,
-            ISocketSPtr                 connPtr,
+            ServerContext&              server_context,
+            MessageReaderSPtr           request,
+            MessageWriterSPtr           responseWriter,
+            ISocketSPtr                 clientConnectionPtr,
             HandlerDoneCallbackType     done);
 
         void handleRequest(
-            ServerContext&   server_context,
-            MessageReaderSPtr           req,
-            MessageWriterSPtr           rep,
+            ServerContext&              server_context,
+            MessageReaderSPtr           request,
+            MessageWriterSPtr           responseWriter,
             HandlerDoneCallbackType done
         );
     
@@ -91,10 +93,10 @@ class ForwardingHandler : public RequestHandlerBase
         /// @brief Only used by the handleConnect method
         ISocketSPtr                 m_conn;
         /// reader of the initial request from downstream - passed in to our handleRequest method
-        MessageReaderSPtr           m_req;
-        /// writer of the final response tod own stream - passed in to our handler request method
-        MessageBaseSPtr             m_resp;
-        MessageWriterSPtr           m_resp_wrtr;
+        MessageReaderSPtr           m_request_sptr;
+        /// writer of the final response to down stream - passed in to our handler request method
+        MessageBaseSPtr             m_response_sptr;
+        MessageWriterSPtr           m_response_writer_sptr;
         /// message object to hold final downstream response
         MessageBaseSPtr             m_downstream_msg_sptr;
         /// done callback - passed in to our handleRequest method

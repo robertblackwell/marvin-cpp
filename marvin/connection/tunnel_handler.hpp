@@ -30,19 +30,19 @@ class TunnelHandler
 
     private:
         void tryDone();
-        std::function<void(Marvin::ErrorType& err)> _callback;
-        ISocketSPtr     _downstreamConnection;
-//        TCPConnectionSPtr          _upstreamConnection;
-        ISocketSPtr     _upstreamConnection;
+        std::function<void(Marvin::ErrorType& err)> m_callback;
+
+        ISocketSPtr             m_downstream_connection;
+        ISocketSPtr             m_upstream_connection;
     
-        HalfTunnelUPtr              _upstreamHalfTunnel;
-        HalfTunnelUPtr              _downstreamHalfTunnel;
+        HalfTunnelUPtr          m_upstream_halftunnel;
+        HalfTunnelUPtr          m_downstream_halftunnel;
     
-        bool                        _upstreamDone;
-        Marvin::ErrorType           _upstreamErr;
-        bool                        _downstreamDone;
-        Marvin::ErrorType           _downstreamErr;
-        Marvin::ErrorType           _firstErr;
+        bool                    m_upstream_done;
+        Marvin::ErrorType       m_upstream_err;
+        bool                    m_downstream_done;
+        Marvin::ErrorType       m_downstream_err;
+        Marvin::ErrorType       m_first_err;
 };
 
 #endif /* tunnel_handler_hpp */

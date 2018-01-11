@@ -11,12 +11,14 @@
 
 #include <stdio.h>
 #include "message.hpp"
-#include "mavin_uri.hpp"
+#include "http_method.hpp"
+#include "marvin_uri.hpp"
 namespace Marvin {
 namespace Http {
-    void makeRequest(MessageBase& msg, Marvin::Uri& uri);
-    void makeProxyRequest(MessageBase& msg, Marvin::Uri& uri);
-    
+    void makeRequest(MessageBase& msg, HttpMethod method, Marvin::Uri& uri);
+    void makeProxyRequest(MessageBase& msg, HttpMethod method,  Marvin::Uri& uri);
+    void makeProxyConnectRequest(MessageBase& msg, std::string server, std::string port);
+
     void makeResponse403Forbidden(MessageBase& msg);
     void makeResponse200OKConnected(MessageBase& msg);
     void makeResponse502Badgateway(MessageBase& msg);

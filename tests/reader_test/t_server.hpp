@@ -36,7 +36,8 @@ class TServer
         long                                            m_port;
         boost::asio::io_service&                        m_io;
         boost::asio::ip::tcp::acceptor                  m_acceptor;
-        TCPConnectionSPtr                               m_conn_sptr;
+        ISocketSPtr                                     m_conn_sptr;
+//        TCPConnectionSPtr                               m_conn_sptr;
         MessageReaderSPtr                               m_rdr;
         Testcase                                        m_tc;
         TestrunnerSPtr                                  m_runner_sptr;

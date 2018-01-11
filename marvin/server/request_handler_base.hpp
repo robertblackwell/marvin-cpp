@@ -46,16 +46,17 @@ public:
     virtual ~RequestHandlerBase();
     
     virtual void handleConnect(
-        ServerContext&   server_context,
-        MessageReaderSPtr           req,
-        ISocketSPtr     connPtr,
+        ServerContext&              server_context,
+        MessageReaderSPtr           request,
+        MessageWriterSPtr           repsponseWriter,
+        ISocketSPtr                 clientConnectionSPtr,
         HandlerDoneCallbackType     done)
         { auto err = Marvin::make_error_ok(); done(err,false);}
     
     virtual void handleRequest(
-        ServerContext&   server_context,
-        MessageReaderSPtr           req,
-        MessageWriterSPtr           rep,
+        ServerContext&              server_context,
+        MessageReaderSPtr           request,
+        MessageWriterSPtr           responseWriter,
         HandlerDoneCallbackType done) = 0;
     
     protected:

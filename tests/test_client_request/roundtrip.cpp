@@ -65,7 +65,51 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
     client->asyncWrite(msg, f);
     return client;
 }
+/// \brief makes a GET request to the url provided and expects status=200 and a non empty content
+std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::string request_url)
+{
+    Marvin::Uri uri(request_url);
+    std::shared_ptr<Client> client = std::shared_ptr<Client>(new Client(io, uri ));
+    
+    std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
+    
+    msg->setMethod(HttpMethod::GET);
+    helpers::applyUriProxy(msg, uri);
+    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
+    msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding, "identity");
+    msg->setHeader(Marvin::Http::Headers::Name::TE, "");
+    // Http versions defaults to 1.1, so force it to the same as the request
+    msg->setContent("");
 
+    std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
+        MessageReaderSPtr b = client->getResponse();
+        std::string bdy = (b->getContent())->to_string();
+        auto st = b->statusCode();
+        REQUIRE(b->statusCode() == 200);
+        REQUIRE( bdy.size() > 0);
+        
+    };
+    client->asyncWrite(msg, f);
+    return client;
+}
+
+TEST_CASE("ssl_ssllabs", "[first]")
+{
+    boost::asio::io_service io_service;
+    std::vector<std::shared_ptr<Client>> rt;
+    auto c = general_roundtrip(io_service, "https://www.ssllabs.com/");
+    io_service.run();
+    rt.clear();
+}
+TEST_CASE("ssl_ssltest", "[first]")
+{
+    boost::asio::io_service io_service;
+    std::vector<std::shared_ptr<Client>> rt;
+    auto c = general_roundtrip(io_service, "https://ssltest/");
+    io_service.run();
+    rt.clear();
+
+}
 
 TEST_CASE("ClientRoundTrip-SixTimes","")
 {

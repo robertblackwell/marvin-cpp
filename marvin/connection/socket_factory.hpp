@@ -26,7 +26,8 @@ using system::error_code;
 * \ingroup SocketIO
 * \brief Factor fuunction to construct either TCP or SSL socket based on inpput arguments
 */
-ISocket* socketFactory(
+ISocketSPtr socketFactory(
+            bool serverFlag,
             boost::asio::io_service& io_service,
             const std::string scheme,
             const std::string server,
@@ -36,7 +37,8 @@ ISocket* socketFactory(
 * \ingroup SocketIO
 * \brief Factor fuunction to construct either TCP or SSL socket based on inpput arguments
 */
-ISocket* socketFactory(
+ISocketSPtr socketFactory(
+            bool serverFlag,
             boost::asio::io_service& io_service,
             const std::string scheme
 );

@@ -1,3 +1,4 @@
+#include "marvin_http.hpp"
 #include "forwarding_handler.hpp"
 #include "forward_helpers.hpp"
 #include "rb_logger.hpp"
@@ -82,19 +83,22 @@ void ForwardingHandler::p_handle_upgrade()
 /// done(true) signals to the server that this method is "hijacking" the connection
 
 void ForwardingHandler::handleConnect(
-        MessageReaderSPtr           req,
-        ISocketSPtr     connPtr,
+        ServerContext&              server_context,
+        MessageReaderSPtr           request,    // the initial request as a MessageReader
+        MessageWriterSPtr           responseWriter,
+        ISocketSPtr                 clientConnectionSPtr,// the connection to the client
         HandlerDoneCallbackType     done
 ){
-    m_req = req;
-    m_downstream_connection  = connPtr;
+    m_request_sptr = request;
+    m_downstream_connection  = clientConnectionSPtr;
     m_done_callback = done;
+    m_response_writer_sptr = responseWriter;
     m_initial_response_buf = std::unique_ptr<Marvin::MBuffer>(new Marvin::MBuffer(1000));
     //
     // Parse the url to determine were we have to send the "upstream" request
     //
     
-    std::string tmp_url = m_req->uri();
+    std::string tmp_url = m_request_sptr->uri();
     http::url tmp_u = http::ParseHttpUrl(tmp_url);
    
     m_scheme = tmp_u.protocol;
@@ -120,45 +124,50 @@ void ForwardingHandler::handleConnect(
 
 void ForwardingHandler::p_initiate_tunnel()
 {
-#if 0
+#if 1
     // first lets try and connect to the upstream host
     // to do that we need an upstream connection
-    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
-    m_resp->setWriteSock(_downStreamConnection.get());
-    
+//    m_response_sptr->setWriteSock(m_downstream_connection.get());
+//    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
+
     LogInfo("scheme:", m_scheme, " host:", m_host, " port:", m_port);
-    m_upstream_connection =
-        std::shared_ptr<TCPConnection>(new TCPConnection(m_io, m_scheme, m_host, std::to_string(m_port)));
+    m_upstream_connection = std::make_shared<TCPConnection>(m_io, m_scheme, m_host, std::to_string(m_port));
     
     m_upstream_connection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
-        if( err ){
-            LogWarn("initiateTunnel: FAILED scheme:", this->_scheme, " host:", this->_host, " port:", this->_port);
-            response502Badgateway(*_resp);
-            _resp->asyncWrite([this](Marvin::ErrorType& err){
+        if( err ) {
+            LogWarn("initiateTunnel: FAILED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
+            m_response_sptr = std::make_shared<MessageBase>();
+            Marvin::Http::makeResponse502Badgateway(*m_response_sptr);
+
+            m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
                 LogInfo("");
-                if( err ){
+                if( err ) {
                     LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
                     // got an error sending response to downstream client - what can we do ? Nothing
-                    auto pf = std::bind(_doneCallback, err, false);
-                    _io.post(pf);
-                }else{
-                    auto pf = std::bind(_doneCallback, err, true);
-                    _io.post(pf);
+                    auto pf = std::bind(m_done_callback, err, false);
+                    m_io.post(pf);
+                } else {
+                    auto pf = std::bind(m_done_callback, err, true);
+                    m_io.post(pf);
                 }
             });
-        }else{
-            response200OKConnected(*_resp);
-            _resp->asyncWrite([this](Marvin::ErrorType& err){
+        } else {
+            LogInfo("initiateTunnel: connection SUCCEEDED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
+            m_response_sptr = std::make_shared<MessageBase>();
+            Marvin:Http::makeResponse200OKConnected(*m_response_sptr);
+            m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
                 LogInfo("");
-                if( err ){
+                if( err ) {
                     LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
                     // got an error sending response to downstream client - what can we do ? Nothing
-                    auto pf = std::bind(_doneCallback, err, false);
-                    _io.post(pf);
-                }else{
-                    _tunnelHandler = std::shared_ptr<TunnelHandler>(new TunnelHandler(_downStreamConnection, _upstreamConnection));
-                    _tunnelHandler->start([this](Marvin::ErrorType& err){
-                        _doneCallback(err, false);
+                    auto pf = std::bind(m_done_callback, err, false);
+                    m_io.post(pf);
+                } else {
+                    m_tunnel_handler = std::make_shared<TunnelHandler>(m_downstream_connection, m_upstream_connection);
+                    m_tunnel_handler->start([this](Marvin::ErrorType& err){
+//                        m_done_callback(err, false);
+                        auto pf = std::bind(m_done_callback, err, false);
+                        m_io.post(pf);
                     });
                 }
             });
@@ -178,28 +187,28 @@ void ForwardingHandler::p_initiate_tunnel()
 ///
 
 void ForwardingHandler::handleRequest(
-        ServerContext&   server_context,
-        MessageReaderSPtr req,
-        MessageWriterSPtr respWrtr,
+        ServerContext&          server_context,
+        MessageReaderSPtr       request,
+        MessageWriterSPtr       responseWriter,
         HandlerDoneCallbackType done
 ){
-    m_req = req;
-    m_resp_wrtr = respWrtr;
+    m_request_sptr = request;
+    m_response_writer_sptr = responseWriter;
     m_done_callback = done;
    
-    Marvin::Uri tmp_uri(req->uri());
+    Marvin::Uri tmp_uri(request->uri());
     m_host = tmp_uri.server();
     m_port = (int)tmp_uri.port();
     m_scheme = tmp_uri.scheme();
-    assert( ! m_req->hasHeader("Upgrade") );
-    p_round_trip_upstream(req, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
+    assert( ! m_request_sptr->hasHeader("Upgrade") );
+    p_round_trip_upstream(request, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
-        m_resp = downMsg;
+        m_response_sptr = downMsg;
         Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
         /// perform the MITM collection
-        m_collector.collect(m_scheme, m_host, m_req, m_resp);
+        m_collector.collect(m_scheme, m_host, m_request_sptr, m_response_sptr);
         /// write response to downstream client
-        m_resp_wrtr->asyncWrite(m_resp, responseBodySPtr, [this](Marvin::ErrorType& err){
+        m_response_writer_sptr->asyncWrite(m_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err){
 //            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
             auto pf = std::bind(m_done_callback, err, (! err) );
             m_io.post(pf);
@@ -209,7 +218,10 @@ void ForwardingHandler::handleRequest(
 }
 /// \brief Perform the proxy forwarding process; and produces a response suitable
 /// for downstream transmission; the result of this method is a response to send back to the client
-
+/// \param req : MessageReaderSPtr the request from the original client - has same value
+///                                 as class property m_request_sptr
+/// \param upstreamCb : called when the round trip has finished
+///
 void ForwardingHandler::p_round_trip_upstream(
         MessageReaderSPtr req,
         std::function<void(Marvin::ErrorType& err, MessageBaseSPtr downstreamReplyMsg)> upstreamCb
@@ -226,7 +238,7 @@ void ForwardingHandler::p_round_trip_upstream(
     m_upstream_request_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
     /// format upstream msg for transmission
     helpers::makeUpstreamRequest(m_upstream_request_msg_sptr, req);
-    assert( ! m_req->hasHeader("Upgrade") );
+    assert( ! m_request_sptr->hasHeader("Upgrade") );
     Marvin::BufferChainSPtr content = req->getContentBuffer();
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
@@ -238,8 +250,6 @@ void ForwardingHandler::p_round_trip_upstream(
     });
     
 };
-
-
 
 void ForwardingHandler::p_on_complete(Marvin::ErrorType& err)
 {
@@ -255,7 +265,6 @@ void ForwardingHandler::p_on_complete(Marvin::ErrorType& err)
 }
 #pragma mark - bodies of utility functions
 
-
 ConnectAction ForwardingHandler::p_determine_connection_action(std::string host, int port)
 {
     std::vector<std::regex>  regexs = this->m_https_hosts;
@@ -264,29 +273,4 @@ ConnectAction ForwardingHandler::p_determine_connection_action(std::string host,
     return ConnectAction::TUNNEL;
 }
 
-#if 0
 
-void ForwardingHandler::response403Forbidden(MessageWriter& writer)
-{
-    writer.setStatus("Forbidden");
-    writer.setStatusCode(403);
-    std::string n("");
-    writer.setContent(n);
-}
-
-void ForwardingHandler::response200OKConnected(MessageWriter& writer)
-{
-    writer.setStatus("OK");
-    writer.setStatusCode(200);
-    std::string n("");
-    writer.setContent(n);
-}
-
-void ForwardingHandler::response502Badgateway(MessageWriter& writer)
-{
-    writer.setStatus("BAD GATEWAY");
-    writer.setStatusCode(503);
-    std::string n("");
-    writer.setContent(n);
-}
-#endif

@@ -11,50 +11,50 @@
 #include "half_tunnel.hpp"
 
 TunnelHandler::TunnelHandler(
-    ISocketSPtr     downstreamConnection,
-    TCPConnectionSPtr          upstreamConnection
+    ISocketSPtr         downstreamConnection,
+    TCPConnectionSPtr   upstreamConnection
 )
 {
-    _downstreamConnection   = downstreamConnection;
-    _upstreamConnection     = (ISocketSPtr)upstreamConnection;
+    m_downstream_connection   = downstreamConnection;
+    m_upstream_connection     = (ISocketSPtr)upstreamConnection;
     
-    _upstreamHalfTunnel     =  std::unique_ptr<HalfTunnel>( new HalfTunnel(_downstreamConnection, _upstreamConnection));
-    _downstreamHalfTunnel   =  std::unique_ptr<HalfTunnel>(new HalfTunnel(_upstreamConnection, _downstreamConnection ));
+    m_upstream_halftunnel     =  std::unique_ptr<HalfTunnel>( new HalfTunnel(m_downstream_connection, m_upstream_connection));
+    m_downstream_halftunnel   =  std::unique_ptr<HalfTunnel>(new HalfTunnel(m_upstream_connection, m_downstream_connection ));
 
-    _upstreamDone = false;
-    _downstreamDone = false;
-    _firstErr = Marvin::make_error_ok();
+    m_upstream_done = false;
+    m_downstream_done = false;
+    m_first_err = Marvin::make_error_ok();
     
 }
 TunnelHandler::~TunnelHandler(){};
 
 void TunnelHandler::start(std::function<void(Marvin::ErrorType& err)> cb)
 {
-    _callback = cb;
+    m_callback = cb;
     
     /// start both halves, downstream first as there is not likely to be traffic that way until the upstream starts
     /// we are done when they are both done
     /// the error to record is the one that strikes first.
-    /// we done need to force close anything as the servers ro client should eventually close their end and we will ehar about it
-    _downstreamHalfTunnel->start([this](Marvin::ErrorType& err){
-        _downstreamDone = true;
-        _downstreamErr = err;
-        if( (_firstErr == Marvin::make_error_ok()) && (err != Marvin::make_error_ok() ) )
-            _firstErr = err;
+    /// we done need to force close anything as the servers or client should eventually close their end and we will hear about it
+    m_downstream_halftunnel->start([this](Marvin::ErrorType& err){
+        m_downstream_done = true;
+        m_downstream_err = err;
+        if( (m_first_err == Marvin::make_error_ok()) && (err != Marvin::make_error_ok() ) )
+            m_first_err = err;
         tryDone();
     });
-    _upstreamHalfTunnel->start([this](Marvin::ErrorType& err){
-        _upstreamDone = true;
-        _upstreamErr = err;
-        if( (_firstErr == Marvin::make_error_ok()) && (err != Marvin::make_error_ok() ) )
-            _firstErr = err;
+    m_upstream_halftunnel->start([this](Marvin::ErrorType& err){
+        m_upstream_done = true;
+        m_upstream_err = err;
+        if( (m_first_err == Marvin::make_error_ok()) && (err != Marvin::make_error_ok() ) )
+            m_first_err = err;
         tryDone();
     });
 }
 void TunnelHandler::tryDone()
 {
-    if( _upstreamDone && _downstreamDone )
+    if( m_upstream_done && m_downstream_done )
     {
-        _callback(_firstErr);
+        m_callback(m_first_err);
     }
 }

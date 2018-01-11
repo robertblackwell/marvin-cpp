@@ -12,19 +12,34 @@
 #include "tcp_connection.hpp"
 #include "tls_connection.hpp"
 
-ISocket* socketFactory(
+
+ISocketSPtr socketFactory(
+            bool serverFlag, // true if the socket is for a server
             boost::asio::io_service& io_service,
             const std::string scheme,
             const std::string server,
             const std::string port
 ){
-    ISocket* ptr;
-    if( boost::to_lower_copy(scheme) == "http" ){
-        ptr = new TCPConnection(io_service, scheme, server, port);
-    }else if( boost::to_lower_copy(scheme) == "https" ){
-        ptr = new TCPConnection(io_service, scheme, server, port);
-//        ptr = new TLSConnection(io_service, scheme, server, port);
-    } else{
+    ISocketSPtr ptr;
+    if( boost::to_lower_copy(scheme) == "http" )
+    {
+        ptr = std::make_shared<TCPConnection>(io_service, scheme, server, port);
+    }
+    else if( boost::to_lower_copy(scheme) == "https" )
+    {
+        auto method = (serverFlag) ? boost::asio::ssl::context::method::sslv23_server : boost::asio::ssl::context::method::sslv23_client;
+        boost::asio::ssl::context model_ctx(io_service, method);
+        if( serverFlag) {
+        } else {
+            model_ctx.set_verify_mode(boost::asio::ssl::verify_peer);
+            model_ctx.load_verify_file("/Users/rob/CA/allroots/combined-cacert.pem");
+//            model_ctx.set_default_verify_paths();
+        }
+//        ptr = new TCPConnection(io_service, scheme, server, port);
+        ptr = std::make_shared<SSLConnection>(io_service, scheme, server, port, std::move(model_ctx));
+    }
+    else
+    {
         assert(false);
     }
     return ptr;
