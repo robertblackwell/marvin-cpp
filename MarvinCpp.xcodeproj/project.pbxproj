@@ -323,6 +323,8 @@
 		D48841F02007E51C00F74CB2 /* buffer_chain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49F822C1FF1DC06007E7BA1 /* buffer_chain.cpp */; };
 		D48841F12007E5ED00F74CB2 /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
 		D48841F22007E63C00F74CB2 /* forwarding_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4300B591E17E7720063FA82 /* forwarding_handler.cpp */; };
+		D48841F62009523E00F74CB2 /* io_service_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48841F42009523E00F74CB2 /* io_service_pool.cpp */; };
+		D48841F72009523E00F74CB2 /* io_service_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D48841F52009523E00F74CB2 /* io_service_pool.hpp */; };
 		D491232C1E0C28CF006C3A8A /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
 		D491232E1E0C28CF006C3A8A /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
 		D49123301E0C28CF006C3A8A /* url.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0CD1E01BFCB00831883 /* url.cpp */; };
@@ -1162,6 +1164,8 @@
 		D4883E1A1F9EB0BD00009D37 /* req_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = req_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4883E261F9EB19300009D37 /* conf_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = conf_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4883E331F9F079400009D37 /* openssl_10_6 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openssl_10_6; sourceTree = BUILT_PRODUCTS_DIR; };
+		D48841F42009523E00F74CB2 /* io_service_pool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = io_service_pool.cpp; sourceTree = "<group>"; };
+		D48841F52009523E00F74CB2 /* io_service_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = io_service_pool.hpp; sourceTree = "<group>"; };
 		D49123471E0C28CF006C3A8A /* ssl_client_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ssl_client_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4946DCF1FDD063900F7ADA1 /* json_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json_main.cpp; sourceTree = "<group>"; };
 		D4946DDC1FDD064100F7ADA1 /* test_json */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_json; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2119,6 +2123,7 @@
 		D479C0E01FC6543B0013F0F3 /* marvin */ = {
 			isa = PBXGroup;
 			children = (
+				D48841F3200951DB00F74CB2 /* boost_ext */,
 				D40B75511E0A0CFB00431E06 /* include */,
 				D479C0E21FC655970013F0F3 /* buffer */,
 				D4AF1F221FC665D70016CD9E /* client */,
@@ -2261,6 +2266,15 @@
 				D4883E0F1F9EAFEF00009D37 /* test_1.cnf */,
 			);
 			path = fixtures;
+			sourceTree = "<group>";
+		};
+		D48841F3200951DB00F74CB2 /* boost_ext */ = {
+			isa = PBXGroup;
+			children = (
+				D48841F52009523E00F74CB2 /* io_service_pool.hpp */,
+				D48841F42009523E00F74CB2 /* io_service_pool.cpp */,
+			);
+			path = boost_ext;
 			sourceTree = "<group>";
 		};
 		D49123271E0C27BA006C3A8A /* ssl_client_test */ = {
@@ -2556,6 +2570,7 @@
 				D4848DB31FFAB8A900330379 /* utest.hpp in Headers */,
 				D43FA0661FFB35A600B6EA82 /* tp_testcase.hpp in Headers */,
 				D43FA0791FFBE70800B6EA82 /* marvin_uri.hpp in Headers */,
+				D48841F72009523E00F74CB2 /* io_service_pool.hpp in Headers */,
 				D43FA06B1FFB35A600B6EA82 /* tp_post.hpp in Headers */,
 				D4ADCE081FF9D6AD00A63CF5 /* runners.hpp in Headers */,
 				D44A210B1FF6E731003CF16C /* tp_handler.hpp in Headers */,
@@ -4100,6 +4115,7 @@
 				D49BA0DE2006BB10009F5DD2 /* tp_tunnel.cpp in Sources */,
 				D4BE4F7B1FF36FDA00A0281C /* parser.cpp in Sources */,
 				D4BE4F7C1FF36FDF00A0281C /* uri_query.cpp in Sources */,
+				D48841F62009523E00F74CB2 /* io_service_pool.cpp in Sources */,
 				D4BE4F7D1FF36FE500A0281C /* connection_handler.cpp in Sources */,
 				D4B76726200260DF001BACC6 /* marvin_okv.cpp in Sources */,
 				D4BE4F7E1FF36FE900A0281C /* server_connection_manager.cpp in Sources */,
