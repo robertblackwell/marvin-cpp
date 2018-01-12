@@ -269,6 +269,7 @@ TEST_CASE("HelpersRequest02", "[upstream02]")
     verifyRequest_02(msgSPtr);
 //    std::cout << msgSPtr->str() << std::endl;
 }
+
 TEST_CASE("HelpersRequest03", "[upstream03]")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
@@ -282,6 +283,8 @@ TEST_CASE("copyexcept", "")
     fillMsgRdrAsRequest01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    std::cout << traceMessage(*msgSPtr) << std::endl;
+    std::cout << *msgSPtr << std::endl;
 //    helpers::makeUpstreamRequest(msgSPtr, msgRdr);
 //    verifyRequest_01(msgSPtr);
 

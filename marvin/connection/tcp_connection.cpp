@@ -20,7 +20,7 @@
 #include "callback_typedefs.hpp"
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include "tcp_connection.hpp"
 

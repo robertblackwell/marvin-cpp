@@ -10,7 +10,7 @@
 #include "callback_typedefs.hpp"
 #include "rb_logger.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include "timeout.hpp"
 
@@ -42,11 +42,17 @@ Timeout::~Timeout()
 void Timeout::cancelTimeout(std::function<void()> handler)
 {
     LogDebug(" m_active: ", m_active);
+#define DISABLE_TIMEOUT
+#ifdef DISABLE_TIMEOUT
+    m_io.post(handler);
+#else
     m_cancel_handler = handler;
     m_timer.expires_from_now(boost::posix_time::pos_infin);
     if( ! m_active) {
-        assert(m_expire_handler == nullptr);
-        assert(m_cancel_handler != nullptr);
+        if( m_expire_handler != nullptr)
+            assert(m_expire_handler == nullptr);
+        if( m_cancel_handler != nullptr)
+            assert(m_cancel_handler != nullptr);
         m_io.post(handler);
         m_cancel_handler = nullptr;
     } else {
@@ -54,16 +60,21 @@ void Timeout::cancelTimeout(std::function<void()> handler)
         m_timer.cancel();
         m_timer.expires_from_now(boost::posix_time::pos_infin);
     }
+#endif
 }
 void Timeout::setTimeout(long interval_millisecs, std::function<void()> handler)
 {
     LogDebug(" interval millisecs: ", interval_millisecs);
+#ifdef DISABLE_TIMEOUT
+// do nothing
+#else
     m_expire_handler = handler;
     m_cancel_handler = nullptr;
     m_active = true;
     auto whandler = m_strand.wrap(std::bind(&Timeout::p_handle_timeout, this, std::placeholders::_1));
     m_timer.expires_from_now(boost::posix_time::milliseconds(interval_millisecs));
     m_timer.async_wait(whandler);
+#endif
 }
 #pragma mark - private methods
 void Timeout::p_handle_timeout(const boost::system::error_code& err)

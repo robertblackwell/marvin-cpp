@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
+#include <boost/filesystem/path.hpp>
 #include "rb_logger.hpp"
 #define RBLOGGER_ON
 
@@ -9,7 +9,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 int main()
 {
-    
+    auto ss = __FILE__;
+    RBLogging::addTraceFile(__FILE__);
     LogTrace(std::string("this is a string"));
     LogTrace("this is a string");
     LogError("ERROR This is the message", "a string", (int) 33);

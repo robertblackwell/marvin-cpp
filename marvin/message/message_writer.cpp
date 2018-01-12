@@ -7,7 +7,7 @@
 using namespace Marvin;
 using namespace Marvin::Http;
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #define NO_CTORTRACE 1
 #define NO_FDTRACE 1
 

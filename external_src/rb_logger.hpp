@@ -1,31 +1,32 @@
 //
 #include <iostream>
 #include <sstream>
+#include <set>
 #include <pthread.h>
 #include <boost/filesystem.hpp>
 #ifndef RBLOGGER_HPP
 #define RBLOGGER_HPP
 namespace RBLogging{
- 
+#pragma mark - typdefs and constants
 enum class LogLevel {
     error = 1,
     warn = 2,
-    info = 3,
-    debug = 4,
-    verbose = 5,
-    tortrace = 6,
-    trace = 7
+    trace = 3,
+    tortrace = 4,
+    info = 5,
+    debug = 6,
+    verbose = 7,
 };
 
     
 #ifdef CCCCC // 'C' or 'C++'
 #define LOG_LEVEL_ERROR     1
 #define LOG_LEVEL_WARN      2
-#define LOG_LEVEL_INFO      3
-#define LOG_LEVEL_DEBUG     4
-#define LOG_LEVEL_VERBOSE   5
-#define LOG_LEVEL_TORTRACE  6
-#define LOG_LEVEL_TRACE     7
+#define LOG_LEVEL_TRACE     3
+#define LOG_LEVEL_TORTRACE  4
+#define LOG_LEVEL_INFO      5
+#define LOG_LEVEL_DEBUG     6
+#define LOG_LEVEL_VERBOSE   7
 #define LOG_LEVEL_MAX       7
     
 typedef long LogLevelType
@@ -34,21 +35,36 @@ typedef long LogLevelType
     
 #define LOG_LEVEL_ERROR     RBLogging::LogLevel::error
 #define LOG_LEVEL_WARN      RBLogging::LogLevel::warn
+#define LOG_LEVEL_TRACE     RBLogging::LogLevel::trace
+#define LOG_LEVEL_TORTRACE  RBLogging::LogLevel::tortrace
 #define LOG_LEVEL_INFO      RBLogging::LogLevel::info
 #define LOG_LEVEL_DEBUG     RBLogging::LogLevel::debug
 #define LOG_LEVEL_VERBOSE   RBLogging::LogLevel::verbose
-#define LOG_LEVEL_TORTRACE  RBLogging::LogLevel::tortrace
-#define LOG_LEVEL_TRACE     RBLogging::LogLevel::trace
-#define LOG_LEVEL_MAX       RBLogging::LogLevel::trace
+#define LOG_LEVEL_MAX       RBLogging::LogLevel::verbose
 
     typedef LogLevel LogLevelType;
-    
+    using FilePathType = boost::filesystem::path;
+    using  FilePathListType = std::set<FilePathType>;
+
 #endif
+#pragma mark - globals and functions
+
+extern bool logger_enabled;
+extern LogLevelType globalThreshold;
+extern FilePathListType activeFileStems;
 
 std::string LogLevelText(LogLevelType level);
+void setEnabled(bool on_off);
+void enableForLevel(LogLevelType level);
+void setActiveFileStems(FilePathListType active_stems );
+void addTraceFile(const char* filepath);
+void addTraceFile(std::string filepath);
 
+
+#pragma mark - Logger class
 class Logger{
     public:
+    
         Logger(std::ostream& os = std::cerr);
     
         void logWithFormat(
@@ -70,9 +86,12 @@ class Logger{
                   const Types&... args)
         {
             std::ostringstream os;
+            if( level == LOG_LEVEL_TRACE) {
+                assert(true);
+            }
             if( levelIsActive(level, threshold) ){
                 std::lock_guard<std::mutex> lg(_loggerMutex);
-                
+                std::string s = LogLevelText(level);
                 os << LogLevelText(level) <<"|";
                 auto tmp2 = boost::filesystem::path(file_name);
                 auto tmp3 = tmp2.filename();
@@ -80,6 +99,39 @@ class Logger{
                 auto pid = ::getpid();
                 auto tid = pthread_self();
 
+
+                os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
+                os << "::"<< func_name << "[" << line_number << "]:";
+                myprint(os, firstArg, args...);
+                //
+                // Only use the stream in the last step and this way we can send the log record somewhere else
+                // easily
+                //
+                write(STDERR_FILENO, os.str().c_str(), strlen(os.str().c_str()) );
+    //            __outStream << os.str();
+            }
+        }
+        /// \brief custom log template function for LogTrace macro
+        template<typename T, typename... Types>
+        void tracelog(
+//                  LogLevelType level,
+//                  LogLevelType threshold,
+                  const char* file_name,
+                  const char* func_name,
+                  int line_number,
+                  const T& firstArg,
+                  const Types&... args)
+        {
+            std::ostringstream os;
+            boost::filesystem::path file_path = boost::filesystem::path(file_name);
+            auto tmp3 = file_path.filename();
+            auto tmp4 = tmp3.stem();
+            if( p_fileStemIsActive(file_path) ){
+                std::lock_guard<std::mutex> lg(_loggerMutex);
+//                std::string s = LogLevelText(level);
+                os << "TRACE|";
+                auto pid = ::getpid();
+                auto tid = pthread_self();
 
                 os <<  tmp3.c_str() << "[" << pid << ":" << tid << "]";
                 os << "::"<< func_name << "[" << line_number << "]:";
@@ -107,11 +159,13 @@ class Logger{
     private:
         std::mutex _loggerMutex;
 
-        std::ostream& __outStream;
-        std::string className(std::string& func_name);
-    
+        std::ostream& m_outStream;
+        std::vector<boost::filesystem::path> active_stems;
+
+        std::string p_className(std::string& func_name);
         bool enabled();
         bool levelIsActive(LogLevelType lvl, LogLevelType threshold);
+        bool p_fileStemIsActive(FilePathType stem);
         void myprint(std::ostringstream& os);
 
         template <typename T, typename... Types>
@@ -122,8 +176,15 @@ class Logger{
         }
 
 };
+#pragma mark - dclare a logger
+#undef LOGGER_SINGLE
+#ifdef LOGGER_SINGLE
+extern Logger activeLogger;
+#else
+static Logger activeLogger{};
+#endif
 
-
+#pragma mark - macros
 // want to default to "ON" - disable Log by #define RBLOGGER_OFF
 //#define RBLOGGER_OFF
 
@@ -174,9 +235,7 @@ class Logger{
     #define RBLOGTRACE( arg1, ...)
 #else
     #define RBLOGTRACE(arg1, ...) \
-        RBLogging::activeLogger.vlog(\
-            /*log:*/        RBLogging::LogLevel::trace, \
-            /*threshold:*/  RBLogging::LogLevel::trace, \
+        RBLogging::activeLogger.tracelog(\
             /*file */       (char*)__FILE__, \
             /*function:*/   (char*)__FUNCTION__, \
             /*line:*/       __LINE__, \
@@ -237,20 +296,6 @@ class Logger{
 #define  LogTrace(arg1, ...)    RBLOGTRACE(arg1, ##__VA_ARGS__)
 #define  LogTorTrace(...)       RBLOGTORTRACE(this)
 #define  LogFDTrace(fd)         RBLOGFDTRACE(fd)
-
-extern bool logger_enabled;
-extern LogLevelType globalThreshold;
-
-void setEnabled(bool on_off);
-
-void enableForLevel(LogLevelType level);
-
-#undef LOGGER_SINGLE
-#ifdef LOGGER_SINGLE
-extern Logger activeLogger;
-#else
-static Logger activeLogger{};
-#endif
 
 } // namespace RBLogging
 

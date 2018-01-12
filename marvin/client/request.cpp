@@ -25,7 +25,7 @@ std::string traceRequest(Request& request)
     std::stringstream ss;
     ss << "Request: ";
     if( request._connection != NULL ){
-        ss << "conn: " << std::hex << (long)request._connection;
+//        ss << "conn: " << std::hex << (long)request._connection;
         ss << std::dec << "FD: " << request._connection->nativeSocketFD();
     }else{
         ss << "conn:" << "NULL";

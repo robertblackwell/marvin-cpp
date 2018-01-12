@@ -10,6 +10,7 @@
 
 bool RBLogging::logger_enabled = true;
 RBLogging::LogLevelType RBLogging::globalThreshold = LOG_LEVEL_MAX; // enabled everything
+RBLogging::FilePathListType RBLogging::activeFileStems;
 
 void RBLogging::setEnabled(bool on_off)
 {
@@ -21,12 +22,12 @@ void RBLogging::enableForLevel(LogLevelType level)
     logger_enabled = true;
 }
 
-std::string RBLogging::Logger::className(std::string& func_name){
+std::string RBLogging::Logger::p_className(std::string& func_name){
     
     return "";
 }
 
-RBLogging::Logger::Logger(std::ostream& os) : __outStream(os)
+RBLogging::Logger::Logger(std::ostream& os) : m_outStream(os)
 {
     RBLogging::logger_enabled = true;
 }
@@ -37,13 +38,23 @@ std::string RBLogging::LogLevelText(RBLogging::LogLevelType level){
         "",
         "ERROR",
         "WARN",
+        "TRACE",
+        "MTRAC",
         "INFO",
         "DEBG",
         "VERB",
-        "MTRAC",
-        "CTOR"
     };
     return tab[(int)level];
+}
+bool RBLogging::Logger::p_fileStemIsActive(RBLogging::FilePathType file_path)
+{
+    auto stem = file_path.stem();
+    auto f = RBLogging::activeFileStems.find(stem);
+    auto xx = *f;
+    if (RBLogging::activeFileStems.find(stem) != RBLogging::activeFileStems.end()) {
+        return true;
+    }
+    return false;
 }
 
 
@@ -147,9 +158,24 @@ bool RBLogging::Logger::enabled()
 bool RBLogging::Logger::levelIsActive(LogLevelType lvl, LogLevelType threshold)
 {
     /// use the lowest threshold - local or global
-    LogLevelType tmp = (threshold < globalThreshold) ? threshold : globalThreshold;
+    LogLevelType tmp = (threshold <= globalThreshold) ? threshold : globalThreshold;
     return ( ((int)lvl <= (int)tmp) && RBLogging::logger_enabled );
 //    return ( ((int)lvl <= (int)threshold) && RBLogging::logger_enabled );
+}
+void RBLogging::setActiveFileStems(RBLogging::FilePathListType stems)
+{
+    RBLogging::activeFileStems = stems;
+}
+void RBLogging::addTraceFile(std::string filepath_string)
+{
+    auto pth = boost::filesystem::path(filepath_string);
+    auto stm = pth.stem();
+    RBLogging::activeFileStems.insert(stm);
+}
+void RBLogging::addTraceFile(const char* stem_string)
+{
+    const std::string s(stem_string);
+    RBLogging::addTraceFile(s);
 }
 void RBLogging::Logger::myprint(std::ostringstream& os)
 {

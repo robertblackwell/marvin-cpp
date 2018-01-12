@@ -83,7 +83,6 @@
 		D421D0E11E01D1C500831883 /* uri_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0D21E01CE2A00831883 /* uri_query.cpp */; };
 		D421D0E71E043DFF00831883 /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
 		D421D0E81E043E2000831883 /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
-		D427A6461FC6833F00392DE0 /* bf_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D42DB9D01E00F99E00B2AF60 /* bf_main.cpp */; };
 		D427A6471FC6833F00392DE0 /* bf_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D42DB9D01E00F99E00B2AF60 /* bf_main.cpp */; };
 		D427A6501FC8A3AD00392DE0 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D427A64E1FC8A3AD00392DE0 /* client.cpp */; };
 		D427A6511FC8BB9F00392DE0 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D427A64E1FC8A3AD00392DE0 /* client.cpp */; };
@@ -257,10 +256,8 @@
 		D470B31D1E0FE51F00AEF135 /* uri_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0D21E01CE2A00831883 /* uri_query.cpp */; };
 		D470B31E1E0FE51F00AEF135 /* url.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0CD1E01BFCB00831883 /* url.cpp */; };
 		D470B31F1E0FE51F00AEF135 /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
-		D470B3221E0FE51F00AEF135 /* test_server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D42DB9B11E00F6DF00B2AF60 /* test_server.cpp */; };
 		D470B3241E0FE51F00AEF135 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22741D12188B007F8F72 /* http_parser.c */; };
 		D470B3251E0FE51F00AEF135 /* simple_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = D46F22761D12188B007F8F72 /* simple_buffer.c */; };
-		D470B3261E0FE51F00AEF135 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614B91DFCEAAA00E3FAB0 /* request.cpp */; };
 		D470B3281E0FE51F00AEF135 /* marvin_error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614531DFA526100E3FAB0 /* marvin_error.cpp */; };
 		D470B3291E0FE51F00AEF135 /* message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614621DFA5D7100E3FAB0 /* message.cpp */; };
 		D470B32C1E0FE51F00AEF135 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46F227B1D12188B007F8F72 /* parser.cpp */; };
@@ -319,6 +316,13 @@
 		D4883E2D1F9F079400009D37 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D4883E2E1F9F079400009D37 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D4883E341F9F07BE00009D37 /* cert_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4883E081F9EACF000009D37 /* cert_test.cpp */; };
+		D48841EC2007E4CC00F74CB2 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D427A64E1FC8A3AD00392DE0 /* client.cpp */; };
+		D48841ED2007E4D500F74CB2 /* marvin_http.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D418D0A12002B7170065655C /* marvin_http.cpp */; };
+		D48841EE2007E4E200F74CB2 /* marvin_okv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4B76724200260DF001BACC6 /* marvin_okv.cpp */; };
+		D48841EF2007E50900F74CB2 /* socket_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49F821A1FF1B826007E7BA1 /* socket_factory.cpp */; };
+		D48841F02007E51C00F74CB2 /* buffer_chain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49F822C1FF1DC06007E7BA1 /* buffer_chain.cpp */; };
+		D48841F12007E5ED00F74CB2 /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
+		D48841F22007E63C00F74CB2 /* forwarding_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4300B591E17E7720063FA82 /* forwarding_handler.cpp */; };
 		D491232C1E0C28CF006C3A8A /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
 		D491232E1E0C28CF006C3A8A /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
 		D49123301E0C28CF006C3A8A /* url.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0CD1E01BFCB00831883 /* url.cpp */; };
@@ -518,6 +522,13 @@
 			remoteInfo = marvin;
 		};
 		D4782B0E1FFEDD66003473FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D4EA1EED1D1217E600D1EABC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4BE4F6A1FF36F2300A0281C;
+			remoteInfo = marvin;
+		};
+		D48841EA2007E2C800F74CB2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D4EA1EED1D1217E600D1EABC /* Project object */;
 			proxyType = 1;
@@ -1499,6 +1510,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48841F12007E5ED00F74CB2 /* libmarvin.a in Frameworks */,
 				D470B32F1E0FE51F00AEF135 /* libcrypto.a in Frameworks */,
 				D470B3301E0FE51F00AEF135 /* libssl.a in Frameworks */,
 				D470B3311E0FE51F00AEF135 /* libboost_filesystem.a in Frameworks */,
@@ -2976,6 +2988,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D48841EB2007E2C800F74CB2 /* PBXTargetDependency */,
 			);
 			name = "proxy-pipe";
 			productName = main1;
@@ -3813,8 +3826,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48841F02007E51C00F74CB2 /* buffer_chain.cpp in Sources */,
 				D4A7D3931E14A4F700748973 /* pipe_collector.cpp in Sources */,
+				D48841F22007E63C00F74CB2 /* forwarding_handler.cpp in Sources */,
+				D48841EF2007E50900F74CB2 /* socket_factory.cpp in Sources */,
+				D48841EE2007E4E200F74CB2 /* marvin_okv.cpp in Sources */,
+				D48841EC2007E4CC00F74CB2 /* client.cpp in Sources */,
 				D407D51B1E113FE7003E5F8E /* http_header.cpp in Sources */,
+				D48841ED2007E4D500F74CB2 /* marvin_http.cpp in Sources */,
 				D470B33C1E0FE5B500AEF135 /* main.cpp in Sources */,
 				D470B31C1E0FE51F00AEF135 /* tls_connection.cpp in Sources */,
 				D470B31D1E0FE51F00AEF135 /* uri_query.cpp in Sources */,
@@ -3822,12 +3841,9 @@
 				D470B31E1E0FE51F00AEF135 /* url.cpp in Sources */,
 				D470B31F1E0FE51F00AEF135 /* tcp_connection.cpp in Sources */,
 				D4E104B41E17FCB200BB6066 /* tunnel_handler.cpp in Sources */,
-				D470B3221E0FE51F00AEF135 /* test_server.cpp in Sources */,
 				D470B3241E0FE51F00AEF135 /* http_parser.c in Sources */,
 				D470B3251E0FE51F00AEF135 /* simple_buffer.c in Sources */,
-				D470B3261E0FE51F00AEF135 /* request.cpp in Sources */,
 				D4E104B91E1811AD00BB6066 /* half_tunnel.cpp in Sources */,
-				D427A6461FC6833F00392DE0 /* bf_main.cpp in Sources */,
 				D470B3281E0FE51F00AEF135 /* marvin_error.cpp in Sources */,
 				D470B3291E0FE51F00AEF135 /* message.cpp in Sources */,
 				D470B32C1E0FE51F00AEF135 /* parser.cpp in Sources */,
@@ -4122,6 +4138,11 @@
 			isa = PBXTargetDependency;
 			target = D4BE4F6A1FF36F2300A0281C /* marvin */;
 			targetProxy = D4782B0E1FFEDD66003473FD /* PBXContainerItemProxy */;
+		};
+		D48841EB2007E2C800F74CB2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4BE4F6A1FF36F2300A0281C /* marvin */;
+			targetProxy = D48841EA2007E2C800F74CB2 /* PBXContainerItemProxy */;
 		};
 		D4A6E9E21E04777E0096441E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -1,5 +1,5 @@
 #include "rb_logger.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "server_connection_manager.hpp"
 /// \todo - the code in this file needs tidying up - too many commented out lines
 ServerConnectionManager* ServerConnectionManager::instance;
@@ -24,10 +24,11 @@ ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, bo
 
 void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
 {
+    LogDebug(" num conn: ", m_connections.size(), " max: ", m_maxNumberOfConnections);
     assert(m_callback == nullptr);
     if( m_connections.size() > m_maxNumberOfConnections ) {
+        LogWarn("max connections exceeded - waiting cb: ", (void*)(&cb));
         m_callback = cb;
-//        std::cout << "ServerConnectionManager::waiting server" << std::endl;
     } else {
         cb();
     }
@@ -62,6 +63,7 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
 void ServerConnectionManager::deregister(ConnectionHandler* ch)
 {
     LogDebug("nativeSocket:: ", ch->nativeSocketFD());
+    LogDebug("num connections:: ", m_connections.size());
 //    std::cout << "deregister: fd_list.size() " << _fd_list.size() << " "  << std::endl;
 //    std::cout << "deregister: _connections.size() " << _connections.size() << " "  << std::endl;
 //    std::cout << "deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
@@ -103,10 +105,11 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
     
     m_connections.erase(ch);
     m_fd_list.erase(fd);
+    LogTrace(" num connections : ", m_connections.size() , " m_callback != null", (m_callback != nullptr));
     if (m_callback && (m_connections.size() < m_maxNumberOfConnections)) {
-        LogDebug("");
-//        std::cout << "ServerConnectionManager::releasing callback" << std::endl;
         auto tmp = m_callback;
+        LogTrace("releasing cb: ", (void*)(&tmp) );
+//        std::cout << "ServerConnectionManager::releasing callback" << std::endl;
         m_callback = nullptr;
         m_io.post(tmp);
     }

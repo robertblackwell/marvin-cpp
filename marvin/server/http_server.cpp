@@ -120,7 +120,7 @@ void HTTPServer::terminate()
     auto hf = std::bind(&HTTPServer::startAccept, this);
     postOnStrand(hf);
     
-#define MULTI_THREAD
+#define XMULTI_THREAD
 #ifndef MULTI_THREAD
     m_io.run();
 #else

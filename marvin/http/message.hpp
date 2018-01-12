@@ -26,6 +26,8 @@ using MessageInterface = IMessage;
 class MessageBase;
 /// \ingroup HttpMessage
 using MessageBaseSPtr = std::shared_ptr<MessageBase>;
+std::string traceMessage(MessageBase& msg);
+void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
 
 /// \ingroup HttpMessage
 /// \brief A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
@@ -113,6 +115,7 @@ protected:
     Marvin::BufferChainSPtr             m_body_chain_sptr;
     
 };
+
 } // namespace Http
 } // namespace Marvin
 #endif

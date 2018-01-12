@@ -11,7 +11,7 @@
 #include "http_server.hpp"
 #include "server_context.hpp"
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&    io,
@@ -108,6 +108,7 @@ void ConnectionHandler::p_request_complete(Marvin::ErrorType err, bool keepAlive
 */
 void ConnectionHandler::p_handler_complete(Marvin::ErrorType err)
 {
+    LogTrace(" uuid: ", m_uuid,  " fd:", nativeSocketFD());
     #if 0
     LogInfo(" fd:", nativeSocketFD(), " err: ", err.message());
     if(!err){
@@ -129,7 +130,7 @@ void ConnectionHandler::p_handler_complete(Marvin::ErrorType err)
 */
 void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
 {
-    LogInfo(" fd:", nativeSocketFD());
+    LogTrace("ENTER uuid: ", m_uuid,  " err: ", Marvin::make_error_description(err),  " fd:", nativeSocketFD());
     LogInfo("", Marvin::make_error_description(err));
 //    LogError("error value: ", err.value(),
 //        " category: ", err.category().name(),
@@ -137,7 +138,8 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
     std::string uuid_str = boost::uuids::to_string(m_uuid);
     if( err ){
         std::string s = Marvin::make_error_description(err);
-        LogError("error value: ", err.value(),
+        LogWarn(" uuid: ", m_uuid, " fd: ",  nativeSocketFD(),
+            "error value: ", err.value(),
             " category: ", err.category().name(),
             " msg: ", err.category().message(err.value()));
             //
@@ -160,6 +162,7 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
             } );
         }
     }
+    LogTrace("ENTER uuid: ", m_uuid,  " err: ", Marvin::make_error_description(err),  " fd:", nativeSocketFD());
     LogInfo(" fd:", nativeSocketFD());
 }
 /*!
@@ -167,7 +170,7 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
 */
 void ConnectionHandler::serve()
 {
-    LogInfo(" fd:", nativeSocketFD());
+    LogTrace(" uuid: ", m_uuid,  " fd:", nativeSocketFD());
 //    std::cout << "connection_handler::serve " << std::hex << (long) this << std::endl;
 //    ISocket* cptr = _connection.get();
     
@@ -186,7 +189,7 @@ void ConnectionHandler::serve()
 */
 void ConnectionHandler::p_serve_another()
 {
-    LogInfo(" fd:", nativeSocketFD());
+    LogTrace(" uuid: ", m_uuid,  " fd:", nativeSocketFD());
     /// get a new request object
 //    ISocket* cptr = _connection.get();
 //    std::cout << "connection_handler::serveAnother " << std::hex << (long) this << std::endl;
