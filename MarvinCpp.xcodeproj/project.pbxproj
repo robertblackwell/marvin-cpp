@@ -131,6 +131,15 @@
 		D43FA0751FFB419C00B6EA82 /* tp_post.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA05A1FFB35A500B6EA82 /* tp_post.cpp */; };
 		D43FA0781FFBE70800B6EA82 /* marvin_uri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FA0761FFBE70800B6EA82 /* marvin_uri.cpp */; };
 		D43FA0791FFBE70800B6EA82 /* marvin_uri.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D43FA0771FFBE70800B6EA82 /* marvin_uri.hpp */; };
+		D43FF0E72009E231004ABC77 /* timer_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FF0E62009E231004ABC77 /* timer_main.cpp */; };
+		D43FF0EA2009E238004ABC77 /* rb_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614331DF8CC7C00E3FAB0 /* rb_logger.cpp */; };
+		D43FF0ED2009E238004ABC77 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A09B691E12B9950011ACC4 /* libboost_thread.a */; };
+		D43FF0EE2009E238004ABC77 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
+		D43FF0EF2009E238004ABC77 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
+		D43FF0F52009E51A004ABC77 /* timer_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FF0E62009E231004ABC77 /* timer_main.cpp */; };
+		D43FF0F62009E56D004ABC77 /* timer_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FF0E62009E231004ABC77 /* timer_main.cpp */; };
+		D43FF0F72009E642004ABC77 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
+		D43FF0F82009E64F004ABC77 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D4439C751FA2631700EF9D41 /* x509_cert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C731FA2631700EF9D41 /* x509_cert.cpp */; };
 		D4439C781FA2645400EF9D41 /* x509_pkey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C761FA2645400EF9D41 /* x509_pkey.cpp */; };
 		D4439C7B1FA2646A00EF9D41 /* x509_conf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C791FA2646A00EF9D41 /* x509_conf.cpp */; };
@@ -153,8 +162,6 @@
 		D44C3D291FF413640034DA00 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A09B691E12B9950011ACC4 /* libboost_thread.a */; };
 		D44C3D2A1FF413640034DA00 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D44C3D2B1FF413640034DA00 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
-		D44C3D311FF413950034DA00 /* timeout_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44C3D201FF413570034DA00 /* timeout_main.cpp */; };
-		D44C3D321FF413990034DA00 /* timeout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44C3D1C1FF40E1D0034DA00 /* timeout.cpp */; };
 		D44C3D331FF414380034DA00 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D44C3D341FF4144F0034DA00 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D44C3D351FF424800034DA00 /* marvin_error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46614531DFA526100E3FAB0 /* marvin_error.cpp */; };
@@ -662,6 +669,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		D43FF0F02009E238004ABC77 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		D445DB561E14B57400418D6B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1050,6 +1066,8 @@
 		D43FA0601FFB35A600B6EA82 /* tp_post.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tp_post.hpp; sourceTree = "<group>"; };
 		D43FA0761FFBE70800B6EA82 /* marvin_uri.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = marvin_uri.cpp; sourceTree = "<group>"; };
 		D43FA0771FFBE70800B6EA82 /* marvin_uri.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = marvin_uri.hpp; sourceTree = "<group>"; };
+		D43FF0E62009E231004ABC77 /* timer_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timer_main.cpp; sourceTree = "<group>"; };
+		D43FF0F42009E238004ABC77 /* test_timer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_timer; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4439C731FA2631700EF9D41 /* x509_cert.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_cert.cpp; sourceTree = "<group>"; };
 		D4439C741FA2631700EF9D41 /* x509_cert.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = x509_cert.hpp; sourceTree = "<group>"; };
 		D4439C761FA2645400EF9D41 /* x509_pkey.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_pkey.cpp; sourceTree = "<group>"; };
@@ -1360,6 +1378,18 @@
 				D42DB9C81E00F93000B2AF60 /* libboost_log.dylib in Frameworks */,
 				D44C3D971FF4C9270034DA00 /* libmarvin.a in Frameworks */,
 				D42DB9C91E00F93000B2AF60 /* libboost_system.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43FF0EC2009E238004ABC77 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43FF0F82009E64F004ABC77 /* libssl.a in Frameworks */,
+				D43FF0F72009E642004ABC77 /* libcrypto.a in Frameworks */,
+				D43FF0ED2009E238004ABC77 /* libboost_thread.a in Frameworks */,
+				D43FF0EE2009E238004ABC77 /* libboost_system.a in Frameworks */,
+				D43FF0EF2009E238004ABC77 /* libboost_filesystem.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1849,6 +1879,14 @@
 				D43768041F983F1B003549AC /* main.cpp */,
 			);
 			path = sl_raw_client;
+			sourceTree = "<group>";
+		};
+		D43FF0E52009E1EE004ABC77 /* test_timer */ = {
+			isa = PBXGroup;
+			children = (
+				D43FF0E62009E231004ABC77 /* timer_main.cpp */,
+			);
+			path = test_timer;
 			sourceTree = "<group>";
 		};
 		D445DB591E14B57400418D6B /* regexs */ = {
@@ -2465,6 +2503,7 @@
 				D42AC4EE1FDF1675007CF7E0 /* test_strand */,
 				D4ADCE0C1FF9E20600A63CF5 /* unit_tester */,
 				D44C3D1F1FF413120034DA00 /* test_timeout */,
+				D43FF0E52009E1EE004ABC77 /* test_timer */,
 				D4B6C5251FE0D4D0006E1548 /* gtest_examples */,
 			);
 			path = tests;
@@ -2548,6 +2587,7 @@
 				D4BA42671FFFF474001D2EC3 /* test_message */,
 				D4B767222001CC40001BACC6 /* test_headers */,
 				D4CA33D12002EEE400BB1044 /* test_catch */,
+				D43FF0F42009E238004ABC77 /* test_timer */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2733,6 +2773,23 @@
 			name = test_server_client_body_format;
 			productName = main1;
 			productReference = D42DB9CE1E00F93000B2AF60 /* test_server_client_body_format */;
+			productType = "com.apple.product-type.tool";
+		};
+		D43FF0E82009E238004ABC77 /* test_timer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D43FF0F12009E238004ABC77 /* Build configuration list for PBXNativeTarget "test_timer" */;
+			buildPhases = (
+				D43FF0E92009E238004ABC77 /* Sources */,
+				D43FF0EC2009E238004ABC77 /* Frameworks */,
+				D43FF0F02009E238004ABC77 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test_timer;
+			productName = logger;
+			productReference = D43FF0F42009E238004ABC77 /* test_timer */;
 			productType = "com.apple.product-type.tool";
 		};
 		D445DB571E14B57400418D6B /* regexs */ = {
@@ -3418,6 +3475,7 @@
 				D4A03E991FE4A7380069CBCC /* test_connect */,
 				D42AC4F01FDF1775007CF7E0 /* test_strand */,
 				D44C3D221FF413640034DA00 /* test_timeout */,
+				D43FF0E82009E238004ABC77 /* test_timer */,
 				D4946DD11FDD064100F7ADA1 /* test_json */,
 				D458EA2F1DF6413600E820A9 /* test_marvin_errors */,
 				D46614271DF86D4D00E3FAB0 /* test_logger */,
@@ -3621,6 +3679,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D43FF0E92009E238004ABC77 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43FF0EA2009E238004ABC77 /* rb_logger.cpp in Sources */,
+				D43FF0F62009E56D004ABC77 /* timer_main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D445DB541E14B57400418D6B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3657,8 +3724,7 @@
 			files = (
 				D44C3D251FF413640034DA00 /* rb_logger.cpp in Sources */,
 				D44C3D351FF424800034DA00 /* marvin_error.cpp in Sources */,
-				D44C3D321FF413990034DA00 /* timeout.cpp in Sources */,
-				D44C3D311FF413950034DA00 /* timeout_main.cpp in Sources */,
+				D43FF0F52009E51A004ABC77 /* timer_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4115,6 +4181,7 @@
 				D4BE4F7B1FF36FDA00A0281C /* parser.cpp in Sources */,
 				D4BE4F7C1FF36FDF00A0281C /* uri_query.cpp in Sources */,
 				D4BE4F7D1FF36FE500A0281C /* connection_handler.cpp in Sources */,
+				D43FF0E72009E231004ABC77 /* timer_main.cpp in Sources */,
 				D4B76726200260DF001BACC6 /* marvin_okv.cpp in Sources */,
 				D4BE4F7E1FF36FE900A0281C /* server_connection_manager.cpp in Sources */,
 				D4BE4F7F1FF36FEE00A0281C /* request_handler_base.cpp in Sources */,
@@ -4441,6 +4508,30 @@
 					"$(PROJECT_DIR)/deps/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D43FF0F22009E238004ABC77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D43FF0F32009E238004ABC77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -5567,6 +5658,15 @@
 			buildConfigurations = (
 				D42DB9CC1E00F93000B2AF60 /* Debug */,
 				D42DB9CD1E00F93000B2AF60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D43FF0F12009E238004ABC77 /* Build configuration list for PBXNativeTarget "test_timer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D43FF0F22009E238004ABC77 /* Debug */,
+				D43FF0F32009E238004ABC77 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

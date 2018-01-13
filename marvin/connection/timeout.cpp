@@ -29,6 +29,8 @@ Timeout::Timeout(
             m_timer(m_io)
 {
     LogTorTrace();
+    /// timeout 
+    m_timer.expires_from_now(boost::posix_time::pos_infin);
 }
 
 Timeout::~Timeout()
@@ -40,7 +42,7 @@ Timeout::~Timeout()
 void Timeout::cancelTimeout(std::function<void()> handler)
 {
     LogDebug(" m_active: ", m_active);
-#define DISABLE_TIMEOUT
+#define XDISABLE_TIMEOUT
 #ifdef DISABLE_TIMEOUT
     m_io.post(handler);
 #else

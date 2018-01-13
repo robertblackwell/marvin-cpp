@@ -9,6 +9,9 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <functional>
+#include <memory>
+
 #include "boost_stuff.hpp"
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
@@ -66,14 +69,14 @@ using TimeoutUPtr = std::unique_ptr<Timeout>;
 *   -   Timeout does not directly call `timeout_handler` or `cancel_handler`, but rather posts them to the io_service provied during
 *       construction.
 *   -   `timeout_handler` or `cancel_handler` MUST NOT ber `strand.wrap()`'d or not as required by the caller.
+* https://gist.github.com/tsaarni/bb0b8d1ca33e3a1bfea1 - gives example of shared_from_this
+* http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3388.pdf
 */
-class Timeout
+class Timeout : public std::enable_shared_from_this<Timeout>
 {
     public:
 
-    Timeout(
-            boost::asio::io_service& io_service
-               );
+    Timeout(boost::asio::io_service& io_service);
     
     ~Timeout();
     void setTimeout(long interval_millisecs, std::function<void()> handler);
