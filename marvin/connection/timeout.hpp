@@ -60,20 +60,19 @@ using TimeoutUPtr = std::unique_ptr<Timeout>;
 *   -   all internal handlers should call `cancelTimeout` and should only invoke or post higher level handlers
 *       within the `cancel_hander` passed to `cancelTimeout`
 *
-* ## io_service and strand
+* ## io_service
 *
-*   -   Timeout wraps all its internal handler in `strand`.
+*   -   Timeout uses no locking and hence it and its client MUST run in a single threaded io_service`.
 *   -   Timeout does not directly call `timeout_handler` or `cancel_handler`, but rather posts them to the io_service provied during
 *       construction.
-*   -   `timeout_handler` or `cancel_handler` can be `strand.wrap()`'d or not as required by the caller.
+*   -   `timeout_handler` or `cancel_handler` MUST NOT ber `strand.wrap()`'d or not as required by the caller.
 */
 class Timeout
 {
     public:
 
     Timeout(
-            boost::asio::io_service& io_service,
-            boost::asio::strand& strand
+            boost::asio::io_service& io_service
                );
     
     ~Timeout();
@@ -85,7 +84,6 @@ private:
     void p_io_post(std::function<void()> noParam_cb);
     
     boost::asio::io_service&        m_io;
-    boost::asio::strand             m_strand;
     boost::asio::deadline_timer     m_timer;
     std::function<void()>           m_cancel_handler;
     std::function<void()>           m_expire_handler;

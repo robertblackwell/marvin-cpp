@@ -19,7 +19,6 @@
 #include "marvin_error.hpp"
 #include "callback_typedefs.hpp"
 #include "rb_logger.hpp"
-
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "tls_connection.hpp"
@@ -74,8 +73,7 @@ SSLConnection::SSLConnection(
             )
             :
             m_io(io_service),
-            m_strand(m_io),
-            m_timeout(m_io, m_strand),
+            m_timeout(m_io),
             m_resolver(m_io),
             m_ssl_ctx(std::move(ctx)),
             m_ssl_socket(m_io, m_ssl_ctx),
@@ -100,8 +98,7 @@ SSLConnection::SSLConnection(
     boost::asio::ssl::context ctx
     ):
         m_io(io_service),
-        m_strand(m_io),
-        m_timeout(m_io, m_strand),
+        m_timeout(m_io),
         m_resolver(m_io), // dont really need this
         m_ssl_ctx(std::move(ctx)),
         m_ssl_socket(m_io, m_ssl_ctx),
@@ -145,6 +142,12 @@ void SSLConnection::shutdown()
     assert(! m_closed_already);
     m_lowest_layer_sock.shutdown(boost::asio::socket_base::shutdown_both);
 }
+void SSLConnection::setReadTimeout(long millisecs)
+{
+    m_read_timeout_interval_ms = millisecs;
+}
+
+
 #pragma mark - public interface async io operations
 void SSLConnection::asyncAccept(
     boost::asio::ip::tcp::acceptor&                     acceptor,
@@ -167,14 +170,14 @@ void SSLConnection::asyncConnect(ConnectCallbackType connect_cb)
     m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
         m_lowest_layer_sock.cancel();
     });
-    auto h = m_strand.wrap([this](const error_code& err, tcp::resolver::iterator endpoint_iterator) {
+    auto h = ([this](const error_code& err, tcp::resolver::iterator endpoint_iterator) {
         m_timeout.cancelTimeout([this, err, endpoint_iterator](){
             p_handle_resolve(err, endpoint_iterator);
         });
     });
     m_resolver.async_resolve(query, h);
 #else
-    auto handler = m_strand.wrap(std::bind(&SSLConnection::p_handle_resolve,this, std::placeholders::_1, std::placeholders::_2));
+    auto handler = (std::bind(&SSLConnection::p_handle_resolve,this, std::placeholders::_1, std::placeholders::_2));
     m_resolver.async_resolve(query, handler);
 #endif
 }
@@ -190,7 +193,7 @@ void SSLConnection::asyncRead(Marvin::MBufferSPtr buffer, AsyncReadCallbackType 
     m_timeout.setTimeout(m_read_timeout_interval_ms, [this](){
         m_lowest_layer_sock.cancel();
     });
-    auto handler = m_strand.wrap([this, cb, buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    auto handler = ([this, cb, buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         /// when a handler is called the first thing to do is call timeout.cancel()
         /// when timeout object is finshed it will call the CB and then we can conlete
@@ -220,7 +223,7 @@ void SSLConnection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWrit
     /// this took a while to work out - change buffer code at your peril
     LogDebug("");
     auto tmp = buf_chain_sptr->asio_buffer_sequence();
-    auto handler = m_strand.wrap([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         p_post_write_cb(cb, err, bytes_transfered);
     });
@@ -255,7 +258,7 @@ void SSLConnection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallbac
 void SSLConnection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
 {
     LogDebug("");
-    auto handler = m_strand.wrap([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         p_post_write_cb(cb, err, bytes_transfered);
     });
@@ -295,7 +298,7 @@ void SSLConnection::p_handle_resolve(
             m_lowest_layer_sock.cancel();
         });
         auto next_iter = ++endpoint_iterator;
-        auto h = m_strand.wrap([this, next_iter](const error_code& err) {
+        auto h = ([this, next_iter](const error_code& err) {
             m_timeout.cancelTimeout([this, err, next_iter](){
                 p_handle_connect(err, next_iter);
             });
@@ -338,7 +341,7 @@ void SSLConnection::p_handle_connect(
             m_lowest_layer_sock.cancel();
         });
         auto next_iter = ++endpoint_iterator;
-        auto h = m_strand.wrap([this, next_iter](const error_code& err) {
+        auto h = ([this, next_iter](const error_code& err) {
             m_timeout.cancelTimeout([this, err, next_iter](){
                 p_handle_connect(err, next_iter);
             });
@@ -378,7 +381,7 @@ void SSLConnection::p_handle_handshake(const boost::system::error_code& err)
 void SSLConnection::p_async_write(void* data, std::size_t size, AsyncWriteCallback cb)
 {
     LogDebug("");
-    auto handler = m_strand.wrap([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         LogDebug("");
         p_post_write_cb(cb, err, bytes_transfered);

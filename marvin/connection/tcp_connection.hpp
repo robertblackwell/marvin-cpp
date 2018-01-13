@@ -36,19 +36,16 @@ using TCPConnectionUPtr = std::unique_ptr<TCPConnection>;
 * ## Timeouts
 * A Note on timeouts, the use of a boost::asio::strand by this class, and
 * concurrent calls to the async io methods defined below.
+* @WARN UPDATE - 01/12/2018 - removed strand stuff, must run this class in a single threaded io_service
 *
 * 1. Only one async I/O operation should be outstanding at any time.
 * 2. Internally this class applies timeouts to the operations:
 *       -   asyncConnect
 *       -   asyncRead
 *       -   asyncWrite in all its forms
-*   to accomodate this an instance of boost::asio::strand is used to ensure
-*   that internal io handlers coordinate correctly and do not run concurrently.
 *
-*   HOowever all callbacks provided to asyncConnect, asyncRead, asyncWrite are scheduled (using _io.post())on
-*   the instance of io_service being used by the TCPConnection instance and ARE NOT
-*   running on the internal strand. These callbacks should NOT be wrapped by another strand as
-*   that could cause deadlocks.
+*   All callbacks provided to asyncConnect, asyncRead, asyncWrite are scheduled (using _io.post())on
+*   the instance of io_service being used by the TCPConnection instance.
 *
 *   Notice that asyncAccept was NOT included in the list of io ops subject to timeout.
 *
@@ -56,8 +53,6 @@ using TCPConnectionUPtr = std::unique_ptr<TCPConnection>;
 *           and hence a timeout seems inappropriate, and nothing else should be happening on that
 *           socket while the saerver is waiting for a client connection.
 *           \todo consider taking accept out of this class
-*       -   because of no timeout there is no need for internal handlers associated with asyncAccept
-*           to be run on the internal asio::strand.
 *       -   it is likely that asyncAccept callback will be wrapped by a strand within a server as part
 *           of a servers management of its own concurrency issues.
 */
@@ -117,7 +112,7 @@ class TCPConnection : public ISocket
     void asyncRead(Marvin::MBufferSPtr mb,  AsyncReadCallbackType cb);
     void shutdown();
     void close();
-    
+    void setReadTimeout(long millisecs);
     /**
     * Utility getter functions®
     */
@@ -156,7 +151,6 @@ private:
     std::string                     m_server;
     std::string                     m_port;
     boost::asio::io_service&        m_io;
-    boost::asio::strand             m_strand;
     boost::asio::ip::tcp::resolver  m_resolver;
     boost::asio::ip::tcp::socket    m_boost_socket;
     ConnectCallbackType             m_connect_cb;

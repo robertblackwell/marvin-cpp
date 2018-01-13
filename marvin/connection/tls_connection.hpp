@@ -91,7 +91,8 @@ class SSLConnection : public ISocket
     void asyncRead(Marvin::MBufferSPtr mb,  AsyncReadCallbackType cb);
     void shutdown();
     void close();
-    
+    void setReadTimeout(long millisecs);
+
     /**
     * Utility getter functions®
     */
@@ -132,7 +133,6 @@ private:
     std::string                     m_server;
     std::string                     m_port;
     boost::asio::io_service&        m_io;
-    boost::asio::strand             m_strand;
     boost::asio::ip::tcp::resolver  m_resolver;
 //    boost::asio::ip::tcp::socket    m_boost_socket;
 

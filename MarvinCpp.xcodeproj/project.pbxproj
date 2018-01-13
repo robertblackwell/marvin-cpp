@@ -323,7 +323,6 @@
 		D48841F02007E51C00F74CB2 /* buffer_chain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49F822C1FF1DC06007E7BA1 /* buffer_chain.cpp */; };
 		D48841F12007E5ED00F74CB2 /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
 		D48841F22007E63C00F74CB2 /* forwarding_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4300B591E17E7720063FA82 /* forwarding_handler.cpp */; };
-		D48841F62009523E00F74CB2 /* io_service_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48841F42009523E00F74CB2 /* io_service_pool.cpp */; };
 		D48841F72009523E00F74CB2 /* io_service_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D48841F52009523E00F74CB2 /* io_service_pool.hpp */; };
 		D491232C1E0C28CF006C3A8A /* tls_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B75991E0B502A00431E06 /* tls_connection.cpp */; };
 		D491232E1E0C28CF006C3A8A /* tcp_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421D0E51E043DFF00831883 /* tcp_connection.cpp */; };
@@ -4115,7 +4114,6 @@
 				D49BA0DE2006BB10009F5DD2 /* tp_tunnel.cpp in Sources */,
 				D4BE4F7B1FF36FDA00A0281C /* parser.cpp in Sources */,
 				D4BE4F7C1FF36FDF00A0281C /* uri_query.cpp in Sources */,
-				D48841F62009523E00F74CB2 /* io_service_pool.cpp in Sources */,
 				D4BE4F7D1FF36FE500A0281C /* connection_handler.cpp in Sources */,
 				D4B76726200260DF001BACC6 /* marvin_okv.cpp in Sources */,
 				D4BE4F7E1FF36FE900A0281C /* server_connection_manager.cpp in Sources */,

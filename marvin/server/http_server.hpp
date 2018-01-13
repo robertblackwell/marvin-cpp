@@ -98,11 +98,6 @@ private:
     void handleAccept(ConnectionHandler* handler, const boost::system::error_code& err);
 
     /**
-    ** @brief encapsulates the process of posting a callback fn to the servcers strand
-    */
-    void postOnStrand(std::function<void()> fn);
-    
-    /**
     ** @brief sets up a signal callback
     */
     void waitForStop();
@@ -120,7 +115,6 @@ private:
     int                                             m_numberOfConnections;
     long                                            m_port;
     boost::asio::io_service                         m_io;
-    boost::asio::strand                             m_serverStrand;
     boost::asio::signal_set                         m_signals;
     boost::asio::ip::tcp::acceptor                  m_acceptor;
     ServerConnectionManager                         m_connectionManager;

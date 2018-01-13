@@ -94,9 +94,11 @@ void ConnectionHandler::p_request_complete(Marvin::ErrorType err, bool keepAlive
 //                _connection->shutdown(); // let the next read take place - that will complete the shutdown
             }
     }else{
-        LogDebug(err.message());
-        assert(false); /// we are not handling errors correctly - we dont deregister the connection handler
-        m_connection->close(); //TODO - this is wrong I think
+        LogDebug(Marvin::make_error_description(err));
+        /// connection error'd out so the handler is done
+        p_handler_complete(err);
+//        assert(false); /// we are not handling errors correctly - we dont deregister the connection handler
+//        m_connection->close(); //TODO - this is wrong I think
     }
 }
 
@@ -117,7 +119,7 @@ void ConnectionHandler::p_handler_complete(Marvin::ErrorType err)
     }
     #endif
     
-    // TODO - this does not close the sockst  - change to make that happen
+    // TODO - this does not close the socket  - change to make that happen
     m_connectionManager.deregister(this); // should be maybe called deregister
     
 }

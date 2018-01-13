@@ -307,6 +307,7 @@ status_data_cb(http_parser* parser, const char* at, size_t length)
         p->status_buf = sb_create();
     
     message->setIsRequest(false);
+    message->setStatusCode(p->parser->status_code);
     sb_append( p->status_buf, (char*)at, length);
     return 0;
 }
@@ -365,17 +366,14 @@ headers_complete_cb(http_parser* parser, const char* aptr, size_t remainder)
     if( p->name_buf != NULL){
         saveNameValuePair(parser, p->name_buf, p->value_buf);
     }
-    message->setMethod((enum http_method)parser->method);
-    message->setStatusCode( parser->status_code );
     message->setHttpVersMajor( parser->http_major );
     message->setHttpVersMinor( parser->http_minor );
     if( p->url_buf == NULL ){
-        message->setUri( "" );
     }else{
+        message->setMethod((enum http_method)parser->method);
         message->setUri( std::string(p->url_buf->buffer, p->url_buf->used) );
     }
     if( p->status_buf == NULL ){
-        message->setStatus(std::string(""));
     }else{
         message->setStatus( std::string(p->status_buf->buffer, p->status_buf->used) );
     }

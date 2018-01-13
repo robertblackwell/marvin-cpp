@@ -13,23 +13,31 @@ namespace Http{
 std::string traceMessage(MessageBase& msg)
 {
     std::stringstream ss;
-    ss << std::hex << &msg << std::dec << " ";
+    ss << "MSG[" << std::hex << &msg << std::dec << "]: ";
     
     if( msg.isRequest() ){
-        ss << msg.getMethodAsString() << " " << msg.uri() << " HTTP/1." << msg.httpVersMinor();
+        ss << "|REQ|" << msg.getMethodAsString() << " [" << msg.uri() << "] HTTP/1." << msg.httpVersMinor();
     }else{
-        ss << "HTTP/1." << msg.httpVersMinor() << " " << msg.statusCode() << " " << msg.status();
+        ss << "|RESP|"<< "HTTP/1." << msg.httpVersMinor() << " " << msg.statusCode() << "[" << msg.status()<< "] ";
+    }
+    
+    if( msg.hasHeader(Marvin::Http::Headers::Name::Host) ){
+        ss << "Host[" << msg.getHeader(Marvin::Http::Headers::Name::Host) << "]";
+    }else{
+        ss << "Host[]";
     }
     if( msg.hasHeader(Marvin::Http::Headers::Name::ContentLength) ){
-        ss << "ContentLen : " << msg.getHeader(Marvin::Http::Headers::Name::ContentLength);
+        ss << "Len[" << msg.getHeader(Marvin::Http::Headers::Name::ContentLength) << "]";
     }else{
-        ss << "No content length header";
+        ss << "Len[]";
     }
+#if 0
     if( msg.hasHeader(Marvin::Http::Headers::Name::TransferEncoding) ){
         ss << "TransferEncodin : " << msg.getHeader(Marvin::Http::Headers::Name::TransferEncoding);
     }else{
         ss << "No transfer encoding";
     }
+#endif
     std::string s = ss.str();
     return ss.str();
 }

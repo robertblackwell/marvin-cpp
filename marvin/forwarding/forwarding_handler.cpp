@@ -88,8 +88,10 @@ void ForwardingHandler::handleConnect(
         MessageReaderSPtr           request,    // the initial request as a MessageReader
         MessageWriterSPtr           responseWriter,
         ISocketSPtr                 clientConnectionSPtr,// the connection to the client
+                                                         // we know for certain that this is always a TCPConnection
         HandlerDoneCallbackType     done
 ){
+    LogTrace("", Marvin::Http::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_downstream_connection  = clientConnectionSPtr;
     m_done_callback = done;
@@ -131,7 +133,7 @@ void ForwardingHandler::p_initiate_tunnel()
 //    m_response_sptr->setWriteSock(m_downstream_connection.get());
 //    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
 
-    LogInfo("scheme:", m_scheme, " host:", m_host, " port:", m_port);
+    LogTrace("scheme:", m_scheme, " host:", m_host, " port:", m_port);
     m_upstream_connection = std::make_shared<TCPConnection>(m_io, m_scheme, m_host, std::to_string(m_port));
     
     m_upstream_connection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
@@ -153,7 +155,7 @@ void ForwardingHandler::p_initiate_tunnel()
                 }
             });
         } else {
-            LogInfo("initiateTunnel: connection SUCCEEDED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
+            LogTrace("initiateTunnel: connection SUCCEEDED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
             Marvin:Http::makeResponse200OKConnected(*m_response_sptr);
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
@@ -164,9 +166,10 @@ void ForwardingHandler::p_initiate_tunnel()
                     auto pf = std::bind(m_done_callback, err, false);
                     m_io.post(pf);
                 } else {
-                    m_tunnel_handler = std::make_shared<TunnelHandler>(m_downstream_connection, m_upstream_connection);
+                    m_tunnel_handler = std::make_shared<TunnelHandler>(m_io, m_downstream_connection, m_upstream_connection);
                     m_tunnel_handler->start([this](Marvin::ErrorType& err){
 //                        m_done_callback(err, false);
+                        LogTrace("tunnel complete OK");
                         auto pf = std::bind(m_done_callback, err, false);
                         m_io.post(pf);
                     });
@@ -193,8 +196,6 @@ void ForwardingHandler::handleRequest(
         MessageWriterSPtr       responseWriter,
         HandlerDoneCallbackType done
 ){
-    MessageBase& m = *(MessageBase*)(request.get());
-    
     LogTrace("from downstream", Marvin::Http::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_response_writer_sptr = responseWriter;

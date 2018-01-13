@@ -39,7 +39,7 @@ class ServerConnectionManager
         * a single threaded manner. That is achieved by requiring it to always
         * execute on the server strand.
         */
-        ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand, int max_connections);
+        ServerConnectionManager(boost::asio::io_service& io, int max_connections);
     
         /**
         * \brief called by server to verify that another accept is permitted
@@ -80,9 +80,9 @@ class ServerConnectionManager
         */
         void p_register(ConnectionHandler* ch);
         void p_deregister(ConnectionHandler* ch);
+        int    m_connection_count;
 
         boost::asio::io_service&    m_io;
-        boost::asio::strand&        m_serverStrand;
         int                         m_maxNumberOfConnections;
         int                         m_currentNumberConnections;
         AllowAnotherCallback        m_callback;

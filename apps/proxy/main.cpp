@@ -20,9 +20,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 int main(int argc, const char * argv[])
 {
     RBLogging::addTraceFile("http_server");
-    RBLogging::addTraceFile("connection_handler");
+//    RBLogging::addTraceFile("connection_handler");
     RBLogging::addTraceFile("forwarding_handler");
     RBLogging::addTraceFile("server_connection_manager");
+//    RBLogging::addTraceFile("half_tunnel");
+//    RBLogging::addTraceFile("tunnel_handler");
     RBLogging::addTraceFile("main");
     LogError("This is an error", std::string(""));
     LogTrace(std::string("hello"));

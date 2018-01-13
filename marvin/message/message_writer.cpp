@@ -159,7 +159,6 @@ void MessageWriter::p_put_headers_stuff_in_buffer()
 void MessageWriter::p_async_write_full_body(WriteMessageCallbackType cb)
 {
     LogDebug(" cb: ", (long) &cb);
-    // if body not set throw exception
     if( ( ! m_body_buffer_chain_sptr) || ( m_body_buffer_chain_sptr->size() == 0) ) {
         LogWarn("writing empty body");
         Marvin::ErrorType ee = Marvin::make_error_ok();

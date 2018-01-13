@@ -9,11 +9,14 @@
 #include "marvin_error.hpp"
 #include "tunnel_handler.hpp"
 #include "half_tunnel.hpp"
+#include "rb_logger.hpp"
+RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 TunnelHandler::TunnelHandler(
+    boost::asio::io_service& io,
     ISocketSPtr         downstreamConnection,
     TCPConnectionSPtr   upstreamConnection
-)
+) : m_io(io)
 {
     m_downstream_connection   = downstreamConnection;
     m_upstream_connection     = (ISocketSPtr)upstreamConnection;
@@ -31,7 +34,8 @@ TunnelHandler::~TunnelHandler(){};
 void TunnelHandler::start(std::function<void(Marvin::ErrorType& err)> cb)
 {
     m_callback = cb;
-    
+    m_downstream_connection->setReadTimeout(1000);
+    m_upstream_connection->setReadTimeout(1000);
     /// start both halves, downstream first as there is not likely to be traffic that way until the upstream starts
     /// we are done when they are both done
     /// the error to record is the one that strikes first.
@@ -53,6 +57,7 @@ void TunnelHandler::start(std::function<void(Marvin::ErrorType& err)> cb)
 }
 void TunnelHandler::tryDone()
 {
+    LogTrace("TryDone");
     if( m_upstream_done && m_downstream_done )
     {
         m_callback(m_first_err);

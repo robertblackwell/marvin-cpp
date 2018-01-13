@@ -46,11 +46,10 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory)
     m_io(5),
     m_signals(m_io),
     m_acceptor(m_io),
-    m_serverStrand(m_io),
     m_numberOfConnections(s_numberOfConnections),
     m_numberOfThreads(s_numberOfThreads),
     m_heartbeat_interval_ms(s_heartbeat_interval_ms),
-    m_connectionManager(m_io, m_serverStrand, m_numberOfConnections),
+    m_connectionManager(m_io, m_numberOfConnections),
     m_heartbeat_timer(m_io),
     m_terminate_requested(false)
 {
@@ -118,7 +117,7 @@ void HTTPServer::terminate()
     
     // start the accept process on the _serverStrand
     auto hf = std::bind(&HTTPServer::startAccept, this);
-    postOnStrand(hf);
+    m_io.post(hf);
     
 #define XMULTI_THREAD
 #ifndef MULTI_THREAD
@@ -155,7 +154,7 @@ void HTTPServer::terminate()
     
     ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conptr, m_factory);
 
-    auto hf = m_serverStrand.wrap(std::bind(&HTTPServer::handleAccept, this, connectionHandler, std::placeholders::_1));
+    auto hf = (std::bind(&HTTPServer::handleAccept, this, connectionHandler, std::placeholders::_1));
     conptr->asyncAccept(m_acceptor, hf);
 //    _acceptor.async_accept(_boost_socket, hf);
 
@@ -198,14 +197,6 @@ void HTTPServer::terminate()
     });
 }
 
-//-------------------------------------------------------------------------------------
-// postOnStrand - wraps a parameterless function in _strand and posts to _io
-//-------------------------------------------------------------------------------------
- void HTTPServer::postOnStrand(std::function<void()> fn)
-{
-    auto wrappedFn = m_serverStrand.wrap(fn);
-    m_io.post(wrappedFn);
-}
 #pragma mark - signal handling
 //-------------------------------------------------------------------------------------
 //
@@ -213,9 +204,7 @@ void HTTPServer::terminate()
  void HTTPServer::waitForStop()
 {
     LogDebug("");
-    auto hf = m_serverStrand.wrap(
-                    std::bind(&HTTPServer::doStop, this, std::placeholders::_1)
-                    );
+    auto hf = (std::bind(&HTTPServer::doStop, this, std::placeholders::_1));
 
   m_signals.async_wait(hf);
 }
@@ -245,6 +234,6 @@ void HTTPServer::on_heartbeat(const boost::system::error_code& ec)
 void HTTPServer::start_heartbeat()
 {
     m_heartbeat_timer.expires_from_now(boost::posix_time::milliseconds(m_heartbeat_interval_ms));
-    auto ds = m_serverStrand.wrap(boost::bind(&HTTPServer::on_heartbeat, this, boost::asio::placeholders::error));
+    auto ds = (boost::bind(&HTTPServer::on_heartbeat, this, boost::asio::placeholders::error));
     m_heartbeat_timer.async_wait(ds);
 }

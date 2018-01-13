@@ -22,12 +22,10 @@ using boost::asio::io_service;
 
 #pragma mark - CTOR
 Timeout::Timeout(
-            boost::asio::io_service& io_service,
-            boost::asio::strand& strand
+            boost::asio::io_service& io_service
             )
             :
             m_io(io_service),
-            m_strand(m_io),
             m_timer(m_io)
 {
     LogTorTrace();
@@ -71,7 +69,7 @@ void Timeout::setTimeout(long interval_millisecs, std::function<void()> handler)
     m_expire_handler = handler;
     m_cancel_handler = nullptr;
     m_active = true;
-    auto whandler = m_strand.wrap(std::bind(&Timeout::p_handle_timeout, this, std::placeholders::_1));
+    auto whandler = std::bind(&Timeout::p_handle_timeout, this, std::placeholders::_1);
     m_timer.expires_from_now(boost::posix_time::milliseconds(interval_millisecs));
     m_timer.async_wait(whandler);
 #endif
@@ -98,6 +96,10 @@ void Timeout::p_handle_timeout(const boost::system::error_code& err)
         // no error - timeout
         assert(m_active);
 //        assert(m_cancel_handler == nullptr);
+        /// \warn this is a hack
+        if( m_expire_handler == nullptr) {
+            return;
+        }
         assert(m_expire_handler != nullptr);
         m_active = false;
         auto h = m_expire_handler;

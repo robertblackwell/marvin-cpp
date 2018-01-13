@@ -1,3 +1,4 @@
+
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "server_connection_manager.hpp"
@@ -13,25 +14,33 @@ bool ServerConnectionManager::verify()
     return true;
 }
 
-ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, boost::asio::strand& serverStrand, int max_connections)
-    : m_io(io), m_serverStrand(serverStrand),
+ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, int max_connections)
+    : m_io(io),
     m_maxNumberOfConnections(max_connections),
     m_currentNumberConnections(0)
 {
     LogTorTrace();
+    m_connection_count = 0;
     instance = this;
 }
 
 void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
 {
-    LogDebug(" num conn: ", m_connections.size(), " max: ", m_maxNumberOfConnections);
     assert(m_callback == nullptr);
+#define DISABLE_SCMGR
+#ifdef DISABLE_SCMGR
+    m_connection_count++;
+    LogTrace(" num conn: ", m_connection_count);
+    cb();
+#else
+    LogTrace(" num conn: ", m_connections.size(), " max: ", m_maxNumberOfConnections);
     if( m_connections.size() > m_maxNumberOfConnections ) {
         LogWarn("max connections exceeded - waiting cb: ", (void*)(&cb));
         m_callback = cb;
     } else {
         cb();
     }
+#endif
 }
 
 
@@ -46,7 +55,10 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
 //    std::cout << "register: _connections.size() " << _connections.size() << " "  << std::endl;
 //    std::cout << "_register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
 //    std::cout << "_register: _connections.size() " << _connections.size() << " "  << std::endl;
-
+#ifdef DISABLE_SCMGR
+    LogTrace(" num conn: ", m_connection_count);
+    return;
+#else
     long fd = connHandler->nativeSocketFD();
     assert(m_fd_list.find(fd) == m_fd_list.end());
     assert(m_connections.find(connHandler) == m_connections.end()); // assert not already there
@@ -54,6 +66,7 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
     m_connections[connHandler] = std::unique_ptr<ConnectionHandler>(connHandler);
     m_fd_list[fd] = fd;
     assert(verify());
+#endif
 }
 
 /**
@@ -67,8 +80,14 @@ void ServerConnectionManager::deregister(ConnectionHandler* ch)
 //    std::cout << "deregister: fd_list.size() " << _fd_list.size() << " "  << std::endl;
 //    std::cout << "deregister: _connections.size() " << _connections.size() << " "  << std::endl;
 //    std::cout << "deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
-    auto pf = m_serverStrand.wrap(std::bind(&ServerConnectionManager::p_deregister, this, ch));
+#ifndef DISABLE_SCMGR
+    auto pf = (std::bind(&ServerConnectionManager::p_deregister, this, ch));
     m_io.post(pf);
+#else
+    m_connection_count--;
+    LogTrace(" num conn: ", m_connection_count);
+    return;
+#endif
 }
 #pragma mark - private methods
 /**

@@ -75,7 +75,8 @@ class ISocket : public IReadSocket, public IWriteSocket
     virtual void asyncAccept(
         boost::asio::ip::tcp::acceptor& acceptor,
         std::function<void(const boost::system::error_code& err)> cb
-    ) = 0;   
+    ) = 0;
+    virtual void setReadTimeout(long millisecs) = 0;
     virtual void shutdown() = 0;
     virtual void close() = 0;
 };
