@@ -28,6 +28,7 @@ class MessageBase;
 using MessageBaseSPtr = std::shared_ptr<MessageBase>;
 std::string traceMessage(MessageBase& msg);
 void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
+Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
 
 /// \ingroup HttpMessage
 /// \brief A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
@@ -91,6 +92,7 @@ public:
 
     friend std::string traceMessage(MessageBase& msg);
     friend void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
+    friend Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
 //    friend void serializeHeaders(MessageBase& msg, boost::asio::streambuf& buf);
     friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);
 

@@ -13,7 +13,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 int HTTPServer::s_numberOfThreads = 4;
-int HTTPServer::s_numberOfConnections = 2;
+int HTTPServer::s_numberOfConnections = 35;
 int HTTPServer::s_heartbeat_interval_ms = 1000;
 
 HTTPServer* HTTPServer::s_instance = nullptr;

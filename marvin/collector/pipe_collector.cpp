@@ -127,7 +127,10 @@ void PipeCollector::postedCollect(
     auto respHeaders = resp->getHeaders();
     resp->dumpHeaders(temp);
     if( bodyIsCollectable(*resp, regexs) ){
-        temp << (resp->getContentBuffer())->to_string() << std::endl;
+        if (resp->getContentBuffer() != nullptr)
+            temp << (resp->getContentBuffer())->to_string() << std::endl;
+        else
+            temp << "[]" << std::endl;
     }
 
     temp << "------------------------------------------------" << std::endl;

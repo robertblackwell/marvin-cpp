@@ -26,7 +26,7 @@ MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock
 {
     LogTorTrace();
     m_current_message = nullptr;
-    m_header_buf_sptr = Marvin::MBuffer::makeSPtr(10000);
+    m_header_buf_sptr = nullptr;
 }
 
 #if 0
@@ -149,8 +149,7 @@ void MessageWriter::end()
 void MessageWriter::p_put_headers_stuff_in_buffer()
 {
     MessageBaseSPtr msg = m_current_message;
-    m_header_buf_sptr->empty();
-    serializeHeaders(*msg, *m_header_buf_sptr);
+    m_header_buf_sptr = serializeHeaders(*msg);
 //    std::cout << m_header_buf.toString() << std::endl;
     LogDebug("request size: ");
 }

@@ -72,6 +72,28 @@ void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
 //    std::cout << __FUNCTION__ << ":" << ss << std::endl;
     
 }
+Marvin::MBufferSPtr serializeHeaders(MessageBase& msg)
+{
+    std::ostringstream os;
+
+    std::string vers = "HTTP/" + std::to_string(msg.httpVersMajor()) + "." + std::to_string(msg.httpVersMinor());
+    if( msg.isRequest() ){
+        std::string m = msg.getMethodAsString();
+        std::string u = msg.uri();
+        os << m << " " << u << " " << vers << "\r\n";
+    } else{
+        os << vers << " " << msg.m_status_code << " " << msg.m_status <<  "\r\n";
+    }
+    
+    for(auto const& h : msg.m_headers) {
+        os << h.first << ": " << h.second << "\r\n";
+    }
+    // end of headers
+    os << "\r\n";
+    std::string h = os.str();
+    return Marvin::MBuffer::makeSPtr(h);
+}
+
 #pragma - http message base impl
 
 MessageBase::MessageBase()

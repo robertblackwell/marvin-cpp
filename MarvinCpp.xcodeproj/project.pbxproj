@@ -1069,6 +1069,8 @@
 		D43FA0771FFBE70800B6EA82 /* marvin_uri.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = marvin_uri.hpp; sourceTree = "<group>"; };
 		D43FF0E62009E231004ABC77 /* timer_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timer_main.cpp; sourceTree = "<group>"; };
 		D43FF0F42009E238004ABC77 /* test_timer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_timer; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43FF0FC200ABDC9004ABC77 /* marvin_config.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = marvin_config.cpp; sourceTree = "<group>"; };
+		D43FF0FD200ABDC9004ABC77 /* marvin_config.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = marvin_config.hpp; sourceTree = "<group>"; };
 		D4439C731FA2631700EF9D41 /* x509_cert.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_cert.cpp; sourceTree = "<group>"; };
 		D4439C741FA2631700EF9D41 /* x509_cert.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = x509_cert.hpp; sourceTree = "<group>"; };
 		D4439C761FA2645400EF9D41 /* x509_pkey.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = x509_pkey.cpp; sourceTree = "<group>"; };
@@ -1890,6 +1892,22 @@
 			path = test_timer;
 			sourceTree = "<group>";
 		};
+		D43FF0FB200ABDA0004ABC77 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				D43FF0FD200ABDC9004ABC77 /* marvin_config.hpp */,
+				D43FF0FC200ABDC9004ABC77 /* marvin_config.cpp */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
+		D43FF0FE200ABF0B004ABC77 /* test_config */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = test_config;
+			sourceTree = "<group>";
+		};
 		D445DB591E14B57400418D6B /* regexs */ = {
 			isa = PBXGroup;
 			children = (
@@ -2161,6 +2179,7 @@
 		D479C0E01FC6543B0013F0F3 /* marvin */ = {
 			isa = PBXGroup;
 			children = (
+				D43FF0FB200ABDA0004ABC77 /* config */,
 				D48841F3200951DB00F74CB2 /* boost_ext */,
 				D40B75511E0A0CFB00431E06 /* include */,
 				D479C0E21FC655970013F0F3 /* buffer */,
@@ -2488,6 +2507,7 @@
 			isa = PBXGroup;
 			children = (
 				D49C80CD1FCB3E6D00BA522D /* test_buffers */,
+				D43FF0FE200ABF0B004ABC77 /* test_config */,
 				D4CA33C32002ECEE00BB1044 /* test_catch */,
 				D46614B21DFCEAAA00E3FAB0 /* test_client_request */,
 				D4A03E971FE4A63E0069CBCC /* test_connect */,

@@ -27,7 +27,7 @@ ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, in
 void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
 {
     assert(m_callback == nullptr);
-#define DISABLE_SCMGR
+#define XDISABLE_SCMGR
 #ifdef DISABLE_SCMGR
     m_connection_count++;
     LogTrace(" num conn: ", m_connection_count);
