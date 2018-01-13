@@ -157,8 +157,21 @@ private:
 int
 main(int argc, char *argv[])
 {
-   boost::asio::io_service io_service;
-
+    boost::asio::io_service io_service;
+    boost::asio::steady_timer timer_1(io_service);
+    timer_1.expires_from_now(std::chrono::seconds(1));
+    timer_1.async_wait([&timer_1](const boost::system::error_code& ec){
+        std::cout << "first handler" << std::endl;
+        timer_1.expires_from_now(std::chrono::seconds(1));
+        timer_1.async_wait([&timer_1](const boost::system::error_code& ec){
+            std::cout << "first handler sub handler" << std::endl;
+        });
+    });
+    timer_1.async_wait([](const boost::system::error_code& ec){
+        std::cout << "second handler " << ec.message() << std::endl;
+    });
+    io_service.run();
+    return 0;
    // In this example shared_ptr must be used for the timer object,
    // since that enables using shared_from_this().  Note also, that
    // shared_from_this() cannot be called directly from constructor,

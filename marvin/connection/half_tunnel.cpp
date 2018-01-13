@@ -10,7 +10,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "half_tunnel.hpp"
 
-HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd)
+HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd, long firstReadTimeoutMillisecs, long subsequentReadTimeoutMillisecs)
+: m_first_read_timeout_millisecs(firstReadTimeoutMillisecs), m_subsequent_read_timeout_millisecs(subsequentReadTimeoutMillisecs)
 {
     m_read_end = readEnd;
     m_write_end = writeEnd;
@@ -19,6 +20,7 @@ HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd)
 }
 void HalfTunnel::start(std::function<void(Marvin::ErrorType& err)> cb)
 {
+    m_read_end->setReadTimeout(m_first_read_timeout_millisecs);
     m_callback = cb;
     p_start_read();
 }
@@ -43,6 +45,7 @@ void HalfTunnel::p_handle_write(Marvin::ErrorType& err, std::size_t bytes_transf
 {
     if( ! err ){
         LogTrace("OK write");
+        m_read_end->setReadTimeout(m_subsequent_read_timeout_millisecs);
         p_start_read();
     } else {
         std::string m = Marvin::make_error_description(err);

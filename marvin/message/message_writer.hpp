@@ -58,7 +58,7 @@ protected:
     boost::asio::io_service&    m_io;
     ISocketSPtr                     m_write_sock;
     Marvin::Http::MessageBaseSPtr   m_current_message;
-    Marvin::MBuffer                 m_header_buf;
+    Marvin::MBufferSPtr             m_header_buf_sptr;
     Marvin::MBufferSPtr             m_body_mbuffer_sptr;
     std::string                     m_body_buffer_string;
     Marvin::BufferChainSPtr         m_body_buffer_chain_sptr;

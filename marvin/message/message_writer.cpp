@@ -22,10 +22,11 @@ std::string traceWriter(MessageWriter& writer)
     return ss.str();
 }
 
-MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock):m_io(io), m_write_sock(write_sock), m_header_buf(1000)
+MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock):m_io(io), m_write_sock(write_sock)
 {
     LogTorTrace();
     m_current_message = nullptr;
+    m_header_buf_sptr = Marvin::MBuffer::makeSPtr(10000);
 }
 
 #if 0
@@ -99,7 +100,7 @@ MessageWriter::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType 
 {
     p_put_headers_stuff_in_buffer();
     
-    m_write_sock->asyncWrite(m_header_buf, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+    m_write_sock->asyncWrite(*m_header_buf_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
 
         LogDebug("");
         // need to check and do something about insufficient write
@@ -148,8 +149,8 @@ void MessageWriter::end()
 void MessageWriter::p_put_headers_stuff_in_buffer()
 {
     MessageBaseSPtr msg = m_current_message;
-    m_header_buf.empty();
-    serializeHeaders(*msg, m_header_buf);
+    m_header_buf_sptr->empty();
+    serializeHeaders(*msg, *m_header_buf_sptr);
 //    std::cout << m_header_buf.toString() << std::endl;
     LogDebug("request size: ");
 }

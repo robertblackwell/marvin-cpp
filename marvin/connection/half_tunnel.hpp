@@ -23,14 +23,15 @@ class HalfTunnel;
 class HalfTunnel
 {
     public:
-        HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd);
+        HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd, long firstReadTimeoutMillisecs, long subsequentReadTimeoutMillisecs);
         void start(std::function<void(Marvin::ErrorType& err)> cb);
     protected:
         void p_start_read();
         void p_handle_read(Marvin::ErrorType& err, std::size_t bytes_transfered);
         void p_handle_write(Marvin::ErrorType& err, std::size_t bytes_transfered);
     
-    
+        long            m_first_read_timeout_millisecs;
+        long            m_subsequent_read_timeout_millisecs;
         ISocketSPtr     m_read_end;
         ISocketSPtr     m_write_end;
         std::function<void(Marvin::ErrorType& err)> m_callback;

@@ -13,7 +13,8 @@ class TunnelHandler;
 using TunnelHandlerSPtr = std::shared_ptr<TunnelHandler> ;
 /// \ingroup SocketIO
 using TunnelHandlerUPtr = std::unique_ptr<TunnelHandler>;
-
+std::string traceTunnel(TunnelHandlerUPtr);
+std::string traceTunnel(TunnelHandlerSPtr);
 /**
 * \ingroup SocketIO
 * \brief Cmbines two HalfTunnel objects to provide bi directional pipe between two end points.
@@ -44,6 +45,8 @@ class TunnelHandler
         bool                    m_downstream_done;
         Marvin::ErrorType       m_downstream_err;
         Marvin::ErrorType       m_first_err;
+        long                    m_first_read_timeout_millisecs;
+        long                    m_subsequent_read_timeout_millisecs;
 };
 
 #endif /* tunnel_handler_hpp */

@@ -17,7 +17,7 @@
 		<key>cert_auth.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>46</integer>
+			<integer>47</integer>
 		</dict>
 		<key>conf_test.xcscheme</key>
 		<dict>
@@ -197,7 +197,7 @@
 		<key>test_reader_mock.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>47</integer>
+			<integer>46</integer>
 		</dict>
 		<key>test_server_client_body_buffering.xcscheme</key>
 		<dict>

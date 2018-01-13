@@ -25,6 +25,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 /// test timing out an async operation
 //TEST_CASE("TimeoutcomposedOpOTO2")
+#if 0
 TEST_CASE("TimeoutcomposedOpOTO2", "[]")
 {
     printf("TimeoutcomposedOpOTO2\n");
@@ -54,8 +55,10 @@ TEST_CASE("TimeoutcomposedOpOTO2", "[]")
     });
     io.run();
 }
+#endif
 /// test timing out an async operation
 //TEST_CASE("TimeoutcomposedOpOTO1")
+#if 0
 TEST_CASE("TimeoutcomposedOpOTO1", "[]")
 {
     printf("TimeoutcomposedOpOTO1\n");
@@ -85,9 +88,10 @@ TEST_CASE("TimeoutcomposedOpOTO1", "[]")
     });
     io.run();
 }
-
+#endif
 
 //TEST_CASE("TimeoutcomposedOpOOK2")
+#if 0
 TEST_CASE("TimeoutcomposedOpOOK2","[]")
 {
     printf("TimeoutcomposedOpOOK2\n");
@@ -117,18 +121,21 @@ TEST_CASE("TimeoutcomposedOpOOK2","[]")
     });
     io.run();
 }
+#endif
 
-
-#if 1
+#if 0
 /// test timing out an async operation
 //TEST_CASE("Timeouttimedout")
 TEST_CASE("Timeouttimedout", "[]")
 {
     printf("Timeouttimedout\n");
     boost::asio::io_service io;
-    AsyncObject obj(io);
+    std::shared_ptr<AsyncObject> obj_sptr = std::make_shared<AsyncObject>(io);
+    auto cb = [&obj_sptr]() {
+        obj_sptr = nullptr;
+    };
     /// op interval is 2 timeout interval is 1 - op will be timed out
-    obj.async_operation(2, 1, [](const boost::system::error_code err){
+    obj_sptr->async_operation(2, 1, [cb](const boost::system::error_code err){
         boost::system::error_code ec = err;
         auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
 #if 0
@@ -141,10 +148,60 @@ TEST_CASE("Timeouttimedout", "[]")
         std::cout << Marvin::make_error_description(asio_op_aborted) << std::endl;
 #endif
         REQUIRE(err == asio_op_aborted);
+        cb();
     });
     io.run();
 }
-/// test an async operation complting successfully and cancelling a timeout
+#endif
+#if 1
+/// test timing out an async operation
+//TEST_CASE("Timeouttimedout")
+TEST_CASE("Timeout_success", "[]")
+{
+    printf("Timeout_success\n");
+    boost::asio::io_service io;
+    std::shared_ptr<AsyncObject> obj_sptr = std::make_shared<AsyncObject>(io);
+    auto cb = [&obj_sptr]() {
+        obj_sptr = nullptr;
+    };
+    /// op interval is 2 timeout interval is 1 - op will be timed out
+    obj_sptr->async_operation(1, 2, [cb](const boost::system::error_code err){
+        boost::system::error_code ec = err;
+        auto asio_op_ok = Marvin::make_error_ok();
+#if 0
+        std::string s = Marvin::make_error_description(ec);
+        std::cout << "main line handler " << s << std::endl;
+        std::cout << err.message() << std::endl;
+        std::cout << ec.message() << std::endl;
+        std::cout << asio_op_aborted.message() << std::endl;
+        std::cout << Marvin::make_error_description(ec) << std::endl;
+        std::cout << Marvin::make_error_description(asio_op_aborted) << std::endl;
+#endif
+        REQUIRE(!err);
+        cb();
+    });
+    io.run();
+}
+#endif
+
+
+#if 0
+/// test timing out an async operation
+//TEST_CASE("Timeouttimedout")
+TEST_CASE("Timeout_donothing", "[]")
+{
+    printf("Timeout_donothing\n");
+    boost::asio::io_service io;
+    std::shared_ptr<AsyncObject> obj_sptr = std::make_shared<AsyncObject>(io);
+    io.run();
+    obj_sptr = nullptr;
+    std::cout << "after io.run()" << std::endl;
+}
+
+
+#endif
+#if 0
+/// test an async operation completing successfully and cancelling a timeout
 //TEST_CASE("Timeoutexpired")
 TEST_CASE("Timeoutexpired","[]")
 {
@@ -166,9 +223,10 @@ TEST_CASE("Timeoutexpired","[]")
 #endif
         REQUIRE(!err);
     });
-    
     io.run();
 }
+#endif
+#if 0
 /// test an async op that should fail but iit gets tiimed out
 //TEST_CASE("TimeoutFailedOpTimedout")
 TEST_CASE("TimeoutFailedOpTimedout","[]")
@@ -193,6 +251,8 @@ TEST_CASE("TimeoutFailedOpTimedout","[]")
     });
     io.run();
 }
+#endif
+#if 0
 /// test an async operation that fails with a broken pipe error before a timeout expires
 //TEST_CASE("TimeoutfailedOpTimeoutExpired")
 TEST_CASE("TimeoutfailedOpTimeoutExpired","[]")
@@ -218,6 +278,7 @@ TEST_CASE("TimeoutfailedOpTimeoutExpired","[]")
     
     io.run();
 }
+
 #endif
 #if 0
 int main(int argc, char** argv) {

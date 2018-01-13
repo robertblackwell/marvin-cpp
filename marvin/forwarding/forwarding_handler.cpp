@@ -5,6 +5,28 @@
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
+std::string traceForwardingHandler(ForwardingHandler* fh_ptr)
+{
+    std::stringstream ss;
+    ss << "FWRDH[" << std::hex << (long)(void*)fh_ptr << std::dec << "]: ";
+    return ss.str();
+}
+std::string traceForwardingHandler(ForwardingHandlerUPtr fh_ptr)
+{
+    return traceForwardingHandler(fh_ptr.get());
+//    std::stringstream ss;
+//    ss << "FWRDH[" << std::hex << (long)(void*)fh_ptr.get() << std::dec << "]: ";
+//    return ss.str();
+}
+std::string traceFowardingHandler(ForwardingHandlerSPtr fh_ptr)
+{
+    return traceForwardingHandler(fh_ptr.get());
+//    std::stringstream ss;
+//    ss << "FWRDH[" << std::hex << (long)(void*)fh_ptr.get() << std::dec << "]: ";
+//    return ss.str();
+}
+
+
 enum class ConnectAction{
     TUNNEL=11,
     MITM,
@@ -91,7 +113,7 @@ void ForwardingHandler::handleConnect(
                                                          // we know for certain that this is always a TCPConnection
         HandlerDoneCallbackType     done
 ){
-    LogTrace("", Marvin::Http::traceMessage(*(request.get())));
+    LogTrace(traceForwardingHandler(this), Marvin::Http::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_downstream_connection  = clientConnectionSPtr;
     m_done_callback = done;
@@ -155,7 +177,7 @@ void ForwardingHandler::p_initiate_tunnel()
                 }
             });
         } else {
-            LogTrace("initiateTunnel: connection SUCCEEDED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
+            LogTrace("initiateTunnel: connection SUCCEEDED scheme:", traceForwardingHandler(this), " scheme:",this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
             Marvin:Http::makeResponse200OKConnected(*m_response_sptr);
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
@@ -167,9 +189,10 @@ void ForwardingHandler::p_initiate_tunnel()
                     m_io.post(pf);
                 } else {
                     m_tunnel_handler = std::make_shared<TunnelHandler>(m_io, m_downstream_connection, m_upstream_connection);
+                    LogTrace("start tunnel", traceForwardingHandler(this), traceTunnel(m_tunnel_handler));
                     m_tunnel_handler->start([this](Marvin::ErrorType& err){
 //                        m_done_callback(err, false);
-                        LogTrace("tunnel complete OK");
+                        LogTrace("tunnel complete OK", traceForwardingHandler(this), traceTunnel(m_tunnel_handler), " err: ", Marvin::make_error_description(err));
                         auto pf = std::bind(m_done_callback, err, false);
                         m_io.post(pf);
                     });

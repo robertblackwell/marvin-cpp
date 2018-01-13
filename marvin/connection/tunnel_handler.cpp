@@ -11,6 +11,18 @@
 #include "half_tunnel.hpp"
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+std::string traceTunnel(TunnelHandlerUPtr t_ptr)
+{
+    std::stringstream ss;
+    ss << "TNLH[" << std::hex << (long)(void*)t_ptr.get() << std::dec << "]: ";
+    return ss.str();
+}
+std::string traceTunnel(TunnelHandlerSPtr t_ptr)
+{
+    std::stringstream ss;
+    ss << "TNLH[" << std::hex << (long)(void*)t_ptr.get() << std::dec << "]: ";
+    return ss.str();
+}
 
 TunnelHandler::TunnelHandler(
     boost::asio::io_service& io,
@@ -20,9 +32,18 @@ TunnelHandler::TunnelHandler(
 {
     m_downstream_connection   = downstreamConnection;
     m_upstream_connection     = (ISocketSPtr)upstreamConnection;
-    
-    m_upstream_halftunnel     =  std::unique_ptr<HalfTunnel>( new HalfTunnel(m_downstream_connection, m_upstream_connection));
-    m_downstream_halftunnel   =  std::unique_ptr<HalfTunnel>(new HalfTunnel(m_upstream_connection, m_downstream_connection ));
+    m_first_read_timeout_millisecs = 45000;
+    m_subsequent_read_timeout_millisecs = 15000;
+    m_upstream_halftunnel     =  std::unique_ptr<HalfTunnel>(
+        new HalfTunnel(
+            m_downstream_connection, m_upstream_connection, m_first_read_timeout_millisecs, m_subsequent_read_timeout_millisecs
+        )
+    );
+    m_downstream_halftunnel   =  std::unique_ptr<HalfTunnel>(
+        new HalfTunnel(
+            m_upstream_connection, m_downstream_connection, m_first_read_timeout_millisecs, m_subsequent_read_timeout_millisecs
+        )
+    );
 
     m_upstream_done = false;
     m_downstream_done = false;
@@ -34,8 +55,8 @@ TunnelHandler::~TunnelHandler(){};
 void TunnelHandler::start(std::function<void(Marvin::ErrorType& err)> cb)
 {
     m_callback = cb;
-    m_downstream_connection->setReadTimeout(1000);
-    m_upstream_connection->setReadTimeout(1000);
+//    m_downstream_connection->setReadTimeout(20000);
+//    m_upstream_connection->setReadTimeout(20000);
     /// start both halves, downstream first as there is not likely to be traffic that way until the upstream starts
     /// we are done when they are both done
     /// the error to record is the one that strikes first.

@@ -15,7 +15,7 @@ public:
         )
     : m_io(io),
     m_strand(io),
-    m_timeout(io, m_strand),
+    m_timeout(io),
     m_timer(io, boost::posix_time::seconds(posix_time::pos_infin)),
     m_count(0),
     m_op_1_interval_secs(op_1_interval_secs), m_op_1_result(op_1_result_string),
@@ -41,16 +41,16 @@ public:
     void async_op_1()
     {
         m_timer.expires_from_now(boost::posix_time::seconds(m_op_1_interval_secs));
-        m_timeout.setTimeout(m_op_1_timeout_interval_secs, m_strand.wrap([this](){
+        m_timeout.setTimeout(m_op_1_timeout_interval_secs, ([this](){
             m_timer.cancel();
         }));
-        m_timer.async_wait(m_strand.wrap(std::bind(&AsyncComposedOp::async_op_1_handler, this, std::placeholders::_1)));
+        m_timer.async_wait((std::bind(&AsyncComposedOp::async_op_1_handler, this, std::placeholders::_1)));
     }
     /// handler for simulated failed async operation
     void async_op_1_handler(const boost::system::error_code& err)
     {
         boost::system::error_code ec = err;
-        m_timeout.cancelTimeout( m_strand.wrap([this, err, ec](){
+        m_timeout.cancelTimeout( ([this, err, ec](){
             if(!err) {
                 m_result += m_op_1_result;
                 async_op_2();
@@ -67,7 +67,7 @@ public:
         m_timeout.setTimeout(m_op_2_timeout_interval_secs, m_strand.wrap([this](){
             m_timer.cancel();
         }));
-        m_timer.async_wait(m_strand.wrap(std::bind(&AsyncComposedOp::async_op_2_handler, this, std::placeholders::_1)));
+        m_timer.async_wait((std::bind(&AsyncComposedOp::async_op_2_handler, this, std::placeholders::_1)));
     }
     /// handler for simulated successful async operation
     void async_op_2_handler(const boost::system::error_code& err)

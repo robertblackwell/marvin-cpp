@@ -28,6 +28,13 @@ using namespace Marvin;
 using namespace Marvin::Http;
 
 enum class ConnectAction;
+class ForwardingHandler;
+using ForwardingHandlerSPtr = std::shared_ptr<ForwardingHandler>;
+using ForwardingHandlerUPtr = std::unique_ptr<ForwardingHandler>;
+
+std::string traceForwardingHandler(ForwardingHandlerUPtr fh_ptr);
+std::string traceForwardingHandler(ForwardingHandlerSPtr fh_ptr);
+std::string traceForwardingHandler(ForwardingHandler* fh_ptr);
 
 /**
 *  @brief This class implements the proxy forwarding process for http/https protocols.

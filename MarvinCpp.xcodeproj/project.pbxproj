@@ -136,10 +136,11 @@
 		D43FF0ED2009E238004ABC77 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A09B691E12B9950011ACC4 /* libboost_thread.a */; };
 		D43FF0EE2009E238004ABC77 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D43FF0EF2009E238004ABC77 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
-		D43FF0F52009E51A004ABC77 /* timer_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FF0E62009E231004ABC77 /* timer_main.cpp */; };
 		D43FF0F62009E56D004ABC77 /* timer_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43FF0E62009E231004ABC77 /* timer_main.cpp */; };
 		D43FF0F72009E642004ABC77 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D43FF0F82009E64F004ABC77 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
+		D43FF0F9200A7DDF004ABC77 /* timeout_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44C3D201FF413570034DA00 /* timeout_main.cpp */; };
+		D43FF0FA200A7E8C004ABC77 /* timeout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44C3D1C1FF40E1D0034DA00 /* timeout.cpp */; };
 		D4439C751FA2631700EF9D41 /* x509_cert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C731FA2631700EF9D41 /* x509_cert.cpp */; };
 		D4439C781FA2645400EF9D41 /* x509_pkey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C761FA2645400EF9D41 /* x509_pkey.cpp */; };
 		D4439C7B1FA2646A00EF9D41 /* x509_conf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4439C791FA2646A00EF9D41 /* x509_conf.cpp */; };
@@ -3723,8 +3724,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				D44C3D251FF413640034DA00 /* rb_logger.cpp in Sources */,
+				D43FF0FA200A7E8C004ABC77 /* timeout.cpp in Sources */,
 				D44C3D351FF424800034DA00 /* marvin_error.cpp in Sources */,
-				D43FF0F52009E51A004ABC77 /* timer_main.cpp in Sources */,
+				D43FF0F9200A7DDF004ABC77 /* timeout_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
