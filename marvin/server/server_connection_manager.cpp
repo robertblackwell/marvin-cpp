@@ -1,4 +1,4 @@
-
+#include <unistd.h>
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "server_connection_manager.hpp"
@@ -85,7 +85,7 @@ void ServerConnectionManager::deregister(ConnectionHandler* ch)
     m_io.post(pf);
 #else
     m_connection_count--;
-    LogTrace(" num conn: ", m_connection_count);
+    LogTrace(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
     return;
 #endif
 }
@@ -124,7 +124,8 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
     
     m_connections.erase(ch);
     m_fd_list.erase(fd);
-    LogTrace(" num connections : ", m_connections.size() , " m_callback != null", (m_callback != nullptr));
+    long num_fds = (long)getdtablesize();
+    LogTrace(" num connections : ", m_connections.size() ," num FDs: ", getdtablesize(), " m_callback != null", (m_callback != nullptr));
     if (m_callback && (m_connections.size() < m_maxNumberOfConnections)) {
         auto tmp = m_callback;
         LogTrace("releasing cb: ", (void*)(&tmp) );

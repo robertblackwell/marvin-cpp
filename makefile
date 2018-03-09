@@ -49,7 +49,7 @@ tests_clean:
 
 .PHONY: tests_build
 tests_build:
-	@ xcodebuild -quiet -scheme test_headers build 
+	@ xcodebuild  -scheme test_headers build 
 	@xcodebuild -quiet -scheme test_server_client_body_buffering build
 	@ xcodebuild -quiet -scheme test_server_client_body_format build 
 	@ xcodebuild -quiet -scheme test_client_request build 

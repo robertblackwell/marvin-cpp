@@ -108,9 +108,14 @@ TCPConnection::TCPConnection(
 TCPConnection::~TCPConnection()
 {
     LogTorTrace();
+    auto b1 = m_boost_socket.is_open();
     if( ! m_closed_already) {
         LogFDTrace(nativeSocketFD());
-        m_boost_socket.close();
+        boost::system::error_code err;
+        m_boost_socket.close(err);
+        std::string s = Marvin::make_error_description(err);
+        auto b2 = m_boost_socket.is_open();
+        auto b3 = b2;
     }
 }
 #pragma mark - public interface getters

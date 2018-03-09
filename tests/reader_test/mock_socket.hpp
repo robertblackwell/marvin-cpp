@@ -39,6 +39,7 @@ public:
         boost::asio::ip::tcp::acceptor& acceptor,
         std::function<void(const boost::system::error_code& err)> cb
     );
+    void setReadTimeout(long interval);
     void shutdown();
     void close();
 

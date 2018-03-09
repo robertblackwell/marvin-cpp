@@ -112,6 +112,8 @@ void MockReadSocket::asyncAccept(
     boost::asio::ip::tcp::acceptor& acceptor,
     std::function<void(const boost::system::error_code& err)> cb
 ){ assert(false);}
+void MockReadSocket::setReadTimeout(long interval){assert(false);}
+
 void MockReadSocket::shutdown(){ assert(false);}
 void MockReadSocket::close(){ assert(false);}
 

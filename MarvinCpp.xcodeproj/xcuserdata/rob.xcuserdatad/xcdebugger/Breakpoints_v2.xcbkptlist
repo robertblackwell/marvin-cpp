@@ -318,5 +318,319 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "537677573.859923"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
+            landmarkName = "TCPConnection::close()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "537677573.860045"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "TCPConnection::~TCPConnection()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "537677573.860119"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "TCPConnection::~TCPConnection()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tcp_connection.cpp"
+            timestampString = "537677573.860189"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
+            landmarkName = "TCPConnection::~TCPConnection()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/server/server_connection_manager.cpp"
+            timestampString = "537677573.860261"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "ServerConnectionManager::p_deregister(ConnectionHandler* ch)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_client_request/roundtrip.cpp"
+            timestampString = "537685836.748927"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
+            landmarkName = "TEST_CASE(&quot;ssl_ssltest&quot;, &quot;[first]&quot;)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_client_request/roundtrip.cpp"
+            timestampString = "537685836.7492959"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "TEST_CASE(&quot;ssl_ssllabs&quot;, &quot;[first]&quot;)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_client_request/roundtrip.cpp"
+            timestampString = "537685844.844759"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "TEST_CASE(&quot;ssl_ssllabs&quot;, &quot;[first]&quot;)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_client_request/roundtrip.cpp"
+            timestampString = "537685850.996527"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
+            landmarkName = "TEST_CASE(&quot;ssl_ssltest&quot;, &quot;[first]&quot;)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tests/test_connect/test_connect.cpp"
+            timestampString = "537686290.9085571"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "TEST_CASE(&quot;ssl_connect&quot;, &quot;&quot;)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tls_connection.cpp"
+            timestampString = "537686010.7906131"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "174"
+            endingLineNumber = "174"
+            landmarkName = "SSLConnection::asyncConnect(ConnectCallbackType connect_cb)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.798331"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "40">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::~&apos;lambda&apos;()()"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.800506"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::&apos;lambda&apos;()(&apos;lambda&apos;()&amp;&amp;)"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.802472"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::&apos;lambda&apos;()(&apos;lambda&apos;()&amp;&amp;)"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.805037"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::&apos;lambda&apos;()(&apos;lambda&apos;() const&amp;)"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.807007"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::&apos;lambda&apos;()(&apos;lambda&apos;() const&amp;)"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.808911"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::operator()() const"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.810688"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "175"
+                  endingLineNumber = "175"
+                  offsetFromSymbolStart = "19">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::~&apos;lambda&apos;()()"
+                  moduleName = "test_connect"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
+                  timestampString = "537686010.812422"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "marvin/connection/tls_connection.cpp"
+            timestampString = "537686031.2852449"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "365"
+            endingLineNumber = "365"
+            landmarkName = "SSLConnection::p_start_handshake()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

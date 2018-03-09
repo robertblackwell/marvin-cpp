@@ -1,10 +1,30 @@
+## Interesting refeerences
+- gist demonstrating using std:weak_ptr to handle situation where handler is called after owner is deleted. [https://gist.github.com/tsaarni/bb0b8d1ca33e3a1bfea1 - gives example of shared_from_this](https://gist.github.com/tsaarni/bb0b8d1ca33e3a1bfea1)
+https://gist.github.com/tsaarni/bb0b8d1ca33e3a1bfea1 - gives example of shared_from_this
+
+
+- paper describing how to use ASIO with C++11 - touches on the topic of how to manage object lifetime with boost handlers [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3388.pdf](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3388.pdf)
+
+
+- file descriptor leaks  [https://oroboro.com/file-handle-leaks-server/](https://oroboro.com/file-handle-leaks-server/)
+
 ## TODO
+### get tests running again
+you understand
+### fix builds
+so that dont compile some files twice, once of the Marvin lib and once for dirrect inclusion of the object.
+### connection close
+TCPConnection and TLSConnection, when and where to close the underlying boost socket. Particularly in the situation where we create an SSLConnection from a TCPConnection. The TCPConnection __Must__ not close the socket in its destructor. This would pull the socket out from under the SSLConnection.
+
+Have explicit close method and for TCPConnections call it just before ForwardingHandler calls `deregister`.
+### redo/simplify timeout
+Think about what problems arise if the underlying socket is only closed on deallocate of the wrapper. Read about `shared_from_this()` and `std::weak_ptr` guard. Reference in `Timeout.hpp` and at top of this document
+
+have implemented `timeout` in both forms of connection, and in `Tunnel`. Need to simplify the implementation of `Timeout`.
 ### implement TLS/SSL
 need to get started on this - how to do it progressively ?
-### timeout and connection close
-TCPConnection and TLSConnection should probably not have a close() method. Think about what problems arise if the underlying socket is only closed on deallocate of the wrapper. Read about `shared_from_this()` and `std::weak_ptr` guard. Reference in `Timeout.hpp`
-### redo timeout
-have implemented `timeout` in both forms of connection, and in `Tunnel`. Need to simplify the implementation of `Timeout`.
+
+-	certificate and certificate store building - need to add this to marvincpp and make the update of the certificate store automatic. I have had unexpected verification failures because the store is out of date. Need to use the OSX store (and also automate the Mozilla store)
 
 ### threadpool not `strand` - need to implement
 have been abandoned in favor of a thread pool. Sampple code in `boost-ext`.

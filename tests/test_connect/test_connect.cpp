@@ -42,6 +42,7 @@ TEST_CASE("connect_failBadHost", "")
 void dofail(){
     CHECK(true);
 }
+#if 0
 TEST_CASE("connect_failTimeout", "")
 {
     std::cout << "START::connect_failTimeout" << std::endl;
@@ -56,7 +57,8 @@ TEST_CASE("connect_failTimeout", "")
     dofail();
     std::cout << "END::connect_failTimeout" << std::endl;
 }
-
+#endif
+#if 1
 TEST_CASE("connect_succeed","")
 {
     INFO("connect_succeed");
@@ -69,6 +71,8 @@ TEST_CASE("connect_succeed","")
     });
     io.run();
 }
+#endif
+#if 1
 TEST_CASE("ssl_connect", "")
 {
     boost::asio::io_service io;
@@ -81,6 +85,7 @@ TEST_CASE("ssl_connect", "")
     io.run();
 
 }
+#endif
 int main( int argc, char* argv[] )
 {
     // global setup - run a server
