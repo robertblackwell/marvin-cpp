@@ -1,4 +1,4 @@
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "json.hpp"
 #include "marvin_http.hpp"
 #include "test_headers.hpp"

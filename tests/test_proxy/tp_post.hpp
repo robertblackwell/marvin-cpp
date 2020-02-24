@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 #include "boost_stuff.hpp"
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "rb_logger.hpp"
 #include "buffer.hpp"
 #include "client.hpp"

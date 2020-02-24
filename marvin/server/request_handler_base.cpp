@@ -5,7 +5,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 RequestHandlerBase::RequestHandlerBase(boost::asio::io_service& io): m_io(io)
 {
-    
+
 }
 
 RequestHandlerBase::~RequestHandlerBase()

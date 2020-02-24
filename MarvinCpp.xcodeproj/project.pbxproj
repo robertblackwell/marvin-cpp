@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E57479E2401CB7E001632FF /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
+		0E57479F2401CB7E001632FF /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
+		0E5747A02401CB7E001632FF /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
+		0E5747A12401CB7E001632FF /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
+		0E5747A22401CB7E001632FF /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
+		0E5747A32401CB7E001632FF /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
+		0E5747A92401CBB1001632FF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E5747792401C95B001632FF /* main.cpp */; };
+		0E5C5F5E23FC7E4E008F1E54 /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
+		0E5C5F5F23FC89ED008F1E54 /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
 		D4069C461FC8D8AE00935F30 /* message_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4069C441FC8D8AE00935F30 /* message_writer.cpp */; };
 		D4069C471FC8D8AE00935F30 /* message_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4069C451FC8D8AE00935F30 /* message_reader.cpp */; };
 		D4069C481FC8E71000935F30 /* message_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4069C441FC8D8AE00935F30 /* message_writer.cpp */; };
@@ -153,7 +162,6 @@
 		D44A21171FF6E73B003CF16C /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D44A21191FF6E73B003CF16C /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
 		D44A211A1FF6E73B003CF16C /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
-		D44A211B1FF6E73B003CF16C /* libboost_log.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D448890B1DF74E57000E9F07 /* libboost_log.dylib */; };
 		D44A211C1FF6E73B003CF16C /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D44A211D1FF6E73B003CF16C /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
 		D44A21251FF6E794003CF16C /* tp_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44A21081FF6E731003CF16C /* tp_main.cpp */; };
@@ -464,7 +472,7 @@
 		D4BA42601FFFF474001D2EC3 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A09B691E12B9950011ACC4 /* libboost_thread.a */; };
 		D4BA42611FFFF474001D2EC3 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AF58D61DE6DD93001AC0A1 /* libboost_system.a */; };
 		D4BA42621FFFF474001D2EC3 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D46614371DF8EA1500E3FAB0 /* libboost_filesystem.a */; };
-		D4BA426A1FFFF4AC001D2EC3 /* test_messsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BA42591FFFF45B001D2EC3 /* test_messsage.cpp */; };
+		D4BA426A1FFFF4AC001D2EC3 /* test_message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BA42591FFFF45B001D2EC3 /* test_message.cpp */; };
 		D4BA426B1FFFF51F001D2EC3 /* libmarvin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE4F6B1FF36F2300A0281C /* libmarvin.a */; };
 		D4BA426C1FFFF530001D2EC3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75941E0AD31000431E06 /* libcrypto.a */; };
 		D4BA426D1FFFF530001D2EC3 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B75951E0AD31000431E06 /* libssl.a */; };
@@ -523,6 +531,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0E57478C2401CB7E001632FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D4EA1EED1D1217E600D1EABC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4BE4F6A1FF36F2300A0281C;
+			remoteInfo = marvin;
+		};
 		D43FA07A1FFBEE2F00B6EA82 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D4EA1EED1D1217E600D1EABC /* Project object */;
@@ -589,6 +604,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0E5747A42401CB7E001632FF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		D407D5101E103480003E5F8E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -961,6 +985,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0E5747792401C95B001632FF /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../tests/test_message_parser/main.cpp; sourceTree = "<group>"; };
+		0E57477A2401C95B001632FF /* test_set_1.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = test_set_1.cpp; sourceTree = "<group>"; };
+		0E5747A82401CB7E001632FF /* test_msg_parser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_msg_parser; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4045CD31FD1071D00F6E4EC /* t_client.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = t_client.hpp; sourceTree = "<group>"; };
 		D4045CDD1FD1071D00F6E4EC /* t_server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = t_server.hpp; sourceTree = "<group>"; };
 		D4045CDE1FD1071D00F6E4EC /* t_server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = t_server.cpp; sourceTree = "<group>"; };
@@ -1245,7 +1272,7 @@
 		D4B76725200260DF001BACC6 /* marvin_okv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marvin_okv.hpp; sourceTree = "<group>"; };
 		D4B8312F1FD66DBC004C2B63 /* bf_pipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bf_pipeline.hpp; sourceTree = "<group>"; };
 		D4B831391FD66DBD004C2B63 /* bf_pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bf_pipeline.cpp; sourceTree = "<group>"; };
-		D4BA42591FFFF45B001D2EC3 /* test_messsage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_messsage.cpp; sourceTree = "<group>"; };
+		D4BA42591FFFF45B001D2EC3 /* test_message.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_message.cpp; sourceTree = "<group>"; };
 		D4BA42671FFFF474001D2EC3 /* test_message */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_message; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4BA426E1FFFF57E001D2EC3 /* test_message_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_message_main.cpp; sourceTree = "<group>"; };
 		D4BE4F601FF312BD00A0281C /* i_message.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = i_message.hpp; sourceTree = "<group>"; };
@@ -1286,6 +1313,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0E57479D2401CB7E001632FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E57479E2401CB7E001632FF /* libcrypto.a in Frameworks */,
+				0E57479F2401CB7E001632FF /* libssl.a in Frameworks */,
+				0E5747A02401CB7E001632FF /* libboost_filesystem.a in Frameworks */,
+				0E5747A12401CB7E001632FF /* libboost_log.dylib in Frameworks */,
+				0E5747A22401CB7E001632FF /* libboost_system.a in Frameworks */,
+				0E5747A32401CB7E001632FF /* libmarvin.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D407D50F1E103480003E5F8E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1326,6 +1366,7 @@
 				D40F34501FD0F5AD00EC653F /* libboost_filesystem.a in Frameworks */,
 				D40F34511FD0F5AD00EC653F /* libboost_log.dylib in Frameworks */,
 				D40F34521FD0F5AD00EC653F /* libboost_system.a in Frameworks */,
+				0E5C5F5F23FC89ED008F1E54 /* libmarvin.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1410,7 +1451,6 @@
 				D44A21171FF6E73B003CF16C /* libcrypto.a in Frameworks */,
 				D44A21191FF6E73B003CF16C /* libssl.a in Frameworks */,
 				D44A211A1FF6E73B003CF16C /* libboost_filesystem.a in Frameworks */,
-				D44A211B1FF6E73B003CF16C /* libboost_log.dylib in Frameworks */,
 				D44A211C1FF6E73B003CF16C /* libboost_system.a in Frameworks */,
 				D44A211D1FF6E73B003CF16C /* libmarvin.a in Frameworks */,
 			);
@@ -1437,6 +1477,7 @@
 				D44C3D771FF4C56B0034DA00 /* libboost_filesystem.a in Frameworks */,
 				D44C3D781FF4C56B0034DA00 /* libboost_log.dylib in Frameworks */,
 				D44C3D791FF4C56B0034DA00 /* libboost_system.a in Frameworks */,
+				0E5C5F5E23FC7E4E008F1E54 /* libmarvin.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1727,6 +1768,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0E5747802401CA96001632FF /* test_message_parser */ = {
+			isa = PBXGroup;
+			children = (
+				0E57477A2401C95B001632FF /* test_set_1.cpp */,
+				0E5747792401C95B001632FF /* main.cpp */,
+			);
+			name = test_message_parser;
+			path = ../test_message_parser;
+			sourceTree = "<group>";
+		};
 		D407A0EF1E13FD9700A8A312 /* collector */ = {
 			isa = PBXGroup;
 			children = (
@@ -2153,7 +2204,7 @@
 			isa = PBXGroup;
 			children = (
 				D4BA426E1FFFF57E001D2EC3 /* test_message_main.cpp */,
-				D4BA42591FFFF45B001D2EC3 /* test_messsage.cpp */,
+				D4BA42591FFFF45B001D2EC3 /* test_message.cpp */,
 			);
 			path = test_message;
 			sourceTree = "<group>";
@@ -2506,6 +2557,7 @@
 		D4D76A451FC66B6100D64011 /* tests */ = {
 			isa = PBXGroup;
 			children = (
+				0E5747802401CA96001632FF /* test_message_parser */,
 				D49C80CD1FCB3E6D00BA522D /* test_buffers */,
 				D43FF0FE200ABF0B004ABC77 /* test_config */,
 				D4CA33C32002ECEE00BB1044 /* test_catch */,
@@ -2609,6 +2661,7 @@
 				D4B767222001CC40001BACC6 /* test_headers */,
 				D4CA33D12002EEE400BB1044 /* test_catch */,
 				D43FF0F42009E238004ABC77 /* test_timer */,
+				0E5747A82401CB7E001632FF /* test_msg_parser */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2642,6 +2695,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		0E57478A2401CB7E001632FF /* test_msg_parser */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0E5747A52401CB7E001632FF /* Build configuration list for PBXNativeTarget "test_msg_parser" */;
+			buildPhases = (
+				0E57478D2401CB7E001632FF /* Sources */,
+				0E57479D2401CB7E001632FF /* Frameworks */,
+				0E5747A42401CB7E001632FF /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0E57478B2401CB7E001632FF /* PBXTargetDependency */,
+			);
+			name = test_msg_parser;
+			productName = main1;
+			productReference = 0E5747A82401CB7E001632FF /* test_msg_parser */;
+			productType = "com.apple.product-type.tool";
+		};
 		D407D5111E103480003E5F8E /* hdoc-test */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D407D5161E103480003E5F8E /* Build configuration list for PBXNativeTarget "hdoc-test" */;
@@ -3480,6 +3551,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -3532,6 +3604,7 @@
 				D4883E101F9EB0BD00009D37 /* req_test */,
 				D4883E1C1F9EB19300009D37 /* conf_test */,
 				D4883E291F9F079400009D37 /* openssl_10_6 */,
+				0E57478A2401CB7E001632FF /* test_msg_parser */,
 			);
 		};
 /* End PBXProject section */
@@ -3561,6 +3634,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0E57478D2401CB7E001632FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E5747A92401CBB1001632FF /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D407D50E1E103480003E5F8E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4167,7 +4248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4BA425D1FFFF474001D2EC3 /* rb_logger.cpp in Sources */,
-				D4BA426A1FFFF4AC001D2EC3 /* test_messsage.cpp in Sources */,
+				D4BA426A1FFFF4AC001D2EC3 /* test_message.cpp in Sources */,
 				D4BA42701FFFF582001D2EC3 /* test_message_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4232,6 +4313,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0E57478B2401CB7E001632FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4BE4F6A1FF36F2300A0281C /* marvin */;
+			targetProxy = 0E57478C2401CB7E001632FF /* PBXContainerItemProxy */;
+		};
 		D43FA07B1FFBEE2F00B6EA82 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D4BE4F6A1FF36F2300A0281C /* marvin */;
@@ -4299,6 +4385,38 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0E5747A62401CB7E001632FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					./tests,
+					"$(PROJECT_DIR)/vendor/include",
+					"$(PROJECT_DIR)/googletest/googletest/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor/lib",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0E5747A72401CB7E001632FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor/lib",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		D407D5171E103480003E5F8E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4320,12 +4438,12 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4340,7 +4458,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4350,12 +4468,12 @@
 		D40B75901E0AC62E00431E06 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4365,7 +4483,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4374,17 +4492,14 @@
 		D40F34551FD0F5AD00EC653F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(PROJECT_DIR)/deps/include",
-					"$(PROJECT_DIR)/googletest/googletest/include",
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4392,11 +4507,11 @@
 		D40F34561FD0F5AD00EC653F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4419,12 +4534,12 @@
 		D42AC4F91FDF1775007CF7E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4434,7 +4549,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4444,12 +4559,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4460,7 +4575,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4469,16 +4584,16 @@
 		D42DB9AA1E00DEA100B2AF60 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/googletest/googletest/include",
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)";
 			};
@@ -4487,10 +4602,10 @@
 		D42DB9AB1E00DEA100B2AF60 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4505,14 +4620,14 @@
 				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/tests",
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 					"$(PROJECT_DIR)/googletest/googletest/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4527,7 +4642,7 @@
 				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4537,12 +4652,12 @@
 		D43FF0F22009E238004ABC77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4552,7 +4667,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4578,14 +4693,14 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					./tests,
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 					"$(PROJECT_DIR)/googletest/googletest/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4597,7 +4712,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4607,15 +4722,12 @@
 		D44C3D2E1FF413640034DA00 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(PROJECT_DIR)/deps/include",
-					"$(PROJECT_DIR)/googletest/googletest/include",
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4625,7 +4737,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4634,17 +4746,14 @@
 		D44C3D7D1FF4C56B0034DA00 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(PROJECT_DIR)/deps/include",
-					"$(PROJECT_DIR)/googletest/googletest/include",
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4652,11 +4761,11 @@
 		D44C3D7E1FF4C56B0034DA00 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4697,14 +4806,14 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 					"$(PROJECT_DIR)/googletest/googletest/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4715,7 +4824,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4724,24 +4833,24 @@
 		D45F5A371E12E61A0032F943 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRC_ROOT)/deps/include";
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRC_ROOT)/vendor/include";
 			};
 			name = Debug;
 		};
 		D45F5A381E12E61A0032F943 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4764,12 +4873,12 @@
 		D466142D1DF86D4D00E3FAB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4779,7 +4888,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4816,12 +4925,12 @@
 		D46614811DFB2A5F00E3FAB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4831,7 +4940,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4840,12 +4949,12 @@
 		D46614D11DFCF46400E3FAB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)";
 			};
@@ -4856,7 +4965,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4867,14 +4976,14 @@
 			buildSettings = {
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					./tests,
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 					"$(PROJECT_DIR)/googletest/googletest/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4885,7 +4994,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4897,15 +5006,15 @@
 			buildSettings = {
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4916,7 +5025,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4925,14 +5034,14 @@
 		D470B3361E0FE51F00AEF135 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRC_ROOT)/deps/include";
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRC_ROOT)/vendor/include";
 			};
 			name = Debug;
 		};
@@ -4941,7 +5050,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4964,12 +5073,12 @@
 		D4848DC01FFABF2000330379 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4979,7 +5088,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5002,8 +5111,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5026,8 +5135,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5051,8 +5160,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5076,8 +5185,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5100,8 +5209,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5124,8 +5233,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5148,8 +5257,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5172,8 +5281,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 53V9JBRS5T;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/include;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/deps/lib;
+				"HEADER_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/rob/MyCurrentProjects/Pixie/MarvinCpp/vendor/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5183,12 +5292,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)";
 			};
@@ -5200,7 +5309,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5209,12 +5318,12 @@
 		D4946DDA1FDD064100F7ADA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -5224,7 +5333,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5235,14 +5344,14 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 					"$(PROJECT_DIR)/googletest/googletest/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)";
 			};
@@ -5254,7 +5363,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5267,13 +5376,13 @@
 					tests,
 					tests/test_connection,
 					"$(PROJECT_DIR)/googletest/googletest/include",
-					"$(PROJECT_DIR)/deps/include",
+					"$(PROJECT_DIR)/vendor/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -5283,7 +5392,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5308,14 +5417,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				INFOPLIST_FILE = proxy_cocoa/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "Blackwellapps.proxy-cocoa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5330,7 +5439,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Blackwellapps.proxy-cocoa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -5340,12 +5449,12 @@
 		D4ADCE181FF9E22C00A63CF5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -5355,7 +5464,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5364,12 +5473,12 @@
 		D4B767202001CC40001BACC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -5379,7 +5488,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5388,12 +5497,12 @@
 		D4BA42651FFFF474001D2EC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -5403,7 +5512,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5427,7 +5536,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_PEDANTIC = NO;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/deps/include";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5451,7 +5560,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_PEDANTIC = NO;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/deps/include";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5460,12 +5569,12 @@
 		D4CA33CF2002EEE400BB1044 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/include";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/deps/lib";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -5475,7 +5584,7 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/deps/lib",
+					"$(PROJECT_DIR)/vendor/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -5487,8 +5596,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/deps/include";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/deps/lib";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/vendor/include";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/vendor/lib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -5603,6 +5712,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0E5747A52401CB7E001632FF /* Build configuration list for PBXNativeTarget "test_msg_parser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E5747A62401CB7E001632FF /* Debug */,
+				0E5747A72401CB7E001632FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D407D5161E103480003E5F8E /* Build configuration list for PBXNativeTarget "hdoc-test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

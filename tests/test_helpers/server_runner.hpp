@@ -29,4 +29,5 @@ public:
     void setup(long port = 9991);
     void teardown();
 };
+typedef std::shared_ptr<ServerRunner> ServerRunnerSPtr;
 #endif

@@ -3,7 +3,7 @@
 // threads make a number of requests from the server.
 //
 #define CATCH_CONFIG_RUNNER
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)

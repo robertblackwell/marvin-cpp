@@ -1,0 +1,12 @@
+Tests convert to cmake:
+  ☐ test_client_server, test_proxy - needs to be done
+Tests:
+  ☐ test_buffers does no CHECK/REQUIRE anything
+  ☐ message parsing needs to be clearer and also test continuation of headers
+Test cleanup:
+  ☐ some etsts are still using the leading _varname naming scheme - fix
+  ☐ reduntant and duplicate tests - for example test_reader and test_reader_mock are the same ; delete obsolete - unnecessary tests
+Intergration test:
+ ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
+Bugs:
+  ☐ not handling non-existence of connection ehader correctly when preparing upstream request

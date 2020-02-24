@@ -90,6 +90,7 @@ OKV::OrderedKeyValues(std::vector<std::pair<std::string, std::string>> initialVa
 {
     typedef std::vector<std::pair<std::string, std::string>> okv_init;
     for(okv_init::iterator it = initialValue.begin(); it != initialValue.end(); it++) {
+        auto x = *it;
         set((*it).first, (*it).second);
     }
 }
@@ -135,7 +136,12 @@ std::string OKV::get(std::string k)
 }
 void OKV::set(std::string k, std::string v)
 {
-    (*this)[k] = v;
+    KVPair p;
+    p.first = k;
+    p.second = v;
+    long index = m_key_value_vec.size();
+    m_key_value_vec.push_back(p);
+    m_keys[k] = index;
 }
 void OKV::remove(std::string k)
 {

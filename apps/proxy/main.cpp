@@ -33,7 +33,7 @@ int main(int argc, const char * argv[])
 
     try
     {
-        PipeCollector::configSet_PipePath("/Users/rob/marvin_collect");
+        PipeCollector::configSet_PipePath("/Users/robertblackwell/marvin_collector");
 
         std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
         std::vector<int> ports{443, 9443};
@@ -41,7 +41,7 @@ int main(int argc, const char * argv[])
         ForwardingHandler::configSet_HttpsHosts(re);
 
         HTTPServer* server_ptr = new HTTPServer([](boost::asio::io_service& io){
-            PipeCollector& pc = PipeCollector::getInstance(io);
+            PipeCollector* pc = PipeCollector::getInstance(io);
             return new ForwardingHandler(io, pc);
         });
 

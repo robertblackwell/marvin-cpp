@@ -45,6 +45,7 @@ static bool testPipeReaderExists(char* pipeName)
     int fdw = open(pipeName, O_WRONLY | O_NONBLOCK);
     if (fdw == -1){
         LogWarn("non-blocking open for write with no readers failed");
+        throw "non-blocking open for write with no readers failed";
         return false;
     }
     close(fdw);
@@ -65,7 +66,7 @@ PipeCollector::PipeCollector(boost::asio::io_service& io): m_io(io), m_my_strand
     char* n = (char*)s_pipe_path.c_str();
     
     if( testPipeReaderExists( (char*)s_pipe_path.c_str()) ){
-        m_out_pipe.open("/Users/rob/marvin_collect", std::ios_base::out);
+        m_out_pipe.open(s_pipe_path, std::ios_base::out);
         m_pipe_open = true;
     }else{
         m_pipe_open = false;
@@ -73,7 +74,7 @@ PipeCollector::PipeCollector(boost::asio::io_service& io): m_io(io), m_my_strand
 }
 /// \see http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/
 //PipeCollector* PipeCollector::getInstance(boost::asio::io_service& io)
-PipeCollector& PipeCollector::getInstance(boost::asio::io_service& io)
+PipeCollector* PipeCollector::getInstance(boost::asio::io_service& io)
 {
     PipeCollector* tmp = s_atomic_instance.load();
     if (tmp == nullptr) {
@@ -84,7 +85,7 @@ PipeCollector& PipeCollector::getInstance(boost::asio::io_service& io)
             s_atomic_instance.store(tmp);
         }
     }
-    return *tmp;
+    return tmp;
 }
 void PipeCollector::configSet_PipePath(std::string path)
 {
@@ -127,10 +128,12 @@ void PipeCollector::postedCollect(
     auto respHeaders = resp->getHeaders();
     resp->dumpHeaders(temp);
     if( bodyIsCollectable(*resp, regexs) ){
-        if (resp->getContentBuffer() != nullptr)
+        if (resp->getContentBuffer() != nullptr) {
+            auto s = resp->getContentBuffer()->to_string();
             temp << (resp->getContentBuffer())->to_string() << std::endl;
-        else
+        } else {
             temp << "[]" << std::endl;
+        }
     }
 
     temp << "------------------------------------------------" << std::endl;
@@ -142,6 +145,7 @@ void PipeCollector::postedCollect(
 
     m_out_pipe << temp.str();
     m_out_pipe.flush();
+    std::cout << temp.str() << std::endl;
 }
 /**
 ** Interface method for client code to call collect
@@ -152,8 +156,6 @@ void PipeCollector::collect(
     MessageReaderSPtr req,
     MessageBaseSPtr resp)
 {
-//    std::cout << (char*)__FILE__ << ":" << (char*) __FUNCTION__ << "[" << (char*)__LINE__ << "]" <<   std::endl;
-
     /**
     ** In here implement the creation the summary records but dont do any IO or sending
     ** leave that for postedCollect

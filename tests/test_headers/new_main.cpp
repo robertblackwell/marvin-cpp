@@ -10,7 +10,7 @@
 #include <iterator>
 #include <cassert>
 #define CATCH_CONFIG_MAIN
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "json.hpp"
 #include "marvin_okv.hpp"
 #include "http_header.hpp"

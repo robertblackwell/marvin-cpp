@@ -2,6 +2,10 @@
 /// \ingroup Tests
 /// \brief A class that simulates composed asyn operations in the precense of timeouts.
 ///
+#include <string>
+#include "boost_stuff.hpp"
+#include "rb_logger.hpp"
+
 class AsyncComposedOp
 {
 public:
@@ -16,7 +20,7 @@ public:
     : m_io(io),
     m_strand(io),
     m_timeout(io),
-    m_timer(io, boost::posix_time::seconds(posix_time::pos_infin)),
+    m_timer(io),
     m_count(0),
     m_op_1_interval_secs(op_1_interval_secs), m_op_1_result(op_1_result_string),
     m_op_2_interval_secs(op_2_interval_secs), m_op_2_result(op_2_result_string),

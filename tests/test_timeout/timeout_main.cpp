@@ -14,7 +14,7 @@
 //#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 //#include "utest.hpp"
 #define CATCH_CONFIG_RUNNER
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "timeout.hpp"

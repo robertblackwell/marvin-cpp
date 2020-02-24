@@ -22,7 +22,9 @@ public:
     virtual void setMethod(enum http_method m) = 0 ;
     virtual void setMethod(std::string m_str) = 0;
 //    virtual std::string method() = 0;
-    
+    virtual std::string getMethodAsString() = 0;
+    virtual HttpMethod method() = 0;
+
     virtual void setUri(std::string u) = 0 ;
     virtual std::string uri() = 0;
     

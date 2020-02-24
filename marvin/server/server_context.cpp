@@ -7,3 +7,10 @@
 //
 
 #include "server_context.hpp"
+
+// ServerContext::ServerContext() noexcept {
+//     server_ptr = nullptr;
+//     server_connection_manager_ptr = nullptr;
+//     connection_handler_ptr = nullptr;
+//     connection_ptr = nullptr;
+// }

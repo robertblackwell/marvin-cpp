@@ -5,19 +5,52 @@
 //  Created by ROBERT BLACKWELL on 1/6/18.
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "http_header.hpp"
 #include "test_headers.hpp"
+
+struct kv_t {
+    std::string k;
+    std::string v;
+};
+
+std::vector<std::pair<std::string, std::string>> jsonParseHeaders(json jsonHeaders) {
+    typedef std::vector<kv_t> header_list;
+    header_list hl{};
+    std::vector<std::pair<std::string, std::string>> hm{};
+    for (json::iterator it = jsonHeaders.begin(); it != jsonHeaders.end(); ++it) {
+//        std::cout << it.key() << " : " << it.value() << "\n";
+        auto z = *it;
+        std::string k = it.key();
+        if (it.value().is_string()) {
+            std::string v = it.value();
+            std::pair<std::string, std::string> akv(k, v);
+            hm.push_back(akv);
+        } else if (it.value().is_number_integer()) {
+            int v = it.value().get<int>();
+            std::string vstr = std::to_string(v);
+            std::pair<std::string, std::string> akv(k, vstr);
+            hm.push_back(akv);
+        } else if (it.value().is_number_float()) {
+            double v = it.value().get<float>();
+            std::string vstr = std::to_string(v);
+            std::pair<std::string, std::string> akv(k, vstr);
+            hm.push_back(akv);
+        } else {
+            throw "invalid type of value in header list";
+        }
+    }
+    return hm;
+}
+
+
+
 namespace test{
 namespace helpers{
 Marvin::Http::Headers headersFromJson(nlohmann::json& j)
 {
-   Marvin::Http::Headers result = j.get<Marvin::Http::Headers>();
-//;
-//    for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
-//        std::cout << it.key() << " : " << it.value() << "\n";
-//        result[it.key()] = it.value();
-//    }
+    auto h = jsonParseHeaders(j);
+    Marvin::Http::Headers result(h);
     return result;
 }
 bool checkHeaders(Marvin::Http::Headers& h1, Marvin::Http::Headers h2)

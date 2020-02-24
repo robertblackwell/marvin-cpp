@@ -1,0 +1,120 @@
+------------------------------------------------
+HOST: http://whiteacorn
+REQUEST : =========
+GET http://whiteacorn/utests/echo/index.php HTTP/1.1
+HOST : whiteacorn
+USER-AGENT : curl/7.64.1
+ACCEPT : */*
+PROXY-CONNECTION : Keep-Alive
+
+RESPONSE : ========
+HTTP/1.1 200 OK
+DATE : Mon, 24 Feb 2020 05:37:48 GMT
+SERVER : Apache/2.4.37 (Unix) PHP/7.3.10
+X-POWERED-BY : PHP/7.3.10
+CONTENT-LENGTH : 541
+CONTENT-TYPE : text/html; charset=UTF-8
+CONNECTION : CLOSE
+{
+    "req": {
+        "junk": "just to show got here",
+        "method": "GET",
+        "uri": "",
+        "headers": {
+            "HOST": "whiteacorn",
+            "USER-AGENT": "curl\/7.64.1",
+            "ACCEPT": "*\/*",
+            "CONNECTION": "CLOSE",
+            "ACCEPT-ENCODING": "identity",
+            "TE": "",
+            "CONTENT-LENGTH": "0"
+        },
+        "body": ""
+    },
+    "xtra": {
+        "connection_handler_uuid": "2121212121121221",
+        "request_handler_uuid": "12121212121212",
+        "fd": 99
+    }
+}
+------------------------------------------------
+------------------------------------------------
+HOST: http://whiteacorn
+REQUEST : =========
+GET http://whiteacorn/utests/echo/index.php HTTP/1.1
+HOST : whiteacorn
+USER-AGENT : curl/7.64.1
+ACCEPT : */*
+PROXY-CONNECTION : Keep-Alive
+
+RESPONSE : ========
+HTTP/1.1 200 OK
+DATE : Mon, 24 Feb 2020 05:39:39 GMT
+SERVER : Apache/2.4.37 (Unix) PHP/7.3.10
+X-POWERED-BY : PHP/7.3.10
+CONTENT-LENGTH : 541
+CONTENT-TYPE : text/html; charset=UTF-8
+CONNECTION : CLOSE
+{
+    "req": {
+        "junk": "just to show got here",
+        "method": "GET",
+        "uri": "",
+        "headers": {
+            "HOST": "whiteacorn",
+            "USER-AGENT": "curl\/7.64.1",
+            "ACCEPT": "*\/*",
+            "CONNECTION": "CLOSE",
+            "ACCEPT-ENCODING": "identity",
+            "TE": "",
+            "CONTENT-LENGTH": "0"
+        },
+        "body": ""
+    },
+    "xtra": {
+        "connection_handler_uuid": "2121212121121221",
+        "request_handler_uuid": "12121212121212",
+        "fd": 99
+    }
+}
+------------------------------------------------
+------------------------------------------------
+HOST: http://whiteacorn
+REQUEST : =========
+GET http://whiteacorn/utests/echo/index.php HTTP/1.1
+HOST : whiteacorn
+USER-AGENT : curl/7.64.1
+ACCEPT : */*
+PROXY-CONNECTION : Keep-Alive
+
+RESPONSE : ========
+HTTP/1.1 200 OK
+DATE : Mon, 24 Feb 2020 05:40:02 GMT
+SERVER : Apache/2.4.37 (Unix) PHP/7.3.10
+X-POWERED-BY : PHP/7.3.10
+CONTENT-LENGTH : 541
+CONTENT-TYPE : text/html; charset=UTF-8
+CONNECTION : CLOSE
+{
+    "req": {
+        "junk": "just to show got here",
+        "method": "GET",
+        "uri": "",
+        "headers": {
+            "HOST": "whiteacorn",
+            "USER-AGENT": "curl\/7.64.1",
+            "ACCEPT": "*\/*",
+            "CONNECTION": "CLOSE",
+            "ACCEPT-ENCODING": "identity",
+            "TE": "",
+            "CONTENT-LENGTH": "0"
+        },
+        "body": ""
+    },
+    "xtra": {
+        "connection_handler_uuid": "2121212121121221",
+        "request_handler_uuid": "12121212121212",
+        "fd": 99
+    }
+}
+------------------------------------------------

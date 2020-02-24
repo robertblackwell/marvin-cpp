@@ -17,9 +17,9 @@ void stopTestServer()
     serverRunnerSPtr->teardown();
 }
 static std::shared_ptr<ProxyRunner> proxyRunnerSPtr;
-void startProxyServer(long port)
+void startProxyServer(long port, std::string collector_fifo_name)
 {
-    PipeCollector::configSet_PipePath("/Users/rob/marvin_collect");
+    PipeCollector::configSet_PipePath(collector_fifo_name);
 
     std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
     std::vector<int> ports{443, 9443};

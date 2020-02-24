@@ -1,0 +1,16 @@
+test_message 21 0.00746641
+test_headers 20 0.00607237
+test_buffers 19 0.00687479
+test_client_request 8 0
+test_connect 15 0.0438754
+test_timeout 13 0.0873407
+test_reader_mock 11 0.305132
+test_server_client_bb 9 0.351745
+test_server_client_bf 9 0.239911
+test_proxy 7 0
+test_message_parser 6 0.0226596
+test_client_request_pipeline 4 0.214805
+test_client_request_roundtrip 4 0.138448
+test_client_request_multiple 4 0.139107
+---
+test_proxy

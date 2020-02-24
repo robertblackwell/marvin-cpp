@@ -56,8 +56,8 @@ void ForwardingHandler::configSet_HttpsPorts(std::vector<int> ports)
 
 ForwardingHandler::ForwardingHandler(
     boost::asio::io_service& io,
-    ICollector& collector
-): RequestHandlerBase(io), m_collector(collector)
+    ICollector* collector_ptr
+): RequestHandlerBase(io), m_collector_ptr(collector_ptr)
 {
     LogTorTrace();
     m_https_hosts = s_https_hosts;
@@ -235,7 +235,9 @@ void ForwardingHandler::handleRequest(
         LogTrace("for downstream", Marvin::Http::traceMessage(*downMsg));
         Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
         /// perform the MITM collection
-        m_collector.collect(m_scheme, m_host, m_request_sptr, m_response_sptr);
+        
+        m_collector_ptr->collect(m_scheme, m_host, m_request_sptr, m_response_sptr);
+        
         /// write response to downstream client
         m_response_writer_sptr->asyncWrite(m_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err){
 //            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
@@ -275,11 +277,16 @@ void ForwardingHandler::p_round_trip_upstream(
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
-        LogTrace("upstream rresponse", Marvin::Http::traceMessage(*(upstrmRdr.get())));
-        m_downstream_msg_sptr = std::make_shared<MessageBase>();
-        m_response_body_sptr = upstrmRdr->getContentBuffer();
-        helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
-        upstreamCb(ec, m_downstream_msg_sptr);
+        if (ec || (upstrmRdr == nullptr)) {
+            LogWarn("async write failed");
+            // TODO: how to handle error
+        } else {
+            LogTrace("upstream rresponse", Marvin::Http::traceMessage(*(upstrmRdr.get())));
+            m_downstream_msg_sptr = std::make_shared<MessageBase>();
+            m_response_body_sptr = upstrmRdr->getContentBuffer();
+            helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
+            upstreamCb(ec, m_downstream_msg_sptr);
+        }
     });
     
 };

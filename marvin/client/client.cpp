@@ -14,7 +14,7 @@
 #include <memory>
 #include <cassert>
 #pragma clang diagnostic push
-#pragma clang diagnostic ignore "_Wall"
+#pragma clang diagnostic ignored "-Wall"
 #include "boost_stuff.hpp"
 #pragma clang diagnostic pop
 #include "url.hpp"

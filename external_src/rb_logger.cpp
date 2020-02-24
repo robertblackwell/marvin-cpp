@@ -49,8 +49,8 @@ std::string RBLogging::LogLevelText(RBLogging::LogLevelType level){
 bool RBLogging::Logger::p_fileStemIsActive(RBLogging::FilePathType file_path)
 {
     auto stem = file_path.stem();
-    auto f = RBLogging::activeFileStems.find(stem);
-    auto xx = *f;
+//    auto f = RBLogging::activeFileStems.find(stem);
+//    auto xx = *f;
     if (RBLogging::activeFileStems.find(stem) != RBLogging::activeFileStems.end()) {
         return true;
     }

@@ -130,7 +130,6 @@ void helpers::makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReader
     // should also test for manditory Host header
     //
     auto hdrs = req->getHeaders();
-    std::string cv = req->getHeader(Marvin::Http::Headers::Name::Connection);
     HttpHeaderFilterSetType dontCopyList{
         Marvin::Http::Headers::Name::Host,
         Marvin::Http::Headers::Name::ProxyConnection,
@@ -143,7 +142,10 @@ void helpers::makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReader
     //    Headers::filterNotInList(hdrs, dontCopyList, [result]( Marvin::Http::Headers& hdrs, std::string k, std::string v) {
 //        result->setHeader(k,v);
 //    });
-    helpers::removeHopByHop(result, cv);
+    if (req->hasHeader(Marvin::Http::Headers::Name::Connection)) {
+        std::string cv = req->getHeader(Marvin::Http::Headers::Name::Connection);
+        helpers::removeHopByHop(result, cv);
+    }
     // set the uri and host header
     // no keep alive
     result->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);

@@ -77,8 +77,9 @@ void CollectorBase::collect(
     
 CollectorBase::CollectorBase(boost::asio::io_service& io): m_io(io), m_my_strand(io)
 {
-    if( testPipeReaderExists((char*)"/Users/rob/marvin_collect") ){
-        m_out_pipe.open("/Users/rob/marvin_collect", std::ios_base::out);
+    assert(false);
+    if( testPipeReaderExists((char*)"/Users/robertblackwell/marvin_collector") ){
+        m_out_pipe.open("/Users/robertblackwell/marvin_collector", std::ios_base::out);
         m_pipe_open = true;
     }else{
         m_pipe_open = false;

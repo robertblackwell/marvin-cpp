@@ -14,7 +14,7 @@ MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): io_
 {
     index = 0;
     _rdBuf = (char*)malloc(100000);
-    st = new SingleTimer(io_, 100);
+    st = new SingleTimer(io_, TIMER_INTERVAL_MS);
 }
 MockReadSocket::~MockReadSocket()
 {

@@ -75,7 +75,7 @@ public:
     void    setIsRequest(bool flag);
     bool    isRequest();
     
-    /// \brief return the current dechunked conent buffer
+    /// \brief return the current dechunked content buffer
     ::Marvin::BufferChainSPtr getContentBuffer();
     /// \vrief sets the dechunked content buffer but does not set the CONTENT-LENGTH headers;
     /// this is because even for chunked incoming messages the de-chunked buffer is attached

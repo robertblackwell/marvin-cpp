@@ -1,4 +1,5 @@
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
+#include <boost/process.hpp>
 #include "marvin_http.hpp"
 #include "server_runner.hpp"
 #include "tp_proxy_runner.hpp"
@@ -21,7 +22,7 @@ std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases()
         MessageBaseSPtr msg = std::make_shared<MessageBase>();
         msg->setMethod(HTTP_POST);
         // note requests through a proxy must provide absolute uri on the first line
-        // proxy mat turn that into a relative url
+        // proxy may turn that into a relative url
         Marvin::Uri uri("http://whiteacorn/utests/echo/index.php");
         helpers::applyUriProxy(msg, uri);
 //        msg->setUri("http://localhost/echo");
@@ -156,29 +157,57 @@ std::vector<tp::TestcaseSPtr> makeConnectRequestTestcases()
 #endif
 }
 
-
-#if 0
+void removeVolatileValues(boost::filesystem::path inFile, boost::filesystem::path outFile) {
+    std::system( (std::string("/usr/bin/sed -e '/^DATE/d' -e '/junk/d' -e '/body/d' ") + inFile.string() + " > " + outFile.string()).c_str() );
+}
+#if 1
+// sends a request to a know host with predictable response.
+// captures the collector output into a file - collector usually writes to a pipe
+//      not a file and hence the file must exist and be empty before the start of this test
+// and compares to a references file
 TEST_CASE("proxy_whiteacorn", "[wa]")
 {
-//    startProxyServer(9992);
-    boost::asio::io_service io;
-    auto vect = makeWhiteacornTestcases();
-    auto v = vect[0];
-    tp::TestcaseSPtr tcSPtr = makeWhiteacornTestcases()[0];
-    tp::PostTest r(io, tcSPtr);
-    r.exec();
-    io.run();
-//    stopProxyServer();
-//    sleep(10);
+    std::cout << "whiteacorn test - TESTCASE" << std::endl;
+    boost::filesystem::path p{__FILE__};
+    boost::filesystem::path d = p.parent_path();
+    boost::filesystem::path c = d / "whiteacorn_received";
+    boost::filesystem::path e = d / "whiteacorn_expected";
+    boost::filesystem::path f = d / "whiteacorn_received_fixed";
+    std::string collector_file_path = c.string();
+    
+//    boost::process::system("/bin/rm", collector_file_path);
+//    boost::process::system("/usr/bin/touch", collector_file_path);
+
+    RBLogging::enableForLevel(LOG_LEVEL_DEBUG);
+    
+    SECTION("whiteacorn") {
+        std::cout << "whiteacorn test SECTION" << std::endl;
+        boost::asio::io_service io;
+        auto vect = makeWhiteacornTestcases();
+        auto v = vect[0];
+        tp::TestcaseSPtr tcSPtr = makeWhiteacornTestcases()[0];
+        tp::PostTest post_test(io, tcSPtr);
+        post_test.exec();
+        io.run();
+        removeVolatileValues(c, f);
+        int retcode = boost::process::system("/usr/bin/diff", e.string(), f.string() );
+        std::cout << retcode << std::endl;
+        REQUIRE(retcode == 0);
+        std::cout << __PRETTY_FUNCTION__ << 1 << std::endl;
+
+    }
+    std::cout << __PRETTY_FUNCTION__ << 1 << std::endl;
+    return;
 }
 #endif
+
 #if 0
 TEST_CASE("proxy_testserver", "[ts]")
 {
     boost::asio::io_service io;
     tp::TestcaseSPtr tcSPtr = makeTestServerTestcases()[0];
-    tp::PostTest r(io, tcSPtr);
-    r.exec();
+    tp::PostTest post_test(io, tcSPtr);
+    post_test.exec();
     io.run();
 //    stopProxyServer();
 //    stopTestServer();
@@ -194,7 +223,7 @@ TEST_CASE("proxy_tunnel_whiteacorn/utests/echo/index.php:80", "[ts]")
     io.run();
 }
 #endif
-#if 1
+#if 0
 TEST_CASE("proxy_tunnel_ssltest/echo:443", "[ts]")
 {
     boost::asio::io_service io;
@@ -209,8 +238,8 @@ TEST_CASE("proxy_connect_ssltest", "[ts]")
 {
     boost::asio::io_service io;
     tp::TestcaseSPtr tcSPtr = makeConnectRequestTestcases()[1];
-    tp::PostTest r(io, tcSPtr);
-    r.exec();
+    tp::PostTest post(io, tcSPtr);
+    post.exec();
     io.run();
 }
 #endif

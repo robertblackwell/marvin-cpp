@@ -1,4 +1,4 @@
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "forward_helpers.hpp"
 #include "json.hpp"
 #include "bf_pipeline.hpp"

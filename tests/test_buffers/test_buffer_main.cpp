@@ -7,7 +7,7 @@
 //
 #include <iostream>
 #define CATCH_CONFIG_RUNNER
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "boost_stuff.hpp"
 #include "buffer.hpp"
 #include "rb_logger.hpp"

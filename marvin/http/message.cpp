@@ -162,15 +162,19 @@ MessageBase::setHeader(std::string key, std::string value){
 };
 
 bool
-MessageBase::hasHeader( std::string key){
+MessageBase::hasHeader( std::string key) {
     ::Marvin::Http::Headers::canonicalKey(key);
     return ( m_headers.find(key) != m_headers.end() );
 };
 
 std::string
-MessageBase::header(std::string key){
+MessageBase::header(std::string key) {
     ::Marvin::Http::Headers::canonicalKey(key);
-    if( hasHeader(key) ){ return m_headers[key]; } else { return nullptr;}
+    if( hasHeader(key) ) {
+        return m_headers[key];
+    } else {
+        throw "header " + key + " does not exist";
+    }
 }
 
 void
@@ -194,6 +198,7 @@ MessageBase::getHeader(std::string key){
     if( m_headers.find(key) != m_headers.end() ){
         return m_headers[key];
     }
+    throw "trying to access non-existent header value";
     return nullptr;
 }
 //std::map<std::string, std::string>&

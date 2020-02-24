@@ -12,6 +12,7 @@
 #include "i_socket.hpp"
 
 typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallback;
+#define TIMER_INTERVAL_MS 10
 
 /**
  * This class simulates an async/non-blocking sockt connection

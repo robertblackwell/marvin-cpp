@@ -9,7 +9,7 @@
 #include <pthread.h>
 
 #define CATCH_CONFIG_RUNNER
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 
@@ -84,6 +84,7 @@ void testcase_socketReader(Testcase tc)
     */
     TServerSPtr srv = std::shared_ptr<TServer>(new TServer(io, tc));
     srv->listen(9991, [](MessageReaderSPtr rdr) {
+        std::cout << "got here" << std::endl;
         //go here is a win
     });
     /**
@@ -91,9 +92,10 @@ void testcase_socketReader(Testcase tc)
     */
     TClientSPtr client = std::shared_ptr<TClient>(new TClient(io, "http", "localhost", "9991", tc));
     client->send_testcase_buffers([](Marvin::ErrorType err){
-        //printf("all buffers have been sent\n");
+        printf("all buffers have been sent\n");
     });
     io.run();
+    std::cout << "after io run" << std::endl;
     LogDebug("");
 }
 void test_vector_socketReader(std::vector<Testcase> tcs)

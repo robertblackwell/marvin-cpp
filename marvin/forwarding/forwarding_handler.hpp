@@ -54,7 +54,7 @@ class ForwardingHandler : public RequestHandlerBase
         static void configSet_HttpsHosts(std::vector<std::regex> re);
         static void configSet_HttpsPorts(std::vector<int> ports);
     
-        ForwardingHandler(boost::asio::io_service& io, ICollector& collector);
+        ForwardingHandler(boost::asio::io_service& io, ICollector* collector);
         ~ForwardingHandler();
     
         void handleConnect(
@@ -119,7 +119,7 @@ class ForwardingHandler : public RequestHandlerBase
         std::string                 m_scheme;
         std::string                 m_host;
         int                         m_port;
-        ICollector&                 m_collector;
+        ICollector*                 m_collector_ptr;
     
         /// used for handleConnect - tunnel
         Marvin::MBufferUPtr         m_initial_response_buf;

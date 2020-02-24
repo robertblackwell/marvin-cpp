@@ -36,7 +36,9 @@ class IReadSocket;
 class IReadSocket{
 public:
     virtual void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb) = 0;
+    virtual ~IReadSocket() = 0;
 };
+inline IReadSocket::~IReadSocket() {}
 
 class IWriteSocket;
 /// \ingroup SocketIO
@@ -53,7 +55,9 @@ public:
     virtual void asyncWrite(Marvin::BufferChainSPtr chain_sptr, AsyncWriteCallback) = 0;
     virtual void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb) = 0;
     virtual void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
+    virtual ~IWriteSocket() = 0;
 };
+inline IWriteSocket::~IWriteSocket() {}
 
 class ISocket;
 
@@ -79,5 +83,7 @@ class ISocket : public IReadSocket, public IWriteSocket
     virtual void setReadTimeout(long millisecs) = 0;
     virtual void shutdown() = 0;
     virtual void close() = 0;
+    virtual ~ISocket() = 0;
 };
+inline ISocket::~ISocket() {}
 #endif

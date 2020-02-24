@@ -38,6 +38,6 @@
 namespace Marvin {
     class Config {
     
-    }
+    };
 }
 #endif /* marvin_config_hpp */

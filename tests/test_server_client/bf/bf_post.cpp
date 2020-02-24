@@ -1,4 +1,4 @@
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include "json.hpp"
 #include "forward_helpers.hpp"
 #include "server_connection_manager.hpp"

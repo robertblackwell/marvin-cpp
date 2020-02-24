@@ -3,13 +3,17 @@
 /// \brief A class that simulates successful and failed async operations with timeout; it runs all its handlers on a strand
 /// and passes that strand to a timeout handler, the tiimeout handler is a member of this object..
 ///
+#include <string>
+#include "boost_stuff.hpp"
+#include "rb_logger.hpp"
+
 class AsyncObject
 {
 public:
     AsyncObject(boost::asio::io_service& io)
     : m_io(io),
     m_timeout(io),
-    m_timer(io, boost::posix_time::seconds(posix_time::pos_infin)),
+    m_timer(io),
     m_count(0)
     {}
     ~AsyncObject()

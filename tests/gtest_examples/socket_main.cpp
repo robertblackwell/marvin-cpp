@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#include <catch/catch.h>
+#include <catch2/catch.h>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
 

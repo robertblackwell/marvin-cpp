@@ -12,22 +12,12 @@ std::shared_ptr<Client> do_client_connect(std::string code, boost::asio::io_serv
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
     helpers::applyUriProxy(msg, uri);
     client->asyncConnect([client, msg, code](Marvin::ErrorType& ec){
-#if 1 //VERBOSE
+#if 1
+        REQUIRE(!ec);
         std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
         std::cout << "request " << std::hex << client.get() << std::endl;
-//        std::cout << "request " << std::hex << &resp << std::endl;
-//        std::cout << "request " << resp.statusCode() << " " << resp.status() << std::endl;
-//        std::cout << "request " << resp.getBody() << std::endl;
-//        std::cout << "request " << std::hex << req.get() << std::endl;
 #endif
     });
-
-//    req->setMethod(HttpMethod::GET);
-//    req->setUrl("http://whiteacorn/utests/echo/test.php?code="+code);
-//
-//    std::string b("");
-//    req->setContent(b);
-//    req->go([ req, code](Marvin::ErrorType& ec){
     return client;
 
 }
@@ -44,28 +34,27 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
     msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
     msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding, "identity");
     msg->setHeader(Marvin::Http::Headers::Name::TE, "");
-    // Http versions defaults to 1.1, so force it to the same as the request
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
-#ifdef VERBOSE
+#if 1
         std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
         std::cout << "request " << std::hex << client.get() << std::endl;
-//        std::cout << "request " << std::hex << &resp << std::endl;
-//        std::cout << "request " << resp.statusCode() << " " << resp.status() << std::endl;
-//        std::cout << "request " << resp.getBody() << std::endl;
-//        std::cout << "request " << std::hex << req.get() << std::endl;
 #endif
-        MessageReaderSPtr b = client->getResponse();
-//        std::string bdy = b->getContent();
-        auto st = b->statusCode();
-        REQUIRE(b->statusCode() == 200);
-        
+        if (ec) {
+            REQUIRE(false);
+        } else {
+            MessageReaderSPtr b = client->getResponse();
+            auto st = b->statusCode();
+            REQUIRE(b->statusCode() == 200);
+            // maybe CHECK some other stuff here ?
+        }
+       
     };
     client->asyncWrite(msg, f);
     return client;
 }
-/// \brief makes a GET request to the url provided and expects status=200 and a non empty content
+/// \brief makes a GET request to the url provided and expects status=200/302 and a non empty content
 std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::string request_url)
 {
     Marvin::Uri uri(request_url);
@@ -81,12 +70,15 @@ std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::stri
     // Http versions defaults to 1.1, so force it to the same as the request
     msg->setContent("");
 
-    std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
+    std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, request_url, &io](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
         MessageReaderSPtr b = client->getResponse();
         std::string bdy = (b->getContent())->to_string();
-        auto st = b->statusCode();
-        REQUIRE(b->statusCode() == 200);
-        REQUIRE( bdy.size() > 0);
+        if (b->statusCode() != 200) {
+            std::cout << "Request URL : " << request_url << " StatusCode: " << b->statusCode() << std::endl;
+        }
+        CHECK((b->statusCode() == 200 || b->statusCode() == 302));
+        CHECK( bdy.size() > 0);
+        io.stop();
         
     };
     client->asyncWrite(msg, f);
@@ -97,15 +89,16 @@ TEST_CASE("ssl_ssllabs", "[first]")
 {
     boost::asio::io_service io_service;
     std::vector<std::shared_ptr<Client>> rt;
-    auto c = general_roundtrip(io_service, "https://www.ssllabs.com/");
+    auto c = general_roundtrip(io_service, "https://www.ssllabs.com"); /*//https://www.ssllabs.com/");*/
     io_service.run();
+    std::cout << "Return from io " << std::endl;
     rt.clear();
 }
-TEST_CASE("ssl_ssltest", "[first]")
+TEST_CASE("ssl_ssltest", "[second]")
 {
     boost::asio::io_service io_service;
     std::vector<std::shared_ptr<Client>> rt;
-    auto c = general_roundtrip(io_service, "https://ssltest/");
+    auto c = general_roundtrip(io_service, "https://paypal.com/");
     io_service.run();
     rt.clear();
 

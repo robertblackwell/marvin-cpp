@@ -2,7 +2,7 @@
 #define marvin_unit_test_hpp
 #define MARVIN_CATCHX
 #ifdef MARVIN_CATCH 
-    #include <catch/catch.hpp>
+    #include <catch2/catch.hpp>
     #define MARVIN_CONFIG_RUNNER CATCH_CONFIG_RUNNER
 #else
     #include <doctest/doctest.h>

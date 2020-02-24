@@ -48,7 +48,7 @@ class CollectorBase
             MessageReaderSPtr req,
             Marvin::Http::MessageBaseSPtr resp);
 
-        boost::asio::strand         m_my_strand;
+        boost::asio::io_context::strand         m_my_strand;
         boost::asio::io_service&    m_io;
         std::ofstream               m_out_pipe;
         bool                        m_pipe_open;

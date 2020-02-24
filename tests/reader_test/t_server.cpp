@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 #include <pthread.h>
 #include "boost_stuff.hpp"
 #include "rb_logger.hpp"
@@ -37,9 +37,14 @@ void TServer::initialize()
     LogDebug("");
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), m_port);
     m_acceptor.open(endpoint.protocol());
-    m_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-    m_acceptor.bind(endpoint);
-
+    boost::asio::socket_base::reuse_address option(true);
+    m_acceptor.set_option(option);
+    try {
+        m_acceptor.bind(endpoint);
+    } catch(boost::system::system_error &e) {
+        std::cout << "Bind failed in TServer initialize" << std::endl;
+        throw e;
+    }
 }
 TServer::~TServer()
 {

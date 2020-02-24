@@ -1,6 +1,6 @@
 //#define CATCH_CONFIG_RUNNER
 #define CATCH_CONFIG_MAIN
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 int factorial(int number) { return number <= 1 ? number : factorial(number - 1) * number; }
 class Fix {

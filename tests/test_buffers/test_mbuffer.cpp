@@ -8,7 +8,7 @@
 #include <iostream>
 #include "buffer.hpp"
 #include "rb_logger.hpp"
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace Marvin;
 

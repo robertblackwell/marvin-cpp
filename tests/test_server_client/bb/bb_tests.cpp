@@ -9,7 +9,7 @@
 #include "boost_stuff.hpp"
 #include <thread>
 #include <pthread.h>
-#include <catch/catch.hpp>
+#include <catch2/catch.hpp>
 
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)

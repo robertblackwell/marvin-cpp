@@ -149,6 +149,7 @@ void HTTPServer::terminate()
 //-------------------------------------------------------------------------------------
  void HTTPServer::startAccept()
 {
+
     LogInfo("");
     ISocket* conptr = new TCPConnection(m_io);
     
@@ -165,6 +166,7 @@ void HTTPServer::terminate()
 //-------------------------------------------------------------------------------------
  void HTTPServer::handleAccept(ConnectionHandler* connHandler, const boost::system::error_code& err)
 {
+
     LogInfo("", connHandler);
     if (! m_acceptor.is_open()){
         delete connHandler;
