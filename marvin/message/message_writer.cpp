@@ -160,13 +160,11 @@ void MessageWriter::p_async_write_full_body(WriteMessageCallbackType cb)
 {
     LogDebug(" cb: ", (long) &cb);
     if( ( ! m_body_buffer_chain_sptr) || ( m_body_buffer_chain_sptr->size() == 0) ) {
-        LogWarn("writing empty body");
         Marvin::ErrorType ee = Marvin::make_error_ok();
         auto pf = std::bind(cb, ee);
         m_io.post(pf);
     } else{
         m_write_sock->asyncWrite(m_body_buffer_chain_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
-        LogDebug("");
         auto pf = std::bind(cb, ec);
         m_io.post(pf);
         });

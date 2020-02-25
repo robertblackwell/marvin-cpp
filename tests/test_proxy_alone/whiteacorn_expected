@@ -12,7 +12,8 @@ CONNECTION : Keep-Alive, TE
 TE : deflate, gzip, chunked, trailer
 ETAG : 1928273tefadseercnbdh
 CONTENT-LENGTH : 12
-
+Body: 
+012345678956
 RESPONSE : ========
 HTTP/1.1 200 OK
 SERVER : Apache/2.4.37 (Unix) PHP/7.3.10

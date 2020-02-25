@@ -2,6 +2,7 @@
 #include <boost/process.hpp>
 #include "marvin_http.hpp"
 #include "helpers_fs.hpp"
+#include "collector_base.hpp"
 #include "server_runner.hpp"
 #include "tp_proxy_runner.hpp"
 #include "forward_helpers.hpp"
@@ -9,9 +10,17 @@
 #include "tp_testcase.hpp"
 #include "tp_post.hpp"
 #include "tp_tunnel.hpp"
+#include "proxy_fixture.hpp"
+
 using namespace Marvin;
 using namespace Http;
-std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases()
+
+std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases(
+        std::string uriString,
+        std::string proxyScheme,
+        std::string proxyHost,
+        std::string proxyPort
+)
 {
     /// this sends the request to our mitm proxy
     std::string pScheme = "http";
@@ -24,7 +33,8 @@ std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases()
         msg->setMethod(HTTP_POST);
         // note requests through a proxy must provide absolute uri on the first line
         // proxy may turn that into a relative url
-        Marvin::Uri uri("http://whiteacorn/utests/echo/index.php");
+//        Marvin::Uri uri("http://whiteacorn/utests/echo/index.php");
+        Marvin::Uri uri(uriString);
         helpers::applyUriProxy(msg, uri);
 //        msg->setUri("http://localhost/echo");
 //        msg->setHeader(Marvin::Http::Headers::Name::Host, "localhost:9991");
@@ -41,7 +51,8 @@ std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases()
         std::string s = "012345678956";
         Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
         msg->setContent(bdy);
-        tp::TestcaseSPtr tc = std::make_shared<tp::Testcase>(msg, pScheme, pHost, pPort);
+
+        tp::TestcaseSPtr tc = std::make_shared<tp::Testcase>(msg, proxyScheme, proxyHost, proxyPort);
         msgTable.push_back(tc);
     }
     return msgTable;
@@ -161,62 +172,47 @@ std::vector<tp::TestcaseSPtr> makeConnectRequestTestcases()
 void removeVolatileValues(boost::filesystem::path inFile, boost::filesystem::path outFile) {
     std::system( (std::string("/usr/bin/sed -e '/^DATE/d' -e '/junk/d' -e '/body/d' ") + inFile.string() + " > " + outFile.string()).c_str() );
 }
-#if 1
 // sends a request to a know host with predictable response.
 // captures the collector output into a file - collector usually writes to a pipe
 //      not a file and hence the file must exist and be empty before the start of this test
 // and compares to a references file
-TEST_CASE("proxy_whiteacorn", "[wa]")
+TEST_CASE_METHOD(ProxyFixture, "whiteacorn_post")
 {
-    boost::filesystem::path p{__FILE__};
-    // because the test definitions are in a different directory
-    boost::filesystem::path d = p.parent_path().parent_path() / "test_proxy";
-    boost::filesystem::path c = d / "whiteacorn_received";
-    boost::filesystem::path e = d / "whiteacorn_expected";
-    boost::filesystem::path f = d / "whiteacorn_received_fixed";
-    std::string collector_file_path = c.string();
-
-    boost::process::system("/bin/rm", collector_file_path);
-    boost::process::system("/usr/bin/touch", collector_file_path);
-
-    std::ofstream outfile(collector_file_path);
-
-    std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
-    std::vector<int> ports{443, 9443};
-    ForwardingHandler::configSet_HttpsPorts(ports);
-    ForwardingHandler::configSet_HttpsHosts(re);
-    HTTPServer* server_ptr;
-    auto proxy_func = [&server_ptr, &outfile](void* param) {
-        server_ptr = new HTTPServer([&outfile](boost::asio::io_service& io) {
-            CollectorBase* collector = new CollectorBase(io, outfile);
-            auto f = new ForwardingHandler(io, collector);
-            return f;
-        });
-        server_ptr->listen(9992);
-    };
-    std::thread proxy_thread(proxy_func, nullptr);
-    server_ptr->terminate();
-    proxy_thread.join();
-    SECTION("whiteacorn") {
-        boost::asio::io_service io;
-        auto vect = makeWhiteacornTestcases();
-        auto v = vect[0];
-        tp::TestcaseSPtr tcSPtr = makeWhiteacornTestcases()[0];
-        tp::PostTest post_test(io, tcSPtr);
-        post_test.exec();
-        io.run();
-        sleep(1);
-        removeVolatileValues(c, f);
-        std::string s_c = Helpers::fs::file_get_contents(c);
-        std::string s_f = Helpers::fs::file_get_contents(f);
-        std::string s_e = Helpers::fs::file_get_contents(e);
-        bool b_e_f = (s_e == s_f);
-        bool b_e_c = (s_e == s_c);
-        CHECK(s_e == s_f);
-
-    }
-    return;
+#if 1
+    boost::asio::io_service io;
+    // get a testcase
+    auto testcases = makeWhiteacornTestcases(
+            "http://whiteacorn/utests/echo/index.php",
+            this->m_proxy_scheme,
+            this->m_proxy_host,
+            this->m_proxy_port
+            );
+    tp::TestcaseSPtr tcSPtr = testcases[0];
+    // use the testcase to issue a post request
+    tp::PostTest post_test(io, tcSPtr);
+    post_test.exec();
+    io.run();
+    // wait for the dust to settle
+    sleep(1);
+    // now test that we got the expected result
+    removeVolatileValues(m_received, m_received_fixed);
+    std::string s_c = Helpers::fs::file_get_contents(m_received);
+    std::string s_f = Helpers::fs::file_get_contents(m_received_fixed);
+    std::string s_e = Helpers::fs::file_get_contents(this->expectedFilePathForTest("whiteacorn"));
+    bool b_e_f = (s_e == s_f);
+    bool b_e_c = (s_e == s_c);
+    CHECK(s_e == s_f);
 }
+#endif
+#if 1
+TEST_CASE_METHOD(ProxyFixture, "curl_get")
+{
+    boost::process::system("/usr/bin/curl", "-x", "localhost:9992", "http://whiteacorn.com");
+    std::string s_c = Helpers::fs::file_get_contents(m_received);
+    std::string s_f = Helpers::fs::file_get_contents(m_received_fixed);
+    std::string s_e = Helpers::fs::file_get_contents(this->expectedFilePathForTest("curl_get"));
+    bool b_e_f = (s_e == s_f);
+    bool b_e_c = (s_e == s_c);}
 #endif
 
 #if 0

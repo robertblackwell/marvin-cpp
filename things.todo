@@ -10,3 +10,9 @@ Intergration test:
  ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
 Bugs:
   ☐ not handling non-existence of connection ehader correctly when preparing upstream request
+Logging:
+  ☐ is too complicated - try using the model from the node addin
+Exceptions and Error checking:
+  ☐ try taking the model from x509 and importing it into this project
+Collector:
+  ☐ should not be a singleton. Should also take an open ofstream

@@ -12,9 +12,11 @@ CONNECTION : Keep-Alive, TE
 TE : deflate, gzip, chunked, trailer
 ETAG : 1928273tefadseercnbdh
 CONTENT-LENGTH : 12
-
+Body: 
+012345678956
 RESPONSE : ========
 HTTP/1.1 200 OK
+DATE : Tue, 25 Feb 2020 04:42:31 GMT
 SERVER : Apache/2.4.37 (Unix) PHP/7.3.10
 X-POWERED-BY : PHP/7.3.10
 CONTENT-LENGTH : 866
@@ -22,6 +24,7 @@ CONTENT-TYPE : text/html; charset=UTF-8
 CONNECTION : CLOSE
 {
     "req": {
+        "junk": "just to show got here012345678956",
         "method": "POST",
         "uri": "",
         "headers": {
@@ -35,6 +38,7 @@ CONNECTION : CLOSE
             "CONNECTION": "CLOSE",
             "TE": ""
         },
+        "body": "012345678956"
     },
     "xtra": {
         "connection_handler_uuid": "2121212121121221",

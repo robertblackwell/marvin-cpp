@@ -9,8 +9,8 @@
 
 #include "rb_logger.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "server_runner.hpp"
-#include "tp_proxy_runner.hpp"
+#include "collector_base.hpp"
+
 
 int main( int argc, char* argv[] )
 {

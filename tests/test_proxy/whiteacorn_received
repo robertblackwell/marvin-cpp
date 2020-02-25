@@ -1,0 +1,425 @@
+------------------------------------------------
+HOST: http://whiteacorn
+REQUEST : =========
+POST http://whiteacorn/utests/echo/index.php HTTP/1.1
+HOST : whiteacorn
+USER-AGENT : Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50
+ACCEPT : text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1
+ACCEPT-LANGUAGE : en
+ACCEPT-CHARSET : iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1
+ACCEPT-ENCODING : deflate, gzip, x-gzip, identity, *;q=0
+CONNECTION : Keep-Alive, TE
+TE : deflate, gzip, chunked, trailer
+ETAG : 1928273tefadseercnbdh
+CONTENT-LENGTH : 12
+Body: 
+012345678956
+RESPONSE : ========
+HTTP/1.1 200 OK
+DATE : Tue, 25 Feb 2020 02:55:03 GMT
+SERVER : Apache/2.4.37 (Unix) PHP/7.3.10
+X-POWERED-BY : PHP/7.3.10
+CONTENT-LENGTH : 866
+CONTENT-TYPE : text/html; charset=UTF-8
+CONNECTION : CLOSE
+{
+    "req": {
+        "junk": "just to show got here012345678956",
+        "method": "POST",
+        "uri": "",
+        "headers": {
+            "HOST": "whiteacorn",
+            "USER-AGENT": "Opera\/9.80 (X11; Linux x86_64; Edition Next) Presto\/2.12.378 Version\/12.50",
+            "ACCEPT": "text\/html, application\/xml;q=0.9, application\/xhtml xml, image\/png, image\/jpeg, image\/gif, image\/x-xbitmap, *\/*;q=0.1",
+            "ACCEPT-LANGUAGE": "en",
+            "ACCEPT-CHARSET": "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1",
+            "ACCEPT-ENCODING": "identity",
+            "CONTENT-LENGTH": "12",
+            "CONNECTION": "CLOSE",
+            "TE": ""
+        },
+        "body": "012345678956"
+    },
+    "xtra": {
+        "connection_handler_uuid": "2121212121121221",
+        "request_handler_uuid": "12121212121212",
+        "fd": 99
+    }
+}
+------------------------------------------------
+------------------------------------------------
+HOST: http://whiteacorn.com
+REQUEST : =========
+GET http://whiteacorn.com/ HTTP/1.1
+HOST : whiteacorn.com
+USER-AGENT : curl/7.64.1
+ACCEPT : */*
+PROXY-CONNECTION : Keep-Alive
+Body: 
+
+RESPONSE : ========
+HTTP/1.1 200 OK
+SERVER : nginx
+DATE : Tue, 25 Feb 2020 02:55:11 GMT
+CONTENT-TYPE : text/html; charset=UTF-8
+VARY : Accept-Encoding
+CONNECTION : CLOSE
+CONTENT-LENGTH : 18794
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	
+	<meta name="description" content="The overlanding blog of Nina and Robert Blackwell">
+	<meta name="author" content="Robert Blackwell and Brendon Blackwell">
+	
+	<link rel="icon" href="/skins/rtw/images/favicon.ico">
+
+	<title>whiteacorn - overlanding blog</title>
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+
+		<link rel="stylesheet" href="/skins/site/dist/combined.8ce5169e5b7db0660001a6b7dd6ce5c2.css">
+
+		<script type="text/javascript" src="/skins/site/dist/bundle.3b0270a3611214d197fbc098c7b112a9.js"></script>
+
+  </head>
+
+<body class="home">
+    
+	
+	<div id="wa-top-bar" class="container">
+					
+<!-- using new templates V2 -->
+
+		<nav id="wa-top-nav" class="navbar navbar-inverse " >
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">
+					<img id='whiteacorn-logo' 
+						src='/skins/rtw/images/waLogo.png' > 
+				</a>
+				<button type ="button" class ="clealrfix navbar-toggle" data-toggle ="collapse" 
+																data-target ="#navbarToCollapse"  > 
+					<div id="button-label">MAIN MENU</div>
+					<div id="button-icon">
+						<span class ="sr-only collapse" >Toggle header </span > 
+						<span class ="icon-bar" > </span > 
+						<span class ="icon-bar" > </span > 
+						<span class ="icon-bar" > </span > 
+					</div>
+				</button >
+			</div>
+					
+		<div id="navbarToCollapse" class="collapse navbar-collapse">
+			<ul id="navbar" class='nav navbar-nav navbar-right'>
+			<li>
+				<a id="menu-site_home"  href=/ 
+					data-tooltip="U2l0ZSBob21l"
+					data-placement='bottom'
+				> 
+					Home
+				</a>
+			</li><li class="dropdown">
+	<a href="/" data-toggle="dropdown" class='selected dropdown-toggle'
+		data-tooltip="RHJvcCBkb3duIG1lbnUgLSBzZWxlY3QgYW4gYWR2ZW50dXJl"
+		data-placement='se'
+	>
+		Adventures<b class="caret"></b>
+	</a>
+	<ul class="dropdown-menu">
+				<li data-tooltip="Q2hyaXN0bWFzIDIwMTkgQW50YXJjdGljIENydWlzZQ==">
+			<a href="/home/antarctica" data-tooltip="Q2hyaXN0bWFzIDIwMTkgQW50YXJjdGljIENydWlzZQ==">Antarctica</a>	
+		</li>		<li data-tooltip="T3VyIEF1c3RyYWxpYW4gQWR2ZW50dXJl">
+			<a href="/home/aust" data-tooltip="T3VyIEF1c3RyYWxpYW4gQWR2ZW50dXJl">Australia</a>	
+		</li>		<li data-tooltip="VG9wIHRvIEJvdHRvbSBvZiB0aGUgQW1lcmljYXMgYW5kIHJldHVybg==">
+			<a href="/home/theamericas" data-tooltip="VG9wIHRvIEJvdHRvbSBvZiB0aGUgQW1lcmljYXMgYW5kIHJldHVybg==">The Americas</a>	
+		</li>		<li data-tooltip="Rml2ZSB5ZWFycyBhcm91bmQgdGhlIHdvcmxk">
+			<a href="/home/rtw" data-tooltip="Rml2ZSB5ZWFycyBhcm91bmQgdGhlIHdvcmxk">Round The World</a>	
+		</li>		<li data-tooltip="QWR2ZW50dXJlcyB3aXRoIG91ciBFYXJ0aFJvYW1lcg==">
+			<a href="/home/er" data-tooltip="QWR2ZW50dXJlcyB3aXRoIG91ciBFYXJ0aFJvYW1lcg==">Earthroamer</a>	
+		</li>		<li data-tooltip="TW90b3JjeWNsZSBBZHZlbnR1cmVz">
+			<a href="/home/bmw11" data-tooltip="TW90b3JjeWNsZSBBZHZlbnR1cmVz">Motorcycle</a>	
+		</li>
+	</ul>
+</li>			<li>
+				<a id="menu-map"  href=/map 
+					data-tooltip="QWxsIHRoZSBwbGFjZXMgd2UgaGF2ZSBiZWVuIHNpbmNlIDIwMDk="
+					data-placement='bottom'
+				> 
+					Map
+				</a>
+			</li>			<li>
+				<a id="menu-photos"  href=/photos 
+					data-tooltip="U2VlIGFsbCBvdXIgcGhvdG9z"
+					data-placement='bottom'
+				> 
+					Photos
+				</a>
+			</li>			<li>
+				<a id="menu-contact"  href=/contact 
+					data-tooltip="Q29udGFjdCB1cyBieSBlbWFpbCBvciBsZWF2ZSBhIG1lc3NhZ2U="
+					data-placement='bottom'
+				> 
+					Contact
+				</a>
+			</li>			<li>
+				<a id="menu-subscribe"  href=/subscribe 
+					data-tooltip="U3Vic2NyaWJlIHRvIG91ciBzaXRlLCBnZXQgZW1haWwgbm90aWZpY2F0aW9uIG9mIG5ldyBlbnRyaWVzLCBvciBvdXIgUlNTIGZlZWQg"
+					data-placement='bottom'
+				> 
+					Subscribe
+				</a>
+			</li>
+			</ul>
+		</div>                
+	</nav><!-- grid -->
+
+<!-- using new templates V2 -->
+			</div>
+	
+				<div id="banner" class="wa-banner" data-width='960' data-height='300'>
+							<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-1.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-10.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-11.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-12.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-13.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-14.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-15.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-2.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-3.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-4.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-5.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-6.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-7.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-8.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>			<img src="http://whiteacorn.com/data/antarctica/banners/antarctica-2/Images/pict-9.jpg" class="image-responsive" data-width='1920' data-height='600' style="display:none"/>
+			</div>		
+		
+	<section id="intro">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-xs-12">
+				<div class="text-center xcol-12 horizontal-bar top-bar">
+					<h3>About This Site</h3>
+				</div>
+				<div class="intro-item">
+					<div>
+	<p>This website records the overlanding and other travels of Nina and Rob Blackwell and covers a period from March 2009 to the present. The images above are just a taste of the photographic record of our travels. <a href="/photos">Click here</a> to see all of our travel photos.</p>
+	<p>Most of the travel recorded here has been vehicle based, and undertaken as <strong>overlanding</strong> adventures. Over the years we have had a number of vehicles and we have grouped our travels into <strong>Adventures</strong> based on the vehicle used.</p>
+	<p>Below you will find a summary of each of the different adventures and links to detailed pages about those adventures.</p>
+	<p><a href="/map">Clicking here</a> will take you to a consolidated map of all out adventures. Each marker on the map represents a 'camping' spot where we spent at least one night, and the different adventures are represented by different colors.</p>
+	<p>Finally we hope and plan that the adventures are not yet over.</p>
+	<p>Hence when we are exgaged in yet another adventure the section below entitled <strong>The Latest News</strong> will have summaries of the latest posts from which readers can link to the current adventure and all posts related to that adventure.</p>
+</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="main-content">
+	<div class="container">
+		<div class="row adventures xno-gutter equal">
+			<div id="adv-column" class="col-md-4 col-sm-12">
+								<div class="text-center horizontal-bar top-bar">
+					<h3>Our Adventures</h3>
+				</div>
+									<div class="adv-item-wrap clearfix">
+						
+<div class="adv-item adv-wov-antarctica" >
+	<div>
+		<h2>Antarctica</h2>
+	</div>
+	<img class="adv-map" src="/skins/site/image-prep/antarctica/emperor-penguin.png" style="max-height:120px;">
+	<p>We will end 2019 with a cruise to the Antarctic
+		aboard the <a href="https://www.auroraexpeditions.com.au/ship/greg-mortimer">Greg Mortimer</a>.
+		This is a new ship, having just completed its maiden voyage and is named after a famous (in Australia at least) mountaineer and antarctic traveler.
+	<a href="/home/antarctica">..... click to see more.</a></p>
+</div>
+
+					</div>
+									<div class="adv-item-wrap clearfix">
+						
+<div class="adv-item adv-australia" >
+	<div>
+		<h2>Australia</h2>
+	</div>
+	<img class="adv-map" src="/skins/site/image-prep/australia-final.png" style="max-height:120px;">
+	<p>Now that 2019 has arrived we feel at liberty to announce that our next adventure will take place in Australia 
+	<a href="/home/aust">..... click to see more.</a></p>
+</div>
+					</div>
+									<div class="adv-item-wrap clearfix">
+						
+<div class="adv-item adv-theamericas clearfix">
+	<div>
+		<h2>The Americas</h2>
+	</div>
+	<img class="adv-map" src="/skins/site/image-prep/north-south-america2.png" style="max-width:120px;">
+	<!-- <div class="col-12"> -->
+		<!-- <h2>The Americas</h2> -->
+	<!-- </div> -->
+	<p>This is the earliest adventure recorded on this website and started in March of 2009. At the time we were novices at this <strong>overlanding</strong> thing and really had no idea what we were getting ourselves into. As it turned out
+	.... <a href="/home/theamericas"> read more </a></p>
+</div>
+					</div>
+									<div class="adv-item-wrap clearfix">
+						<div class="adv-item adventure-rtw">
+	<div>
+		<h2>Around the World</h2>
+	</div>
+	<img  class="adv-map" src="/skins/site/image-prep/map-world-307405-2.png" style="max-width:190px;">
+	<p>Our longest overlanding adventure occupying approximately 5 years and taking us around the world from the far East of Canada, across North America, the Pacific Ocean to Eastern Russia, then through the Asian continent to explore Europe and then finally 
+		.... <a href="/home/rtw">read more </a></p>
+	</div>
+
+					</div>
+									<div class="adv-item-wrap clearfix">
+						<div class="adv-item">
+	<div>
+		<h2>Travels with our Earthroamer</h2>
+	</div>
+	<a class="map-link" href="/home/er">
+	<img  class="adv-map" src="/skins/site/image-prep/north-america-v2.png" style="max-width:120px;">
+	</a>
+	<p>After completing our <strong>The Americas</strong> adventure we mistakenly believed that we would not undertake any more vehicle based travel outside North America and with that mind set, in 2011 just after OverlandExpo, we purchased a used 2008 Earthroamer. However as plans  
+
+	.... <a href="/home/er">read more</a></p>
+</div>
+
+					</div>
+									<div class="adv-item-wrap clearfix">
+						
+<div class="adv-item adventure-bmw11">
+	<div>
+		<h2>Motorcycle Adventures</h2>
+	</div>
+	<img  class="adv-map" src="/skins/site/image-prep/bmw-yellow-final.png" style="max-width:120px;">
+	<p>In 2015 on our annual return to the US, I Robert,  decided to get myself a motorcycle license (my first ever experiences with motos) and a year later (again on our annual return to the US) I bought my first motorcycle a 2011 BMW1200 GS. That same year that motorcycle presented me with a broken leg and thats why we did not return to Europe that year.
+	It was probably inevitable
+	.... <a href="/home/bmw11"> click this link to read more.</a></p>
+</div>
+					</div>
+				
+			</div>
+			<div id="latest-column" class="col-md-8 col-sm-12">
+				<div class="text-center xcol-12 horizontal-bar">
+					<h3>The Latest News</h3>
+				</div>
+				<div id="item-wrap" class="ckearfix" xstyle="background-color:yellow;">
+					
+		<!-- render_post-->
+		<div class='item-summary clearfix' title=''>
+			<div class='entry clearfix'>
+				<div class="header">
+					<h3>A Sojourn in Lima Peru</h3>
+					<span>Posted Monday 20th Jan, 2020</span>
+				</div>
+				<div class="body clearfix">
+					<img src="/data/antarctica/content/2020lima/Thumbnails/pict-001.jpg">
+					<p>From Ushuaia we flew via Buenos Aires to Lima, Peru. We had an Airbnb apartment in one of the sea side areas of Lima
+		called <a href="https://en.wikipedia.org/wiki/Miraflores_District,_Lima">Miraflores</a>. A family reunion was planned with our eldest son coming in from his home in Berlin.
+		Lima generally and Miraflores in particular is a pleasant place to spend some time in the early part of the year,
+		particularly if your home is in the Pacific NW. Lima has a yearly temperature range of 60°F to 80°F,
+		and an annual average rainfall of 16mm (0.67 imches). So it is warm without being hot and forget rain.
+		We have visited a number of times in recent years.
+		</p>
+					<a href=/posts/antarctica/2020lima? class='item-link'>&nbsp;...click/tap to read the full post</a>
+				</div>
+			</div>
+		</div>
+		<!-- render_entry-->
+		<div class='item-summary clearfix'>
+			<div class='entry clearfix'>
+				<div class="header">
+					<h3>Antarctic Wrap Up (Las Hayas Hotel, Ushuaia)</h3>
+						<span>
+							Journal entry for Sunday 29th Dec, 2019 
+							(day 19, miles 0)
+						</span>
+				</div>
+				<div class="body clearfix">
+					<img src="/data/antarctica/content/191229/Thumbnails/pict-004.jpg">
+					<p><span style="display:block">Looking back on our previous post I am more than a little surprised by the low key tone 
+		of my description of our collision. Maybe it was the fact that it was a reef and not an Iceberg 
+		that kept our reactions muted, who knows. But in any case as time passed 
+		Nina began to focus on the question of </span>
+
+			<span style="font-weight:bold; font-size:14px; font-style: italic; color:red; display:block; padding-top:20px; padding-bottom:20px; text-align: center;">
+				"How could this brand new, purpose-built, ice-class, polar expedition ship hit a submerged rock?"
+			</span>
+
+		<span style="display:block">We never did get an answer to that question, but we did arrive back in port a day earlier than planned and got an unexpected bus tour of what the locals call the National Park.</span>
+		</p>
+					<a href=/posts/antarctica/191229? class='item-link'>&nbsp;...click/tap to read the full post</a>
+				</div>
+			</div>
+		</div>
+		
+		<!-- render_entry-->
+		<div class='item-summary clearfix'>
+			<div class='entry clearfix'>
+				<div class="header">
+					<h3>The last landing (Elephant Island, Antarctica)</h3>
+						<span>
+							Journal entry for Thursday 26th Dec, 2019 
+							(day 16, miles 0)
+						</span>
+				</div>
+				<div class="body clearfix">
+					<img src="/data/antarctica/content/191226/Thumbnails/pict-001.jpg">
+					<p>This morning we made a landing on Elephant Point, which is a small outcropping on Livingston Island, which in turn is part of the South Shetland group of Islands. The point was once a camping and hunting location back in the days of the seal oil trade. Today there is only some remains of an old sealers hut. There is almost no snow on this piece of land so that animals are more prevelant. In the photos below you will see a number of groups of male Elephant Seals which from time to time get involved in pushing matches to test their strength, an interesting demonstration of the way these guys fight. There are also some large colonies of Gentoo penguins many of them nursing young.</p>
+					<a href=/posts/antarctica/191226? class='item-link'>&nbsp;...click/tap to read the full post</a>
+				</div>
+			</div>
+		</div>
+		
+		<!-- render_entry-->
+		<div class='item-summary clearfix'>
+			<div class='entry clearfix'>
+				<div class="header">
+					<h3>Christmas Day (Enterprise Island, Antarctica)</h3>
+						<span>
+							Journal entry for Wednesday 25th Dec, 2019 
+							(day 15, miles 0)
+						</span>
+				</div>
+				<div class="body clearfix">
+					
+					<p>Christmas day offered no rest from the excitement of cruising amongst the ice and animals in our trusty little Zodiacs. This time the location was Foyn Harbor, Enterprise Island which in addition to providing a great display of ice and animals is the last home of the Norwegian Whale Factory ship the 
+			<em>Governoren</em> which caught fire after spending an entire summer harvesting whale oil.
+		In response to the fire the Captain ran the burning ship aground thereby saving all of the 85 crew but loosing the entire summers harvest.  </p>
+					<a href=/posts/antarctica/191225? class='item-link'>&nbsp;...click/tap to read the full post</a>
+				</div>
+			</div>
+		</div>
+		
+		<!-- render_entry-->
+		<div class='item-summary clearfix'>
+			<div class='entry clearfix'>
+				<div class="header">
+					<h3>A Post Office (Neko Harbor, Antarctica)</h3>
+						<span>
+							Journal entry for Tuesday 24th Dec, 2019 
+							(day 14, miles 0)
+						</span>
+				</div>
+				<div class="body clearfix">
+					<img src="/data/antarctica/content/191224/Thumbnails/pict-001.jpg">
+					<p>This morning we made a landing at Neko Harbor a small beach in Andvord Bay on the west side of the Antarctic Continent. The harbor is named after a Scottish Whaling ship which operated in the area between 1911 and 1924. We landed on the small beach south of a huge glacier, observed the Gentoo penguin colonies that occupy the small  number of rock out croppings, and walked up a large snow slope on the southern side of the harbor. For the more adventurous of the guests this snow slope offered the opportinty to do a  bit of 
+		<em>bum-sliding</em> down the steep face of the snow ridge. Nina, my guardian angle reminded me that 
+		this activity was probably not for me as I am still only 6 weeks into recovery from neck surgery.</p>
+					<a href=/posts/antarctica/191224? class='item-link'>&nbsp;...click/tap to read the full post</a>
+				</div>
+			</div>
+		</div>
+						</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+	
+			<footer id="footer" class="container clearfix">
+			<div class="credits clearfix row">
+				<div>Copyright whiteacorn.com 2012 </div>
+				<div>Brendon Blackwell and Robert Blackwell</div>
+				<div>V7.0.6-0-bd039b(master)</div>
+			</div>
+		</footer>
+	
+</body>
+</html>
+------------------------------------------------

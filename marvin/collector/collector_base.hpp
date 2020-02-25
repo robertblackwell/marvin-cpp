@@ -14,15 +14,16 @@
 #include "http_server.hpp"
 #include "request_handler_base.hpp"
 #include "request.hpp"
+#include "i_collector.hpp"
 #include "forwarding_handler.hpp"
 
-class CollectorBase
+class CollectorBase: public ICollector
 {
     public:
-        static bool             _firstTime;
-        static CollectorBase*   _instance;
-    
-        static CollectorBase* getInstance(boost::asio::io_service& io);
+        CollectorBase(boost::asio::io_service& io);
+        // CollectorBase(boost::asio::io_service& io, boost::filesystem::path file_path);
+        CollectorBase(boost::asio::io_service& io, std::ostream& out_stream);
+
         /**
         ** Delete copy constructors
         **/
@@ -36,7 +37,6 @@ class CollectorBase
         void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::Http::MessageBaseSPtr resp);
     
     private:
-        CollectorBase(boost::asio::io_service& io);
         /**
         ** This method actually implements the collect function but run on a dedicated
         ** strand. Even if this method does IO-wait operations the other thread will
@@ -49,12 +49,9 @@ class CollectorBase
             Marvin::Http::MessageBaseSPtr resp);
 
         boost::asio::io_context::strand         m_my_strand;
-        boost::asio::io_service&    m_io;
-        std::ofstream               m_out_pipe;
-        bool                        m_pipe_open;
+        boost::asio::io_service&                m_io;
+        std::ostream&                           m_output_stream;
     
-        static bool                 s_first_time;
-        static CollectorBase*       s_instance;
 };
 
 

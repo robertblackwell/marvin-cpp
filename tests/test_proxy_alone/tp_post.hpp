@@ -1,5 +1,5 @@
-#ifndef proxy_post_hpp
-#define proxy_post_hpp
+#ifndef tsc_post_hpp
+#define tsc_post_hpp
 
 #include <iostream>
 #include <istream>

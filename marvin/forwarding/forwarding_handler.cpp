@@ -130,7 +130,7 @@ void ForwardingHandler::handleConnect(
     m_host = tmp_u.host;
     m_port = tmp_u.port;
     m_done_callback = done;
-//    m_collector = TCollector::getInstance(m_io);
+
     ConnectAction action = p_determine_connection_action(m_host, m_port);
 
     switch(action){

@@ -61,6 +61,10 @@ file(GLOB HEADERS
 	server/request_handler.hpp 
 	server/server_connection_manager.hpp 
 	server/server_context.hpp
+
+	helpers/helpers_fs.hpp
+	helpers/error.hpp
+	helpers/macros.hpp
 	)
 	# include/forwarding_handler.hpp 
 	# include/forwarding_handler.ipp 
@@ -127,6 +131,9 @@ set(SOURCES ${EXTSOURCES}
 	server/connection_handler.cpp 			
 	server/http_server.cpp 					
 	server/server_connection_manager.cpp 	 
+
+	helpers/helpers_fs.cpp
+	helpers/error.cpp
 	)
 	# server/server_context.cpp 				
 	# client/request.cpp  X
@@ -163,6 +170,7 @@ set(HEADER_DIRS
 	${PROJECT_DIR}/external_src
 	${PROJECT_DIR}/external_src/uri
 	${PROJECT_DIR}/external_src/CxxUrl
+	${PROJECT_DIR}/marvin/helpers
 	)
 
 # set(HEADER_LIST "${CertificateLibrary_SOURCE_DIR}/include/cert/x509/cert.hpp")

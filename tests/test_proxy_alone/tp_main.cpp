@@ -9,58 +9,49 @@
 #include "forwarding_handler.hpp"
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-
+#include "collector_base.hpp"
 #include "rb_logger.hpp"
+
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "../test_proxy/tp_testcase.hpp"
 #include "../test_proxy/tp_proxy_tests.hpp"
+#include "proxy_fixture.hpp"
 
 int main( int argc, char* argv[] )
 {
-    LogTrace("hello");
-    VLogDebug("hello");
-    std::cout << "in main" << std::endl;
-    RBLogging::enableForLevel(LOG_LEVEL_WARN);
+
+    ProxyFixture fixture;
     boost::filesystem::path p{__FILE__};
-    boost::filesystem::path d = p.parent_path();
-    boost::filesystem::path c = d / "whiteacorn_received";
-    boost::filesystem::path e = d / "whiteacorn_expected";
-    boost::filesystem::path f = d / "whiteacorn_received_fixed";
-    std::string collector_file_path = c.string();
 
-    boost::process::system("/bin/rm", collector_file_path);
-    boost::process::system("/usr/bin/touch", collector_file_path);
+    boost::process::system("/bin/rm", fixture.m_collector_file_path);
+    boost::process::system("/usr/bin/touch", fixture.m_collector_file_path);
 
-    PipeCollector::configSet_PipePath(collector_file_path);
+    std::ofstream outfile(fixture.m_collector_file_path);
+
     std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
     std::vector<int> ports{443, 9443};
     ForwardingHandler::configSet_HttpsPorts(ports);
     ForwardingHandler::configSet_HttpsHosts(re);
     HTTPServer* server_ptr;
-    auto proxy_func = [&server_ptr](void* param) {
-        server_ptr = new HTTPServer([](boost::asio::io_service& io){
-            std::cout << "lambda creating HttpServer" << std::endl;
-            PipeCollector* pc = PipeCollector::getInstance(io);
-            std::cout << "lambda creating HttpServer after pipe collector getInstance" << std::endl;
-            auto f = new ForwardingHandler(io, pc);
-            std::cout << "lambda creating HttpServer after create forwarding handler" << std::endl;
+    auto proxy_func = [&server_ptr, &outfile](void* param) {
+        server_ptr = new HTTPServer([&outfile](boost::asio::io_service& io) {
+            CollectorBase* collector = new CollectorBase(io, outfile);
+            auto f = new ForwardingHandler(io, collector);
             return f;
         });
         server_ptr->listen(9992);
     };
     std::thread proxy_thread(proxy_func, nullptr);
-    
-    auto catch_func = [argv, argc](void* param) {
-        char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
-        int _argc = 2;
-        int result = Catch::Session().run( argc, argv );
-    };
 
-    std::thread catch_thread(catch_func, nullptr);
 
-    catch_thread.join();
+    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
+    int _argc = 2;
+    int result = Catch::Session().run( argc, argv );
+
     server_ptr->terminate();
     proxy_thread.join();
+
+    return result;
 }
 
