@@ -176,7 +176,7 @@ void HTTPServer::terminate()
     if (!err){
         LogInfo("got a connection", connHandler->nativeSocketFD());
         /// at this point the native socket fd is assigned
-        /// so for debug purposes we can stash if in the
+        /// so for debug purposes we can stash it in the
         /// fd_inuse list
        
         m_connectionManager.registerConnectionHandler(connHandler);

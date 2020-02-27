@@ -1,0 +1,9 @@
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+set(TARGET test_proxy_manual)
+add_executable(${TARGET} 
+	tp_main_manual.cpp
+)
+target_include_directories(${TARGET} PUBLIC ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
+target_compile_features(${TARGET} PRIVATE cxx_std_17)
+target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
+

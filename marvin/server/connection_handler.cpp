@@ -148,7 +148,7 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
             // On read error do not call the handler - simply abort the request
             //
             this->p_handler_complete(err);
-    } else{
+    } else {
         if(m_reader->method() == HttpMethod::CONNECT ){
             LogWarn("CONNECT request");
              m_requestHandlerUnPtr->handleConnect(m_server_context, m_reader, m_writer, m_connection, [this](Marvin::ErrorType& err, bool keepAlive){

@@ -24,7 +24,7 @@ using ip::tcp;
 using system::error_code;
 /**
 * \ingroup SocketIO
-* \brief Factor fuunction to construct either TCP or SSL socket based on inpput arguments
+* \brief Factor function to construct either TCP or SSL socket based on inpput arguments
 */
 ISocketSPtr socketFactory(
             bool serverFlag,
@@ -35,7 +35,7 @@ ISocketSPtr socketFactory(
 );
 /**
 * \ingroup SocketIO
-* \brief Factor fuunction to construct either TCP or SSL socket based on inpput arguments
+* \brief Factor function to construct either TCP or SSL socket based on inpput arguments
 */
 ISocketSPtr socketFactory(
             bool serverFlag,

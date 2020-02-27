@@ -35,11 +35,17 @@ using boost::asio::streambuf;
 using namespace Marvin;
 using namespace Marvin::Http;
 
-Client::Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port)
-: m_io(io), m_scheme(scheme), m_server(server), m_port(port)
+Client::Client(
+    boost::asio::io_service& io, 
+    std::string scheme, 
+    std::string server, 
+    std::string port
+): m_io(io), m_scheme(scheme), m_server(server), m_port(port)
 {}
-Client::Client(boost::asio::io_service& io, Marvin::Uri uri)
-: m_io(io), m_scheme(uri.scheme()), m_server(uri.server()), m_port(std::to_string(uri.port()))
+Client::Client(
+    boost::asio::io_service& io, 
+    Marvin::Uri uri
+): m_io(io), m_scheme(uri.scheme()), m_server(uri.server()), m_port(std::to_string(uri.port()))
 {
 
 }
@@ -50,7 +56,10 @@ Client::Client(boost::asio::io_service& io, Marvin::Uri uri)
 //    setupUrl(url);
 //}
 
-Client::Client(boost::asio::io_service& io, ISocketSPtr conn) : m_io(io)
+Client::Client(
+    boost::asio::io_service& io, 
+    ISocketSPtr conn
+): m_io(io)
 {
     m_conn_shared_ptr = conn;
 }

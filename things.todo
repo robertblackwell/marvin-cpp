@@ -1,18 +1,42 @@
+Include organization:
+  ☐ modify project files so that all includes are .... include <marvin/.......hpp>. This will require changes to cmake files, xcode project, lots of source files and before can do this need to reconcile namepaces with directory structure.
 Tests convert to cmake:
   ☐ test_client_server, test_proxy - needs to be done
 Tests:
   ☐ test_buffers does no CHECK/REQUIRE anything
   ☐ message parsing needs to be clearer and also test continuation of headers
-Test cleanup:
-  ☐ some etsts are still using the leading _varname naming scheme - fix
+  ☐ proxy tunnel test required in addition to proxy_manual
   ☐ reduntant and duplicate tests - for example test_reader and test_reader_mock are the same ; delete obsolete - unnecessary tests
-Intergration test:
  ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
+class property names cleanup:
+  ☐ some tests are still using the leading _varname naming scheme - fix
 Bugs:
-  ☐ not handling non-existence of connection ehader correctly when preparing upstream request
+  ☐ not handling non-existence of connection header correctly when preparing upstream request
 Logging:
   ☐ is too complicated - try using the model from the node addin
 Exceptions and Error checking:
   ☐ try taking the model from x509 and importing it into this project
-Collector:
-  ☐ should not be a singleton. Should also take an open ofstream
+Vendor:
+ ☐ change "deps" to vendor and automate the acquiring of dependencies lile libcert - partially done - do not have scripts
+ ☐ do something with dependencies that have currently just been copied as source such a http_parser, simple_buffer
+ ☐ consider re-orging the header files into an include directory
+Start work on SSL/TLS:
+ ☐ Issue - need test bed to work on MessageReader, MessageWrite and Client for https requests.
+ ☐ Issue - how to prevent duplication of the async_read and async_write code for the two flavors of sockets - possibly derive from a common abstract class
+ ☐ Plan
+   ☐ Objective - get a working Client for https requests.
+   ☐ SecureClient : make a new client cleed SecureClient based on existing non secure Client - that is because clients dont need to change to secure after creation.
+      ☐ the Connect call will do both connect and handshake, and writes will continue to do connect/handshake if not already connected.
+      ☐ the constructor will need to take additional paramters for access to a root certificate store. Dont want to use the default as want to ensure the store is in memory
+   ☐ SecureClient Dependencies. 
+       ☐ TCPConnection should probably become Connection as it will now be multi purpose http/https
+       ☐ Connection::becomeSecureClient(X509_Store* rootbundle) - must be able to upgrade to secure at least to be a secure client. New method
+       ☐ Connection::becomeSecureServer(Identity serverIdentity) - will not be needed by SecureClient but will be required for the proxy
+   ☐ ISocket will all need becomeSecureClient() becomeSecureServer() methods as this absract class is the interface to Connection. 
+   ☐ MessageReader MessageWriter: Probably do not need to be provided with these methods as these objects are constructed with connected ISockets.
+   ☐ Consider doing away with ISocket all together - not sure what value it adds.
+   ☐ Root certificate store, MitmBuild and X509 Identity - need a way of encapsulating and passing this info around 
+   ☐ Integrate libcert into marvin
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+Archive:
+ ✔ should not be a singleton. Should also take an open ofstream @done (20-02-25 04:33) @project(Collector)

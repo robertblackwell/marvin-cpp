@@ -153,6 +153,10 @@ private:
     boost::asio::io_service&        m_io;
     boost::asio::ip::tcp::resolver  m_resolver;
     boost::asio::ip::tcp::socket    m_boost_socket;
+    #if 0
+    bool                            m_ssl_active;
+    boost::asio::ssl::socket        m_boost_ssl_socket;
+    #endif
     ConnectCallbackType             m_connect_cb;
     bool                            m_closed_already;
     Timeout                         m_timeout;
