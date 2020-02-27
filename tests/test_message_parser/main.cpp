@@ -5,8 +5,8 @@
 #include <boost/asio.hpp>
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-#include "message.hpp"
-#include "parser.hpp"
+#include <marvin/http/message.hpp>
+#include <marvin/http/parser.hpp>
 
 /**
 * A simple implementation of a concrete working http parser. Required to test the abstract Parser class.

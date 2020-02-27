@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
-#include "json.hpp"
-#include "forward_helpers.hpp"
-#include "server_connection_manager.hpp"
+#include <marvin/external_src/json.hpp>
+#include <marvin/forwarding/forward_helpers.hpp>
+#include <marvin/server/server_connection_manager.hpp>
 #include "bf_post.hpp"
 
 using namespace Marvin;

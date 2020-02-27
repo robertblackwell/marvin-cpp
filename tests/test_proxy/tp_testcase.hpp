@@ -13,10 +13,10 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
-#include "buffer.hpp"
-#include "client.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/client/client.hpp>
 
 namespace tp {
     class Testcase;

@@ -3,9 +3,9 @@
 #include <string>
 #include <map>
 #include <sstream>
-#include "buffer.hpp"
-#include "http_parser.h"
-#include "boost_stuff.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/external_src/http_parser.h>
+#include <marvin/include/boost_stuff.hpp>
 
 /**
 * \ingroup HttpMessage

@@ -7,8 +7,8 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "marvin_error.hpp"
-#include "http_header.hpp"
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/http/http_header.hpp>
 
 typedef std::vector<std::string> TestcaseType;
 typedef std::string TestcaseResultType;

@@ -4,15 +4,15 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
-#include "tcp_connection.hpp"
-#include "socket_factory.hpp"
-#include "message_reader.hpp"
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/connection/socket_factory.hpp>
+#include <marvin/message/message_reader.hpp>
 #include "t_client.hpp"
 
 

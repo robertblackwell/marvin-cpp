@@ -8,11 +8,11 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "collector_base.hpp"
+#include <marvin/collector/collector_base.hpp>
 
 bool testPipeReaderExists(char* pipeName)
 {

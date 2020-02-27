@@ -9,10 +9,10 @@
 #include <iostream>
 #include <cassert>
 #include <boost/algorithm/string/case_conv.hpp>
-#include "http_header.hpp"
+#include <marvin/http/http_header.hpp>
 
-#include "rb_logger.hpp"
-#include "parser.hpp"
+#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/http/parser.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 

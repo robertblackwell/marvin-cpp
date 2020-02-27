@@ -15,8 +15,8 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "marvin_error.hpp"
-#include "http_header.hpp"
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/http/http_header.hpp>
 /**
 * Class represents the reult of a single testcase message
 */

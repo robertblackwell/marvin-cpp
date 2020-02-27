@@ -15,17 +15,17 @@
 #include <cassert>
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wall"
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 #pragma clang diagnostic pop
-#include "url.hpp"
-#include "UriParser.hpp"
-#include "rb_logger.hpp"
+#include <marvin/external_src/CxxUrl/url.hpp>
+#include <marvin/external_src/uri/UriParser.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "message_reader.hpp"
-#include "socket_factory.hpp"
-#include "request.hpp"
-#include "client.hpp"
-#include "tcp_connection.hpp"
+#include <marvin/message/message_reader.hpp>
+#include <marvin/connection/socket_factory.hpp>
+#include <marvin/client/request.hpp>
+#include <marvin/client/client.hpp>
+#include <marvin/connection/tcp_connection.hpp>
 
 
 using boost::asio::ip::tcp;

@@ -6,14 +6,14 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
 #include "test_runner.hpp"
-#include "tcp_connection.hpp"
-#include "message_reader.hpp"
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/message/message_reader.hpp>
 
 class TServer;
 typedef std:: shared_ptr<TServer> TServerSPtr;

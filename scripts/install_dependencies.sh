@@ -26,7 +26,7 @@ project_name=$(basename $project_dir)
 
 # echo $project_name $project_dir
 
-if [ $project_name != "x509" ] ; then
+if [ $project_name != "marvin++" ] ; then
 
 	echo "You are in the wrong directory : [" ${project_name} "] should be at project root "
 	exit 1
@@ -58,6 +58,7 @@ ${script_dir}/install_catch2_v2.11.1.sh $1
 ${script_dir}/install_nlohmann_json_3.7.3.sh $1
 ${script_dir}/install_boost_1.72.0.sh $1
 ${script_dir}/install_openssl_1.1.1d.sh $1
+# the following are external_src packages
 ${script_dir}/install_http_parser.sh $1
 ${script_dir}/install_simple_buffer.sh $1
 ${script_dir}/install_urlparser.sh $1

@@ -12,7 +12,7 @@
 #include <exception>
 #include <openssl/err.h>
 
-#include "error.hpp"
+#include <marvin/helpers/error.hpp>
 /**
 * Erro handler for Cert functions
 */

@@ -29,7 +29,7 @@ vendor=${pwd}/vendor
 
 # echo $project_name $project_dir
 
-if [ $project_name != "x509" ] ; then
+if [ $project_name != "marvin++" ] ; then
 
 	echo "You are in the wrong directory : [" ${project_name} "] should be at project root "
 	exit 1

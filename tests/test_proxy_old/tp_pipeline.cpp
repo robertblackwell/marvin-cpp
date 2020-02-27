@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include "json.hpp"
+#include <marvin/external_src/json.hpp>
 #include "tp_pipeline.hpp"
 
 using namespace tp;

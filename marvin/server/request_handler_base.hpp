@@ -5,10 +5,10 @@
 #include <string>
 #include <iostream>
 
-#include "boost_stuff.hpp"
-#include "message_reader.hpp"
-#include "message_writer.hpp"
-#include "server_context.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_writer.hpp>
+#include <marvin/server/server_context.hpp>
 
 class RequestHandlerBase;
 

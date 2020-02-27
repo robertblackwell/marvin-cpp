@@ -8,7 +8,7 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #include <thread>
-#include "http_server.hpp"
+#include <marvin/server/http_server.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 

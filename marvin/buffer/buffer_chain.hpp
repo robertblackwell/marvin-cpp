@@ -4,10 +4,10 @@
  #include <iterator>
  #include <algorithm>
  #include <stdexcept>
- #include "boost_stuff.hpp"
  #include <cassert>
  #include <vector>
- #include "m_buffer.hpp"
+ #include <marvin/include/boost_stuff.hpp>
+ #include <marvin/buffer/m_buffer.hpp>
 /**
 * \ingroup Buffer
 */

@@ -1,10 +1,10 @@
 #include <catch2/catch.hpp>
 #include <boost/process.hpp>
-#include "marvin_http.hpp"
-#include "helpers_fs.hpp"
+#include <marvin/http/marvin_http.hpp>
+#include <marvin/helpers/helpers_fs.hpp>
 #include "server_runner.hpp"
 #include "tp_proxy_runner.hpp"
-#include "forward_helpers.hpp"
+#include <marvin/forwarding/forward_helpers.hpp>
 #include "tp_proxy_tests.hpp"
 #include "tp_testcase.hpp"
 #include "tp_post.hpp"

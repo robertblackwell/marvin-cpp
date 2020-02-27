@@ -11,8 +11,8 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
 
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include "tsc_req_handler.hpp"

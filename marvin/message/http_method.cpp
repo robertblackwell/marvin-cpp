@@ -1,7 +1,7 @@
 #include <string>
 #include <map>
 #include <sstream>
-#include "http_method.hpp"
+#include <marvin/message/http_method.hpp>
 
 std::string httpMethodString(HttpMethod m){
 

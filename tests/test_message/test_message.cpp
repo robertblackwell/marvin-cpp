@@ -11,16 +11,17 @@
 #include <thread>
 #include <pthread.h>
 #include <catch2/catch.hpp>
-#include "buffer.hpp"
-#include "pipe_collector.hpp"
-#include "http_server.hpp"
-#include "boost_stuff.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/collector/pipe_collector.hpp>
+#include <marvin/server/http_server.hpp>
+#include <marvin/include/boost_stuff.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "marvin_uri.hpp"
-#include "forward_helpers.hpp"
+#include <marvin/message/marvin_uri.hpp>
+#include <marvin/forwarding/forward_helpers.hpp>
+
 #include "tsc_req_handler.hpp"
 #include "server_runner.hpp"
 #include "tp_proxy_runner.hpp"

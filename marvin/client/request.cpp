@@ -5,15 +5,15 @@
 #include <ostream>
 #include <string>
 #include <cassert>
-#include "boost_stuff.hpp"
-#include "url.hpp"
-#include "UriParser.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/CxxUrl/url.hpp>
+#include <marvin/external_src/uri/UriParser.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "message_reader.hpp"
+#include <marvin/message/message_reader.hpp>
 
-#include "request.hpp"
-#include "tcp_connection.hpp"
+#include <marvin/client/request.hpp>
+#include <marvin/connection/tcp_connection.hpp>
 
 using boost::asio::ip::tcp;
 using boost::system::error_code;

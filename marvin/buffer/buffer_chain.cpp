@@ -1,6 +1,6 @@
 
-#include "buffer_chain.hpp"
-#include "rb_logger.hpp"
+#include <marvin/buffer/buffer_chain.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
 
 using namespace Marvin;

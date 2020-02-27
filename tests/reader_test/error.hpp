@@ -4,7 +4,7 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "boost_stuff.hpp"
-#include "marvin_error.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/error/marvin_error.hpp>
 
 #endif

@@ -12,15 +12,15 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 
-#include "marvin_error.hpp"
-#include "callback_typedefs.hpp"
-#include "rb_logger.hpp"
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/include/callback_typedefs.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "i_socket.hpp"
-#include "tls_connection.hpp"
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/connection/tls_connection.hpp>
 #include <cassert>
 
 using namespace boost;

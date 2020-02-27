@@ -3,10 +3,10 @@
 #include <string>
 #include <map>
 #include <sstream>
-#include "buffer.hpp"
-#include "http_parser.h"
-#include "boost_stuff.hpp"
-#include "http_method.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/external_src/http_parser.h>
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/message/http_method.hpp>
 #pragma mark - http message interfaces
 
 namespace Marvin {

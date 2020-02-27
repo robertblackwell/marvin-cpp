@@ -8,11 +8,11 @@
 #include <string>
 #include <map>
 #include <catch2/catch.hpp>
-#include "marvin_error.hpp"
-#include "http_header.hpp"
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/http/http_header.hpp>
 #include "error.hpp"
-#include "buffer.hpp"
-#include "message_reader.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/message/message_reader.hpp>
 #include "testcase.hpp"
 #include "mock_socket.hpp"
 

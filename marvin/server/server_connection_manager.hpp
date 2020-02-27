@@ -4,8 +4,8 @@
 
 #include <set>
 #include <map>
-#include "marvin_error.hpp"
-#include "connection_handler.hpp"
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/server/connection_handler.hpp>
 
 /**
 * \ingroup Server

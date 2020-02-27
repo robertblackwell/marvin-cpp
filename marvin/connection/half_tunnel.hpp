@@ -6,8 +6,8 @@
 */
 
 #include <stdio.h>
-#include "buffer.hpp"
-#include "i_socket.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/connection/socket_interface.hpp>
 
 class HalfTunnel;
 /// \ingroup SocketIO

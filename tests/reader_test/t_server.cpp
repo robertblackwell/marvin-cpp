@@ -5,14 +5,14 @@
 #include <unistd.h>
 #include <catch2/catch.hpp>
 #include <pthread.h>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
-#include "tcp_connection.hpp"
-#include "message_reader.hpp"
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/message/message_reader.hpp>
 #include "t_server.hpp"
 
 TServer::TServer(boost::asio::io_service& io, Testcase tc): m_io(io), m_tc(tc), m_acceptor(m_io)

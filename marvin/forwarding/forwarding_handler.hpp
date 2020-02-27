@@ -13,16 +13,16 @@
 #include <iostream>
 #include <sstream>
 #include <regex>
-#include "request.hpp"
-#include "request_handler_base.hpp"
-#include "rb_logger.hpp"
-#include "UriParser.hpp"
-#include "client.hpp"
-#include "message.hpp"
-#include "tcp_connection.hpp"
-#include "http_header.hpp"
-#include "tunnel_handler.hpp"
-#include "i_collector.hpp"
+#include <marvin/client/request.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/uri/UriParser.hpp>
+#include <marvin/client/client.hpp>
+#include <marvin/http/message.hpp>
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/http/http_header.hpp>
+#include <marvin/connection/tunnel_handler.hpp>
+#include <marvin/collector/collector_interface.hpp>
 
 using namespace Marvin;
 using namespace Marvin::Http;

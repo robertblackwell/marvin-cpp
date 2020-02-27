@@ -6,16 +6,16 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 #include <thread>
 #include <pthread.h>
 #include <catch2/catch.hpp>
 
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
 
 #include "test_server_client/tsc_req_handler.hpp"
 #include "server_runner.hpp"

@@ -7,9 +7,9 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
 
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "collector_base.hpp"
+#include <marvin/collector/collector_base.hpp>
 
 
 int main( int argc, char* argv[] )

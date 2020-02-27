@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "testcase.hpp"

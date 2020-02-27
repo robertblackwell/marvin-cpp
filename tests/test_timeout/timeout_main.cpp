@@ -9,15 +9,15 @@
 //
 
 #include <iostream>
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 //#define CATCH_CONFIG_RUNNER
 //#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 //#include "utest.hpp"
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "timeout.hpp"
+#include <marvin/connection/timeout.hpp>
 #define USE_STRANDx
 
 #include "async_compound.cpp"

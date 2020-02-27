@@ -8,12 +8,12 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "rb_logger.hpp"
-#include "boost_stuff.hpp"
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
-#include "request.hpp"
-#include "forwarding_handler.hpp"
+#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/client/request.hpp>
+#include <marvin/forwarding/forwarding_handler.hpp>
 
 ///
 /// This class is a singleton, but it must be given a reference to the servers io_service object

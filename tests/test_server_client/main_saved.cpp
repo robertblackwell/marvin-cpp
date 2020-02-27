@@ -9,10 +9,10 @@
 #include <boost/asio.hpp>
 #include <pthread.h>
 #include <gtest/gtest.h>"
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
 #include "tsc_client.hpp"
 #include "tsc_server.hpp"
 void*

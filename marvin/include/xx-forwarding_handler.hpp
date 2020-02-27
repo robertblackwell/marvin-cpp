@@ -11,12 +11,12 @@
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
-#include "request.hpp"
-#include "request_handler_base.hpp"
-#include "rb_logger.hpp"
-#include "UriParser.hpp"
-#include "request.hpp"
-#include "http_header.hpp"
+#include <marvin/request.hpp>
+#include <marvin/request_handler_base.hpp>
+#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/UriParser.hpp>
+#include <marvin/request.hpp>
+#include <marvin/http_header.hpp>
 
 /**
 **  @brief This class implements the proxy forwarding process for http/https protocols.

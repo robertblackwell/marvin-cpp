@@ -9,14 +9,14 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
-#include "request.hpp"
-#include "i_collector.hpp"
-//#include "forwarding_handler.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/client/request.hpp>
+#include <marvin/collector/collector_interface.hpp>
+//#include <marvin/forwarding/forwarding_handler.hpp>
 
 ///
 /// An instance is used to funnel a copy of the traffic seen by a mitm proxy to a named pipe where it can

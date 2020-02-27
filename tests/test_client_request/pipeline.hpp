@@ -13,11 +13,11 @@
 #include <vector>
 #include <catch2/catch.hpp>
 
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 
-#include "rb_logger.hpp"
-#include "http_header.hpp"
-#include "client.hpp"
+#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/http/http_header.hpp>
+#include <marvin/client/client.hpp>
 
 
 /**

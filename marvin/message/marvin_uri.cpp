@@ -5,9 +5,9 @@
 //  Created by ROBERT BLACKWELL on 1/2/18.
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include "marvin_uri.hpp"
+#include <marvin/message/marvin_uri.hpp>
 using namespace Marvin;
 namespace Marvin{
     Uri::Uri(std::string uri_in)

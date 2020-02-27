@@ -1,7 +1,7 @@
 #include <unistd.h>
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include "server_connection_manager.hpp"
+#include <marvin/server/server_connection_manager.hpp>
 /// \todo - the code in this file needs tidying up - too many commented out lines
 ServerConnectionManager* ServerConnectionManager::instance;
 

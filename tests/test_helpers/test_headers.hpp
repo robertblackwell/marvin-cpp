@@ -10,8 +10,8 @@
 #define test_json_hpp
 #include <string>
 #include <map>
-#include "http_header.hpp"
-#include "json.hpp"
+#include <marvin/http/http_header.hpp>
+#include <marvin/external_src/json.hpp>
 namespace test {
 namespace helpers {
     Marvin::Http::Headers  headersFromJson(nlohmann::json& j);

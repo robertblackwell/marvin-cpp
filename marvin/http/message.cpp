@@ -2,9 +2,9 @@
 #include <map>
 #include <sstream>
 #include <boost/algorithm/string/trim.hpp>
-#include "http_parser.h"
-#include "http_header.hpp"
-#include "message.hpp"
+#include <marvin/external_src/http_parser.h>
+#include <marvin/http/http_header.hpp>
+#include <marvin/http/message.hpp>
 using namespace Marvin;
 using namespace Marvin::Http;
 namespace Marvin{

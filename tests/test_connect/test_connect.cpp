@@ -10,14 +10,14 @@
 #include <pthread.h>
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-#include "boost_stuff.hpp"
-#include "tcp_connection.hpp"
-#include "socket_factory.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/connection/socket_factory.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
 
 TEST_CASE("connect_failBadHost", "")
 {

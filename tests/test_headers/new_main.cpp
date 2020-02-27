@@ -11,9 +11,9 @@
 #include <cassert>
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
-#include "json.hpp"
-#include "marvin_okv.hpp"
-#include "http_header.hpp"
+#include <marvin/external_src/json.hpp>
+#include <marvin/http/marvin_okv.hpp>
+#include <marvin/http/http_header.hpp>
 
 using namespace nlohmann;
 

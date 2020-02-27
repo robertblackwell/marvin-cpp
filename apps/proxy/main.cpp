@@ -9,13 +9,13 @@
 #include <unistd.h>
 #include <boost/asio.hpp>
 #include <pthread.h>
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
-#include "forwarding_handler.hpp"
-#include "pipe_collector.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/forwarding/forwarding_handler.hpp>
+#include <marvin/collector/pipe_collector.hpp>
 
 int main(int argc, const char * argv[])
 {

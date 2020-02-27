@@ -7,11 +7,11 @@
 #include <thread>
 #include <pthread.h>
 #include <catch2/catch.hpp>
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 
-#include "http_server.hpp"
-#include "pipe_collector.hpp"
-#include "forwarding_handler.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/collector/pipe_collector.hpp>
+#include <marvin/forwarding/forwarding_handler.hpp>
 
 void startProxyServer(long port, std::string collector_fifo_name);
 void stopProxyServer();

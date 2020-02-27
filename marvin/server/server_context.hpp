@@ -14,15 +14,15 @@
 #include <signal.h>
 #include <utility>
 
-#include "boost_stuff.hpp"
-#include "marvin_error.hpp"
-#include "http_server.hpp"
-#include "server_connection_manager.hpp"
-#include "request_handler_base.hpp"
-#include "i_socket.hpp"
-#include "tcp_connection.hpp"
-#include "tls_connection.hpp"
-#include "connection_handler.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/server_connection_manager.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/connection/tls_connection.hpp>
+#include <marvin/server/connection_handler.hpp>
 #endif
 
 class HTTPServer;

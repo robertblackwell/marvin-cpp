@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
 #include <boost/process.hpp>
-#include "marvin_http.hpp"
-#include "helpers_fs.hpp"
+#include <marvin/http/marvin_http.hpp>
+#include <marvin/helpers/helpers_fs.hpp>
 #include "proxy_fixture.hpp"
 using namespace Marvin;
 using namespace Http;

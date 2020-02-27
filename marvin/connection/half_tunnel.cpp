@@ -5,10 +5,10 @@
 //  Created by ROBERT BLACKWELL on 12/31/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
-#include "half_tunnel.hpp"
+#include <marvin/connection/half_tunnel.hpp>
 
 HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd, long firstReadTimeoutMillisecs, long subsequentReadTimeoutMillisecs)
 : m_first_read_timeout_millisecs(firstReadTimeoutMillisecs), m_subsequent_read_timeout_millisecs(subsequentReadTimeoutMillisecs)

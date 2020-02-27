@@ -6,4 +6,4 @@
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
 
-#include "marvin_config.hpp"
+#include <marvin/config/marvin_config.hpp>

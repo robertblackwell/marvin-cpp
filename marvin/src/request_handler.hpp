@@ -12,7 +12,7 @@
 #define HTTP_REQUEST_HANDLER_HPP
 
 #include <string>
-#include "request_handler_interface.hpp"
+#include <marvin/client/request_handler_interface.hpp>
 
 
 struct reply;

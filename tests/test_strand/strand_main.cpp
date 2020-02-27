@@ -9,7 +9,7 @@
 //
 
 #include <iostream>
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 #define USE_STRANDx
 class printer
 {

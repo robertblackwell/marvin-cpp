@@ -7,12 +7,12 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 #include <regex>
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "pipe_collector.hpp"
+#include <marvin/collector/pipe_collector.hpp>
 using namespace Marvin;
 using namespace Http;
 bool headerValueMatched(std::string& hv, std::vector<std::regex>& regexs)

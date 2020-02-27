@@ -13,11 +13,11 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include "repeating_timer.hpp"
-#include "marvin_error.hpp"
+#include <marvin/error/marvin_error.hpp>
 
 #define USE_BOOST_INTERRUPT 0
 

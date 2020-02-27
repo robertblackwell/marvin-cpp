@@ -10,12 +10,12 @@
 #include <pthread.h>
 #include <catch2/catch.hpp>
 
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
 #include "test_server_client/bf/bf_post.hpp"
 #include "test_server_client/bf/bf_pipeline.hpp"
 #include "test_server_client/bf/bf_testcase.hpp"

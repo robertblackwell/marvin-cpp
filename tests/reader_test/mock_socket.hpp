@@ -4,12 +4,12 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "boost_stuff.hpp"
-#include "buffer.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/buffer/buffer.hpp>
 #include "repeating_timer.hpp"
 #include "error.hpp"
 #include "testcase.hpp"
-#include "i_socket.hpp"
+#include <marvin/connection/socket_interface.hpp>
 
 typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)> AsyncReadCallback;
 #define TIMER_INTERVAL_MS 10

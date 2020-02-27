@@ -4,11 +4,11 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "json.hpp"
-#include "message.hpp"
+#include <marvin/external_src/json.hpp>
+#include <marvin/http/message.hpp>
 #include "bb_testcase.hpp"
 #include "bb_testcase_defs.hpp"
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 using namespace body_buffering;

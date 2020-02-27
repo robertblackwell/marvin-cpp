@@ -2,16 +2,16 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "boost_stuff.hpp"
-#include "buffer.hpp"
-#include "message.hpp"
-#include "parser.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/http/message.hpp>
+#include <marvin/http/parser.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
-#include "i_socket.hpp"
-#include "message_reader.hpp"
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/message/message_reader.hpp>
 
  using namespace Marvin;
  using namespace Marvin::Http;

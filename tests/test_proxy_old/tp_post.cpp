@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
-#include "json.hpp"
+#include <marvin/external_src/json.hpp>
 #include "test_headers.hpp"
-#include "server_connection_manager.hpp"
+#include <marvin/server/server_connection_manager.hpp>
 #include "tp_post.hpp"
 
 struct kv_t {

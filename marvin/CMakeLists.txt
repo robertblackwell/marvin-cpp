@@ -21,7 +21,7 @@ file(GLOB HEADERS
 
 	collector/collector_base.hpp
 	collector/pipe_collector.hpp
-	collector/i_collector.hpp
+	collector/collector_interface.hpp
 
 
 	connection/half_tunnel.hpp
@@ -80,18 +80,14 @@ file(GLOB HEADERS
 	
 	# )
 
-# file(GLOB SOURCES 
-set(EXTSOURCES 	
-	${PROJECT_DIR}/external_src/CxxUrl/url.cpp
-	${PROJECT_DIR}/external_src/uri/UriCodec.cpp
-	${PROJECT_DIR}/external_src/http_parser.c
-	${PROJECT_DIR}/external_src/rb_logger.cpp
-	${PROJECT_DIR}/external_src/simple_buffer.c
-)
 
-message("External Sources ${EXTSOURCES}")
+set(SOURCES 
+	external_src/CxxUrl/url.cpp
+	external_src/uri/UriCodec.cpp
+	external_src/http_parser.c
+	external_src/rb_logger.cpp
+	external_src/simple_buffer.c
 
-set(SOURCES ${EXTSOURCES}
 	boost_ext/io_service_pool.cpp
 
 	buffer/buffer_chain.cpp			
@@ -101,7 +97,7 @@ set(SOURCES ${EXTSOURCES}
 	
 	collector/collector_base.cpp
 	collector/pipe_collector.cpp
-	collector/i_collector.cpp
+	collector/collector_interface.cpp
 
 	connection/half_tunnel.cpp     		
 	connection/socket_factory.cpp		
@@ -153,25 +149,27 @@ set(SOURCES ${EXTSOURCES}
 	# )
 set_source_files_properties(${SOURCES} PROPERTIES LANGUAGE CXX)
 
-set(HEADER_DIRS 
-	${PROJECT_DIR}/marvin/include
-	${PROJECT_DIR}/marvin/boost_ext
-	${PROJECT_DIR}/marvin/buffer
-	${PROJECT_DIR}/marvin/client
-	${PROJECT_DIR}/marvin/collector
-	${PROJECT_DIR}/marvin/config
-	${PROJECT_DIR}/marvin/connection
-	${PROJECT_DIR}/marvin/error
-	${PROJECT_DIR}/marvin/forwarding
-	${PROJECT_DIR}/marvin/http
-	${PROJECT_DIR}/marvin/message
-	${PROJECT_DIR}/marvin/server
-	${PROJECT_DIR}/marvin/src
-	${PROJECT_DIR}/external_src
-	${PROJECT_DIR}/external_src/uri
-	${PROJECT_DIR}/external_src/CxxUrl
-	${PROJECT_DIR}/marvin/helpers
-	)
+set(HEADER_DIRS
+	${PROJECT_DIR}
+)
+	# ${PROJECT_DIR}/marvin/include
+	# ${PROJECT_DIR}/marvin/boost_ext
+	# ${PROJECT_DIR}/marvin/buffer
+	# ${PROJECT_DIR}/marvin/client
+	# ${PROJECT_DIR}/marvin/collector
+	# ${PROJECT_DIR}/marvin/config
+	# ${PROJECT_DIR}/marvin/connection
+	# ${PROJECT_DIR}/marvin/error
+	# ${PROJECT_DIR}/marvin/forwarding
+	# ${PROJECT_DIR}/marvin/http
+	# ${PROJECT_DIR}/marvin/message
+	# ${PROJECT_DIR}/marvin/server
+	# ${PROJECT_DIR}/marvin/src
+	# ${PROJECT_DIR}/marvin/helpers
+	# ${PROJECT_DIR}/marvin/external_src
+	# ${PROJECT_DIR}/marvin/external_src/uri
+	# ${PROJECT_DIR}/marvin/external_src/CxxUrl
+	# )
 
 # set(HEADER_LIST "${CertificateLibrary_SOURCE_DIR}/include/cert/x509/cert.hpp")
 message("HEADER_LIST ${HEADERS}")

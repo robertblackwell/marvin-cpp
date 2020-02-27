@@ -3,11 +3,11 @@
 #include <string>
 #include <map>
 #include <sstream>
-#include "boost_stuff.hpp"
-#include "buffer.hpp"
-#include "http_parser.h"
-#include "http_header.hpp"
-#include "i_message.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/external_src/http_parser.h>
+#include <marvin/http/http_header.hpp>
+#include <marvin/http/message_interface.hpp>
 namespace Marvin {
 namespace Http {
 /**

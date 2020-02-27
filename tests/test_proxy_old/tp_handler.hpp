@@ -6,13 +6,13 @@
 #include <string>
 #include <pthread.h>
 
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
-#include "http_header.hpp"
-#include "http_server.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/http/http_header.hpp>
+#include <marvin/server/http_server.hpp>
 #include "server_context.hpp"
-#include "request_handler_base.hpp"
-#include "request.hpp"
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/client/request.hpp>
 #include "uri_query.hpp"
 
     /**

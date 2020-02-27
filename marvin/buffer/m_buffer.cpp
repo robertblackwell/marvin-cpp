@@ -1,5 +1,5 @@
-#include "buffer.hpp"
-#include "rb_logger.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
 namespace {
     const std::size_t MBUFMIN=1000;

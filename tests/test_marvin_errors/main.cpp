@@ -9,8 +9,8 @@
 #include <iostream>
 #include <string>
 #include <iostream>
-#include "boost_stuff.hpp"
-#include "marvin_error.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/error/marvin_error.hpp>
 #include "test_error.hpp"
 typedef boost::system::error_code NError;
 

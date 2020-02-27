@@ -21,12 +21,12 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
 
-#include "boost_stuff.hpp"
+#include <marvin/include/boost_stuff.hpp>
 
-#include "rb_logger.hpp"
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "http_header.hpp"
-#include "client.hpp"
+#include <marvin/http/http_header.hpp>
+#include <marvin/client/client.hpp>
 
 #undef VERBOSE
 /*

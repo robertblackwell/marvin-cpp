@@ -3,6 +3,6 @@
 /**
 * \defgroup Buffer
 */
-#include "m_buffer.hpp"
-#include "buffer_chain.hpp"
+#include <marvin/buffer/m_buffer.hpp>
+#include <marvin/buffer/buffer_chain.hpp>
 #endif

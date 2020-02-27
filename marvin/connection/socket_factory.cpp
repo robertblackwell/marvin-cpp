@@ -8,9 +8,9 @@
 
 #include <stdio.h>
 #include <cassert>
-#include "i_socket.hpp"
-#include "tcp_connection.hpp"
-#include "tls_connection.hpp"
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/connection/tls_connection.hpp>
 
 
 ISocketSPtr socketFactory(

@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
-#include "forward_helpers.hpp"
-#include "json.hpp"
+#include <marvin/forwarding/forward_helpers.hpp>
+#include <marvin/external_src/json.hpp>
 #include "bf_pipeline.hpp"
 
 using namespace Marvin;

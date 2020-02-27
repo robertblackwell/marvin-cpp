@@ -4,8 +4,8 @@
 /// and passes that strand to a timeout handler, the tiimeout handler is a member of this object..
 ///
 #include <string>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 
 class AsyncObject
 {

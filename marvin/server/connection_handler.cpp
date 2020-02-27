@@ -5,11 +5,11 @@
 //  Created by ROBERT BLACKWELL on 12/12/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
-#include "http_header.hpp"
-#include "connection_handler.hpp"
-#include "server_connection_manager.hpp"
-#include "http_server.hpp"
-#include "server_context.hpp"
+#include <marvin/http/http_header.hpp>
+#include <marvin/server/connection_handler.hpp>
+#include <marvin/server/server_connection_manager.hpp>
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/server_context.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 

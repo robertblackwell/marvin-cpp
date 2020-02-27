@@ -7,8 +7,8 @@
 //
 #include <iostream>
 #include <catch2/catch.hpp>
-#include "buffer.hpp"
-#include "rb_logger.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 using namespace Marvin;
 #pragma mark - local classes to access internals of MBuffer, FBuffer and Fragment
 

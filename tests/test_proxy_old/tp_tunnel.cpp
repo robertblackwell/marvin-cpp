@@ -1,8 +1,8 @@
 #include <catch2/catch.hpp>
-#include "json.hpp"
-#include "marvin_http.hpp"
+#include <marvin/external_src/json.hpp>
+#include <marvin/http/marvin_http.hpp>
 #include "test_headers.hpp"
-#include "server_connection_manager.hpp"
+#include <marvin/server/server_connection_manager.hpp>
 #include "tp_tunnel.hpp"
 
 using namespace tp;

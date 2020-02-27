@@ -1,11 +1,11 @@
 #include <catch2/catch.hpp>
-#include "json.hpp"
-#include "rb_logger.hpp"
+#include <marvin/external_src/json.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
-#include "tcp_connection.hpp"
-#include "message_reader.hpp"
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/message/message_reader.hpp>
 
 #include "bb_testcase.hpp"
 #include "bb_client.hpp"

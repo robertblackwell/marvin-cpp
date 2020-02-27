@@ -8,12 +8,12 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include "boost_stuff.hpp"
-#include "marvin_error.hpp"
-#include "callback_typedefs.hpp"
-#include "i_socket.hpp"
-#include "buffer.hpp"
-#include "i_socket.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/include/callback_typedefs.hpp>
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/connection/socket_interface.hpp>
 
 using namespace boost;
 using namespace boost::system;

@@ -6,11 +6,11 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include "boost_stuff.hpp"
-#include "message_writer.hpp"
-#include "message_reader.hpp"
-#include "i_socket.hpp"
-#include "url.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/message/message_writer.hpp>
+#include <marvin/message/message_reader.hpp>
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/external_src/CxxUrl/url.hpp>
 
 using boost::asio::ip::tcp;
 class Request;

@@ -6,8 +6,8 @@
 //  Copyright © 2017 Blackwellapps. All rights reserved.
 //
 #include <iostream>
-#include "buffer.hpp"
-#include "rb_logger.hpp"
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 #include <catch2/catch.hpp>
 
 using namespace Marvin;

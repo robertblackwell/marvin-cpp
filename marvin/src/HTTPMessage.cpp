@@ -9,8 +9,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include "HTTPMessage.hpp"
-#include "Parser.hpp"
+#include <marvin/HTTPMessage.hpp>
+#include <marvin/http/parser.hpp>
 
 
 #pragma mark - http method stuff

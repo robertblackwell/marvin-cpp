@@ -8,13 +8,13 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "request_handler.hpp"
+#include <marvin/client/request_handler.hpp>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "mime_types.hpp"
-#include "reply.hpp"
-#include "request.hpp"
+#include <marvin/mime_types.hpp>
+#include <marvin/reply.hpp>
+#include <marvin/client/request.hpp>
 
 
 RequestHandler::RequestHandler(const std::string& doc_root)

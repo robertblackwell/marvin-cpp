@@ -11,13 +11,13 @@
 /// \ingroup Server
 #include <stdio.h>
 
-#include "boost_stuff.hpp"
-#include "server_context.hpp"
-#include "message_reader.hpp"
-#include "message_writer.hpp"
-#include "request_handler_base.hpp"
-#include "connection_handler.hpp"
-#include "i_socket.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/server/server_context.hpp>
+#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_writer.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/server/connection_handler.hpp>
+#include <marvin/connection/socket_interface.hpp>
 
 class ServerConnectionManager;
 class ConnectionHandler;

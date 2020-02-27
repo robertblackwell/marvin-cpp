@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "simple_buffer.h"
+#include <marvin/external_src/simple_buffer.h>
 
 void sb_die(char* message){
     fprintf(stderr, "%s\n", message);

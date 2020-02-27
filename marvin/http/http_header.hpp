@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "json.hpp"
-#include "marvin_okv.hpp"
+#include <marvin/external_src/json.hpp>
+#include <marvin/http/marvin_okv.hpp>
 
 /// \ingroup HttpMessage
 /// Alias for a map of strings, this is the data structure that represents the headers

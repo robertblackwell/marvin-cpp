@@ -4,18 +4,18 @@
 #include <string>
 #include <pthread.h>
 
-#include "boost_stuff.hpp"
-#include "json.hpp"
-#include "rb_logger.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/external_src/json.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "http_header.hpp"
-#include "message.hpp"
-#include "UriParser.hpp"
-#include "url.hpp"
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
-#include "request.hpp"
-#include "uri_query.hpp"
+#include <marvin/http/http_header.hpp>
+#include <marvin/http/message.hpp>
+#include <marvin/external_src/uri/UriParser.hpp>
+#include <marvin/external_src/CxxUrl/url.hpp>
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/client/request.hpp>
+#include <marvin/message/uri_query.hpp>
 #include "tsc_req_handler.hpp"
 
 using namespace Marvin;

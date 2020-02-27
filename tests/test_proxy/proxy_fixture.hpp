@@ -8,7 +8,7 @@
 ///
 #ifndef marvin_proxy_fixture_tests_hpp
 #define marvin_proxy_fixture_tests_hpp
-#include "message.hpp"
+#include <marvin/http/message.hpp>
 #include "tp_testcase.hpp"
 
 class ProxyFixture {

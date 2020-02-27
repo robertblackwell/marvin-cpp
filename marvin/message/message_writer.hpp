@@ -3,11 +3,11 @@
 #define marvin_message_writer_v2_hpp
 
 #include <stdio.h>
-#include "callback_typedefs.hpp"
-#include "message.hpp"
-#include "i_socket.hpp"
-#include "i_socket.hpp"
-#include "tcp_connection.hpp"
+#include <marvin/include/callback_typedefs.hpp>
+#include <marvin/http/message.hpp>
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/connection/tcp_connection.hpp>
 
 class MessageWriter;
 typedef std::shared_ptr<MessageWriter> MessageWriterSPtr;

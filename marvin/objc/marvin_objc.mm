@@ -8,11 +8,11 @@
 
 #import "marvin_objc.h"
 
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
-#include "request.hpp"
-#include "forwarding_handler.hpp"
-#include "objc_collector.hpp"
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/client/request.hpp>
+#include <marvin/forwarding/forwarding_handler.hpp>
+#include <marvin/objc_collector.hpp>
 
 #import "marvin_delegate_objc.h"
 

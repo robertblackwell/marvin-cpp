@@ -9,13 +9,13 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include "boost_stuff.hpp"
-#include "buffer.hpp"
-#include "http_header.hpp"
-#include "message_writer.hpp"
-#include "message_reader.hpp"
-#include "tcp_connection.hpp"
-#include "marvin_uri.hpp"
+#include <marvin/include/boost_stuff.hpp>
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/http/http_header.hpp>
+#include <marvin/message/message_writer.hpp>
+#include <marvin/message/message_reader.hpp>
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/message/marvin_uri.hpp>
 
 using boost::asio::ip::tcp;
 class Client;

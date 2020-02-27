@@ -4,9 +4,9 @@
 
 #include <stdio.h>
 #include <memory>
-#include "marvin_error.hpp"
-#include "tcp_connection.hpp"
-#include "half_tunnel.hpp"
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/connection/half_tunnel.hpp>
 
 class TunnelHandler;
 /// \ingroup SocketIO

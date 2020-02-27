@@ -6,12 +6,12 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include "boost_stuff.hpp"
-#include "rb_logger.hpp"
+#include <marvin/boost_stuff.hpp>
+#include <marvin/external_src/rb_logger.hpp>
 
-#include "http_server.hpp"
-#include "request_handler_base.hpp"
-#include "request.hpp"
+#include <marvin/http_server.hpp>
+#include <marvin/request_handler_base.hpp>
+#include <marvin/request.hpp>
 
 class ICollector
 {
