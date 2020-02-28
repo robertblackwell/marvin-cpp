@@ -5,7 +5,7 @@
 //  Created by ROBERT BLACKWELL on 1/2/18.
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/message/marvin_uri.hpp>
 using namespace Marvin;

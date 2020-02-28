@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <marvin/external_src/json.hpp>
+#include <json/json.hpp>
 #include <marvin/http/marvin_okv.hpp>
 
 /// \ingroup HttpMessage

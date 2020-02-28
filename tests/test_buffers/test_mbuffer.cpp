@@ -7,7 +7,7 @@
 //
 #include <iostream>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <catch2/catch.hpp>
 
 using namespace Marvin;

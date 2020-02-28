@@ -3,8 +3,8 @@
 #include <sstream>
 #include <map>
 #include <string>
-#include <marvin/external_src/json.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <json/json.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 //#include "test_macros.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 void test(std::string f, std::string F, int ln, bool x) {

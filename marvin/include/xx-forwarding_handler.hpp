@@ -13,7 +13,7 @@
 #include <sstream>
 #include <marvin/request.hpp>
 #include <marvin/request_handler_base.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <marvin/UriParser.hpp>
 #include <marvin/request.hpp>
 #include <marvin/http_header.hpp>

@@ -10,7 +10,7 @@
 #include <catch2/catch.hpp>
 #include <marvin/include/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 #pragma mark - BufferChain
 //void test_mbuffer_01();

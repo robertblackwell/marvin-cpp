@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include <marvin/include/boost_stuff.hpp>
 #include <regex>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include <marvin/collector/pipe_collector.hpp>

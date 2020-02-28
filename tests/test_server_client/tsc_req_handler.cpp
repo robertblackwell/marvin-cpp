@@ -5,12 +5,12 @@
 #include <pthread.h>
 
 #include <marvin/include/boost_stuff.hpp>
-#include <marvin/external_src/json.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <json/json.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/http/http_header.hpp>
 #include <marvin/http/message.hpp>
-#include <marvin/external_src/uri/UriParser.hpp>
+#include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/external_src/CxxUrl/url.hpp>
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>

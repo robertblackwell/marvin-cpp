@@ -32,11 +32,10 @@ file(GLOB HEADERS
 	connection/tunnel_handler.hpp
 	
 	external_src/CxxUrl/url.hpp 
-	external_src/uri/UriParser.hpp 
-	external_src/http_parser.h 
-	external_src/json.hpp 
-	external_src/rb_logger.hpp  
-	external_src/simple_buffer.h
+	external_src/uri-parser/uri-parser/UriParser.hpp 
+	external_src/http-parser/http_parser.h 
+	external_src/rb_logger/rb_logger.hpp  
+	external_src/simple_buffer/simple_buffer.h
 
 	error/marvin_error.hpp 
 	
@@ -83,10 +82,10 @@ file(GLOB HEADERS
 
 set(SOURCES 
 	external_src/CxxUrl/url.cpp
-	external_src/uri/UriCodec.cpp
-	external_src/http_parser.c
-	external_src/rb_logger.cpp
-	external_src/simple_buffer.c
+	external_src/uri-parser/UriCodec.cpp
+	external_src/http-parser/http_parser.c
+	external_src/rb_logger/rb_logger.cpp
+	external_src/simple_buffer/simple_buffer.c
 
 	boost_ext/io_service_pool.cpp
 

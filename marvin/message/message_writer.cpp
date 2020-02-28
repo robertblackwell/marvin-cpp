@@ -2,7 +2,7 @@
 #include <marvin/message/message_writer.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <exception>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 using namespace Marvin;
 using namespace Marvin::Http;

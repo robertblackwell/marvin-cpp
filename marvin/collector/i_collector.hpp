@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 #include <marvin/http_server.hpp>
 #include <marvin/request_handler_base.hpp>

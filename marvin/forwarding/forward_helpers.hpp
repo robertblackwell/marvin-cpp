@@ -15,8 +15,8 @@
 #include <regex>
 #include <marvin/client/request.hpp>
 #include <marvin/server/request_handler_base.hpp>
-#include <marvin/external_src/rb_logger.hpp>
-#include <marvin/external_src/uri/UriParser.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/client/client.hpp>
 #include <marvin/http/message.hpp>
 #include <marvin/connection/tcp_connection.hpp>

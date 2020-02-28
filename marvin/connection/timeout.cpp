@@ -8,7 +8,7 @@
 
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/include/callback_typedefs.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 

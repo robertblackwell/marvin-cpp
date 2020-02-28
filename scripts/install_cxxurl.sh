@@ -6,7 +6,7 @@ package_name=CxxUrl
 git_repo=chmike/CxxUrl.git
 git_branch=
 clone_dir_stem_name=CxxUrl
-header_cp_pattern=url*.hpp
+header_cp_pattern=*.hpp
 source_cp_pattern=url*.cpp
 
 basedir=$(dirname "$0")

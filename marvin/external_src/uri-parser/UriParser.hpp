@@ -1,5 +1,5 @@
-#ifndef marvin_uriparser_hpp
-#define marvin_uriparser_hpp
+#ifndef uri_parser_uriparser_hpp
+#define uri_parser_uriparser_hpp
 
 #include <iostream>
 #include <string>
@@ -61,8 +61,7 @@ namespace http {
 
 
     //--- Public Interface -------------------------------------------------------------~
-    static inline url ParseHttpUrl(std::string &in_ref) {
-        std::string in(in_ref);
+    static inline url ParseHttpUrl(std::string &in) {
         url ret;
         ret.port = -1;
 

@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <marvin/external_src/json.hpp>
+#include <json/json.hpp>
 #include <marvin/http/marvin_http.hpp>
 #include "test_headers.hpp"
 #include <marvin/server/server_connection_manager.hpp>

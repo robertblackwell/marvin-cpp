@@ -4,10 +4,10 @@
 
 #include <map>
 #include <iostream>
-#include <marvin/external_src/http_parser.h>
-#include <marvin/external_src/simple_buffer.h>
+#include <marvin/external_src/http-parser/http_parser.h>
+#include <marvin/external_src/simple_buffer/simple_buffer.h>
 #include <marvin/http/message.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 #define kHEADER_STATE_NOTHING 10
 #define kHEADER_STATE_FIELD   11

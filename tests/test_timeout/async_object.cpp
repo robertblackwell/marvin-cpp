@@ -5,7 +5,7 @@
 ///
 #include <string>
 #include <marvin/include/boost_stuff.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 class AsyncObject
 {

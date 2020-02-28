@@ -5,7 +5,7 @@
 //  Created by ROBERT BLACKWELL on 12/31/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include <marvin/connection/half_tunnel.hpp>

@@ -12,7 +12,7 @@
 #include <vector>
 #include <set>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <marvin/external_src/json.hpp>
+#include <json/json.hpp>
 std::set<std::string> s{"one","two"};
 
 #include <marvin/http/http_header.hpp>

@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <marvin/include/boost_stuff.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"

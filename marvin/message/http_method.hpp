@@ -4,7 +4,7 @@
 #include <map>
 #include <sstream>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/external_src/http_parser.h>
+#include <marvin/external_src/http-parser/http_parser.h>
 #include <marvin/include/boost_stuff.hpp>
 
 /**

@@ -18,8 +18,8 @@
 #include <marvin/include/boost_stuff.hpp>
 #pragma clang diagnostic pop
 #include <marvin/external_src/CxxUrl/url.hpp>
-#include <marvin/external_src/uri/UriParser.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/uri-parser/UriParser.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/message/message_reader.hpp>
 #include <marvin/connection/socket_factory.hpp>

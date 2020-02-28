@@ -11,7 +11,7 @@
 #include <string>
 #include <map>
 #include <marvin/http/http_header.hpp>
-#include <marvin/external_src/json.hpp>
+#include <json/json.hpp>
 namespace test {
 namespace helpers {
     Marvin::Http::Headers  headersFromJson(nlohmann::json& j);

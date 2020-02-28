@@ -15,7 +15,7 @@
 #include <marvin/connection/tls_connection.hpp>
 #include <marvin/message/message_reader.hpp>
 #include <marvin/message/message_writer.hpp>
-#include <marvin/external_src/rb_logger.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <marvin/server/connection_handler.hpp>
 
 /**
