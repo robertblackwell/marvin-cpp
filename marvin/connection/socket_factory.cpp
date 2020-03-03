@@ -10,17 +10,26 @@
 #include <cassert>
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/connection/tcp_connection.hpp>
-#include <marvin/connection/tls_connection.hpp>
 
 
 ISocketSPtr socketFactory(
-            bool serverFlag, // true if the socket is for a server
             boost::asio::io_service& io_service,
             const std::string scheme,
             const std::string server,
             const std::string port
 ){
     ISocketSPtr ptr;
+    ptr = std::make_shared<TCPConnection>(io_service, scheme, server, port);
+    return ptr;
+}
+ISocket* socketFactory(boost::asio::io_service& io_service)
+{
+    ISocket* ptr;
+    ptr = new TCPConnection(io_service);
+    return ptr;
+}
+
+#if 0   
     auto xx = boost::to_lower_copy(scheme);
     if( boost::to_lower_copy(scheme) == "http" )
     {
@@ -72,20 +81,6 @@ sock.handshake(ssl_socket::client);
         assert(false);
     }
     return ptr;
-}
-ISocket* socketFactory(
-            boost::asio::io_service& io_service,
-            const std::string scheme
-){
-    ISocket* ptr;
-    if( scheme == "http" ){
-        ptr = new TCPConnection(io_service);
-    }else if( scheme == "https" ){
-        ptr = new TCPConnection(io_service);
-//        ptr = new TLSConnection(io_service);
-    } else{
-        assert(false);
-    }
-    return ptr;
-}
+#endif
+
 //ISocket::~ISocket(){}

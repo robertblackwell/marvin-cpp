@@ -76,7 +76,7 @@ TEST_CASE("connect_succeed","")
 TEST_CASE("ssl_connect", "")
 {
     boost::asio::io_service io;
-    ISocketSPtr conn_sptr = socketFactory(false, io, "https", "bankofamerica.com", "443");
+    ISocketSPtr conn_sptr = socketFactory(io, "https", "bankofamerica.com", "443");
     conn_sptr->asyncConnect([](Marvin::ErrorType& err, ISocket* conn)
     {
         INFO(Marvin::make_error_description(err));

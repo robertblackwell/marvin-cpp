@@ -1,4 +1,5 @@
-#include<marvin/http/message_base.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string.hpp>#include<marvin/http/message_base.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include "roundtrip.hpp"
 
@@ -58,6 +59,11 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
 std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::string request_url)
 {
     Marvin::Uri uri(request_url);
+    std::string sch = uri.scheme();
+    boost::algorithm::to_lower(sch);
+    if (sch != "http") {
+        throw "Currently can only handle non secure requests";
+    }
     std::shared_ptr<Client> client = std::shared_ptr<Client>(new Client(io, uri ));
     
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
@@ -84,7 +90,7 @@ std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::stri
     client->asyncWrite(msg, f);
     return client;
 }
-
+#ifdef WHEN_WE_CAN_HANDLE_HTTPS_TRAFFIC
 TEST_CASE("ssl_ssllabs", "[first]")
 {
     boost::asio::io_service io_service;
@@ -103,7 +109,7 @@ TEST_CASE("ssl_ssltest", "[second]")
     rt.clear();
 
 }
-
+#endif
 TEST_CASE("ClientRoundTrip-SixTimes","")
 {
     boost::asio::io_service io_service;

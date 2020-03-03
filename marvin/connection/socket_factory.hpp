@@ -24,10 +24,11 @@ using ip::tcp;
 using system::error_code;
 /**
 * \ingroup SocketIO
-* \brief Factor function to construct either TCP or SSL socket based on inpput arguments
+* \brief Factor function to construct a new TCP Connection and prime it with a server name and port.
+* Since TCP Connections can be any combination of  HTTP/HTTPS or Server/Client the distinction is made
+* after creation. For convenience scheme/server/port may be specified during construction
 */
 ISocketSPtr socketFactory(
-            bool serverFlag,
             boost::asio::io_service& io_service,
             const std::string scheme,
             const std::string server,
@@ -37,10 +38,6 @@ ISocketSPtr socketFactory(
 * \ingroup SocketIO
 * \brief Factor function to construct either TCP or SSL socket based on inpput arguments
 */
-ISocketSPtr socketFactory(
-            bool serverFlag,
-            boost::asio::io_service& io_service,
-            const std::string scheme
-);
+ISocketSPtr socketFactory(boost::asio::io_service& io_service);
 
 #endif

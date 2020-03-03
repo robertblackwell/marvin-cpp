@@ -19,8 +19,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 TClient::TClient(boost::asio::io_service& io, std::string scheme, std::string server, std::string port, Testcase tc)
 : m_io(io), m_scheme(scheme), m_server(server), m_port(port), m_testcase(tc), m_timer(m_io)
 {
-//    m_conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(m_io, m_scheme, m_server, m_port));
-    m_conn_sptr = socketFactory(false, m_io, m_scheme,m_server,m_port);
+    m_conn_sptr = socketFactory(m_io, m_scheme,m_server,m_port);
 }
 
 void TClient::send_testcase_buffers(SysErrorCb cb)

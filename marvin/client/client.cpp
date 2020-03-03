@@ -80,12 +80,7 @@ void Client::asyncConnect(ErrorOnlyCallbackType cb)
     if (m_conn_shared_ptr != nullptr ) {
         throw "should not have a connection at this point";
     }
-#if 0
-    TCPConnection* ptr = new TCPConnection(m_io, m_scheme, m_server, m_port);
-    m_conn_shared_ptr = std::shared_ptr<TCPConnection>(ptr);
-#else
-    m_conn_shared_ptr = socketFactory(false, m_io,m_scheme,m_server, m_port);
-#endif
+    m_conn_shared_ptr = socketFactory(m_io,m_scheme,m_server, m_port);
 
     auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);
@@ -142,13 +137,6 @@ void Client::internalConnect()
     asyncConnect([this](Marvin::ErrorType& ec){
         LogDebug("cb-connect");
         if(!ec) {
-
-#ifndef RDR_WRTR_ONESHOT
-            this->_rdr = std::shared_ptr<MessageReader>(new MessageReader(_conn_ptr, _io));
-            // get a writer
-            TCPConnection& conRef = *_conn_uniq_ptr;
-            this->_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(_io, conRef));
-#endif
             internalWrite();
         } else {
             m_response_handler(ec, m_rdr);
