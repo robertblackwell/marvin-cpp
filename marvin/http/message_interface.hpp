@@ -5,8 +5,8 @@
 #include <sstream>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/external_src/http-parser/http_parser.h>
-#include <marvin/include/boost_stuff.hpp>
-#include <marvin/message/http_method.hpp>
+#include<marvin/boost_stuff.hpp>
+#include<marvin/http/http_method.hpp>
 #pragma mark - http message interfaces
 
 namespace Marvin {

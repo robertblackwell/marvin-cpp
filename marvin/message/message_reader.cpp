@@ -2,9 +2,9 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/http/message.hpp>
+#include<marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 

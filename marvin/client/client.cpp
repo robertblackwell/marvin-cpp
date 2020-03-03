@@ -15,7 +15,7 @@
 #include <cassert>
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wall"
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #pragma clang diagnostic pop
 #include <marvin/external_src/CxxUrl/url.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>

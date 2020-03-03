@@ -10,7 +10,7 @@
 #include <pthread.h>
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <marvin/connection/tcp_connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>

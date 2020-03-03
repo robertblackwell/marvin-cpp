@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <marvin/message/message_reader.hpp>
 #include <marvin/message/message_writer.hpp>
 #include <marvin/server/server_context.hpp>

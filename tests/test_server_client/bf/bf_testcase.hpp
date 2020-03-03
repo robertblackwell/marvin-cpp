@@ -13,7 +13,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/client/client.hpp>

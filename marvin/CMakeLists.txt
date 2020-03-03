@@ -8,8 +8,8 @@ set(PROJECT_DIR ${Marvin_SOURCE_DIR})
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS include/*.hpp)
 
 file(GLOB HEADERS 
-	include/boost_stuff.hpp 
-	include/callback_typedefs.hpp 
+	boost_stuff.hpp 
+	callback_typedefs.hpp 
 
 	boost_ext/io_service_pool.hpp
 
@@ -30,63 +30,43 @@ file(GLOB HEADERS
 	connection/timeout.hpp
 	connection/tls_connection.hpp
 	connection/tunnel_handler.hpp
+
+	error/marvin_error.hpp 
 	
 	external_src/CxxUrl/url.hpp 
 	external_src/uri-parser/uri-parser/UriParser.hpp 
 	external_src/http-parser/http_parser.h 
 	external_src/rb_logger/rb_logger.hpp  
 	external_src/simple_buffer/simple_buffer.h
-
-	error/marvin_error.hpp 
 	
 	forwarding/forward_helpers.hpp 
 	forwarding/forwarding_handler.hpp
-	
-	http/http_header.hpp 
-	http/marvin_http.hpp 
-	http/marvin_okv.hpp 
-	http/message.hpp 
-	http/parser.hpp
-	
-	message/http_method.hpp 
-	message/marvin_uri.hpp 
-	message/message_reader.hpp 
-	message/message_writer.hpp 
-	message/uri_query.hpp
-	
-	server/request_handler_base.hpp
-	server/connection_handler.hpp 
-	server/http_server.hpp 
-	server/request_handler.hpp 
-	server/server_connection_manager.hpp 
-	server/server_context.hpp
 
 	helpers/helpers_fs.hpp
 	helpers/error.hpp
 	helpers/macros.hpp
+	
+	http/http_header.hpp 
+	http/http_method.hpp 
+	http/message_base.hpp 
+	http/message_factory.hpp
+	http/message_interface.hpp 
+	http/ordered_key_value.hpp 
+	http/parser.hpp
+	message/uri.hpp 
+	message/uri_query.hpp
+	
+	message/message_reader.hpp 
+	message/message_writer.hpp 
+	
+	server/connection_handler.hpp 
+	server/http_server.hpp 
+	server/request_handler_base.hpp
+	server/server_connection_manager.hpp 
+	server/server_context.hpp
 	)
-	# include/forwarding_handler.hpp 
-	# include/forwarding_handler.ipp 
-	# include/utest.hpp
-	# src/HTTPMessage src/request_handler.hpp
-	# collector/collector_base.cpp
-	# collector/i_collector.cpp 
-	# collector/pipe_collector
-	
-	# client/request.hpp
-	# config/marvin.hpp
-	# connection/i_socket.hpp
-	
-	# )
-
 
 set(SOURCES 
-	external_src/CxxUrl/url.cpp
-	external_src/uri-parser/UriCodec.cpp
-	external_src/http-parser/http_parser.c
-	external_src/rb_logger/rb_logger.cpp
-	external_src/simple_buffer/simple_buffer.c
-
 	boost_ext/io_service_pool.cpp
 
 	buffer/buffer_chain.cpp			
@@ -95,8 +75,8 @@ set(SOURCES
 	client/client.cpp  				
 	
 	collector/collector_base.cpp
-	collector/pipe_collector.cpp
 	collector/collector_interface.cpp
+	collector/pipe_collector.cpp
 
 	connection/half_tunnel.cpp     		
 	connection/socket_factory.cpp		
@@ -107,45 +87,38 @@ set(SOURCES
 	
 	error/marvin_error.cpp 				
 
+	external_src/CxxUrl/url.cpp
+	external_src/uri-parser/UriCodec.cpp
+	external_src/http-parser/http_parser.c
+	external_src/rb_logger/rb_logger.cpp
+	external_src/simple_buffer/simple_buffer.c
+
 	forwarding/forward_helpers.cpp 		
 	forwarding/forwarding_handler.cpp 	
-	
-	http/http_header.cpp 		
-	http/marvin_http.cpp 		
-	http/marvin_okv.cpp 		
-	http/message.cpp  			
-	http/parser.cpp 			
-	
-	message/http_method.cpp 	
-	message/marvin_uri.cpp
-	message/message_reader.cpp 	
-	message/message_writer.cpp 	
-	message/uri_query.cpp 		
-	
-	server/request_handler_base.cpp
-	server/connection_handler.cpp 			
-	server/http_server.cpp 					
-	server/server_connection_manager.cpp 	 
 
 	helpers/helpers_fs.cpp
 	helpers/error.cpp
+	
+	http/http_header.cpp 		
+	http/http_method.cpp 		
+	http/message_base.cpp
+	http/message_factory.cpp 		
+	http/ordered_key_value.cpp  			
+	http/parser.cpp 
+	http/uri.cpp
+	http/uri_query.cpp		
+	
+	message/message_reader.cpp 	
+	message/message_writer.cpp 	
+	
+	server/connection_handler.cpp 			
+	server/request_handler_base.cpp
+	server/http_server.cpp 					
+	server/server_connection_manager.cpp 
+	# leave out server_context - no functions in this file - produces library warning that is a bit obscure
+	# server/server_context.cpp
 	)
-	# server/server_context.cpp 				
-	# client/request.cpp  X
-	
-	# collector/collector_base.cpp
-	# collector/i_collector.cpp 
-	# collector/pipe_collector.cpp
-	
-	# config/marvin.hpp
 
-	# error/test_error.hpp           X
-	# http/i_message.hpp 			X
-	# message/marvin_uri.hpp        X 
-	# connection/i_socket.cpp 			X
-	# src/HTTPMessage src/request_handler.hpp X
-
-	# )
 set_source_files_properties(${SOURCES} PROPERTIES LANGUAGE CXX)
 
 set(HEADER_DIRS

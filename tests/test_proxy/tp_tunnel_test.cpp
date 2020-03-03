@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 #include <boost/process.hpp>
-#include <marvin/http/marvin_http.hpp>
+#include<marvin/http/message_factory.hpp>
 #include <marvin/helpers/helpers_fs.hpp>
 #include <marvin/collector/collector_base.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>

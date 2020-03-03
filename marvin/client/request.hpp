@@ -6,7 +6,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <marvin/message/message_writer.hpp>
 #include <marvin/message/message_reader.hpp>
 #include <marvin/connection/socket_interface.hpp>

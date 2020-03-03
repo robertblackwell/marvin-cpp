@@ -14,12 +14,12 @@
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/server/http_server.hpp>
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include <marvin/message/marvin_uri.hpp>
+#include<marvin/http/uri.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 
 #include "tsc_req_handler.hpp"

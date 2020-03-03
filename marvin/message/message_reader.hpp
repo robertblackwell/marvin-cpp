@@ -4,14 +4,14 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/http/message.hpp>
+#include<marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 #include <marvin/connection/socket_interface.hpp>
-#include <marvin/include/callback_typedefs.hpp>
+#include<marvin/callback_typedefs.hpp>
 
 class MessageReader;
 typedef std::shared_ptr<MessageReader> MessageReaderSPtr;

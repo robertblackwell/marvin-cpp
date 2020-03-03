@@ -4,12 +4,12 @@
 #include <string>
 #include <pthread.h>
 
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <json/json.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/http/http_header.hpp>
-#include <marvin/http/message.hpp>
+#include<marvin/http/message_base.hpp>
 #include "UriParser.hpp"
 #include "url.hpp"
 #include <marvin/server/http_server.hpp>

@@ -6,10 +6,10 @@
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
 #include <boost/algorithm/string.hpp>
-#include <marvin/http/message.hpp>
+#include<marvin/http/message_base.hpp>
 #include <marvin/http/http_header.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
-#include <marvin/http/marvin_http.hpp>
+#include<marvin/http/message_factory.hpp>
 
 using namespace Marvin;
 using namespace Marvin::Http;

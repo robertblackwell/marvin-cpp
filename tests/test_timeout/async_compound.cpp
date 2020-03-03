@@ -3,7 +3,7 @@
 /// \brief A class that simulates composed asyn operations in the precense of timeouts.
 ///
 #include <string>
-#include <marvin/include/boost_stuff.hpp>
+#include<marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 class AsyncComposedOp
