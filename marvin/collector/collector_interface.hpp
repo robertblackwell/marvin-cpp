@@ -11,7 +11,6 @@
 
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
-#include <marvin/client/request.hpp>
 
 class ICollector
 {

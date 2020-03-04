@@ -13,7 +13,6 @@
 
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
-#include <marvin/client/request.hpp>
 #include <marvin/collector/collector_interface.hpp>
 #include <marvin/forwarding/forwarding_handler.hpp>
 

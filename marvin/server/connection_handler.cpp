@@ -13,6 +13,7 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
+#if 0
 ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&    io,
     ServerConnectionManager&    connectionManager,
@@ -39,6 +40,7 @@ ConnectionHandler::ConnectionHandler(
     LogDebug("");
 
 }
+#endif
 ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&    io,
     ServerConnectionManager&    connectionManager,
@@ -61,7 +63,7 @@ ConnectionHandler::ConnectionHandler(
     m_server_context.server_ptr = HTTPServer::get_instance();
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
-//    m_server_context.connection_ptr = conn;
+    m_server_context.connection_ptr = conn_sptr.get();
     LogDebug("");
 
 }

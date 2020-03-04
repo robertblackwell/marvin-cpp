@@ -23,7 +23,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/message/message_reader.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/client/request.hpp>
+// #include <marvin/client/request.hpp>
 #include <marvin/client/client.hpp>
 #include <marvin/connection/tcp_connection.hpp>
 

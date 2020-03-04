@@ -152,14 +152,12 @@ void HTTPServer::terminate()
 {
 
     LogInfo("");
-//    ISocketSPtr conn_sptr = socketFactory(m_io);
-//    ISocket* conptr = socketFactory(m_io).get();
-    ISocket* conptr = new TCPConnection(m_io);
+    ISocketSPtr conn_sptr = socketFactory(m_io);
     
-    ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conptr, m_factory);
+    ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
 
     auto hf = (std::bind(&HTTPServer::handleAccept, this, connectionHandler, std::placeholders::_1));
-    conptr->asyncAccept(m_acceptor, hf);
+    conn_sptr->asyncAccept(m_acceptor, hf);
 //    _acceptor.async_accept(_boost_socket, hf);
 
 }

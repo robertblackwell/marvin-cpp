@@ -28,11 +28,9 @@ TunnelHandler::TunnelHandler(
     boost::asio::io_service& io,
     ISocketSPtr         downstreamConnection,
     ISocketSPtr         upstreamConnection
-//    TCPConnectionSPtr   upstreamConnection
 ) : m_io(io)
 {
     m_downstream_connection   = downstreamConnection;
-//    m_upstream_connection     = (ISocketSPtr)upstreamConnection;
     m_upstream_connection = upstreamConnection;
     m_first_read_timeout_millisecs = 45000;
     m_subsequent_read_timeout_millisecs = 15000;

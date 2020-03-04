@@ -22,10 +22,10 @@ ISocketSPtr socketFactory(
     ptr = std::make_shared<TCPConnection>(io_service, scheme, server, port);
     return ptr;
 }
-ISocket* socketFactory(boost::asio::io_service& io_service)
+ISocketSPtr socketFactory(boost::asio::io_service& io_service)
 {
-    ISocket* ptr;
-    ptr = new TCPConnection(io_service);
+    ISocketSPtr ptr;
+    ptr = std::make_shared<TCPConnection>(io_service);
     return ptr;
 }
 

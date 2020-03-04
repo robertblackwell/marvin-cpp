@@ -31,18 +31,18 @@ using ConnectionHandlerSPtr = std::shared_ptr<ConnectionHandler>;
 class ConnectionHandler
 {
     public:
+        // ConnectionHandler(
+        //     boost::asio::io_service&     io,
+        //     ServerConnectionManager&     connectionManager,
+        //     ISocket*                     conn, 
+        //     RequestHandlerFactory        factory
+        // );
         ConnectionHandler(
             boost::asio::io_service&     io,
             ServerConnectionManager&     connectionManager,
-            ISocket*                     conn, // we know for certain that this is a TCPConnection ??
+            ISocketSPtr                  conn_sptr, 
             RequestHandlerFactory        factory
         );
-    ConnectionHandler(
-        boost::asio::io_service&     io,
-        ServerConnectionManager&     connectionManager,
-        ISocketSPtr                  conn_sptr, // we know for certain that this is a TCPConnection ??
-        RequestHandlerFactory        factory
-    );
 
         ~ConnectionHandler();
     
