@@ -1,5 +1,6 @@
-#include<marvin/http/message_factory.hpp>
-#include<marvin/http/message_base.hpp>
+#include <marvin/http/message_factory.hpp>
+#include <marvin/http/message_base.hpp>
+#include <marvin/connection/socket_factory.hpp>
 #include <marvin/forwarding/forwarding_handler.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -75,16 +76,6 @@ ForwardingHandler::~ForwardingHandler()
 
 void ForwardingHandler::p_handle_upgrade()
 {
-    // deny the upgrade
-#if 0
-    _resp->setStatus("Forbidden");
-    _resp->setStatusCode(403);
-    std::string n("");
-    _resp->setContent(n);
-    _resp->asyncWrite([this](Marvin::ErrorType& err){
-        _doneCallback(err, false);
-    });
-#endif
 }
 
 #pragma mark - handle connect request
@@ -110,7 +101,7 @@ void ForwardingHandler::handleConnect(
         MessageReaderSPtr           request,    // the initial request as a MessageReader
         MessageWriterSPtr           responseWriter,
         ISocketSPtr                 clientConnectionSPtr,// the connection to the client
-                                                         // we know for certain that this is always a TCPConnection
+                                                         
         HandlerDoneCallbackType     done
 ){
     LogTrace(traceForwardingHandler(this), Marvin::Http::traceMessage(*(request.get())));
@@ -156,8 +147,7 @@ void ForwardingHandler::p_initiate_tunnel()
 //    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
 
     LogTrace("scheme:", m_scheme, " host:", m_host, " port:", m_port);
-    m_upstream_connection = std::make_shared<TCPConnection>(m_io, m_scheme, m_host, std::to_string(m_port));
-    
+    m_upstream_connection =  socketFactory(m_io, m_scheme, m_host, std::to_string(m_port));
     m_upstream_connection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
         if( err ) {
             LogWarn("initiateTunnel: FAILED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
@@ -179,7 +169,7 @@ void ForwardingHandler::p_initiate_tunnel()
         } else {
             LogTrace("initiateTunnel: connection SUCCEEDED scheme:", traceForwardingHandler(this), " scheme:",this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
-            Marvin:Http::makeResponse200OKConnected(*m_response_sptr);
+            ::Marvin::Http::makeResponse200OKConnected(*m_response_sptr);
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
                 LogInfo("");
                 if( err ) {

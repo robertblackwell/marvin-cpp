@@ -8,6 +8,7 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #include <thread>
+#include <marvin/connection/socket_factory.hpp>
 #include <marvin/server/http_server.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
@@ -41,15 +42,15 @@ bool HTTPServer::verify()
 
 
 
-HTTPServer::HTTPServer(RequestHandlerFactory factory)
-  : m_factory(factory),
-    m_io(5),
+HTTPServer::HTTPServer(RequestHandlerFactory factory):
+    m_heartbeat_interval_ms(s_heartbeat_interval_ms),
+    m_numberOfThreads(s_numberOfThreads),
+    m_numberOfConnections(s_numberOfConnections),
+    m_io(1),
     m_signals(m_io),
     m_acceptor(m_io),
-    m_numberOfConnections(s_numberOfConnections),
-    m_numberOfThreads(s_numberOfThreads),
-    m_heartbeat_interval_ms(s_heartbeat_interval_ms),
     m_connectionManager(m_io, m_numberOfConnections),
+    m_factory(factory),
     m_heartbeat_timer(m_io),
     m_terminate_requested(false)
 {
@@ -151,6 +152,8 @@ void HTTPServer::terminate()
 {
 
     LogInfo("");
+//    ISocketSPtr conn_sptr = socketFactory(m_io);
+//    ISocket* conptr = socketFactory(m_io).get();
     ISocket* conptr = new TCPConnection(m_io);
     
     ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conptr, m_factory);

@@ -19,7 +19,6 @@
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/client/client.hpp>
 #include<marvin/http/message_base.hpp>
-#include <marvin/connection/tcp_connection.hpp>
 #include <marvin/http/http_header.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
 #include <marvin/collector/collector_interface.hpp>
@@ -125,7 +124,7 @@ class ForwardingHandler : public RequestHandlerBase
         Marvin::MBufferUPtr         m_initial_response_buf;
         TunnelHandlerSPtr           m_tunnel_handler;
         ISocketSPtr                 m_downstream_connection; // used only for tunnel
-        TCPConnectionSPtr           m_upstream_connection; // used only for tunnels
+        ISocketSPtr                 m_upstream_connection;
     
         /// regexs to define hosts that require mitm not tunnel
         std::vector<std::regex>     m_https_hosts;

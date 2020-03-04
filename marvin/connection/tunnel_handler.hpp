@@ -25,7 +25,8 @@ class TunnelHandler
         TunnelHandler(
             boost::asio::io_service&    io,
             ISocketSPtr                 downStreamConnection,
-            TCPConnectionSPtr           upstreamConnection
+            ISocketSPtr                 upstreamConnection
+//            TCPConnectionSPtr           upstreamConnection
         );
         ~TunnelHandler();
         void start(std::function<void(Marvin::ErrorType& err)> cb);

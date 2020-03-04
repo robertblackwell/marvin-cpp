@@ -27,11 +27,13 @@ std::string traceTunnel(TunnelHandlerSPtr t_ptr)
 TunnelHandler::TunnelHandler(
     boost::asio::io_service& io,
     ISocketSPtr         downstreamConnection,
-    TCPConnectionSPtr   upstreamConnection
+    ISocketSPtr         upstreamConnection
+//    TCPConnectionSPtr   upstreamConnection
 ) : m_io(io)
 {
     m_downstream_connection   = downstreamConnection;
-    m_upstream_connection     = (ISocketSPtr)upstreamConnection;
+//    m_upstream_connection     = (ISocketSPtr)upstreamConnection;
+    m_upstream_connection = upstreamConnection;
     m_first_read_timeout_millisecs = 45000;
     m_subsequent_read_timeout_millisecs = 15000;
     m_upstream_halftunnel     =  std::unique_ptr<HalfTunnel>(

@@ -18,9 +18,10 @@ ConnectionHandler::ConnectionHandler(
     ServerConnectionManager&    connectionManager,
     ISocket*                    conn,
     RequestHandlerFactory       factory
-):  m_io(io),
-    m_connectionManager(connectionManager),
+):
     m_uuid(boost::uuids::random_generator()()),
+    m_io(io),
+    m_connectionManager(connectionManager),
     m_factory(factory)
 {
     LogTorTrace();
@@ -35,6 +36,32 @@ ConnectionHandler::ConnectionHandler(
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
     m_server_context.connection_ptr = conn;
+    LogDebug("");
+
+}
+ConnectionHandler::ConnectionHandler(
+    boost::asio::io_service&    io,
+    ServerConnectionManager&    connectionManager,
+    ISocketSPtr                 conn_sptr,
+    RequestHandlerFactory       factory
+):
+    m_uuid(boost::uuids::random_generator()()),
+    m_io(io),
+    m_connectionManager(connectionManager),
+    m_factory(factory)
+{
+    LogTorTrace();
+    /**
+    * The connection and the request handler persist acrosss all messages served
+    * by a connection handler. This is required to ensure that our MITM proxy
+    * can handle keep-alive
+    */
+    m_connection = conn_sptr;
+    m_requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(m_factory(m_io));
+    m_server_context.server_ptr = HTTPServer::get_instance();
+    m_server_context.connection_handler_ptr = this;
+    m_server_context.server_connection_manager_ptr = &connectionManager;
+//    m_server_context.connection_ptr = conn;
     LogDebug("");
 
 }

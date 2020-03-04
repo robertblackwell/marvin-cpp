@@ -37,7 +37,13 @@ class ConnectionHandler
             ISocket*                     conn, // we know for certain that this is a TCPConnection ??
             RequestHandlerFactory        factory
         );
-    
+    ConnectionHandler(
+        boost::asio::io_service&     io,
+        ServerConnectionManager&     connectionManager,
+        ISocketSPtr                  conn_sptr, // we know for certain that this is a TCPConnection ??
+        RequestHandlerFactory        factory
+    );
+
         ~ConnectionHandler();
     
         void serve();

@@ -24,9 +24,12 @@ using ip::tcp;
 using system::error_code;
 /**
 * \ingroup SocketIO
-* \brief Factor function to construct a new TCP Connection and prime it with a server name and port.
-* Since TCP Connections can be any combination of  HTTP/HTTPS or Server/Client the distinction is made
-* after creation. For convenience scheme/server/port may be specified during construction
+* \brief Factory function to construct a new TCP Connection and prime it with a server name and port.
+* The TCP Connection class can be any combination of  HTTP/HTTPS or Server/Client the distinction is made
+* after creation.
+* Currently the factory function produces http connections only and the user is responsible
+* for priming the connection for https operation. The is once I decide how to provide certificate store
+* or server identity capability.
 */
 ISocketSPtr socketFactory(
             boost::asio::io_service& io_service,
