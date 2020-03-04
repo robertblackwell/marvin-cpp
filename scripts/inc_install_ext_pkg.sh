@@ -44,7 +44,6 @@ function get_package_into() {
 # Copy the source from the downloaded package into the stage directory  stage/external_src/${package_name}
 # 
 function stage_package_to() {
-	package_stage_dir=${script_dir}/stage/external_src/${package_name}
 	rm -f  ${package_stage_dir}/*
 	mkdir -p ${package_stage_dir}
 	cp -rv ${clone_dir}/${clone_dir_stem_name}/${header_cp_pattern} ${package_stage_dir}
@@ -81,6 +80,8 @@ source_dir=${project_dir}/marvin
 external_src=${source_dir}/external_src
 script_dir=$(dirname $(realpath $0))
 clone_dir=${script_dir}/cloned_repos
+stage_dir=${script_dir}/stage
+package_stage_dir=${script_dir}/stage/external_src/${package_name}
 
 if [ "$1" == "stage" ] || [ "$1" == "install" ] || [ "$1" == "" ] ; then
 	verify_project_name ${project_name} "marvin"

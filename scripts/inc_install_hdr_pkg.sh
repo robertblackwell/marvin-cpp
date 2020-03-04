@@ -64,6 +64,8 @@ source_dir=${project_dir}/marvin
 vendor=${project_dir}/vendor
 script_dir=$(dirname $(realpath $0))
 clone_dir=${script_dir}/cloned_repos
+stage_dir=${script_dir}/stage
+package_stage_dir=${stage_dir}/${package_name}
 
 if [ "$1" == "stage" ] || [ "$1" == "install" ] || [ "$1" == "" ] ; then
 	verify_package_name

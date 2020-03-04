@@ -20,6 +20,21 @@ __version__ = "0.3.5"
 debug = True
 logfile = False
 
+class Defaults:
+    def __init__(the_project_name, the_project_dir, the_source_dir_name):
+        clone_name = "clone"
+        stage_name = "stage"
+        external_name = "external"
+        vendor_name = "vendor"
+        scripts_name = "scripts"
+
+        project_name = the_project_name
+        project_dir = the_project_dir
+        unpack_dir = os.path.join(project_dir, scripts_name, clone_name)
+        source_dir = os.path.join(project_dir, the_project_name)
+        external_dir = os.path.join(project_dir, the_project_name, external_name)
+
+
 
 def doit(openssl_version, output_dir, dryrun_flag):
     print("Hello")
@@ -27,7 +42,9 @@ def doit(openssl_version, output_dir, dryrun_flag):
 
 
 def main():
-    default_openssl_version = "openssl@1.1.1d"
+    project_name = None
+    project_dir = None
+    source_dir_name = None
 
     parser = argparse.ArgumentParser(
         description="Install dependencies for project.")
@@ -37,12 +54,19 @@ def main():
     parser.add_argument('--install', 	dest="install_flag", action="store_true",
                         help='Installs the staged install to the final destination')
 
-    # parser.add_argument('--openssl-version', 		dest='openssl_version', 	default="openssl@1.1.1d",
-    # 		help='Sets the openssl version to get, must be full version string, the tag used in the github repo. Default is: openssl@1.1.1d')
+    parser.add_argument('--project-name', 	   dest='project_name', help='The name of the project. Required')
+    parser.add_argument('--project-dir',       dest='project_dir', help='Path to the project top level directory. Defaults to pwd. ')
+    parser.add_argument('--source-dir-name',   dest='project_dir_name', help='Stem name of the project source directory, should be same as project name lowercased')
 
-    # parser.add_argument('--install-dir', 		dest='install_dir_path',
-    # 	help='Sets the openssl installation directory.' + '\nOn completion openssl headers will be placed in {install-dir}/include, '
+    parser.add_argument('--clone-dir', 		dest='clone_dir_path', help='The path for directory into which packages are cloned/unpacked. Default to scripts/clone_dir ')
+    parser.add_argument('--stage-dir',      dest='stage_dir_path', help='The path for directory into which package headers amd archives are copied after building.'
+            + 'Default to scripts/stage ')
+    parser.add_argument('--vendor-dir',      dest='vendor_dir_path', help='The path for directory into which package headers amd archives are installed locally to the project.\n'
+            +'Mustb always be an immediate subdirectory of the project-dir and defaults to {project-dir}/vendor.')
     # 													+ 'and libraries will be in {install-dir}/lib')
+    parser.add_argument('--external-dir',      dest='external_dir_path', help='The path for directory into packages delivered as copied source files will be installed.\n'
+        'Must be inside the project source directory, Defaults to project_dir/source_dir_name/external.')
+
 
     # parser.add_argument('--stage-dir', 		dest='stage_dir_path',
     # 	help='Sets the openssl stage directory.' +
@@ -57,44 +81,46 @@ def main():
     # parser.add_argument('--dryrun', 	action="store_true",
     # 	help="Does NOT execute group changes but does provide logs")
     args = parser.parse_args()
+    pp.pprint(args)
 
-    if debug:
-        pp.pprint(args)
 
-    if args.version:
-        print(__version__)
-        sys.exit(0)
+    # if debug:
+    #     pp.pprint(args)
 
-    if args.show_openssl_version:
-        print(default_openssl_version)
+    # if args.version:
+    #     print(__version__)
+    #     sys.exit(0)
 
-    if args.openssl_version:
-        active_openssl_version = args.openssl_version
-    else:
-        active_openssl_version = default_openssl_version
+    # if args.show_openssl_version:
+    #     print(default_openssl_version)
 
-    output_dir = None
-    if args.stage_dir_path:
-        output_dir = args.stage_dir
+    # if args.openssl_version:
+    #     active_openssl_version = args.openssl_version
+    # else:
+    #     active_openssl_version = default_openssl_version
 
-    if args.install_dir_path:
-        output_dir = args.install_dir_path
+    # output_dir = None
+    # if args.stage_dir_path:
+    #     output_dir = args.stage_dir
 
-    logpath = "./log"
-    if args.logfile_path:
-        logpath = args.logfile_path
-    else:
-        ts = datetime.datetime.now().isoformat()
-        if debug:
-            pp.pprint(ts)
-        if debug:
-            pp.pprint(logpath)
-        global logfile
-        logfile = open(logpath, "w")
-    if debug:
-        pp.pprint(logfile)
+    # if args.install_dir_path:
+    #     output_dir = args.install_dir_path
 
-    doit(active_openssl_version, output_dir, args.dryrun)
+    # logpath = "./log"
+    # if args.logfile_path:
+    #     logpath = args.logfile_path
+    # else:
+    #     ts = datetime.datetime.now().isoformat()
+    #     if debug:
+    #         pp.pprint(ts)
+    #     if debug:
+    #         pp.pprint(logpath)
+    #     global logfile
+    #     logfile = open(logpath, "w")
+    # if debug:
+    #     pp.pprint(logfile)
+
+    # doit(active_openssl_version, output_dir, args.dryrun)
 
 
 if __name__ == "__main__":

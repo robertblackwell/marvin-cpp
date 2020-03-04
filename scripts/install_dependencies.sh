@@ -78,6 +78,8 @@ ${script_dir}/install_http_parser.sh $1
 ${script_dir}/install_simple_buffer.sh $1
 ${script_dir}/install_urlparser.sh $1
 ${script_dir}/install_cxxurl.sh $1
+${script_dir}/install_rb_logger.sh $1
+${script_dir}/install_libcert.sh $1
 
 
 if [ "$1" == "install"  ] || [ "$1" == "install_only" ] ; then

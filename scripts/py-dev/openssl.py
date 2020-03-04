@@ -1,88 +1,65 @@
-#!/usr/bin/env python3
-
-import requests
 import sys
 import json
-import argparse
 import datetime
+import os
 import pprint
-pp = pprint.PrettyPrinter(indent=4)
+import shutil
+from util import run
 
-__version__ = "0.3.5"
+from package import LibraryPackage
 
-debug = True
-logfile = False
+package_name = "openssl"
+openssl_name = "openssl-1.1.1d"
+
+# package_url = "https://dl.bintray.com/boostorg/release/{}/source/boost_1_72_0.tar.gz".format(boost_release)
+package_url = "https://www.openssl.org/source/{}.tar.gz".format(openssl_name)
+package_targz_file = "tar xvzf {}.tar.gz".format(openssl_name)
 
 
-def doit(openssl_version, output_dir, dryrun_flag):
-	print("Hello")
-	pp.pprint([openssl_version, output_dir, dryrun_flag])
+class OpenSSL(LibraryPackage):
+	def __init__(self, name, version, the_defaults):
+		super().__init__(package_name, the_defaults)
+		self.name = name
+		self.version = version
 
-def main():
-	default_openssl_version = "openssl@1.1.1d"
+		self.package_targz_file_path = os.path.join(self.defaults.clone_dir, package_targz_file)
+		self.wget_output_path = self.defaults.clone_dir
+		self.package_targz_file_path = os.path.join(self.defaults.clone_dir, package_targz_file)
+		self.vendor_ssl_dir = os.path.join(self.defaults.vendor_dir, "ssl")
 
-	parser = argparse.ArgumentParser(
-		description="Get a given version of openssl from its github repo with wget, build openssl, possibly into a stage directory or install openssl into its final location.")
-	parser.add_argument('-v','--version', 	action="store_true", 	help="Prints the version number.")
-
-	parser.add_argument('--show-openssl-version', 	dest="show_openssl_version", action="store_true",	
-			help='Prints out the default openssl version to get')
-
-	parser.add_argument('--openssl-version', 		dest='openssl_version', 	default="openssl@1.1.1d", 
-			help='Sets the openssl version to get, must be full version string, the tag used in the github repo. Default is: openssl@1.1.1d')
-
-	parser.add_argument('--install-dir', 		dest='install_dir_path', 	
-		help='Sets the openssl installation directory.' + '\nOn completion openssl headers will be placed in {install-dir}/include, '
-														+ 'and libraries will be in {install-dir}/lib')
+	def get_package(self):
+		print("here")
+		super().get_package_before()
+		run("rm -rfv {}/{}".format(self.defaults.clone_dir, package_targz_file))
+		run("rm -rfv {}/{}/*".format(self.defaults.clone_dir, package_name))
+		run("wget -O {} {}".format(self.wget_output_path, package_url))
+		run("tar xvzf {} -C {}".format(self.package_targz_file_path, self.package_clone_dir_path))
+		run("ls -al {}".format(self.package_clone_dir_path))
+		super().get_package_after()
 	
-	parser.add_argument('--stage-dir', 		dest='stage_dir_path', 	
-		help='Sets the openssl stage directory.' + 
-			'\nOn completion openssl headers will be placed in {install-dir}/include, '	+ 'and libraries will be in {install-dir}/lib')
+	def stage_package(self):
+		super().stage_package_before()
+		run("mkdir -p {}".format(self.stage_include_dir_path))
+		run("rm -rf {}/*".format(self.package_stage_include_dir_path))
+		run("mkdir -p {}".format(self.stage_lib_dir_path))
+		run("rm -rf {}/libboost*".format(self.stage_lib_dir_path))
 
-	parser.add_argument('--list', 		dest='infile_path', 	
-		help='Path to input file, each line has arguments for command. Cannot parse both a file and a string')
-	parser.add_argument('--log', 		dest='logfile_path', 	
-		help='Path to log file, default is ncm_results_YYYYMMDDHHMMSS.txt in the working directory')
-	parser.add_argument('--debug', 		action="store_true", 	
-		help="Prints out the command to be executed rather than execute the command, to help problem solve")
-	parser.add_argument('--dryrun', 	action="store_true", 	
-		help="Does NOT execute group changes but does provide logs")
-	args = parser.parse_args()
+		run(
+			"./Configure --prefix={} --openssldir={} --debug darwin64-x86_64-cc"
+			.format(self.defaults.stage_dir, self.vendor_ssl_dir), 
+			self.package_clone_dir_path)
+		run("make all")
+		run("make install")
+		super().stage_package_after()
 
-	if debug: pp.pprint(args) 
+	def install_package(self):
+		super().install_package_before()
+		run("mkdir -p {}".format(self.vendor_lib_dir_path))
+		run("mkdir -p {}".format(self.package_vendor_include_dir_path))
+		run("rm -rf {}/*".format(self.package_vendor_include_dir_path))
+		run("rm -rf {}/libcrypto*".format(self.vendor_lib_dir_path))
+		run("rm -rf {}/libssl*".format(self.vendor_lib_dir_path))
 
-	if args.version:
-		print(__version__)
-		sys.exit(0)
-
-	if args.show_openssl_version:
-		print(default_openssl_version)
-
-	if args.openssl_version:
-		active_openssl_version = args.openssl_version
-	else:
-		active_openssl_version = default_openssl_version
-
-	output_dir = None
-	if args.stage_dir_path:
-		output_dir = args.stage_dir
-
-	if args.install_dir_path:
-		output_dir = args.install_dir_path
-
-	logpath = "./log"
-	if args.logfile_path:
-		logpath = args.logfile_path
-	else:
-		ts = datetime.datetime.now().isoformat()
-		if debug: pp.pprint(ts)
-		if debug: pp.pprint(logpath)
-		global logfile
-		logfile = open(logpath, "w")
-	if debug: pp.pprint(logfile)
-
-	doit(active_openssl_version, output_dir, args.dryrun)
-
-
-if __name__ == "__main__":
-	main()
+		run("cp -rv {}/* {}".format(self.package_stage_include_dir_path,  self.package_vendor_include_dir_path))
+		run("cp -rv {}/lib* {}".format(self.stage_lib_dir_path,  self.vendor_lib_dir_path))
+		super().install_package_after()

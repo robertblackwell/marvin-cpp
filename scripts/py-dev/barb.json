@@ -1,0 +1,14 @@
+{
+  "project_name": "py-dev",
+  "source_dir_name": "py-dev",
+  "dependencies": [
+    { "name": "boost", "version": "1.72.1" },
+    { "name": "openssl", "version": "1.1.1d" },
+    { "name": "http_parser", "version": "" },
+    { "name": "simple_buffer", "version": "" },
+    { "name": "uri-parser", "version": "" },
+    { "name": "cxxurl", "version": "" },
+    { "name": "rb_logger", "version": "" },
+    { "name": "catch2", "version": "" }
+  ]
+}
