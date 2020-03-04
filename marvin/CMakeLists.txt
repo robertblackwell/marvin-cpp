@@ -28,7 +28,6 @@ file(GLOB HEADERS
 	connection/socket_factory.hpp
 	connection/tcp_connection.hpp
 	connection/timeout.hpp
-	connection/tls_connection.hpp
 	connection/tunnel_handler.hpp
 
 	error/marvin_error.hpp 
@@ -82,7 +81,6 @@ set(SOURCES
 	connection/socket_factory.cpp		
 	connection/tcp_connection.cpp		
 	connection/timeout.cpp				
-	connection/tls_connection.cpp		
 	connection/tunnel_handler.cpp  		
 	
 	error/marvin_error.cpp 				

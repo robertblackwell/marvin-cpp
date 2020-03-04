@@ -12,7 +12,6 @@
 #include <marvin/server/request_handler_base.hpp>
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/connection/tcp_connection.hpp>
-#include <marvin/connection/tls_connection.hpp>
 #include <marvin/message/message_reader.hpp>
 #include <marvin/message/message_writer.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
