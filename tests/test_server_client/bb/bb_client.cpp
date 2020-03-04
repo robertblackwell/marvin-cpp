@@ -4,7 +4,8 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
-#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/connection/connection.hpp>
+#include <marvin/connection/socket_factory.hpp>
 #include <marvin/message/message_reader.hpp>
 
 #include "bb_testcase.hpp"
@@ -15,38 +16,38 @@ using namespace body_buffering;
 using json = nlohmann::json;
 
 TClient::TClient(boost::asio::io_service& io, std::string port, Testcase tc)
-: _io(io), _scheme("http"), _server("localhost"), _port(port), _testcase(tc), _timer(_io)
+: m_io(io), m_scheme("http"), m_server("localhost"), m_port(port), m_testcase(tc), m_timer(m_io)
 {
-    _conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(_io, _scheme, _server, _port));
+    m_conn_sptr = socketFactory(m_io, m_scheme, m_server, m_port);
 }
 void TClient::exec()
 {
     LogDebug("");
-    _buffer_index = 0;
-    _test_cb = nullptr;
+    m_buffer_index = 0;
+    m_test_cb = nullptr;
     connect();
 }
 void TClient::send_testcase_buffers(SysErrorCb cb)
 {
     LogDebug("");
-    _buffer_index = 0;
-    _test_cb = cb;
+    m_buffer_index = 0;
+    m_test_cb = cb;
     connect();
 }
 
 void TClient::connect()
 {
     LogDebug("");
-    _conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
+    m_conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
         LogDebug("connected");
         if( ! err ){
-            _rdr = std::make_shared<MessageReader>(_io, _conn_sptr);
+            m_rdr = std::make_shared<MessageReader>(m_io, m_conn_sptr);
             auto wbf = std::bind(&TClient::wait_before_write, this);
-            _io.post(wbf);
+            m_io.post(wbf);
         } else {
             Marvin::ErrorType me = err;
             LogError("error_value", err.value(), " message: ", err.message());
-            _test_cb(me);
+            m_test_cb(me);
         }
     });
 }
@@ -54,29 +55,29 @@ void TClient::connect()
 void TClient::write_line()
 {
     LogDebug("");
-    std::string line = _testcase.lineAt(_buffer_index);
+    std::string line = m_testcase.lineAt(m_buffer_index);
     LogDebug(" line: ", line);
     if (line == "eof" ) {
-        _conn_sptr->shutdown();
+        m_conn_sptr->shutdown();
         auto erok = Marvin::make_error_ok();
         std::size_t bytes = line.size();
         handle_write_complete(erok, bytes);
     } else if (line == "close") {
-        _conn_sptr->close();
+        m_conn_sptr->close();
         auto erok = Marvin::make_error_ok();
         std::size_t bytes = line.size();
         handle_write_complete(erok, bytes);
     } else {
         auto hf = std::bind(&TClient::handle_write_complete, this, std::placeholders::_1, std::placeholders::_2);
-        _conn_sptr->asyncWrite(line, hf);
+        m_conn_sptr->asyncWrite(line, hf);
     }
 }
 void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
     LogDebug("");
     if( !err) {
-        _buffer_index++;
-        if(_buffer_index >= _testcase.buffers().size()) {
+        m_buffer_index++;
+        if(m_buffer_index >= m_testcase.buffers().size()) {
             LogDebug("write complete start read");
             read_message();
         } else {
@@ -84,14 +85,14 @@ void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_tr
         }
     } else {
         Marvin::ErrorType err_val = err;
-        _test_cb(err_val);
+        m_test_cb(err_val);
     }
 }
 void TClient::wait_before_write()
 {
     LogDebug("");
-    _timer.expires_from_now(boost::posix_time::milliseconds(100));
-    _timer.async_wait([this](const boost::system::error_code& err) {
+    m_timer.expires_from_now(boost::posix_time::milliseconds(100));
+    m_timer.async_wait([this](const boost::system::error_code& err) {
         write_line();
     });
 
@@ -105,13 +106,13 @@ void TClient::read_message()
     LogDebug("getting started");
 //        makeReader();
     auto h = std::bind(&TClient::onMessage, this, std::placeholders::_1);
-    _rdr->readMessage(h);
+    m_rdr->readMessage(h);
 }
 
 void TClient::onMessage(Marvin::ErrorType er)
 {
     LogDebug("");
-    Marvin::ErrorType expected_err = _testcase.result_onheaders_err();
+    Marvin::ErrorType expected_err = m_testcase.result_onheaders_err();
     std::string exp_s = Marvin::make_error_description(expected_err);
     std::string ers = Marvin::make_error_description(er);
     if( er != expected_err){
@@ -124,30 +125,26 @@ void TClient::onMessage(Marvin::ErrorType er)
         /// message will be meaningless
 //        std::cout << "TestRunner::readMessage Success error as expected[" << ers << "] for testcase " << _testcase.getDescription() <<std::endl;
     } else {
-        assert(_rdr->statusCode() == _testcase.result_status_code());
-        REQUIRE(_rdr->statusCode() == _testcase.result_status_code());
-        auto h1 = _testcase.result_headers();
-        auto h2 = _rdr->getHeaders();
+        assert(m_rdr->statusCode() == m_testcase.result_status_code());
+        REQUIRE(m_rdr->statusCode() == m_testcase.result_status_code());
+        auto h1 = m_testcase.result_headers();
+        auto h2 = m_rdr->getHeaders();
         bool hh = (h1 == h2);
-        std::string raw_body = _rdr->getContentBuffer()->to_string();
+        std::string raw_body = m_rdr->getContentBuffer()->to_string();
         json j = json::parse(raw_body);
         std::string req_body = j["req"]["body"];
         std::string ch_uuid = j["xtra"]["connection_handler_uuid"];
         std::string rh_uuid = j["xtra"]["request_handler_uuid"];
 
-        std::string sx = _rdr->getContentBuffer()->to_string();
-        auto b1 = _testcase.result_body();
-    //    auto b2 = _rdr->getBody()();
-    //    auto b3 = _rdr->get_raw_body_chain();
-    //    auto s2 = b2.to_string();
-    //    auto s3 = b3.to_string();
+        std::string sx = m_rdr->getContentBuffer()->to_string();
+        auto b1 = m_testcase.result_body();
         assert(b1 == req_body);
         REQUIRE(b1 == req_body);
-        auto desc = _testcase.getDescription();
-        if(_rdr->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionClose) {
+        auto desc = m_testcase.getDescription();
+        if(m_rdr->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionClose) {
             // should close here - but client does not know how to do that cleanly.
-            this->_conn_sptr->close();
-            this->_rdr = nullptr;
+            this->m_conn_sptr->close();
+            this->m_rdr = nullptr;
         }
 //        std::cout << "TestRunner::readMessage Success for testcase " << _testcase.getDescription() <<std::endl;
     }

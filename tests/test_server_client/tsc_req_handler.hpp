@@ -9,6 +9,7 @@
 #include<marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <marvin/http/http_header.hpp>
+#include <marvin/connection/connection.hpp>
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/server_context.hpp>
 #include <marvin/server/request_handler_base.hpp>

@@ -51,9 +51,9 @@ void multiple(std::vector<body_buffering::Testcase> tcs)
 TEST_CASE("oneshot-bodybuffering-timeout","[to]")
 {
     /// set short connection timeouts
-    TCPConnection::setConfig_connectTimeOut(1000);
-    TCPConnection::setConfig_readTimeOut(1000);
-    TCPConnection::setConfig_writeTimeOut(1000);
+    Connection::setConfig_connectTimeOut(1000);
+    Connection::setConfig_readTimeOut(1000);
+    Connection::setConfig_writeTimeOut(1000);
     multiple(body_buffering::make_timeout_cases());
 }
 /// \warning cannot test eof here as client never gets a response
@@ -63,9 +63,9 @@ TEST_CASE("oneshot-bodybuffering-timeout","[to]")
 TEST_CASE("oneshot-bodybuffering-eof","[eof]")
 {
     /// set long connection timeouts for debugging
-    TCPConnection::setConfig_connectTimeOut(100000);
-    TCPConnection::setConfig_readTimeOut(100000);
-    TCPConnection::setConfig_writeTimeOut(100000);
+    Connection::setConfig_connectTimeOut(100000);
+    Connection::setConfig_readTimeOut(100000);
+    Connection::setConfig_writeTimeOut(100000);
     multiple(body_buffering::make_eof_cases());
 }
 TEST_CASE("EofAll, all", "[eofall]")

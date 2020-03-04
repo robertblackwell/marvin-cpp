@@ -79,7 +79,7 @@ set(SOURCES
 
 	connection/half_tunnel.cpp     		
 	connection/socket_factory.cpp		
-	connection/tcp_connection.cpp		
+	connection/connection.cpp		
 	connection/timeout.cpp				
 	connection/tunnel_handler.cpp  		
 	

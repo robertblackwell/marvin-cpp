@@ -38,7 +38,7 @@ set(VENDOR_DIR ${PROJECT_DIR}/vendor)
 message(Module Path : ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} /usr/local/Cellar/cmake3.16.3/share/cmake/Modules)
 set(APPS_LINK_LIBS marvin_library)
-add_subdirectory(apps)
+# add_subdirectory(apps)
 add_subdirectory(marvin)
 add_subdirectory(tests)
 

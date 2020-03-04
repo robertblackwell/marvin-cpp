@@ -10,7 +10,7 @@
 #include <cassert>
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/connection/tcp_connection.hpp>
-
+#include <marvin/connection/connection.hpp>
 
 ISocketSPtr socketFactory(
             boost::asio::io_service& io_service,
@@ -19,13 +19,21 @@ ISocketSPtr socketFactory(
             const std::string port
 ){
     ISocketSPtr ptr;
+    #ifdef TCP_CONN
     ptr = std::make_shared<TCPConnection>(io_service, scheme, server, port);
+    #else
+    ptr = std::make_shared<Connection>(io_service, scheme, server, port);
+    #endif
     return ptr;
 }
 ISocketSPtr socketFactory(boost::asio::io_service& io_service)
 {
     ISocketSPtr ptr;
+    #ifdef TCP_CONN
     ptr = std::make_shared<TCPConnection>(io_service);
+    #else
+    ptr = std::make_shared<Connection>(io_service);
+    #endif
     return ptr;
 }
 

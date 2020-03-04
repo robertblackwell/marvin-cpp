@@ -8,6 +8,7 @@ set(TEST_LINK_LIBS marvin_library
 	${VENDOR_DIR}/lib/libssl.a 
 	${VENDOR_DIR}/lib/libboost_filesystem.a 
 	${VENDOR_DIR}/lib/libboost_system.a
+	${VENDOR_DIR}/lib/libcert_library.a
 	)
 
 add_subdirectory(test_message)
