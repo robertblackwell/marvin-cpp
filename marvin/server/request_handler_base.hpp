@@ -57,6 +57,7 @@ public:
         ServerContext&              server_context,
         MessageReaderSPtr           request,
         MessageWriterSPtr           responseWriter,
+        ISocketSPtr                 clientConnectionSPtr,
         HandlerDoneCallbackType done) = 0;
     
     protected:

@@ -76,6 +76,16 @@ ForwardingHandler::~ForwardingHandler()
 
 void ForwardingHandler::p_handle_upgrade()
 {
+    // deny the upgrade
+#if 0
+    _resp->setStatus("Forbidden");
+    _resp->setStatusCode(403);
+    std::string n("");
+    _resp->setContent(n);
+    _resp->asyncWrite([this](Marvin::ErrorType& err){
+        _doneCallback(err, false);
+    });
+#endif
 }
 
 #pragma mark - handle connect request
@@ -101,7 +111,6 @@ void ForwardingHandler::handleConnect(
         MessageReaderSPtr           request,    // the initial request as a MessageReader
         MessageWriterSPtr           responseWriter,
         ISocketSPtr                 clientConnectionSPtr,// the connection to the client
-                                                         
         HandlerDoneCallbackType     done
 ){
     LogTrace(traceForwardingHandler(this), Marvin::Http::traceMessage(*(request.get())));
@@ -123,13 +132,15 @@ void ForwardingHandler::handleConnect(
     m_done_callback = done;
 
     ConnectAction action = p_determine_connection_action(m_host, m_port);
+    ConnectionSPtr conn_sptr = std::dynamic_pointer_cast<Connection>(clientConnectionSPtr);
 
     switch(action){
         case ConnectAction::TUNNEL :
             p_initiate_tunnel();
             break;
         case ConnectAction::MITM :
-            assert(false);
+            m_ssl_handler_sptr = std::make_shared<SSLForwardingHandler>(m_io, m_collector_ptr);
+            m_ssl_handler_sptr->handleSSLRequest(server_context, request, responseWriter, conn_sptr, done);
             break;
         case ConnectAction::REJECT :
             assert(false);
@@ -147,12 +158,13 @@ void ForwardingHandler::p_initiate_tunnel()
 //    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
 
     LogTrace("scheme:", m_scheme, " host:", m_host, " port:", m_port);
-    m_upstream_connection =  socketFactory(m_io, m_scheme, m_host, std::to_string(m_port));
+
+    m_upstream_connection = socketFactory(m_io, m_scheme, m_host, std::to_string(m_port));
     m_upstream_connection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
         if( err ) {
             LogWarn("initiateTunnel: FAILED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
-            Marvin::Http::makeResponse502Badgateway(*m_response_sptr);
+            makeResponse502Badgateway(*m_response_sptr);
 
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
                 LogInfo("");
@@ -169,7 +181,7 @@ void ForwardingHandler::p_initiate_tunnel()
         } else {
             LogTrace("initiateTunnel: connection SUCCEEDED scheme:", traceForwardingHandler(this), " scheme:",this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
-            ::Marvin::Http::makeResponse200OKConnected(*m_response_sptr);
+            Http::makeResponse200OKConnected(*m_response_sptr);
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
                 LogInfo("");
                 if( err ) {
@@ -207,6 +219,7 @@ void ForwardingHandler::handleRequest(
         ServerContext&          server_context,
         MessageReaderSPtr       request,
         MessageWriterSPtr       responseWriter,
+        ISocketSPtr             clientConnectionPtr,
         HandlerDoneCallbackType done
 ){
     LogTrace("from downstream", Marvin::Http::traceMessage(*(request.get())));
@@ -300,7 +313,10 @@ ConnectAction ForwardingHandler::p_determine_connection_action(std::string host,
     std::vector<std::regex>  regexs = this->m_https_hosts;
     std::vector<int>         ports  = this->m_https_ports;
     /// !!! this needs to be upgraded
+    if (port == 443) {
+        return ConnectAction::MITM;
+    }
     return ConnectAction::TUNNEL;
 }
 
-
+//

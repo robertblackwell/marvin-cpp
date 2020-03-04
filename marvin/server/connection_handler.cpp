@@ -186,7 +186,11 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
         } else {
             LogTrace(traceMessage(*m_reader));
             
-            m_requestHandlerUnPtr->handleRequest(m_server_context, m_reader, m_writer, [this](Marvin::ErrorType& err, bool keepAlive){
+            m_requestHandlerUnPtr->handleRequest(
+                m_server_context, 
+                m_reader, 
+                m_writer, m_connection,  
+                [this](Marvin::ErrorType& err, bool keepAlive){
                 LogInfo("");
                 this->p_serve_another();
 //                this->requestComplete(err, keepAlive);

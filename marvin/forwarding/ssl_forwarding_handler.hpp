@@ -6,8 +6,8 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef marvin_forwarding_handler_hpp
-#define marvin_forwarding_handler_hpp
+#ifndef marvin_ssl_forwarding_handler_hpp
+#define marvin_ssl_forwarding_handler_hpp
 
 #include <stdio.h>
 #include <iostream>
@@ -21,61 +21,39 @@
 #include <marvin/connection/connection.hpp>
 #include <marvin/http/http_header.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
-#include <marvin/forwarding/ssl_forwarding_handler.hpp>
 #include <marvin/collector/collector_interface.hpp>
 
 using namespace Marvin;
 using namespace Marvin::Http;
 
 enum class ConnectAction;
-class ForwardingHandler;
-using ForwardingHandlerSPtr = std::shared_ptr<ForwardingHandler>;
-using ForwardingHandlerUPtr = std::unique_ptr<ForwardingHandler>;
+class SSLForwardingHandler;
+using SSLForwardingHandlerSPtr = std::shared_ptr<SSLForwardingHandler>;
+using SSLForwardingHandlerUPtr = std::unique_ptr<SSLForwardingHandler>;
 
-std::string traceForwardingHandler(ForwardingHandlerUPtr fh_ptr);
-std::string traceForwardingHandler(ForwardingHandlerSPtr fh_ptr);
-std::string traceForwardingHandler(ForwardingHandler* fh_ptr);
+std::string traceSSLForwardingHandler(SSLForwardingHandlerUPtr fh_ptr);
+std::string traceSSLForwardingHandler(SSLForwardingHandlerSPtr fh_ptr);
+std::string traceSSLForwardingHandler(SSLForwardingHandler* fh_ptr);
 
-/**
-*  @brief This class implements the proxy forwarding process for http/https protocols.
-*  Its a revised version to make way for future requirements of "replaying" an exchange
-*   The V2 version of this class makes the composition of functions during the forwarding
-*   process more evident.
-*  @discussion Reads a message from the downstream client, converts that to a non-proxy request
-*  to the targets server, sends that request, collects the response and finally sends that response
-*  to the originating client.
-*  Along the way it captures (via template parameter TCapture) a summary of the original request and
-*  upstream server response and distributes that according to the rules of the particular TCapture object
-*/
-class ForwardingHandler : public RequestHandlerBase
+class SSLForwardingHandler
 {
     public:
         // these are configuration settings
         static void configSet_HttpsHosts(std::vector<std::regex> re);
         static void configSet_HttpsPorts(std::vector<int> ports);
     
-        ForwardingHandler(boost::asio::io_service& io, ICollector* collector);
-        ~ForwardingHandler();
-    
-        void handleConnect(
-            ServerContext&              server_context,
-            MessageReaderSPtr           request,
-            MessageWriterSPtr           responseWriter,
-            ISocketSPtr                 clientConnectionPtr,
-            HandlerDoneCallbackType     done);
+        SSLForwardingHandler(boost::asio::io_service& io, ICollector* collector);
+        ~SSLForwardingHandler();
 
-        void handleRequest(
+        void handleSSLRequest(
             ServerContext&              server_context,
             MessageReaderSPtr           request,
             MessageWriterSPtr           responseWriter,
-            ISocketSPtr                 clientConnectionPtr,
-            HandlerDoneCallbackType done
+            ConnectionSPtr              clientConnectionPtr,
+            HandlerDoneCallbackType     done
         );
 
     private:
-    
-        static std::vector<std::regex>  s_https_hosts;
-        static std::vector<int>         s_https_ports;
     
         // methods that are used in handleRequest
         void p_round_trip_upstream(
@@ -89,19 +67,33 @@ class ForwardingHandler : public RequestHandlerBase
         void p_on_complete(Marvin::ErrorType& err);
     
         // methods that are used in handleConnect
-        ConnectAction p_determine_connection_action(std::string host, int port);
-        void p_initiate_tunnel();
-        
+        void p_ssl_handshake_upstream(std::function<void(const boost::system::error_code& err)> cb);
+        void p_on_handshake_complete(const boost::system::error_code& err);
+
+        void p_ssl_send_OK_downstream(std::function<void(Marvin::ErrorType& err)> cb);
+        void p_on_send_OK_complete(Marvin::ErrorType& err);
+
+        void p_ssl_become_secure_downstream(std::function<void(Marvin::ErrorType& err)> cb);
+        void p_on_become_secure_downstream_complete(Marvin::ErrorType& err);
+
+        void p_ssl_read_request_from_downstream(std::function<void(Marvin::ErrorType& err)> cb);
+        void p_on_read_request_downstream_complete(Marvin::ErrorType& err);
+
+        void p_ssl_roundtrip_upstream(std::function<void(Marvin::ErrorType& err)> cb);
+        void p_on_rountrip_complete(Marvin::ErrorType& err);
+
+
+
         // utility methods
         void p_response403Forbidden(MessageWriter& writer);
         void p_response200OKConnected(MessageWriter& writer);
         void p_response502Badgateway(MessageWriter& writer);
 
-
+        boost::asio::io_service&    m_io;
         /// @brief Only used by the handleConnect method
-        ISocketSPtr                 m_conn;
+        ConnectionSPtr              m_connSsptr;
         /// reader of the initial request from downstream - passed in to our handleRequest method
-        MessageReaderSPtr           m_request_sptr;
+        MessageReaderSPtr           m_request_reader_sptr;
         /// writer of the final response to down stream - passed in to our handler request method
         MessageBaseSPtr             m_response_sptr;
         MessageWriterSPtr           m_response_writer_sptr;
@@ -124,16 +116,10 @@ class ForwardingHandler : public RequestHandlerBase
     
         /// used for handleConnect - tunnel
         Marvin::MBufferUPtr         m_initial_response_buf;
-        TunnelHandlerSPtr           m_tunnel_handler;
-        SSLForwardingHandlerSPtr    m_ssl_handler_sptr;
-        ISocketSPtr                 m_downstream_connection; // used only for tunnel
-        ISocketSPtr                 m_upstream_connection; // used only for tunnels
+        ConnectionSPtr              m_downstream_connection;
+        ConnectionSPtr              m_upstream_connection; 
     
         /// regexs to define hosts that require mitm not tunnel
-        std::vector<std::regex>     m_https_hosts;
-    
-        /// list of port numbers that can be https mitm'd rather than tunneled
-        std::vector<int>            m_https_ports;
         std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)>       m_collect_function;
 
 };

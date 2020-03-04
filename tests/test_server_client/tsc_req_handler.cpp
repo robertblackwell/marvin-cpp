@@ -248,6 +248,7 @@ void TscRequestHandler::handleRequest(
     ServerContext&   server_context,
     MessageReaderSPtr req,
     MessageWriterSPtr resp,
+    ISocketSPtr     connPtr,
     HandlerDoneCallbackType done
 )
 {

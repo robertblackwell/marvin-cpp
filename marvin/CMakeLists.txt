@@ -40,6 +40,7 @@ file(GLOB HEADERS
 	
 	forwarding/forward_helpers.hpp 
 	forwarding/forwarding_handler.hpp
+	forwarding/ssl_forwarding_handler.hpp
 
 	helpers/helpers_fs.hpp
 	helpers/error.hpp
@@ -93,6 +94,7 @@ set(SOURCES
 
 	forwarding/forward_helpers.cpp 		
 	forwarding/forwarding_handler.cpp 	
+	forwarding/ssl_forwarding_handler.cpp 	
 
 	helpers/helpers_fs.cpp
 	helpers/error.cpp
