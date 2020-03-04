@@ -21,6 +21,7 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include<marvin/http/uri.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
+#include <marvin/connection/socket_factory.hpp>
 
 #include "tsc_req_handler.hpp"
 #include "server_runner.hpp"
@@ -34,7 +35,7 @@ namespace {
 MessageReaderSPtr makeMock()
 {
     static boost::asio::io_service io;
-    static TCPConnectionSPtr socketSPtr = std::make_shared<TCPConnection>(io);
+    static ISocketSPtr socketSPtr = socketFactory(io);
     MessageReaderSPtr result = std::make_shared<MessageReader>(io, socketSPtr);
     return result;
 }

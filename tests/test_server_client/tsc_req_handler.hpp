@@ -12,7 +12,6 @@
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/server_context.hpp>
 #include <marvin/server/request_handler_base.hpp>
-#include <marvin/client/request.hpp>
 #include<marvin/http/uri_query.hpp>
 
     /**

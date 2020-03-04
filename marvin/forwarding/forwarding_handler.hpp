@@ -13,7 +13,6 @@
 #include <iostream>
 #include <sstream>
 #include <regex>
-#include <marvin/client/request.hpp>
 #include <marvin/server/request_handler_base.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>

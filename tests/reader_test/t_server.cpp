@@ -11,7 +11,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
-#include <marvin/connection/tcp_connection.hpp>
+#include <marvin/connection/socket_factory.hpp>
 #include <marvin/message/message_reader.hpp>
 #include "t_server.hpp"
 
@@ -67,8 +67,7 @@ void TServer::listen(long port, std::function<void(MessageReaderSPtr rdr)> cb)
 void TServer::startAccept()
 {
     LogDebug("");
-    m_conn_sptr = std::shared_ptr<TCPConnection>(new TCPConnection(m_io));
-//    IReadSocket* rd_sock_ifce = _conn_sptr.get();
+    m_conn_sptr = socketFactory(m_io);
     m_rdr = std::shared_ptr<MessageReader>(new MessageReader(m_io, m_conn_sptr));
     auto hf = std::bind(&TServer::handleAccept, this, std::placeholders::_1);
     m_conn_sptr->asyncAccept(m_acceptor, hf);

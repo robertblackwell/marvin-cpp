@@ -12,7 +12,6 @@
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
 #include "test_runner.hpp"
-#include <marvin/connection/tcp_connection.hpp>
 #include <marvin/message/message_reader.hpp>
 
 class TServer;
@@ -37,7 +36,6 @@ class TServer
         boost::asio::io_service&                        m_io;
         boost::asio::ip::tcp::acceptor                  m_acceptor;
         ISocketSPtr                                     m_conn_sptr;
-//        TCPConnectionSPtr                               m_conn_sptr;
         MessageReaderSPtr                               m_rdr;
         Testcase                                        m_tc;
         TestrunnerSPtr                                  m_runner_sptr;

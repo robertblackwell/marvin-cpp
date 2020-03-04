@@ -11,7 +11,6 @@
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
-#include <marvin/connection/tcp_connection.hpp>
 #include <marvin/message/message_reader.hpp>
 
 class TClient;
@@ -52,7 +51,6 @@ class TClient
         std::string                 m_server;
         std::string                 m_port;
         Testcase                    m_testcase;
-//        TCPConnectionSPtr           m_conn_sptr;
         ISocketSPtr                 m_conn_sptr;
         int                         m_buffer_index; /// index into the vector of buffers in the test case
         MarvinErrorCb               m_test_cb;

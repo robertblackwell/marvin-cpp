@@ -23,6 +23,7 @@ TEST_CASE("connect_failBadHost", "")
 {
     boost::asio::io_service io;
     auto conn_sptr = std::make_shared<TCPConnection>(io, "https", "ddddgoogle.com", "443");
+    
     conn_sptr->asyncConnect([](Marvin::ErrorType& err, ISocket* conn)
     {
         INFO(Marvin::make_error_description(err));

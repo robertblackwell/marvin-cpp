@@ -14,7 +14,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/external_src/CxxUrl/url.hpp>
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
-#include <marvin/client/request.hpp>
 #include<marvin/http/uri_query.hpp>
 #include "tsc_req_handler.hpp"
 
