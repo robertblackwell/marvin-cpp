@@ -28,6 +28,7 @@ file(GLOB HEADERS
 
 	connection/half_tunnel.hpp
 	connection/socket_factory.hpp
+	connection/socket_interface.hpp
 	connection/connection.hpp
 	connection/timeout.hpp
 	connection/tunnel_handler.hpp

@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
 #include <regex>
+#include <marvin/helpers/macros.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
@@ -45,7 +46,7 @@ static bool testPipeReaderExists(char* pipeName)
     int fdw = open(pipeName, O_WRONLY | O_NONBLOCK);
     if (fdw == -1){
         LogWarn("non-blocking open for write with no readers failed");
-        throw "non-blocking open for write with no readers failed";
+        THROW("non-blocking open for write with no readers failed");
         return false;
     }
     close(fdw);

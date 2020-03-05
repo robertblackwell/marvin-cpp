@@ -95,10 +95,10 @@ class Connection : public ISocket
     void asyncConnect(ConnectCallbackType cb) override;
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb) override;
     
-    void becomeSecureClient(X509_STORE* certificate_store_ptr) ;
-    void becomeSecureServer(Cert::Identity server_identity) ;
-    void asyncHandshake(std::function<void(const boost::system::error_code& err)> cb);
-    Cert::Certificate getServerCertificate();
+    void becomeSecureClient(X509_STORE* certificate_store_ptr) override;
+    void becomeSecureServer(Cert::Identity server_identity) override;
+    void asyncHandshake(std::function<void(const boost::system::error_code& err)> cb) override;
+    Cert::Certificate getServerCertificate() override;
 
     void asyncWrite(Marvin::MBuffer& buffer, AsyncWriteCallbackType cb) override;
     void asyncWrite(std::string& str, AsyncWriteCallbackType cb) override;

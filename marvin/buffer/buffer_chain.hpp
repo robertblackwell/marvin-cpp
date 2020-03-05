@@ -44,9 +44,9 @@ class BufferChain
         friend std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
 
     private:
-        std::vector<MBufferSPtr>                    _chain;
-        std::vector<boost::asio::mutable_buffer>    _asio_chain;
-        std::size_t                                 _size;
+        std::vector<MBufferSPtr>                    m_chain;
+        std::vector<boost::asio::mutable_buffer>    m_asio_chain;
+        std::size_t                                 m_size;
 };
 
 } // namespave Marvin

@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <openssl/x509.h>
+#include <cert/cert_certificate.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "testcase.hpp"
@@ -112,6 +114,16 @@ void MockReadSocket::asyncAccept(
     boost::asio::ip::tcp::acceptor& acceptor,
     std::function<void(const boost::system::error_code& err)> cb
 ){ assert(false);}
+void MockReadSocket::becomeSecureClient(X509_STORE* certificate_store_ptr){ assert(false);}
+void MockReadSocket::becomeSecureServer(Cert::Identity server_identity){ assert(false);}
+void MockReadSocket::asyncHandshake(std::function<void(const boost::system::error_code& err)> cb){ assert(false);}
+Cert::Certificate MockReadSocket::getServerCertificate()
+{ 
+    Cert::Certificate tmp{};
+    assert(false);
+    return tmp;
+}
+
 void MockReadSocket::setReadTimeout(long interval){assert(false);}
 
 void MockReadSocket::shutdown(){ assert(false);}

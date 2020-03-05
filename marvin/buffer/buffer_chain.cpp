@@ -30,29 +30,29 @@ BufferChainSPtr BufferChain::makeSPtr(MBufferSPtr mb_sptr)
 
 BufferChain::BufferChain()
 {
-    _chain = std::vector<MBufferSPtr>();
-    _size = 0;
+    m_chain = std::vector<MBufferSPtr>();
+    m_size = 0;
 }
 void BufferChain::push_back(MBufferSPtr mb)
 {
-    _size += mb->size();
-    _chain.push_back(mb);
-    _asio_chain.push_back(boost::asio::buffer(mb->data(), mb->size()));
+    m_size += mb->size();
+    m_chain.push_back(mb);
+    m_asio_chain.push_back(boost::asio::buffer(mb->data(), mb->size()));
 }
 void BufferChain::clear()
 {
-    _chain.clear();
-    _asio_chain.clear();
-    _size = 0;
+    m_chain.clear();
+    m_asio_chain.clear();
+    m_size = 0;
 }
 std::size_t BufferChain::size()
 {
-    return _size;
+    return m_size;
 }
 std::string BufferChain::to_string()
 {
     std::string s = "";
-    for(MBufferSPtr& mb : _chain) {
+    for(MBufferSPtr& mb : m_chain) {
         s += mb->toString();
     }
     return s;
@@ -60,7 +60,7 @@ std::string BufferChain::to_string()
 MBufferSPtr BufferChain::amalgamate()
 {
     MBufferSPtr mb_final = std::shared_ptr<MBuffer>(new MBuffer(this->size()));
-    for(MBufferSPtr& mb : _chain) {
+    for(MBufferSPtr& mb : m_chain) {
         mb_final->append(mb->data(), mb->size());
     }
     return mb_final;
@@ -87,7 +87,7 @@ BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr)
 
 std::vector<boost::asio::mutable_buffer> BufferChain::asio_buffer_sequence()
 {
-    return this->_asio_chain;
+    return this->m_asio_chain;
 }
 
 std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(BufferChain& bchain)
@@ -97,7 +97,7 @@ std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(Buf
 }
 std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain)
 {
-    return bchain._asio_chain;
+    return bchain.m_asio_chain;
 }
 
 

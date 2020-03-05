@@ -23,6 +23,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
 #include <marvin/connection/connection.hpp>
+#include <marvin/connection/socket_factory.hpp>
 #include <marvin/certificates/certificates.hpp>
 
 using namespace Marvin;
@@ -172,7 +173,8 @@ TEST_CASE("new_connection_GET", "ssl")
 //    X509_STORE_up_ref(store);
     Certificates certs = Certificates::getInstance();
     X509_STORE* store = certs.getX509StorePtr();
-    ConnectionSPtr conn_sptr(new Connection(io, "https", "www.ssllabs.com", "443"));
+//    ConnectionSPtr conn_sptr(new Connection(io, "https", "www.ssllabs.com", "443"));
+    ConnectionSPtr conn_sptr = std::dynamic_pointer_cast<Connection>(socketFactory(io, "https", "www.ssllabs.com", "443"));
     conn_sptr->becomeSecureClient(store);
     ClientSPtr client;
     conn_sptr->asyncConnect([conn_sptr, &client, &io](Marvin::ErrorType& err, ISocket* conn) {
@@ -200,6 +202,7 @@ TEST_CASE("new_connection_GET", "ssl")
 int main( int argc, char* argv[] )
 {
     // global setup - run a server
+    std::cout << "ENV: " << std::getenv("MARVIN_CERT_STORE_PATH") << std::endl;
      RBLogging::setEnabled(false);
     char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
     int _argc = 2;

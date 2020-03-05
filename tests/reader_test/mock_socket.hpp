@@ -40,6 +40,11 @@ public:
         boost::asio::ip::tcp::acceptor& acceptor,
         std::function<void(const boost::system::error_code& err)> cb
     );
+    void becomeSecureClient(X509_STORE* certificate_store_ptr);
+    void becomeSecureServer(Cert::Identity server_identity);
+    void asyncHandshake(std::function<void(const boost::system::error_code& err)>);
+    Cert::Certificate getServerCertificate();
+
     void setReadTimeout(long interval);
     void shutdown();
     void close();

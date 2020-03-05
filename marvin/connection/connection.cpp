@@ -5,7 +5,7 @@
 #include <cassert>
 
 #include <marvin/boost_stuff.hpp>
-
+#include <marvin/helpers/macros.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/callback_typedefs.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -177,7 +177,7 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
 void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
 {
     if (m_mode != NOTSECURE) {
-        throw "connection already secured";
+        THROW("connection already secured");
     }
     m_mode = Mode::SECURE_CLIENT;
     m_certificate_store_ptr = certificate_store_ptr;
@@ -185,7 +185,7 @@ void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
 void Connection::becomeSecureServer(Cert::Identity server_identity)
 {
     if (m_mode != NOTSECURE) {
-        throw "connection already secured";
+        THROW("connection already secured");
     }
     m_mode = Mode::SECURE_SERVER;
     m_server_identity = server_identity;
@@ -200,7 +200,7 @@ void Connection::asyncHandshake(std::function<void(const boost::system::error_co
 Cert::Certificate Connection::getServerCertificate()
 {
     if (!m_server_certificate) {
-        throw "cannot get server certificate until after successful handshake";
+        THROW("cannot get server certificate until after successful handshake");
     }
     return m_server_certificate;
 }

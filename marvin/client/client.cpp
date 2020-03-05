@@ -20,6 +20,7 @@
 #include <marvin/external_src/CxxUrl/url.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/helpers/macros.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/message/message_reader.hpp>
 #include <marvin/connection/socket_factory.hpp>
@@ -78,7 +79,7 @@ void Client::asyncConnect(ErrorOnlyCallbackType cb)
     LogInfo("", (long)this);
 //    std::cout << "client asyncConnect " << std::hex << (long) this << std::endl;
     if (m_conn_shared_ptr != nullptr ) {
-        throw "should not have a connection at this point";
+        THROW("should not have a connection at this point");
     }
     m_conn_shared_ptr = socketFactory(m_io,m_scheme,m_server, m_port);
 

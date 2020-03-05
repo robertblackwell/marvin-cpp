@@ -1,4 +1,4 @@
-
+#include <marvin/helpers/macros.hpp>
 #include <marvin/certificates/certificates.hpp>
 
 
@@ -11,12 +11,13 @@ Certificates::Certificates()
 {
     auto x = std::getenv("MARVIN_CERT_STORE_PATH");
     if (std::getenv("MARVIN_CERT_STORE_PATH") == nullptr) {
-        throw "no environment variable MARVIN_CERT_STORE_PATH";
+        
+        THROW("no environment variable MARVIN_CERT_STORE_PATH");
     }
     std::string p = std::getenv("MARVIN_CERT_STORE_PATH");
     boost::filesystem::path base(p);
     if (! boost::filesystem::is_directory(base)) {
-        throw "the base dir for certificates does not exist";
+        THROW("the base dir for certificates does not exist");
     }
     m_cert_store_sptr   = Cert::Store::Store::load(p);
     m_locator_sptr      = m_cert_store_sptr->getLocator();

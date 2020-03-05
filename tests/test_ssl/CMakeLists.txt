@@ -12,6 +12,11 @@ add_test(test_ssl test_ssl)
 
 set_target_properties(test_ssl PROPERTIES XCODE_GENERATE_SCHEME ON)
 
+set_tests_properties(test_ssl
+    PROPERTIES 
+    ENVIRONMENT 
+    "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem;MARVIN_CERT_STORE_PATH=${MARVIN_CERT_STORE_PATH}"
+    )
 set_target_properties(test_ssl
     PROPERTIES 
     ENVIRONMENT 

@@ -14,7 +14,8 @@ Exceptions and Error checking:
   ☐ try taking the model from x509 and importing it into this project
 Uri-UriV2:
   ☐ compare the two implementations and resolve into a single class. Check what tests get broken.
-
+throw:
+  ☐ replace all instance of throwing a string with THROW
 Start work on SSL/TLS:
  ☐ Issue - need test bed to work on MessageReader, MessageWrite and Client for https requests.
  ☐ Plan
