@@ -17,20 +17,18 @@ set(other_flags "${other_flags} -fvisibility=hidden")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${other_flags}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-stack_size -Wl,0x1000000")
 
-# Only do these if this is the main project, and not if it is included through add_subdirectory
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-
+    MESSAGE("INSIDE IF STATEMENT")
     # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
 
     # Let's nicely support folders in IDE's
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
+    # allow scheme porperties in xcode - particularly environment variables
+    set_property(GLOBAL PROPERTY XCODE_GENERATE_SCHEME ON)
+    set(XCODE_GENERATE_SCHEME ON)
     include(CTest) 
     enable_testing()
-
-endif()
 
 set(PROJECT_DIR ${Marvin_SOURCE_DIR})
 set(VENDOR_DIR ${PROJECT_DIR}/vendor)

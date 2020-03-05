@@ -14,7 +14,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include<marvin/boost_stuff.hpp>
+#include <marvin/boost_stuff.hpp>
 #include "callback_typedefs.hpp"
 
 class Connection;

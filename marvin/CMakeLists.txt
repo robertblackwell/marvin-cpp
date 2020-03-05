@@ -17,6 +17,8 @@ file(GLOB HEADERS
 	buffer/buffer_chain.hpp
 	buffer/m_buffer.hpp
 	
+	certificates/certificates.hpp
+
 	client/client.hpp
 
 	collector/collector_base.hpp
@@ -53,9 +55,10 @@ file(GLOB HEADERS
 	http/message_interface.hpp 
 	http/ordered_key_value.hpp 
 	http/parser.hpp
-	message/uri.hpp 
-	message/uri_query.hpp
-	
+	http/uri.hpp 
+	http/uri_query.hpp
+	http/uri_v2.hpp
+
 	message/message_reader.hpp 
 	message/message_writer.hpp 
 	
@@ -72,6 +75,8 @@ set(SOURCES
 	buffer/buffer_chain.cpp			
 	buffer/m_buffer.cpp				
 	
+	certificates/certificates.cpp
+
 	client/client.cpp  				
 	
 	collector/collector_base.cpp
@@ -107,6 +112,7 @@ set(SOURCES
 	http/parser.cpp 
 	http/uri.cpp
 	http/uri_query.cpp		
+	http/uri_v2.cpp
 	
 	message/message_reader.cpp 	
 	message/message_writer.cpp 	

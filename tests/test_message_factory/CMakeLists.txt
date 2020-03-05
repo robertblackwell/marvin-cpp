@@ -1,0 +1,12 @@
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+set(TARGET test_message_factory)
+add_executable(${TARGET} 
+	test_factory_main.cpp
+)
+target_include_directories(${TARGET} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
+target_compile_features(${TARGET} PRIVATE cxx_std_14)
+target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
+
+add_test(${TARGET} ${TARGET})
+SET_TESTS_PROPERTIES(${TARGET}
+    PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")

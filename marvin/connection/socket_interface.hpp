@@ -8,8 +8,8 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include<marvin/boost_stuff.hpp>
-#include<marvin/callback_typedefs.hpp>
+#include <marvin/boost_stuff.hpp>
+#include <marvin/callback_typedefs.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/buffer/buffer.hpp>

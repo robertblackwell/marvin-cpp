@@ -1,0 +1,18 @@
+
+{
+    "comment_info" : "",
+    "comment" : " no spaces in the values of the other fields",
+    
+    "ca_name" : "A_CA_Fo_Testing_libcert",
+    "ca_state" : "WA",
+    
+    "country_comment" : "ca_country can only have a valid international country abbreviation",
+    "ca_country" : "AU",
+    
+    "ca_email" : "someone@testing_libcert.com",
+    "ca_organization" : "the_dev_guys_at_testlibcert",
+    "passin" : "a_password_for_testing",
+    "passout" : "a_password_for_testing",
+    "ca_key_password" : "a_password_for_testing"
+}
+

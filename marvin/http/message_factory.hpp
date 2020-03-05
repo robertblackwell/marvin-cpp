@@ -10,9 +10,9 @@
 #define marvin_http_hpp
 
 #include <stdio.h>
-#include<marvin/http/message_base.hpp>
-#include<marvin/http/http_method.hpp>
-#include<marvin/http/uri.hpp>
+#include <marvin/http/message_base.hpp>
+#include <marvin/http/http_method.hpp>
+#include <marvin/http/uri.hpp>
 namespace Marvin {
 namespace Http {
     void makeRequest(MessageBase& msg, HttpMethod method, Marvin::Uri& uri);

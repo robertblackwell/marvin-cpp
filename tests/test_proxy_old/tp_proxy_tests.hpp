@@ -8,7 +8,7 @@
 ///
 #ifndef marvin_tp_proxy_tests_hpp
 #define marvin_tp_proxy_tests_hpp
-#include<marvin/http/message_base.hpp>
+#include <marvin/http/message_base.hpp>
 #include "tp_testcase.hpp"
 
 std::vector<tp::TestcaseSPtr> makeWhiteacornTestcases();

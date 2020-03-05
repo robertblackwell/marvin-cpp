@@ -10,7 +10,7 @@
 #include <pthread.h>
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-#include<marvin/boost_stuff.hpp>
+#include <marvin/boost_stuff.hpp>
 #include <marvin/connection/tcp_connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -18,7 +18,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
-
+#if 0
 TEST_CASE("connect_failBadHost", "")
 {
     boost::asio::io_service io;
@@ -43,6 +43,7 @@ TEST_CASE("connect_failBadHost", "")
 void dofail(){
     CHECK(true);
 }
+#endif
 #if 0
 TEST_CASE("connect_failTimeout", "")
 {
@@ -59,7 +60,7 @@ TEST_CASE("connect_failTimeout", "")
     std::cout << "END::connect_failTimeout" << std::endl;
 }
 #endif
-#if 1
+#if 0
 TEST_CASE("connect_succeed","")
 {
     INFO("connect_succeed");
@@ -73,7 +74,7 @@ TEST_CASE("connect_succeed","")
     io.run();
 }
 #endif
-#if 1
+#if 0
 TEST_CASE("ssl_connect", "")
 {
     boost::asio::io_service io;

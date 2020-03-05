@@ -3,7 +3,7 @@
 // is destroyed
 //
 #include <iostream>
-#include<marvin/boost_stuff.hpp>
+#include <marvin/boost_stuff.hpp>
 #define USE_STRANDx
 class ATimer
 {

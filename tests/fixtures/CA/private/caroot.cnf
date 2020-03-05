@@ -1,0 +1,24 @@
+
+#
+# cnf file for making self signed root
+#
+[ req ]
+default_bits         = 2048
+default_keyfile     = /Users/robertblackwell/Projects/x509/tests/fixtures/CA/private/cakey.pem
+default_md             = md5
+default_days         = 365
+
+prompt = no
+distinguished_name     = root_ca_distinguished_name
+
+x509_extensions     = root_ca_extensions
+
+[ root_ca_distinguished_name ]
+commonName                 = A_CA_Fo_Testing_libcert
+stateOrProvinceName     = WA
+countryName             = AU
+emailAddress             = someone@testing_libcert.com
+organizationName         = the_dev_guys_at_testlibcert
+
+[ root_ca_extensions ]
+basicConstraints     = CA:true

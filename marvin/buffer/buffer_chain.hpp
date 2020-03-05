@@ -6,7 +6,7 @@
  #include <stdexcept>
  #include <cassert>
  #include <vector>
- #include<marvin/boost_stuff.hpp>
+ #include <marvin/boost_stuff.hpp>
  #include <marvin/buffer/m_buffer.hpp>
 /**
 * \ingroup Buffer
