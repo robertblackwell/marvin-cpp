@@ -20,9 +20,10 @@ void to_json(json& j, const OrderedKeyValues& h)
 
 void from_json(const json& j, OrderedKeyValues& h)
 {
-    for (json::const_iterator it = j.cbegin(); it != j.cend(); ++it) {
-      auto k = (*it)["key"].get<std::string>();
-      auto v = (*it)["value"].get<std::string>();
+    for (int i = 0; i < j.size(); ++i) {
+
+      auto k = j[i]["key"].get<std::string>();
+      auto v = j[i]["value"].get<std::string>();
 //      std::cout << "k: " << k << " v:" << v << std::endl;
       h[k] = v;
     }
@@ -33,9 +34,10 @@ void OKV::to_json(json& j, const OrderedKeyValues& h)
     auto jz = h.jsonizable();
 //    nlohmann::json j;
     typedef std::vector<std::pair<std::string, std::string>> kvt;
-    for(kvt::iterator it = jz.begin(); it != jz.end(); it++) {
-        std::string f = (*it).first;
-        std::string s = (*it).second;
+    for(int i = 0; i < jz.size(); i++) {
+
+        std::string f = jz[i].first;
+        std::string s = jz[i].second;
         nlohmann::json jtmp({ {"key",f}, {"value", s}});
         std::cout << "" << jtmp.dump() << std::endl;
         j.push_back(jtmp);
@@ -44,9 +46,9 @@ void OKV::to_json(json& j, const OrderedKeyValues& h)
 
 void OKV::from_json(const json& j, OrderedKeyValues& h)
 {
-    for (json::const_iterator it = j.cbegin(); it != j.cend(); ++it) {
-      auto k = (*it)["key"].get<std::string>();
-      auto v = (*it)["value"].get<std::string>();
+    for (int i = 0; i < j.size(); i++) {
+      auto k = j[i]["key"].get<std::string>();
+      auto v = j[i]["value"].get<std::string>();
       std::cout << "k: " << k << " v:" << v << std::endl;
       h[k] = v;
     }
@@ -89,17 +91,17 @@ OKV::OrderedKeyValues()
 OKV::OrderedKeyValues(std::vector<std::pair<std::string, std::string>> initialValue)
 {
     typedef std::vector<std::pair<std::string, std::string>> okv_init;
-    for(okv_init::iterator it = initialValue.begin(); it != initialValue.end(); it++) {
-        auto x = *it;
-        set((*it).first, (*it).second);
+    for(int i = 0; i < initialValue.size(); i++) {
+        auto x = initialValue[i];
+        set(x.first, x.second);
     }
 }
 #else
 OKV::OrderedKeyValues(std::map<std::string, std::string> initialValue)
 {
     typedef std::map<std::string, std::string> okvm;
-    for(okvm::iterator it = initialValue.begin(); it != initialValue.end(); it++) {
-        set((*it).first, (*it).second);
+    for(int i = 0; i < initialValue.size(); i++) {
+        set(initialValue[i].first, initialValue[i].second);
     }
 }
 #endif
@@ -154,8 +156,8 @@ void OKV::remove(std::string k)
         /// have to rebuild the index
         m_keys.clear();
         int index = 0;
-        for(okv_init::iterator it = m_key_value_vec.begin(); it != m_key_value_vec.end(); it++) {
-            m_keys[(*it).first] = index;
+        for(int i = 0; i < m_key_value_vec.size(); i++) {
+            m_keys[m_key_value_vec[i].first] = index;
             index++;
         }
     }
