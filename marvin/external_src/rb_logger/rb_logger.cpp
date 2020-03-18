@@ -6,6 +6,7 @@
 //
 #include <iostream>
 #include <sstream>
+#include <stdarg.h>
 #include "rb_logger.hpp"
 
 bool RBLogging::logger_enabled = true;

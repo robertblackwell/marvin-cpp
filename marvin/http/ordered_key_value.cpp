@@ -170,7 +170,7 @@ void OKV::remove(std::vector<std::string> keys)
     for(std::vector<std::string>::iterator it = keys.begin(); it != keys.end(); it++) {
         std::string k = (*it);
         long idx = 0;
-        for(okv_init::const_iterator kvit = m_key_value_vec.begin(); kvit != m_key_value_vec.end(); kvit++) {
+        for(auto kvit = m_key_value_vec.begin(); kvit != m_key_value_vec.end(); kvit++) {
             if((*kvit).first == k) {
                 m_key_value_vec.erase(m_key_value_vec.cbegin() + idx);
                 break;
