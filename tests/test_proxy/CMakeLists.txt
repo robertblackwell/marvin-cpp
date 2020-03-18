@@ -11,7 +11,6 @@ add_executable(${TARGET2}
 
 )
 target_include_directories(${TARGET2} PUBLIC ../test_proxy ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
-target_compile_features(${TARGET2} PRIVATE cxx_std_17)
 target_link_libraries(${TARGET2} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET2} ${TARGET2})

@@ -36,7 +36,7 @@ file(GLOB HEADERS
 	error/marvin_error.hpp 
 	
 	external_src/CxxUrl/url.hpp 
-	external_src/uri-parser/uri-parser/UriParser.hpp 
+	external_src/uri-parser/UriParser.hpp 
 	external_src/http-parser/http_parser.h 
 	external_src/rb_logger/rb_logger.hpp  
 	external_src/simple_buffer/simple_buffer.h
@@ -109,6 +109,7 @@ set(SOURCES
 	http/http_method.cpp 		
 	http/message_base.cpp
 	http/message_factory.cpp 		
+	http/ordered_key_value.cpp 
 	http/ordered_key_value.cpp  			
 	http/parser.cpp 
 	http/uri.cpp

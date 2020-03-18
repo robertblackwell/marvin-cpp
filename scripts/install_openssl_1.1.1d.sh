@@ -21,7 +21,7 @@ function verify_project_name() {
 		exit 1
 	fi
 }
-function get_package() {
+function get_package_into() {
 	rm -rf ${clone_dir}/${openssl_name}
 	cd ${clone_dir}
 	echo wget https://www.openssl.org/source/${openssl_name}.tar.gz
@@ -30,14 +30,29 @@ function get_package() {
 	cd ${openssl_name}
 	ls -al
 }
-function stage_package() {
+function stage_package_to() {
 	mkdir -p ${script_dir}/stage/include
 	mkdir -p ${script_dir}/stage/lib
 	mkdir -p ${script_dir}/stage/ssl
 
 	# ./Configure --prefix=${script_dir}/stage --openssldir=${script_dir}/stage --debug darwin64-x86_64-cc
-
-	./Configure --prefix=${script_dir}/stage --openssldir=${vendor}/ssl --debug darwin64-x86_64-cc
+	if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        ARCHITECTURE=linux-x86_64
+	elif [[ "$OSTYPE" == "darwin"* ]]; then
+	    ARCHITECTURE=darwin64-x86_64-cc
+	elif [[ "$OSTYPE" == "cygwin" ]]; then
+	        echo ${OSTYPE} is unknown OS type - will not build
+	elif [[ "$OSTYPE" == "msys" ]]; then
+	        echo ${OSTYPE} is unknown OS type - will not build
+	elif [[ "$OSTYPE" == "win32" ]]; then
+	        echo ${OSTYPE} is unknown OS type - will not build
+	elif [[ "$OSTYPE" == "freebsd"* ]]; then
+	        echo ${OSTYPE} is unknown OS type - will not build
+	else
+	        echo ${OSTYPE} is unknown OS type - will not build
+	fi
+	arch
+	./Configure --prefix=${script_dir}/stage --openssldir=${vendor}/ssl --debug ${ARCHITECTURE} #// darwin64-x86_64-cc
 	make all
 	make install
 }

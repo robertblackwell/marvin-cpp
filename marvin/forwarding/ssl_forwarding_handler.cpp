@@ -138,7 +138,9 @@ void SSLForwardingHandler::p_on_complete(Marvin::ErrorType& err)
     }
 }
 #pragma mark - SSL functions
-
+/**
+* What does this need to return if the round-trip does not successfully complete
+*/
 void SSLForwardingHandler::handleSSLRequest(
         ServerContext&          server_context,
         MessageReaderSPtr       request,
@@ -176,7 +178,13 @@ void SSLForwardingHandler::p_ssl_handshake_upstream(std::function<void(const boo
 void SSLForwardingHandler::p_on_handshake_complete(const boost::system::error_code& err)
 {
     if (err) {
+        // this is wrong - should send rejection downstream
+        // wait for it to send
+        // close downstream or wait for eof
+        // need to check what the forwarding handler does to see if this needs to retunr faailure
+        // and then return failure
         auto pf = std::bind(m_done_callback, err, false); m_io.post(pf);
+        return;
     }
     // get the server certificate and build the mitm certificate
     // save the mitm certificate in a class property
@@ -192,7 +200,9 @@ void SSLForwardingHandler::p_ssl_send_OK_downstream(std::function<void(Marvin::E
 void SSLForwardingHandler::p_on_send_OK_complete(Marvin::ErrorType& err)
 {
     if (err) {
+        // close upstream, return failure
         auto pf = std::bind(m_done_callback, err, false); m_io.post(pf);
+        return;
     }
     auto next_step = std::bind(&SSLForwardingHandler::p_on_become_secure_downstream_complete , this, std::placeholders::_1);
     p_ssl_become_secure_downstream(next_step);

@@ -5,7 +5,6 @@ add_executable(${TARGET}
 	pipeline.cpp
 )
 target_include_directories(${TARGET} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
-target_compile_features(${TARGET} PRIVATE cxx_std_14)
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET} ${TARGET})
@@ -19,7 +18,6 @@ add_executable(${TARGET2}
 	roundtrip.cpp
 )
 target_include_directories(${TARGET2} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
-target_compile_features(${TARGET2} PRIVATE cxx_std_14)
 target_link_libraries(${TARGET2} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET2} ${TARGET2})

@@ -14,7 +14,7 @@
 debug=
 package_name=http-parser
 clone_dir_stem_name=http-parser
-git_clone="git clone file://${HOME}/git-repos/http-parser ${clone_dir_stem}"
+git_clone="git clone https://github.com/robertblackwell/http-parser ${clone_dir_stem}"
 header_cp_pattern=http_parser.h
 source_cp_pattern=http_parser.c
 

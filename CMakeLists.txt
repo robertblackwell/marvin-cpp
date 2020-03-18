@@ -15,11 +15,13 @@ project(Marvin
 set(other_flags "${other_flags} -frtti -fvisibility-inlines-hidden")
 set(other_flags "${other_flags} -fvisibility=hidden")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${other_flags}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-stack_size -Wl,0x1000000")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 
     MESSAGE("INSIDE IF STATEMENT")
     # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
     # Let's ensure -std=c++xx instead of -std=g++xx
+    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
 
     # Let's nicely support folders in IDE's

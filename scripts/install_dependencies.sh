@@ -71,9 +71,9 @@ fi
 
 ${script_dir}/install_catch2_v2.11.1.sh $1
 ${script_dir}/install_nlohmann_json_3.7.3.sh $1
+# the following are external_src packages
 ${script_dir}/install_boost_1.72.0.sh $1
 ${script_dir}/install_openssl_1.1.1d.sh $1
-# the following are external_src packages
 ${script_dir}/install_http_parser.sh $1
 ${script_dir}/install_simple_buffer.sh $1
 ${script_dir}/install_urlparser.sh $1

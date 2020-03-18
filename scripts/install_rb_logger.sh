@@ -3,7 +3,7 @@
 debug=
 
 package_name=rb_logger
-git_clone="git clone file://${HOME}/git-repos/rb_logger"
+git_clone="git clone https://github.com/robertblackwell/rb_logger"
 clone_dir_stem_name=rb_logger
 header_cp_pattern=rb_logger/*.hpp
 source_cp_pattern=rb_logger/*.cpp

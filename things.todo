@@ -8,6 +8,7 @@ class property names cleanup:
   ☐ some tests are still using the leading _varname naming scheme - fix
 Bugs:
   ☐ not handling non-existence of connection header correctly when preparing upstream request
+  ☐ test_ssl seg faults
 Logging:
   ☐ is too complicated - try using the model from the node addin
 Exceptions and Error checking:
@@ -16,6 +17,8 @@ Uri-UriV2:
   ☐ compare the two implementations and resolve into a single class. Check what tests get broken.
 throw:
   ☐ replace all instance of throwing a string with THROW
+Forwarding Handler:
+  ☐ need to review how it handles errors - not sure what the ssl_handler should do in the case of downstream failure or upstream failure
 Start work on SSL/TLS:
  ☐ Issue - need test bed to work on MessageReader, MessageWrite and Client for https requests.
  ☐ Plan
