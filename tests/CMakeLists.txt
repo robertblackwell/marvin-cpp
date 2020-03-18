@@ -4,7 +4,8 @@ set(TEST_INCLUDE_DIRS
 	${TEST_DIR} 
 	${HEADER_DIRS} 
 	SYSTEM ${VENDOR_DIR}/include)
-set(TEST_LINK_LIBS marvin_library 
+
+set(TEST_LINK_LIBS marvin_library Threads::Threads
 	${VENDOR_DIR}/lib/libcrypto.a 
 	${VENDOR_DIR}/lib/libssl.a 
 	${VENDOR_DIR}/lib/libboost_filesystem.a 
