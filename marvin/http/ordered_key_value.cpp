@@ -181,7 +181,7 @@ void OKV::remove(std::vector<std::string> keys)
     m_keys.clear();
     /// have to rebuild the index
     int index = 0;
-    for(okv_init::iterator it = m_key_value_vec.begin(); it != m_key_value_vec.end(); it++) {
+    for(auto it = m_key_value_vec.begin(); it != m_key_value_vec.end(); it++) {
         m_keys[(*it).first] = index;
         index++;
     }
@@ -208,7 +208,7 @@ std::vector<std::pair<std::string, std::string>> OKV::jsonizable() const
     std::vector<std::pair<std::string, std::string>> result;
     typedef std::vector<KVPair> kva;
     kva tmp = m_key_value_vec;
-    for(kva::const_iterator it = tmp.cbegin(); it != tmp.cend(); it++) {
+    for(auto it = tmp.cbegin(); it != tmp.cend(); it++) {
         std::pair<std::string, std::string> p{(*it).first, (*it).second};
         result.push_back(p);
     }
@@ -230,7 +230,7 @@ void OKV::p_rebuild_index()
     m_keys.clear();
     /// have to rebuild the index
     int index = 0;
-    for(okv_init::iterator it = m_key_value_vec.begin(); it != m_key_value_vec.end(); it++) {
+    for(auto it = m_key_value_vec.begin(); it != m_key_value_vec.end(); it++) {
         m_keys[(*it).first] = index;
         index++;
     }
