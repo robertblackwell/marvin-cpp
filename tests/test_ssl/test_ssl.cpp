@@ -200,17 +200,3 @@ TEST_CASE("new_connection_GET")
     });
     io.run();
 }
-
-// int main( int argc, char* argv[] )
-// {
-//     // global setup - run a server
-//     std::cout << "ENV: " << std::getenv("MARVIN_CERT_STORE_PATH") << std::endl;
-//      RBLogging::setEnabled(false);
-//     char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
-//     int _argc = 2;
-//     printf("connect\n");
-//     int result = Catch::Session().run( argc, argv );
-//     printf("connect\n");
-//     return result;
-// }
-

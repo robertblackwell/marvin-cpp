@@ -88,14 +88,3 @@ TEST_CASE("mbuffer_01")
 
     delete mb;
 }
-
-// #pragma mark - main
-// int main(int argc, char * argv[]) {
-//     RBLogging::setEnabled(false);
-//     char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
-//     int _argc = 2;
-//     int result = Catch::Session().run( argc, argv );
-
-//     return result;
-// }
-

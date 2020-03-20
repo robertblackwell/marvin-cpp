@@ -123,16 +123,3 @@ TEST_CASE("Reader_socket_hv")
     test_vector_socketReader(tc_make_hv());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
-
-// int main(int argc, char * argv[])
-// {
-//     RBLogging::setEnabled(false);
-
-//     char* _argv[] = {argv[0], (char*)"-s", (char*)"-r", (char*)"junit"}; // change the filter to restrict the tests that are executed
-//     int _argc = 4;
-//     printf("%s\n", __FILE__);
-//     int result = Catch::Session().run( argc, argv );
-//     printf("%s\n", __FILE__);
-//     return result;
-// }
-

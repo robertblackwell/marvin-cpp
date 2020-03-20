@@ -82,16 +82,3 @@ TEST_CASE("ProxyGetRequest")
     std::string s = msg->str();
     REQUIRE(s == std::string("GET http://www.somewhere:77/?a=1111&b=2222 HTTP/1.1\r\nHOST: www.somewhere:77\r\n\r\n"));
 }
-
-// int main( int argc, char* argv[] )
-// {
-//     // global setup - run a server
-//     RBLogging::setEnabled(false);
-//     char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
-//     int _argc = 2;
-//     printf("connect\n");
-//     int result = Catch::Session().run( argc, argv );
-//     printf("connect\n");
-//     return result;
-// }
-

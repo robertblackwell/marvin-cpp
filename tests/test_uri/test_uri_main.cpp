@@ -105,17 +105,3 @@ TEST_CASE("virt dtor")
         delete b;
         REQUIRE(base_destructor_called);
 }
-
-
-// int main( int argc, char* argv[] )
-// {
-//     // global setup - run a server
-//     RBLogging::setEnabled(false);
-//     char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
-//     int _argc = 2;
-//     printf("connect\n");
-//     int result = Catch::Session().run( argc, argv );
-//     printf("connect\n");
-//     return result;
-// }
-
