@@ -19,7 +19,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "error.hpp"
 #include "repeating_timer.hpp"
 #include "testcase.hpp"
-#include <marvin/connection/tcp_connection.hpp>
 #include <marvin/message/message_reader.hpp>
 #include "t_server.hpp"
 #include "t_client.hpp"

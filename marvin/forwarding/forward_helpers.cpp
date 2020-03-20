@@ -202,7 +202,6 @@ void helpers::makeDownstreamErrorResponse(MessageBaseSPtr msg, MessageReaderSPtr
     msg->setStatusCode(501);
     msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(0));
     std::string n("");
-//    _resp->setContent(n);
 }
 void helpers::makeDownstreamResponse(MessageBaseSPtr msg_sptr, MessageReaderSPtr resp, Marvin::ErrorType& err)
 {

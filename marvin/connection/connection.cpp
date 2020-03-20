@@ -143,7 +143,6 @@ void Connection::asyncAccept(
     std::function<void(const boost::system::error_code& err)> cb
 )
 {
-//    _boost_socket.non_blocking(true);
     acceptor.async_accept(m_lowest_layer_sock, [cb, this](const boost::system::error_code& err) {
         LogFDTrace(this->nativeSocketFD());
         p_post_accept_cb(cb, err);

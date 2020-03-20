@@ -24,7 +24,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 TEST_CASE("connect_failBadHost")
 {
     boost::asio::io_service io;
-    auto conn_sptr = std::make_shared<TCPConnection>(io, "https", "ddddgoogle.com", "443");
+    auto conn_sptr = std::make_shared<Connection>(io, "https", "ddddgoogle.com", "443");
     
     conn_sptr->asyncConnect([](Marvin::ErrorType& err, ISocket* conn)
     {
@@ -51,7 +51,7 @@ TEST_CASE("connect_failTimeout")
 {
     std::cout << "START::connect_failTimeout" << std::endl;
     boost::asio::io_service io;
-    auto conn_sptr = std::make_shared<TCPConnection>(io, "http", "localhost", "3333");
+    auto conn_sptr = std::make_shared<Connection>(io, "http", "localhost", "3333");
     conn_sptr->asyncConnect([](Marvin::ErrorType& err, ISocket* conn)
     {
         INFO(Marvin::make_error_description(err));

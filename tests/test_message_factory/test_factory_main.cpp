@@ -12,7 +12,6 @@
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
-#include <marvin/connection/tcp_connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/client/client.hpp>

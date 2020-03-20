@@ -6,8 +6,6 @@
 #include <marvin/callback_typedefs.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/connection/socket_interface.hpp>
-#include <marvin/connection/socket_interface.hpp>
-#include <marvin/connection/tcp_connection.hpp>
 
 class MessageWriter;
 typedef std::shared_ptr<MessageWriter> MessageWriterSPtr;

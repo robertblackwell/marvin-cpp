@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <memory>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/connection/tcp_connection.hpp>
 #include <marvin/connection/half_tunnel.hpp>
 
 class TunnelHandler;
