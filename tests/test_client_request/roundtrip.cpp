@@ -2,6 +2,7 @@
 #include <boost/algorithm/string.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
+#include <doctest/doctest.h>
 #include "roundtrip.hpp"
 
 using namespace Marvin;
@@ -92,7 +93,7 @@ std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::stri
     return client;
 }
 #ifdef WHEN_WE_CAN_HANDLE_HTTPS_TRAFFIC
-TEST_CASE("ssl_ssllabs", "[first]")
+TEST_CASE("ssl_ssllabs")
 {
     boost::asio::io_service io_service;
     std::vector<std::shared_ptr<Client>> rt;
@@ -101,7 +102,7 @@ TEST_CASE("ssl_ssllabs", "[first]")
     std::cout << "Return from io " << std::endl;
     rt.clear();
 }
-TEST_CASE("ssl_ssltest", "[second]")
+TEST_CASE("ssl_ssltest")
 {
     boost::asio::io_service io_service;
     std::vector<std::shared_ptr<Client>> rt;
@@ -111,7 +112,7 @@ TEST_CASE("ssl_ssltest", "[second]")
 
 }
 #endif
-TEST_CASE("ClientRoundTrip-SixTimes","")
+TEST_CASE("ClientRoundTrip-SixTimes")
 {
     boost::asio::io_service io_service;
     std::vector<std::shared_ptr<Client>> rt;

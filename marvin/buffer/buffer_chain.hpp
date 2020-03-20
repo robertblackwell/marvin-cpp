@@ -1,13 +1,11 @@
 #ifndef buffer_chain_hpp
 #define buffer_chain_hpp
- #include <iostream>
- #include <iterator>
- #include <algorithm>
- #include <stdexcept>
- #include <cassert>
- #include <vector>
- #include <marvin/boost_stuff.hpp>
- #include <marvin/buffer/m_buffer.hpp>
+#include <stddef.h>
+#include <memory>
+#include <iostream>
+#include <vector>
+#include <boost/asio/buffer.hpp>
+#include <marvin/buffer/m_buffer.hpp>
 /**
 * \ingroup Buffer
 */

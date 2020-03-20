@@ -9,7 +9,7 @@
 #ifndef marvin_connection_handler_hpp
 #define marvin_connection_handler_hpp
 /// \ingroup Server
-#include <stdio.h>
+#include <cstdio>
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/server/server_context.hpp>

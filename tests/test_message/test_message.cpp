@@ -10,7 +10,10 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#include <catch2/catch.hpp>
+
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/server/http_server.hpp>
@@ -23,9 +26,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <marvin/connection/socket_factory.hpp>
 
-#include "tsc_req_handler.hpp"
-#include "server_runner.hpp"
-#include "tp_proxy_runner.hpp"
 #endif 
 #pragma mark - mock up a MessageReader
 
@@ -223,7 +223,7 @@ bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 }
 } //namespace
 #pragma mark - TEST_CASE 
-TEST_CASE("Helpers_Example", "[example]")
+TEST_CASE("Helpers_Example")
 {
     Marvin::Uri u("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
     CHECK(u.scheme() == "http");
@@ -236,14 +236,14 @@ TEST_CASE("Helpers_Example", "[example]")
 //    CHECK(u.absolutePath() == "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
 //    std::cout << msg->str() << std::endl;
 }
-TEST_CASE("Uri", "[uri, example]")
+TEST_CASE("Uri")
 {
     MessageReaderSPtr msg = makeMock();
     fillMsgRdrAsRequest(msg);
     verifyRequest_MimimumRequirements(msg);
 //    std::cout << msg->str() << std::endl;
 }
-TEST_CASE("Helpers_downstream01", "[downstream01]")
+TEST_CASE("Helpers_downstream01")
 {
     MessageReaderSPtr msgRdr = makeMock();
     fillMsgRdrAsResponse_01(msgRdr);
@@ -254,7 +254,7 @@ TEST_CASE("Helpers_downstream01", "[downstream01]")
     verifyResponse_01(msgSPtr);
 //    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("Helpers_upstream01", "[upstream01]")
+TEST_CASE("Helpers_upstream01")
 {
     MessageReaderSPtr msgRdr = makeMock();
     fillMsgRdrAsRequest01(msgRdr);
@@ -264,7 +264,7 @@ TEST_CASE("Helpers_upstream01", "[upstream01]")
     verifyRequest_01(msgSPtr);
 //    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("HelpersRequest02", "[upstream02]")
+TEST_CASE("HelpersRequest02")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest02(msgSPtr);
@@ -272,14 +272,14 @@ TEST_CASE("HelpersRequest02", "[upstream02]")
 //    std::cout << msgSPtr->str() << std::endl;
 }
 
-TEST_CASE("HelpersRequest03", "[upstream03]")
+TEST_CASE("HelpersRequest03")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest03(msgSPtr);
     verifyRequest_03(msgSPtr);
 //    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("copyexcept", "")
+TEST_CASE("copyexcept")
 {
     MessageReaderSPtr msgRdr = makeMock();
     fillMsgRdrAsRequest01(msgRdr);

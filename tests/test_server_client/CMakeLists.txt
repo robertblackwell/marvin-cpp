@@ -14,7 +14,6 @@ target_compile_features(${TARGET} PRIVATE cxx_std_14)
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET} ${TARGET})
-add_test(${TARGET} ${TARGET})
 SET_TESTS_PROPERTIES(${TARGET}
     PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
 
@@ -32,7 +31,6 @@ target_include_directories(${TARGET_2} PUBLIC ./ ./bf ../test_helpers ../test_se
 target_compile_features(${TARGET_2} PRIVATE cxx_std_14)
 target_link_libraries(${TARGET_2} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
-add_test(${TARGET_2} ${TARGET_2})
 add_test(${TARGET_2} ${TARGET_2})
 SET_TESTS_PROPERTIES(${TARGET_2}
     PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")

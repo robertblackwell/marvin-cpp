@@ -1,7 +1,7 @@
 #ifndef marvin_query_parser_hpp
 #define marvin_query_parser_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <map>
 namespace Marvin {

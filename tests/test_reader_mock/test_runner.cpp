@@ -3,6 +3,10 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include "test_runner.hpp"
 
+#include <doctest/doctest.h>
+
+
+
 std::string chain_to_string(Marvin::BufferChain chain)
 {
     return chain.to_string();

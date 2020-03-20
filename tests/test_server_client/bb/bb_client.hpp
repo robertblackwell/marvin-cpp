@@ -8,8 +8,6 @@
 #include <marvin/boost_stuff.hpp>
 #include <pthread.h>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-#include "error.hpp"
-#include "repeating_timer.hpp"
 #include <marvin/connection/connection.hpp>
 #include <marvin/message/message_reader.hpp>
 #include "bb_testcase.hpp"

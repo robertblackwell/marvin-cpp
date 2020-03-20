@@ -11,10 +11,12 @@
 #ifndef HTTP_SERVER2_IO_SERVICE_POOL_HPP
 #define HTTP_SERVER2_IO_SERVICE_POOL_HPP
 
-#include <boost/asio.hpp>
+#include <stddef.h>
 #include <vector>
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/asio/io_service.hpp>
+#include <boost/core/noncopyable.hpp>
+#include <boost/smart_ptr/detail/operator_bool.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 namespace http {
 namespace server2 {

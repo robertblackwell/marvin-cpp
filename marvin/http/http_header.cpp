@@ -5,14 +5,12 @@
 //  Created by ROBERT BLACKWELL on 12/26/16.
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
-#include <stdio.h>
 #include <ctype.h>
-#include <string>
 #include <map>
-#include <vector>
 #include <set>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <json/json.hpp>
+
 std::set<std::string> s{"one","two"};
 
 #include <marvin/http/http_header.hpp>

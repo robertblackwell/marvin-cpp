@@ -8,9 +8,7 @@
 
 
 #include <sstream>
-#include <openssl/bio.h>
 #include <exception>
-#include <openssl/err.h>
 
 #include <marvin/helpers/error.hpp>
 /**

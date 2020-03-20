@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 #include <boost/process.hpp>
 #include <marvin/http/message_factory.hpp>
 #include <marvin/helpers/helpers_fs.hpp>
@@ -236,7 +236,7 @@ namespace  {
 //      not a file and hence the file must exist and be empty before the start of this test
 // and compares to a references file
 
-TEST_CASE_METHOD(ProxyFixture, "whiteacorn_post")
+TEST_CASE_FIXTURE(ProxyFixture, "whiteacorn_post")
 {
     boost::asio::io_service io;
     // get a testcase

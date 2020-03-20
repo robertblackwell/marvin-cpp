@@ -1,15 +1,15 @@
 #ifndef marvin_certificate_hpp
 #define marvin_certificate_hpp
-#include <boost/filesystem.hpp>
-#include <openssl/x509.h>
-#include <cert/cert_authority.hpp>
-#include <cert/cert_certificate.hpp>
-#include <cert/cert_identity.hpp>
-#include <cert/cert_store.hpp>
+#include <memory>                       // for shared_ptr
+#include <cert/cert_authority.hpp>      // for AuthoritySPtr
+#include <cert/cert_certificate.hpp>    // for Certificate
+#include <cert/cert_identity.hpp>       // for Identity
+#include <cert/cert_store_locator.hpp>  // for LocatorSPtr
+#include <cert/cert_store_store.hpp>    // for StoreSPtr
+#include <openssl/ossl_typ.h>           // for X509_STORE
+class Certificates;  // lines 12-12
+namespace Cert { class Builder; }
 
-#include <cert/cert_builder.hpp>
-
-class Certificates;
 typedef  std::shared_ptr<Certificates> CertificatesSPtr;
 class Certificates
 {

@@ -1,27 +1,35 @@
 
 #ifndef client_hpp
 #define client_hpp
-/**
-* \defgroup Client
-*/
-
-#include <iostream>
-#include <istream>
-#include <ostream>
-#include <string>
-#include <marvin/boost_stuff.hpp>
-#include <marvin/buffer/buffer.hpp>
-#include <marvin/http/http_header.hpp>
-#include <marvin/message/message_writer.hpp>
-#include <marvin/message/message_reader.hpp>
-#include <marvin/connection/tcp_connection.hpp>
-#include <marvin/http/uri.hpp>
+#include <functional>                              // for function
+#include <istream>                                 // for string
+#include <marvin/http/http_header.hpp>             // for Headers, Headers::...
+#include <marvin/http/uri.hpp>                     // for Uri
+#include <marvin/message/message_reader.hpp>       // for MessageReaderSPtr
+#include <marvin/message/message_writer.hpp>       // for MessageWriterSPtr
+#include <memory>                                  // for shared_ptr, unique...
+#include <boost/asio/io_service.hpp>               // for io_service
+#include <marvin/buffer/buffer_chain.hpp>          // for BufferChain (ptr o...
+#include <marvin/buffer/m_buffer.hpp>              // for MBufferSPtr
+#include <marvin/callback_typedefs.hpp>            // for AsyncWriteCallback...
+#include <marvin/connection/socket_interface.hpp>  // for ISocketSPtr
+#include <marvin/error/marvin_error.hpp>           // for ErrorType
+#include <marvin/http/message_base.hpp>            // for MessageBaseSPtr
+#include <memory>                                       // for operator!=
+#include <string>                                       // for to_string
+#include <boost/asio/io_service.hpp>                    // for io_service
+#include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
+#include <marvin/buffer/m_buffer.hpp>                   // for MBufferSPtr
+#include <marvin/callback_typedefs.hpp>                 // for ErrorOnlyCall...
+#include <marvin/connection/socket_interface.hpp>       // for ISocketSPtr
+#include <marvin/error/marvin_error.hpp>                // for ErrorType
+#include <marvin/http/message_base.hpp>                 // for MessageBaseSPtr
+class Client;  // lines 21-21
+namespace boost { namespace asio { namespace ip { class tcp; } } }
+namespace boost { namespace system { class error_code; } }  // lines 19-19
 
 using boost::asio::ip::tcp;
-class Client;
-/// \ingroup Client
 using ClientSPtr = std::shared_ptr<Client>;
-/// \ingroup Client
 using ClientUPtr = std::unique_ptr<Client>;
 /**
 * \ingroup Client

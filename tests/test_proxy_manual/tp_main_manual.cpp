@@ -3,12 +3,14 @@
 // threads make a number of requests from the server.
 //
 #include <thread>
+#include <regex>
 #include <boost/process.hpp>
+#include <marvin/forwarding/forwarding_handler.hpp>
 #include <marvin/server/http_server.hpp>
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/collector/collector_base.hpp>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+// #define CATCH_CONFIG_RUNNER
+// #include <catch2/catch.hpp>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)

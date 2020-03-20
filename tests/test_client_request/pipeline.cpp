@@ -1,3 +1,4 @@
+#include <doctest/doctest.h>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include "pipeline.hpp"
 
@@ -53,7 +54,7 @@ void Pipeline::handler(Marvin::ErrorType err, MessageReaderSPtr rdr)
 * The test case
 */
 #if 1
-TEST_CASE("ClientPipeline_Test01","")
+TEST_CASE("ClientPipeline_Test01")
 {
     Marvin::Uri uri("http://whiteacorn.com/posts/rtw");
     boost::asio::io_service io;

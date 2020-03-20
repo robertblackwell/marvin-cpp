@@ -14,7 +14,6 @@ namespace Http {
 * \defgroup HttpMessage
 * \brief This group deals with the structure, parsing and construction of HTTP/1.1 messages.
 */
-#pragma once
 #pragma mark - http message interfaces
 /**
 * \ingroup HttpMessage

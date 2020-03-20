@@ -1,4 +1,5 @@
 #include <marvin/forwarding/forward_helpers.hpp>
+#include <doctest/doctest.h>
 #include "multiple.hpp"
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
@@ -45,7 +46,7 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
     return client;
 }
 #if 1
-TEST_CASE("Request_MultipleConsecutiveTimes","")
+TEST_CASE("Request_MultipleConsecutiveTimes")
 {
     boost::asio::io_service io_service;
     {

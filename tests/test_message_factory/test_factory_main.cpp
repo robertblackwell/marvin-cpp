@@ -8,8 +8,9 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
 #include <marvin/boost_stuff.hpp>
 #include <marvin/connection/tcp_connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
@@ -26,21 +27,21 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 using namespace Marvin;
 using namespace Marvin::Http;
 
-TEST_CASE("OK", "")
+TEST_CASE("OK")
 {
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     makeResponse200OKConnected(*msg);
     std::string s = msg->str();
     REQUIRE(s == std::string("HTTP/1.1 200 OK\r\nCONTENT-LENGTH: 0\r\n\r\n"));
 }
-TEST_CASE("403", "")
+TEST_CASE("403")
 {
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     makeResponse403Forbidden(*msg);
     std::string s = msg->str();
     REQUIRE(s == std::string("HTTP/1.1 403 Forbidden\r\nCONTENT-LENGTH: 0\r\n\r\n"));
 }
-TEST_CASE("502", "")
+TEST_CASE("502")
 {
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     makeResponse502Badgateway(*msg);
@@ -48,7 +49,7 @@ TEST_CASE("502", "")
     REQUIRE(s == std::string("HTTP/1.1 503 BAD GATEWAY\r\nCONTENT-LENGTH: 0\r\n\r\n"));
 }
 
-TEST_CASE("GetRequest", "")
+TEST_CASE("GetRequest")
 {
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     Uri uri("http://www.somewhere:77?a=1111&b=2222");
@@ -56,7 +57,7 @@ TEST_CASE("GetRequest", "")
     std::string s = msg->str();
     REQUIRE(s == std::string("GET /?a=1111&b=2222 HTTP/1.1\r\nHOST: www.somewhere:77\r\n\r\n"));
 }
-TEST_CASE("GetRequest:80", "")
+TEST_CASE("GetRequest:80")
 {
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     Uri uri("http://www.somewhere?a=1111&b=2222");
@@ -64,7 +65,7 @@ TEST_CASE("GetRequest:80", "")
     std::string s = msg->str();
     REQUIRE(s == std::string("GET /?a=1111&b=2222 HTTP/1.1\r\nHOST: www.somewhere\r\n\r\n"));
 }
-TEST_CASE("GetRequest:443", "")
+TEST_CASE("GetRequest:443")
 {
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     Uri uri("https://www.somewhere?a=1111&b=2222");
@@ -73,7 +74,7 @@ TEST_CASE("GetRequest:443", "")
     REQUIRE(s == std::string("GET /?a=1111&b=2222 HTTP/1.1\r\nHOST: www.somewhere\r\n\r\n"));
 }
 
-TEST_CASE("ProxyGetRequest", "")
+TEST_CASE("ProxyGetRequest")
 {
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     Uri uri("http://www.somewhere:77?a=1111&b=2222");
@@ -82,15 +83,15 @@ TEST_CASE("ProxyGetRequest", "")
     REQUIRE(s == std::string("GET http://www.somewhere:77/?a=1111&b=2222 HTTP/1.1\r\nHOST: www.somewhere:77\r\n\r\n"));
 }
 
-int main( int argc, char* argv[] )
-{
-    // global setup - run a server
-    RBLogging::setEnabled(false);
-    char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    printf("connect\n");
-    int result = Catch::Session().run( argc, argv );
-    printf("connect\n");
-    return result;
-}
+// int main( int argc, char* argv[] )
+// {
+//     // global setup - run a server
+//     RBLogging::setEnabled(false);
+//     char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
+//     int _argc = 2;
+//     printf("connect\n");
+//     int result = Catch::Session().run( argc, argv );
+//     printf("connect\n");
+//     return result;
+// }
 

@@ -18,8 +18,8 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
 
@@ -29,21 +29,3 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 #include <marvin/client/client.hpp>
 
 #undef VERBOSE
-/*
-* Now include test cases
-*/
-
-//#include "pipeline.hpp"
-//#include "multiple.hpp"
-//#include "roundtrip.hpp"
-
-int main(int argc, char* argv[]){
-    RBLogging::setEnabled(false);
-//    testcase_pipeline();
-
-    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    int result = Catch::Session().run( argc, argv );
-
-    return result;
-}

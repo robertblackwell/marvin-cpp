@@ -1,33 +1,22 @@
 //
-//  client.cpp
-//  all
-//
-//  Created by ROBERT BLACKWELL on 11/24/17.
-//  Copyright © 2017 Blackwellapps. All rights reserved.
-//
-
-
-#include <iostream>
-#include <istream>
-#include <ostream>
-#include <string>
-#include <memory>
-#include <cassert>
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wall"
-#include <marvin/boost_stuff.hpp>
-#pragma clang diagnostic pop
-#include <marvin/external_src/CxxUrl/url.hpp>
-#include <marvin/external_src/uri-parser/UriParser.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-#include <marvin/helpers/macros.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include <marvin/message/message_reader.hpp>
-#include <marvin/connection/socket_factory.hpp>
-// #include <marvin/client/request.hpp>
 #include <marvin/client/client.hpp>
-#include <marvin/connection/tcp_connection.hpp>
+#include <cassert>                                      // for assert
+#include <istream>                                      // for string
+#include <marvin/connection/socket_factory.hpp>         // for socketFactory
+#include <marvin/external_src/rb_logger/rb_logger.hpp>  // for LogInfo, LogD...
+#include <marvin/message/message_reader.hpp>            // for MessageReader
+#include <memory>                                       // for operator!=
+#include <string>                                       // for to_string
+#include <boost/asio/streambuf.hpp>                     // for streambuf
+#include <cert/error.hpp>                               // for THROW
+#include <marvin/http/http_header.hpp>                  // for Headers, Head...
+#include <marvin/http/uri.hpp>                          // for Uri
+#include <marvin/message/message_writer.hpp>            // for MessageWriter
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
+RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
 
+namespace boost { namespace asio { namespace ip { class tcp; } } }
+namespace boost { namespace system { class error_code; } }
 
 using boost::asio::ip::tcp;
 using boost::system::error_code;

@@ -2,9 +2,8 @@ file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 set(TARGET test_message)
 add_executable(${TARGET} 
 	test_message.cpp
-	test_message_main.cpp
-	../test_server_client/tsc_req_handler.cpp
-	../test_helpers/server_runner.cpp
+	# ../test_server_client/tsc_req_handler.cpp
+	# ../test_helpers/server_runner.cpp
 )
 target_include_directories(${TARGET} PUBLIC ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})

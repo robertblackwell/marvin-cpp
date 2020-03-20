@@ -8,7 +8,6 @@
 #include <boost/algorithm/string.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/http_header.hpp>
-#include <marvin/forwarding/forward_helpers.hpp>
 #include <marvin/http/message_factory.hpp>
 
 using namespace Marvin;

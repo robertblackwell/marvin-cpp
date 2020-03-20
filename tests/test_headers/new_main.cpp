@@ -9,15 +9,15 @@
 #include <algorithm>
 #include <iterator>
 #include <cassert>
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
 #include <json/json.hpp>
 #include <marvin/http/ordered_key_value.hpp>
 #include <marvin/http/http_header.hpp>
 
 using namespace nlohmann;
 
-TEST_CASE("OKV","")
+TEST_CASE("OKV")
 {
     Marvin::Http::Headers hh;
     Marvin::Http::Headers headers{{
@@ -64,7 +64,7 @@ TEST_CASE("OKV","")
     hdrs["three"] = "headers3";
     hdrs.set("four", "headers4");
 
-    SECTION("constructors and [] access")
+    SUBCASE("constructors and [] access")
     {
         CHECK(hdrs.size() == 4);
         CHECK(hdrs03.size() == 3);
@@ -78,7 +78,7 @@ TEST_CASE("OKV","")
         CHECK(hdrs03["bb"] == "BBBBB");
         CHECK(hdrs03["ccc"] == "CCCCCC");
     }
-    SECTION("set and get")
+    SUBCASE("set and get")
     {
         CHECK(hdrs.size() == 4);
         hdrs.set("ten", "anotherten");
@@ -87,7 +87,7 @@ TEST_CASE("OKV","")
         CHECK(hdrs["ten"] == "anotherten");
         CHECK(hdrs.size() == 5);
     }
-    SECTION("remove")
+    SUBCASE("remove")
     {
         CHECK(hdrs.size() == 4);
         hdrs.set("ten", "anotherten");
@@ -100,7 +100,7 @@ TEST_CASE("OKV","")
         CHECK( (hdrs.find("ten") == hdrs.end()) );
         CHECK(hdrs.size() == 4);
     }
-    SECTION("remove group")
+    SUBCASE("remove group")
     {
         CHECK(hdrs.size() == 4);
         hdrs.set("ten", "anotherten");
@@ -110,7 +110,7 @@ TEST_CASE("OKV","")
         CHECK(hdrs["one"] == "headers1");
         CHECK(hdrs["three"] == "headers3");
     }
-    SECTION("pointer")
+    SUBCASE("pointer")
     {
         auto h = hdrs.find("two");
         auto hs = *h;
@@ -120,7 +120,7 @@ TEST_CASE("OKV","")
         auto hpv = h->value();
         CHECK(true);
     }
-    SECTION("demonstrate_json")
+    SUBCASE("demonstrate_json")
     {
         auto jz = hdrs.jsonizable();
         nlohmann::json j;
@@ -145,7 +145,7 @@ TEST_CASE("OKV","")
         auto b = (kvOut == hdrs);
         std::cout << "done" << std::endl;
     }
-    SECTION("json_with_fucntions")
+    SUBCASE("json_with_fucntions")
     {
         nlohmann::json j;
         OrderedKeyValues::to_json(j, hdrs);
@@ -155,7 +155,7 @@ TEST_CASE("OKV","")
         auto b = (hdrs == kvout);
         std::cout << "done" << std::endl;
     }
-    SECTION("json the correct wayt")
+    SUBCASE("json the correct wayt")
     {
         nlohmann::json j(hdrs);
         std::cout << j.dump() << std::endl;
@@ -164,7 +164,7 @@ TEST_CASE("OKV","")
         auto b = (hdrs == kvout);
         std::cout << "done" << std::endl;
     }
-    SECTION("json headers")
+    SUBCASE("json headers")
     {
         nlohmann::json j(headers);
         std::cout << j.dump() << std::endl;

@@ -3,16 +3,20 @@
 //
 
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <unistd.h>
-#include <pthread.h>
-#include <marvin/boost_stuff.hpp>
+#include <marvin/collector/collector_base.hpp>
+#include <stdio.h>                                      // for perror
+#include <sys/fcntl.h>                                  // for open, O_NONBLOCK
+#include <unistd.h>                                     // for close
+#include <functional>                                   // for __bind, bind
+#include <iostream>                                     // for operator<<
+#include <memory>                                       // for shared_ptr
+#include <new>                                          // for operator new
+#include <string>                                       // for basic_string
+#include <boost/asio/detail/impl/strand_service.hpp>    // for strand_servic...
+#include <boost/asio/impl/io_context.hpp>               // for io_context::post
+#include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
-
-#include <marvin/collector/collector_base.hpp>
 
 bool testPipeReaderExists(char* pipeName)
 {

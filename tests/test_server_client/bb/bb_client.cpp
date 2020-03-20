@@ -2,8 +2,6 @@
 #include <json/json.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-#include "error.hpp"
-#include "repeating_timer.hpp"
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/message/message_reader.hpp>

@@ -5,10 +5,9 @@
 //  Created by ROBERT BLACKWELL on 7/17/14.
 //  Copyright (c) 2014 Blackwellapps. All rights reserved.
 //
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 #include <cassert>
-#include <boost/algorithm/string/case_conv.hpp>
 #include <marvin/http/http_header.hpp>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>

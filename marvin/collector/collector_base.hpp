@@ -1,21 +1,11 @@
-//
-// The main entry point for Marvin - a mitm proxy for http/https 
-//
 
-
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <unistd.h>
-#include <pthread.h>
-#include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-
-#include <marvin/server/http_server.hpp>
-#include <marvin/server/request_handler_base.hpp>
-#include <marvin/collector/collector_interface.hpp>
-#include <marvin/forwarding/forwarding_handler.hpp>
-
+#include <iostream>                                  // for string, ostream
+#include <marvin/collector/collector_interface.hpp>  // for ICollector
+#include <boost/asio/io_context.hpp>                 // for io_context
+#include <boost/asio/io_context_strand.hpp>          // for io_context::strand
+#include <boost/asio/io_service.hpp>                 // for io_service
+#include <marvin/http/message_base.hpp>              // for MessageBaseSPtr
+#include <marvin/message/message_reader.hpp>         // for MessageReaderSPtr
 class CollectorBase: public ICollector
 {
     public:

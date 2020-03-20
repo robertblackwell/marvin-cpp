@@ -8,8 +8,9 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
 #include <marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
@@ -46,25 +47,25 @@ void test_streamingBody(std::vector<Testcase> tcs)
         delete tr;
     }
 }
-TEST_CASE( "Reader_buffering_fullmessage", "")
+TEST_CASE( "Reader_buffering_fullmessage")
 {
     printf("START %s[%d]\n", __FILE__, __LINE__);
     test_fullmessage(tc_make_buffering());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
-TEST_CASE( "Reader_eof_fullmessage", "")
+TEST_CASE( "Reader_eof_fullmessage")
 {
     printf("START %s[%d]\n", __FILE__, __LINE__);
     test_fullmessage(tc_make_eof());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
-TEST_CASE( "Reader_hv_fullmessage", "")
+TEST_CASE( "Reader_hv_fullmessage")
 {
     printf("START %s[%d]\n", __FILE__, __LINE__);
     test_fullmessage(tc_make_hv());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
-TEST_CASE( "Reader_buffering_streaming","")
+TEST_CASE( "Reader_buffering_streaming")
 {
     printf("START %s[%d]\n", __FILE__, __LINE__);
     test_streamingBody(tc_make_buffering());
@@ -122,15 +123,16 @@ TEST_CASE("Reader_socket_hv")
     test_vector_socketReader(tc_make_hv());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
-int main(int argc, char * argv[])
-{
-    RBLogging::setEnabled(false);
 
-    char* _argv[] = {argv[0], (char*)"-s", (char*)"-r", (char*)"junit"}; // change the filter to restrict the tests that are executed
-    int _argc = 4;
-    printf("%s\n", __FILE__);
-    int result = Catch::Session().run( argc, argv );
-    printf("%s\n", __FILE__);
-    return result;
-}
+// int main(int argc, char * argv[])
+// {
+//     RBLogging::setEnabled(false);
+
+//     char* _argv[] = {argv[0], (char*)"-s", (char*)"-r", (char*)"junit"}; // change the filter to restrict the tests that are executed
+//     int _argc = 4;
+//     printf("%s\n", __FILE__);
+//     int result = Catch::Session().run( argc, argv );
+//     printf("%s\n", __FILE__);
+//     return result;
+// }
 

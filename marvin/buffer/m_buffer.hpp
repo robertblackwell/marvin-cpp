@@ -1,12 +1,10 @@
 #ifndef m_buffer_hpp
 #define m_buffer_hpp
-
+#include <stddef.h>
+#include <memory>
 #include <iostream>
 #include <iterator>
-#include <algorithm>
-#include <marvin/boost_stuff.hpp>
-#include <cassert>
-#include <vector>
+#include <boost/asio/buffer.hpp>
 /**
 * \ingroup Buffer
 */

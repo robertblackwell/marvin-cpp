@@ -11,7 +11,6 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <catch2/catch.hpp>
 
 #include <marvin/boost_stuff.hpp>
 

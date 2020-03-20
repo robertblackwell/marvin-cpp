@@ -7,8 +7,10 @@
 #include <marvin/server/http_server.hpp>
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/forwarding/forwarding_handler.hpp>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+
+#define DOCTEST_CONFIG_IMPLEMENT
+#include <doctest/doctest.h>
+
 #include <marvin/collector/collector_base.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
@@ -16,6 +18,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include "../test_proxy/tp_testcase.hpp"
 #include "proxy_fixture.hpp"
+
 
 int main( int argc, char* argv[] )
 {
@@ -45,8 +48,9 @@ int main( int argc, char* argv[] )
 
 
     char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    int result = Catch::Session().run( argc, argv );
+    doctest::Context context;
+    context.applyCommandLine(argc, argv);
+    int result = context.run(); // run
 
     server_ptr->terminate();
     proxy_thread.join();

@@ -3,8 +3,10 @@
 #include <iterator>
 #include <algorithm>
 #include <boost/asio.hpp>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 
@@ -207,12 +209,12 @@ TEST_CASE("test chunked message ") {
 #endif
 
 
-#pragma mark - main
-int main(int argc, char * argv[]) {
-    RBLogging::setEnabled(false);
-    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    int result = Catch::Session().run( argc, argv );
+// #pragma mark - main
+// int main(int argc, char * argv[]) {
+//     RBLogging::setEnabled(false);
+//     char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
+//     int _argc = 2;
+//     int result = Catch::Session().run( argc, argv );
 
-    return result;
-}
+//     return result;
+// }

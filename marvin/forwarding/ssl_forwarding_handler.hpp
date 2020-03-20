@@ -9,7 +9,7 @@
 #ifndef marvin_ssl_forwarding_handler_hpp
 #define marvin_ssl_forwarding_handler_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <sstream>
 #include <regex>

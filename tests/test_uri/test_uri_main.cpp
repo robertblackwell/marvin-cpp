@@ -8,8 +8,10 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
 #include <marvin/boost_stuff.hpp>
 #include <marvin/connection/tcp_connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
@@ -68,7 +70,7 @@ class derived: public base {
     }
 };
 }
-TEST_CASE()
+TEST_CASE("something")
 {
     class m: public Marvin::Http::MessageBase {
     public:
@@ -82,9 +84,9 @@ TEST_CASE()
     m* minst = new m();
     delete minst;
 }
-TEST_CASE("uri", "")
+TEST_CASE("uri")
 {
-    Marvin::Http::Uri uri(std::string("http://www.somewhere.com:443?one=111&two=222"));
+    Marvin::Uri uri(std::string("http://www.somewhere.com:443?one=111&two=222"));
     std::cout << "uri" << std::endl;
 }
 TEST_CASE("not virt dtor")
@@ -105,15 +107,15 @@ TEST_CASE("virt dtor")
 }
 
 
-int main( int argc, char* argv[] )
-{
-    // global setup - run a server
-    RBLogging::setEnabled(false);
-    char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    printf("connect\n");
-    int result = Catch::Session().run( argc, argv );
-    printf("connect\n");
-    return result;
-}
+// int main( int argc, char* argv[] )
+// {
+//     // global setup - run a server
+//     RBLogging::setEnabled(false);
+//     char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
+//     int _argc = 2;
+//     printf("connect\n");
+//     int result = Catch::Session().run( argc, argv );
+//     printf("connect\n");
+//     return result;
+// }
 

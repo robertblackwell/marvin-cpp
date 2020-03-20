@@ -2,7 +2,7 @@
 #ifndef marvin_message_writer_v2_hpp
 #define marvin_message_writer_v2_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <marvin/callback_typedefs.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/connection/socket_interface.hpp>

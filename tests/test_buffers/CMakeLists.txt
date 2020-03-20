@@ -1,10 +1,10 @@
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 set(TARGET test_buffers)
 add_executable(${TARGET} 
-	test_buffer_main.cpp
-	test_fbuffer.cpp
-	test_mbuffer.cpp
+	test_buffers.cpp
+	test_main.cpp
 )
+set_property(TARGET ${TARGET} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 target_include_directories(${TARGET} PUBLIC ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 

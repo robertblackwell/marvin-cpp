@@ -9,7 +9,7 @@
 #ifndef marvin_http_hpp
 #define marvin_http_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/http_method.hpp>
 #include <marvin/http/uri.hpp>

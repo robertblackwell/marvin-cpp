@@ -10,8 +10,9 @@
 #include <pthread.h>
 #include <cstdlib>
 
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/message_factory.hpp>
@@ -50,7 +51,7 @@ namespace {
     }
 } // namespace
 #if 0
-TEST_CASE("connect_failBadHost", "")
+TEST_CASE("connect_failBadHost")
 {
     boost::asio::io_service io;
     auto conn_sptr = std::make_shared<Connection>(io, "https", "ddddgoogle.com", "443");
@@ -74,7 +75,7 @@ void dofail(){
     CHECK(true);
 }
 #if 1
-TEST_CASE("connect_succeed","")
+TEST_CASE("connect_succeed")
 {
     INFO("connect_succeed");
     boost::asio::io_service io;
@@ -88,7 +89,7 @@ TEST_CASE("connect_succeed","")
 }
 #endif
 #if 1
-TEST_CASE("ssl_connect", "")
+TEST_CASE("ssl_connect")
 {
     boost::asio::io_service io;
 //    ISocketSPtr conn_sptr = socketFactory(false, io, "https", "bankofamerica.com", "443");
@@ -102,7 +103,7 @@ TEST_CASE("ssl_connect", "")
 
 }
 #endif
-TEST_CASE("new_connection", "ssl")
+TEST_CASE("new_connection")
 {
     // test can go secure AFTER connect
     boost::asio::io_service io;
@@ -133,12 +134,13 @@ TEST_CASE("new_connection", "ssl")
     io.run();
 }
 #endif
-TEST_CASE("new_connection_connect", "ssl")
+TEST_CASE("new_connection_connect")
 // test can go secure BEFORE connect
 {
     boost::asio::io_service io;
     boost::asio::ssl::context ctx(boost::asio::ssl::context::method::sslv23);
     if (!boost::filesystem::is_regular("/usr/local/etc/openssl@1.1/cert.pem")) {
+        std::cout << "DID NOT FIND /usr/local/etc/openssl@1.1/cert.pem" << std::endl;
         assert(false);
     }
     std::string default_bundle_path = "/usr/local/etc/openssl@1.1/cert.pem"; 
@@ -159,7 +161,7 @@ TEST_CASE("new_connection_connect", "ssl")
 
 }
 
-TEST_CASE("new_connection_GET", "ssl")
+TEST_CASE("new_connection_GET")
 // test can go secure BEFORE connect
 {
     boost::asio::io_service io;
@@ -197,18 +199,18 @@ TEST_CASE("new_connection_GET", "ssl")
         std::cout << "hello" << std::endl;
     });
     io.run();
+}
 
-}
-int main( int argc, char* argv[] )
-{
-    // global setup - run a server
-    std::cout << "ENV: " << std::getenv("MARVIN_CERT_STORE_PATH") << std::endl;
-     RBLogging::setEnabled(false);
-    char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    printf("connect\n");
-    int result = Catch::Session().run( argc, argv );
-    printf("connect\n");
-    return result;
-}
+// int main( int argc, char* argv[] )
+// {
+//     // global setup - run a server
+//     std::cout << "ENV: " << std::getenv("MARVIN_CERT_STORE_PATH") << std::endl;
+//      RBLogging::setEnabled(false);
+//     char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
+//     int _argc = 2;
+//     printf("connect\n");
+//     int result = Catch::Session().run( argc, argv );
+//     printf("connect\n");
+//     return result;
+// }
 

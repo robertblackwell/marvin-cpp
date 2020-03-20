@@ -1,7 +1,7 @@
 #ifndef marvin_http_header_hpp
 #define marvin_http_header_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <map>
 #include <string>
 #include <vector>

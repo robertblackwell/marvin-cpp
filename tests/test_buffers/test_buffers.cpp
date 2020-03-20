@@ -7,7 +7,7 @@
 //
 #include <iostream>
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+// #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>

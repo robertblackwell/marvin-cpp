@@ -9,11 +9,15 @@
 //
 
 // #include <marvin/server.hpp>
-#include <stdexcept>
-#include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <marvin/boost_ext/io_service_pool.hpp>
+#include <boost/bind/bind.hpp>             // for bind
+#include <boost/bind/mem_fn.hpp>           // for mf0
+#include <stdexcept>                       // for runtime_error
+#include <boost/asio/impl/io_context.hpp>  // for io_context::work::work
+#include <boost/asio/impl/io_context.ipp>  // for io_context::io_context
+#include <boost/asio/io_context.hpp>       // for io_context, io_context::co...
+#include <boost/bind/bind.hpp>             // for bind_t, list_av_1<>::type
+#include <boost/thread/detail/thread.hpp>  // for thread
 
 namespace http {
 namespace server2 {

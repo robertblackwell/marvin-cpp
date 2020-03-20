@@ -1,4 +1,9 @@
-#include <marvin/buffer/buffer.hpp>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <memory>
+#include <boost/asio/buffer.hpp>
+#include <marvin/buffer/m_buffer.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
 namespace {

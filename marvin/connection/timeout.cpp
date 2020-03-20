@@ -1,13 +1,7 @@
-#include <iostream>
-#include <istream>
-#include <ostream>
 #include <string>
 #include <cassert>
 
-#include <marvin/boost_stuff.hpp>
-
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/callback_typedefs.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)

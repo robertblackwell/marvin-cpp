@@ -1,5 +1,21 @@
-#include <marvin/helpers/macros.hpp>
+
 #include <marvin/certificates/certificates.hpp>
+#include <openssl/x509.h>                   // for X509_STORE_load_locations
+#include <cstdlib>                          // for getenv, NULL
+#include <iosfwd>                           // for string
+#include <string>                           // for basic_string
+#include <boost/filesystem/operations.hpp>  // for is_directory
+#include <boost/filesystem/path.hpp>        // for path
+#include <cert/cert_authority.hpp>          // for AuthoritySPtr
+#include <cert/cert_builder.hpp>            // for Builder
+#include <cert/cert_certificate.hpp>        // for Certificate
+#include <cert/cert_identity.hpp>           // for Identity
+#include <cert/cert_store_types.hpp>        // for Path
+#include <cert/error.hpp>                   // for THROW
+#include <cert/cert_store_locator.hpp>      // for Locator, LocatorSPtr
+#include <cert/cert_store_store.hpp>        // for Store, StoreSPtr
+#include <openssl/ossl_typ.h>               // for X509_STORE
+
 
 
 Certificates& Certificates::getInstance()

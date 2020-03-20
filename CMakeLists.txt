@@ -20,6 +20,11 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
+find_program(iwyu_path NAMES include-what-you-use iwyu)
+if(NOT iwyu_path)
+  message(FATAL_ERROR "Could not find the program include-what-you-use")
+endif()
+
     MESSAGE("INSIDE IF STATEMENT")
     # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
     # Let's ensure -std=c++xx instead of -std=g++xx

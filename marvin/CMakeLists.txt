@@ -11,8 +11,6 @@ file(GLOB HEADERS
 	boost_stuff.hpp 
 	callback_typedefs.hpp 
 
-	boost_ext/io_service_pool.hpp
-
 	buffer/buffer.hpp
 	buffer/buffer_chain.hpp
 	buffer/m_buffer.hpp
@@ -71,7 +69,6 @@ file(GLOB HEADERS
 	)
 
 set(SOURCES 
-	boost_ext/io_service_pool.cpp
 
 	buffer/buffer_chain.cpp			
 	buffer/m_buffer.cpp				
@@ -156,9 +153,24 @@ message("HEADER_LIST ${HEADERS}")
 message("Sources: ${SOURCES}")
 
 add_library(marvin_library STATIC ${SOURCES} ${HEADERS})
-
+# set_property(TARGET marvin_library PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 # We need this directory, and users of our library will need it too
-target_include_directories(marvin_library PUBLIC ${HEADER_DIRS} ${VENDOR_DIR}/include)
+
+target_include_directories(marvin_library SYSTEM PUBLIC ${HEADER_DIRS} ${VENDOR_DIR}/include)
+
+#target_precompile_headers(marvin_library PUBLIC
+#	<marvin/external_src/rb_logger/rb_logger.hpp>
+#	${VENDOR_DIR}/include/boost/asio.hpp
+#	<boost/filesystem.hpp>
+#	<memory>
+#	<stddef.h>
+#	<vector>
+#	<string>
+#	<iostream>
+#	<sstream>
+#	<marvin/error/marvin_error.hpp>
+#	)
+
 # This depends on (header only) boost
 # target_link_libraries(cert_library PRIVATE Boost::boost)
 

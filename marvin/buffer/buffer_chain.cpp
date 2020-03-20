@@ -1,4 +1,6 @@
-
+#include <cassert>
+#include <boost/asio/buffer.hpp>
+#include <marvin/buffer/m_buffer.hpp>
 #include <marvin/buffer/buffer_chain.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )

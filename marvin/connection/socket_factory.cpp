@@ -6,10 +6,7 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#include <stdio.h>
-#include <cassert>
 #include <marvin/connection/socket_interface.hpp>
-#include <marvin/connection/tcp_connection.hpp>
 #include <marvin/connection/connection.hpp>
 
 ISocketSPtr socketFactory(

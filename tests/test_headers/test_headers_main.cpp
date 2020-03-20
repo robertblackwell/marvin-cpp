@@ -8,8 +8,8 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/http_header.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -80,6 +80,7 @@ TEST_CASE("header02","02")
 {
 
 }
+#if 0
 
 int main( int argc, char* argv[] )
 {
@@ -93,3 +94,4 @@ int main( int argc, char* argv[] )
     return result;
 }
 
+#endif
