@@ -9,7 +9,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <thread>
 #include <pthread.h>
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
@@ -48,7 +48,7 @@ void multiple(std::vector<body_buffering::Testcase> tcs)
 }
 } // namespace
 
-TEST_CASE("oneshot-bodybuffering-timeout","[to]")
+TEST_CASE("oneshot-bodybuffering-timeout")
 {
     /// set short connection timeouts
     Connection::setConfig_connectTimeOut(1000);
@@ -60,7 +60,7 @@ TEST_CASE("oneshot-bodybuffering-timeout","[to]")
 /// need server to close with EOF
 /// too hard to do for the moment
 #ifdef RT_TEST_EOF
-TEST_CASE("oneshot-bodybuffering-eof","[eof]")
+TEST_CASE("oneshot-bodybuffering-eof")
 {
     /// set long connection timeouts for debugging
     Connection::setConfig_connectTimeOut(100000);
@@ -68,7 +68,7 @@ TEST_CASE("oneshot-bodybuffering-eof","[eof]")
     Connection::setConfig_writeTimeOut(100000);
     multiple(body_buffering::make_eof_cases());
 }
-TEST_CASE("EofAll, all", "[eofall]")
+TEST_CASE("EofAll, all")
 {
 //    body_buffering::Testcase testcase = tdefs.get_case(1);
     auto cases = body_buffering::make_eof_cases();
@@ -84,7 +84,7 @@ TEST_CASE("EofAll, all", "[eofall]")
 //    std::cout << "loop done" << std::endl;
 }
 #endif
-TEST_CASE("oneshot-bodybuffering","[tc]")
+TEST_CASE("oneshot-bodybuffering")
 {
     multiple(body_buffering::make_test_cases());
 }
@@ -92,7 +92,7 @@ TEST_CASE("oneshot-bodybuffering","[tc]")
 #if 1
 // the client class is too rudimentary for these
 // next tests to work
-TEST_CASE("BodyBuffering-2-inparallel","[parallel2]")
+TEST_CASE("BodyBuffering-2-inparallel")
 {
     body_buffering::Testcase testcase1 = body_buffering::make_test_cases()[1];
     body_buffering::Testcase testcase2 = body_buffering::make_test_cases()[2];
@@ -105,7 +105,7 @@ TEST_CASE("BodyBuffering-2-inparallel","[parallel2]")
 }
 #endif
 #if 1
-TEST_CASE("bodybuffering-all-in-parallel","[parallelall]")
+TEST_CASE("bodybuffering-all-in-parallel")
 {
 //    body_buffering::Testcase testcase = tdefs.get_case(1);
     auto cases = body_buffering::make_test_cases();

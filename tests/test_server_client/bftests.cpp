@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -80,13 +80,13 @@ void multiple(std::vector<Testcase> tcs)
     }
 }
 #if 1
-TEST_CASE("Oneshots1","")
+TEST_CASE("Oneshots1")
 {
     oneShot(make_cases()[0]);
 }
 #endif
 #if 1
-TEST_CASE("Oneshots","")
+TEST_CASE("Oneshots")
 {
     multiple(make_cases());
 }
@@ -95,7 +95,7 @@ TEST_CASE("Oneshots","")
 #if 1
 // run all request on a single io_service at the same time
 // but all as separate request streams and separate connections
-TEST_CASE("Multiple-alltogether","")
+TEST_CASE("Multiple-alltogether")
 {
     boost::asio::io_service io_service;
     std::vector<body_format::Testcase> cases = make_cases();
@@ -109,7 +109,7 @@ TEST_CASE("Multiple-alltogether","")
 }
 #endif
 #if 1
-TEST_CASE("Multiple_pipeline","")
+TEST_CASE("Multiple_pipeline")
 {
     boost::asio::io_service io_service;
     std::vector<body_format::Testcase> cases = make_cases();

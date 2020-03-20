@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>

@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <json/json.hpp>
 #include "bf_pipeline.hpp"

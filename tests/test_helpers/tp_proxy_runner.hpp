@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 #include <marvin/boost_stuff.hpp>
 
 #include <marvin/server/http_server.hpp>

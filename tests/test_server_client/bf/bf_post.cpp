@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 #include <json/json.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <marvin/server/server_connection_manager.hpp>

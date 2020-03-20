@@ -8,8 +8,8 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT
+#include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -40,10 +40,9 @@ int main( int argc, char* argv[] )
     ServerRunner s_runner;
     s_runner.setup();
 #endif
-    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    printf("%s\n",__FILE__);
-    int result = Catch::Session().run( argc, argv );
+    doctest::Context context;
+    context.applyCommandLine(argc, argv);
+    int result = context.run(); // run
 #ifdef EX_RUNNER
     sleep(1);
     s_runner.teardown();

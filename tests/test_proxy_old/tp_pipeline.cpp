@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 #include <json/json.hpp>
 #include "tp_pipeline.hpp"
 

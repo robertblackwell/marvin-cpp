@@ -9,8 +9,8 @@
 #include <marvin/boost_stuff.hpp>
 #include <thread>
 #include <pthread.h>
-#define CATCH_CONFIG_RUNNER
-#include <catch2/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT
+#include <doctest/doctest.h>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
@@ -32,15 +32,11 @@ int main( int argc, char* argv[] )
     /// limit the number of simultaneous connections
     /// this set of tests will exercise connection wait logic
     HTTPServer::configSet_NumberOfConnections(2);
-    startTestServer();
-    char* _argv[2] = {argv[0], (char*)""}; // change the filter to restrict the tests that are executed
-//    char* _argv[2] = {argv[0], (char*)"[tc]"}; // change the filter to restrict the tests that are executed
-//    char* _argv[2] = {argv[0], (char*)"[parallelall]"}; // change the filter to restrict the tests that are executed
-//    char* _argv[2] = {argv[0], (char*)"[parallel2]"}; // change the filter to restrict the tests that are executed
-//    char* _argv[2] = {argv[0], (char*)"[to]"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    printf("%s\n",__FILE__);
-    int result = Catch::Session().run( argc, argv );
+
+    doctest::Context context;
+    context.applyCommandLine(argc, argv);
+    int result = context.run(); // run
+    
     stopTestServer();
     printf("%s\n",__FILE__);
     return result;
