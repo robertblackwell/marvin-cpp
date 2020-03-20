@@ -141,29 +141,29 @@ boost::asio::mutable_buffer mb_as_mutable_buffer(MBuffer& mb)
 #pragma mark - BufferChain
 BufferChain::BufferChain()
 {
-    _chain = std::vector<MBufferSPtr>();
-    _size = 0;
+    m_chain = std::vector<MBufferSPtr>();
+    m_size = 0;
 }
 void BufferChain::push_back(MBufferSPtr mb)
 {
-    _size += mb->size();
-    _chain.push_back(mb);
-    _asio_chain.push_back(boost::asio::buffer(mb->data(), mb->size()));
+    m_size += mb->size();
+    m_chain.push_back(mb);
+    m_asio_chain.push_back(boost::asio::buffer(mb->data(), mb->size()));
 }
 void BufferChain::clear()
 {
-    _chain.clear();
-    _asio_chain.clear();
-    _size = 0;
+    m_chain.clear();
+    m_asio_chain.clear();
+    m_size = 0;
 }
 std::size_t BufferChain::size()
 {
-    return _size;
+    return m_size;
 }
 std::string BufferChain::to_string()
 {
     std::string s = "";
-    for(MBufferSPtr& mb : _chain) {
+    for(MBufferSPtr& mb : m_chain) {
         s += mb->toString();
     }
     return s;
@@ -171,7 +171,7 @@ std::string BufferChain::to_string()
 MBufferSPtr BufferChain::amalgamate()
 {
     MBufferSPtr mb_final = std::shared_ptr<MBuffer>(new MBuffer(this->size()));
-    for(MBufferSPtr& mb : _chain) {
+    for(MBufferSPtr& mb : m_chain) {
         mb_final->append(mb->data(), mb->size());
     }
     return mb_final;
@@ -225,68 +225,68 @@ std::ostream &operator<< (std::ostream &os, BufferChain &b)
 
 #pragma mark - Fragment class
 Fragment::Fragment(void* ptr, std::size_t size){
-    _ptr = ptr;
-    _cPtr = (char*) ptr;
-    _size = size;
-    _asio_buf = boost::asio::mutable_buffer(ptr, size);
+    m_ptr = ptr;
+    m_cPtr = (char*) ptr;
+    m_size = size;
+    m_asio_buf = boost::asio::mutable_buffer(ptr, size);
 }
 Fragment::~Fragment(){} // owns no allocated memory, so destructor has nothing to do
 
 void* Fragment:: startPointer()
 {
-    return boost::asio::buffer_cast<void*>(_asio_buf);
+    return boost::asio::buffer_cast<void*>(m_asio_buf);
 }
 void* Fragment::start()
 {
-    return boost::asio::buffer_cast<void*>(_asio_buf);
+    return boost::asio::buffer_cast<void*>(m_asio_buf);
 }
 std::size_t Fragment::size()
 {
-    return boost::asio::buffer_size(_asio_buf);
+    return boost::asio::buffer_size(m_asio_buf);
 }
 
 // points at the last byte in the fragment
 void*  Fragment::endPointer(){
-    std::size_t sz = boost::asio::buffer_size(_asio_buf);
-    char* pp = boost::asio::buffer_cast<char*>(_asio_buf);
+    std::size_t sz = boost::asio::buffer_size(m_asio_buf);
+    char* pp = boost::asio::buffer_cast<char*>(m_asio_buf);
     char* e = pp + sz - 1;
     return (void*) e;
 }
 void Fragment::addToEnd(void* p, std::size_t len)
 {
-    void* cur_void_ptr = boost::asio::buffer_cast<void*>(_asio_buf);
-    char* cur_ptr = boost::asio::buffer_cast<char*>(_asio_buf);
-    std::size_t cur_len = boost::asio::buffer_size(_asio_buf);
+    void* cur_void_ptr = boost::asio::buffer_cast<void*>(m_asio_buf);
+    char* cur_ptr = boost::asio::buffer_cast<char*>(m_asio_buf);
+    std::size_t cur_len = boost::asio::buffer_size(m_asio_buf);
 //    char* p2 = &cur_ptr[cur_len];
     assert( p == (cur_ptr + cur_len));
-    _asio_buf = boost::asio::mutable_buffer(cur_void_ptr, len + cur_len);
+    m_asio_buf = boost::asio::mutable_buffer(cur_void_ptr, len + cur_len);
 }
 //void Fragment::extendBy(std::size_t len)
 //{
-//    _size = _size + len;
+//   m_size = m_size + len;
 //}
 
 #pragma mark - FBuffer class
 FBuffer::FBuffer(std::size_t capacity)
 {
-    _container = new MBuffer(capacity);
-    _fragments.clear();
+    m_container = new MBuffer(capacity);
+    m_fragments.clear();
 }
 FBuffer::FBuffer(MBuffer* mbuf)
 {
     assert((mbuf != nullptr));
-    _container = mbuf;
-    _fragments.clear();
-    _size = 0;
+    m_container = mbuf;
+    m_fragments.clear();
+    m_size = 0;
 };
     
 FBuffer::~FBuffer()
 {
-    delete _container;
+    delete m_container;
 }
 std::size_t FBuffer::size()
 {
-    return _size;
+    return m_size;
 }
 // copies these bytes into the FBuffer so that they are continguous with
 // (that is added to) the last fragement
@@ -295,9 +295,9 @@ void FBuffer::copyIn(void* bytes, std::size_t len)
 //    assert((this != nullptr));
     if (len == 0)
         return;
-    assert((_container != nullptr));
-    void* na = _container->nextAvailable();
-    _container->append(bytes, len);
+    assert((m_container != nullptr));
+    void* na = m_container->nextAvailable();
+    m_container->append(bytes, len);
     addFragment(na, len);
 }
 
@@ -310,19 +310,19 @@ void FBuffer::copyIn(void* bytes, std::size_t len)
 void FBuffer::addFragment(void* bytes, std::size_t len)
 {
 //    char* containerPtr = (char*)_container->data();
-//    char* containerEndPtr = ((char*)_container->data()) + _container->capacity();
+//    char* containerEndPtr = ((char*)_container->data()) + m_container->capacity();
     // make sure fragment is inside container
     if(len == 0) return;
-    bool startOK = _container->contains((char*)bytes);
-    bool endOK   = _container->contains((char*)bytes + len) ;
-    _size += len;
+    bool startOK = m_container->contains((char*)bytes);
+    bool endOK   = m_container->contains((char*)bytes + len) ;
+    m_size += len;
     if( ! startOK || !endOK ){
         assert( startOK );
         assert( endOK );
     }
     // check fragments are increasing
-    if( _fragments.size() > 0 ){
-        Fragment& last = _fragments.back();
+    if( m_fragments.size() > 0 ){
+        Fragment& last = m_fragments.back();
         assert(len > 0);
         assert(((char*)bytes > last.endPointer()));
         if( (char*)bytes == ((char*)last.endPointer() + 1) ) {
@@ -330,17 +330,17 @@ void FBuffer::addFragment(void* bytes, std::size_t len)
             last.addToEnd(bytes, len);
 //            void* ptr = last.start();
 //            std::size_t tmp_l = last.size();
-//            _fragments.pop_back();
+//            m_fragments.pop_back();
 //            Fragment f(ptr, tmp_l + len);
-//            _fragments.push_back(f);
+//            m_fragments.push_back(f);
 
-        }else{
+        } else {
             Fragment f(bytes, len);
-            _fragments.push_back(f);
+            m_fragments.push_back(f);
         }
-    }else{
+    } else {
         Fragment f(bytes, len);
-        _fragments.push_back(f);
+        m_fragments.push_back(f);
     }
     
 }
@@ -348,7 +348,7 @@ void FBuffer::addFragment(void* bytes, std::size_t len)
 std::ostream &operator<< (std::ostream &os, FBuffer const &fb)
 {
     std::size_t sz = fb._size;
-    for(auto const& frag: fb._fragments) {
+    for(auto const& frag: fb.m_fragments) {
         Fragment fg = frag;
 //        char* st = (char*)fg.startPointer();
 //        std::size_t  sz = fg.size();
@@ -361,7 +361,7 @@ std::ostream &operator<< (std::ostream &os, FBuffer const &fb)
 std::vector<boost::asio::const_buffer> fb_as_const_buffer_sequence(FBuffer& fb)
 {
     std::vector<boost::asio::const_buffer> v;
-    for(Fragment& frag: fb._fragments) {
+    for(Fragment& frag: fb.m_fragments) {
         auto b = boost::asio::buffer(frag.start(), frag.size());
         v.push_back(b);
     }
@@ -370,7 +370,7 @@ std::vector<boost::asio::const_buffer> fb_as_const_buffer_sequence(FBuffer& fb)
 std::vector<boost::asio::mutable_buffer> fb_as_mutable_buffer_sequence(FBuffer& fb)
 {
     std::vector<boost::asio::mutable_buffer> v;
-    for(Fragment& frag: fb._fragments) {
+    for(Fragment& frag: fb.m_fragments) {
         auto b = boost::asio::buffer(frag.start(), frag.size());
         v.push_back(b);
     }

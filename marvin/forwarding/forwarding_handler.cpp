@@ -77,15 +77,7 @@ ForwardingHandler::~ForwardingHandler()
 void ForwardingHandler::p_handle_upgrade()
 {
     // deny the upgrade
-#if 0
-    _resp->setStatus("Forbidden");
-    _resp->setStatusCode(403);
-    std::string n("");
-    _resp->setContent(n);
-    _resp->asyncWrite([this](Marvin::ErrorType& err){
-        _doneCallback(err, false);
-    });
-#endif
+
 }
 
 #pragma mark - handle connect request

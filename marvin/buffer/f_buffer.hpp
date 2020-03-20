@@ -135,9 +135,9 @@ class BufferChain
         friend std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
 
     private:
-        std::vector<MBufferSPtr>                    _chain;
-        std::vector<boost::asio::mutable_buffer>    _asio_chain;
-        std::size_t                                 _size;
+        std::vector<MBufferSPtr>                    m_chain;
+        std::vector<boost::asio::mutable_buffer>    m_asio_chain;
+        std::size_t                                 m_size;
 };
 BufferChainSPtr buffer_chain(std::string& s);
 BufferChainSPtr buffer_chain(MBuffer& mb);
@@ -188,11 +188,11 @@ public:
 //    void extendBy(std::size_t len);
 
 protected:
-    boost::asio::mutable_buffer _asio_buf;
-    void*       _ptr;
+    boost::asio::mutable_buffer m_asio_buf;
+    void*       m_ptr;
     // this is just for debugging so that the text in the buffer can be seen in xcode debugger
-    char*       _cPtr;
-    std::size_t _size;
+    char*       m_cPtr;
+    std::size_t m_size;
 };
 #pragma mark - FBuffer class
 /**
@@ -257,8 +257,8 @@ public:
     friend std::ostream &operator<< (std::ostream &os, FBuffer const &b);
 
 protected:
-    MBuffer*                    _container; /// where all the fragments reside
-    std::vector<Fragment>       _fragments; /// a list of fragments
-    std::size_t                 _size;      /// cumulative size of all fragments
+    MBuffer*                    m_container; /// where all the fragments reside
+    std::vector<Fragment>       m_fragments; /// a list of fragments
+    std::size_t                 m_size;      /// cumulative size of all fragments
 };
 #endif

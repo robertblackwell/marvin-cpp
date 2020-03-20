@@ -1,4 +1,6 @@
 Tests:
+  ☐ find all test that are #if out of action and get them working or remove
+  ☐ uri and uri-v2 - see below
   ☐ test_buffers does no CHECK/REQUIRE anything
   ☐ message parsing needs to be clearer and also test continuation of headers
   ☐ proxy tunnel test required in addition to proxy_manual
@@ -35,6 +37,7 @@ Start work on SSL/TLS:
    ☐ Root certificate store, MitmBuild and X509 Identity - need a way of encapsulating and passing this info around 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ convert tests to doctest @done (20-03-19 18:57) @project(Tests)
  ✔ Integrate libcert into marvin @done (20-03-04 12:23) @project(Start work on SSL/TLS)
  ✔ TCPConnection should probably become Connection as it will now be multi purpose http/https @done (20-03-04 12:22) @project(Start work on SSL/TLS)
  ✔ DONE - Issue - how to prevent duplication of the async_read and async_write code for the two flavors of sockets - possibly derive from a common abstract class @done (20-03-04 12:22) @project(Start work on SSL/TLS)
