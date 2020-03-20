@@ -69,7 +69,7 @@ else
 	mkdir -p ${stage_dir}
 fi
 
-${script_dir}/install_catch2_v2.11.1.sh $1
+${script_dir}/install_doctest.sh $1
 ${script_dir}/install_nlohmann_json_3.7.3.sh $1
 # the following are external_src packages
 ${script_dir}/install_boost_1.72.0.sh $1
