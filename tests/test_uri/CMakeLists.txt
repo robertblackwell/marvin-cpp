@@ -3,7 +3,8 @@ set(TARGET test_uri)
 add_executable(${TARGET} 
 	test_uri_main.cpp
 )
-set_property(TARGET ${TARGET} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+
+# set_property(TARGET ${TARGET} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
 target_include_directories(${TARGET} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
