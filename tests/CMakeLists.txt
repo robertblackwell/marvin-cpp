@@ -5,12 +5,17 @@ set(TEST_INCLUDE_DIRS
 	${HEADER_DIRS} 
 	SYSTEM ${VENDOR_DIR}/include)
 
-set(TEST_LINK_LIBS marvin_library Threads::Threads ${CMAKE_DL_LIBS}
+set(TEST_LINK_LIBS 
+	marvin_library 
+	Threads::Threads 
+	${CMAKE_DL_LIBS}
 	${VENDOR_DIR}/lib/libcrypto.a 
 	${VENDOR_DIR}/lib/libssl.a 
 	${VENDOR_DIR}/lib/libboost_filesystem.a 
 	${VENDOR_DIR}/lib/libboost_system.a
 	${VENDOR_DIR}/lib/libcert_library.a
+	${CMAKE_DL_LIBS}
+	libdl.so
 	)
 
 add_subdirectory(test_doctest)
