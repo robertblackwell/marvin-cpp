@@ -236,7 +236,8 @@ namespace  {
     }
 
     void removeVolatileValues(boost::filesystem::path inFile, boost::filesystem::path outFile) {
-        std::system( (std::string("/usr/bin/sed -e '/^DATE/d' -e '/junk/d' -e '/body/d' ") + inFile.string() + " > " + outFile.string()).c_str() );
+        auto retcode = std::system( (std::string("sed -e '/^DATE/d' -e '/junk/d' -e '/body/d' ") + inFile.string() + " > " + outFile.string()).c_str() );
+        REQUIRE_MESSAGE(retcode == 0, "SED command failed removing volatile data from whiteacorn.com received");
     }
 
 
