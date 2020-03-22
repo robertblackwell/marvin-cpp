@@ -32,6 +32,10 @@ find_package(Threads REQUIRED)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
 
+    if(${CMAKE_DL_LIBS})
+        set(DL_LIB_SO libdl.so)
+    endif()
+
     # Let's nicely support folders in IDE's
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
     # allow scheme porperties in xcode - particularly environment variables

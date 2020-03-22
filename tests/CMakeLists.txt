@@ -15,7 +15,7 @@ set(TEST_LINK_LIBS
 	${VENDOR_DIR}/lib/libboost_system.a
 	${VENDOR_DIR}/lib/libcert_library.a
 	${CMAKE_DL_LIBS}
-	libdl.so
+	${DL_LIB_SO}
 	)
 
 add_subdirectory(test_doctest)
