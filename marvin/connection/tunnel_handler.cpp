@@ -10,7 +10,7 @@
 #include <marvin/connection/tunnel_handler.hpp>
 #include <marvin/connection/half_tunnel.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 std::string traceTunnel(TunnelHandlerUPtr t_ptr)
 {
     std::stringstream ss;

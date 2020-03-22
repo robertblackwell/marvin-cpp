@@ -8,7 +8,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace Marvin;
 using namespace Marvin::Http;

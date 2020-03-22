@@ -1,8 +1,8 @@
 ------------------------------------------------
-HOST: http://whiteacorn
+HOST: http://whiteacorn.com
 REQUEST : =========
-POST http://whiteacorn/utests/echo/index.php HTTP/1.1
-HOST : whiteacorn
+POST http://whiteacorn.com/utests/echo/index.php HTTP/1.1
+HOST : whiteacorn.com
 USER-AGENT : Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50
 ACCEPT : text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1
 ACCEPT-LANGUAGE : en
@@ -16,25 +16,32 @@ Body:
 012345678956
 RESPONSE : ========
 HTTP/1.1 200 OK
-SERVER : Apache/2.4.37 (Unix) PHP/7.3.10
-X-POWERED-BY : PHP/7.3.10
-CONTENT-LENGTH : 866
+SERVER : nginx
 CONTENT-TYPE : text/html; charset=UTF-8
+VARY : Accept-Encoding
 CONNECTION : CLOSE
+CONTENT-LENGTH : 1202
 {
     "req": {
         "method": "POST",
         "uri": "",
         "headers": {
-            "HOST": "whiteacorn",
-            "USER-AGENT": "Opera\/9.80 (X11; Linux x86_64; Edition Next) Presto\/2.12.378 Version\/12.50",
-            "ACCEPT": "text\/html, application\/xml;q=0.9, application\/xhtml xml, image\/png, image\/jpeg, image\/gif, image\/x-xbitmap, *\/*;q=0.1",
-            "ACCEPT-LANGUAGE": "en",
-            "ACCEPT-CHARSET": "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1",
             "ACCEPT-ENCODING": "identity",
+            "ACCEPT-CHARSET": "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1",
+            "ACCEPT-LANGUAGE": "en",
+            "ACCEPT": "text\/html, application\/xml;q=0.9, application\/xhtml xml, image\/png, image\/jpeg, image\/gif, image\/x-xbitmap, *\/*;q=0.1",
+            "USER-AGENT": "Opera\/9.80 (X11; Linux x86_64; Edition Next) Presto\/2.12.378 Version\/12.50",
             "CONTENT-LENGTH": "12",
-            "CONNECTION": "CLOSE",
-            "TE": ""
+            "CONNECTION": "close",
+            "X-FORWARDED-SSL": "off",
+            "X-FORWARDED-PROTO": "http",
+            "HTTPS": "off",
+            "FORWARDED-REQUEST-URI": "\/utests\/echo\/index.php",
+            "X-FORWARDED-FOR": "67.183.96.6",
+            "X-FORWARDED-SERVER": "whiteacorn.com",
+            "X-FORWARDED-HOST": "whiteacorn.com",
+            "HOST": "whiteacorn.com",
+            "AUTHORIZATION": ""
         },
     },
     "xtra": {

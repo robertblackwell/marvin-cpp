@@ -21,7 +21,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/http/uri.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <marvin/connection/socket_factory.hpp>

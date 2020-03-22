@@ -3,7 +3,7 @@
 #include <marvin/forwarding/ssl_forwarding_handler.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 std::string traceSSLForwardingHandler(SSLForwardingHandler* fh_ptr)
 {

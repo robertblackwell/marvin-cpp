@@ -7,7 +7,7 @@
 #include "testcase.hpp"
 #include "testcase_defs.hpp"
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 
 int

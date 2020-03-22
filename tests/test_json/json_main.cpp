@@ -6,7 +6,7 @@
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 #define RBLOGGER_ON
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 using json = nlohmann::json;
 std::map<std::string, std::string> parseJson(json j)

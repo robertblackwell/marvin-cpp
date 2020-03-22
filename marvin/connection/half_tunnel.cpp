@@ -6,7 +6,7 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/connection/half_tunnel.hpp>
 

@@ -17,7 +17,7 @@
 #include <doctest/doctest.h>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/connection/timeout.hpp>
 #define USE_STRANDx
 

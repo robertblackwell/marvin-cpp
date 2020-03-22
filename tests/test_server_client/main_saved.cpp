@@ -10,7 +10,7 @@
 #include <pthread.h>
 #include <gtest/gtest.h>"
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
 #include "tsc_client.hpp"

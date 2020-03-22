@@ -192,9 +192,9 @@ static Logger activeLogger{};
 /// These trun off/on tracing of special attributes
 ///
 
-//#define NO_TRACE          // trace key points in the message traffic
-//#define NO_CTORTRACE      // trace constructors and destructors
-//#define NO_FD_TRACE       // trace file descriptors
+#define NO_TRACE          // trace key points in the message traffic
+#define NO_CTORTRACE      // trace constructors and destructors
+#define NO_FD_TRACE       // trace file descriptors
 #define RBLOGGER_ON
 #if !defined(RBLOGGER_OFF) || defined(RBLOGGER_ON) || defined(RBLOGGER_ENABLED)
     #define RBLOGGER_ENABLED

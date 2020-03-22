@@ -1,7 +1,7 @@
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <doctest/doctest.h>
 #include "multiple.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace Marvin;
 using namespace Marvin::Http;

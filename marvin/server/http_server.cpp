@@ -11,7 +11,7 @@
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/server/http_server.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 int HTTPServer::s_numberOfThreads = 4;
 int HTTPServer::s_numberOfConnections = 35;

@@ -11,7 +11,7 @@
 #include <regex>
 #include <marvin/helpers/macros.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/collector/pipe_collector.hpp>
 using namespace Marvin;

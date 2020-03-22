@@ -6,7 +6,7 @@
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <openssl/x509.h>
 #include <cert/cert_certificate.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "error.hpp"
 #include "testcase.hpp"
 #include "mock_socket.hpp"

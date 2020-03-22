@@ -1,6 +1,7 @@
 #include <doctest/doctest.h>
 
 #include <boost/process.hpp>
+#include <boost/algorithm/string.hpp>
 #include <marvin/http/message_factory.hpp>
 #include <marvin/helpers/helpers_fs.hpp>
 #include <marvin/collector/collector_base.hpp>
@@ -155,10 +156,10 @@ namespace  {
         /// these headers should be present but changed
         CHECK(echoed_headers.has(Marvin::Http::Headers::Name::Connection));
         /// the proxy only allows connection close
-        CHECK(echoed_headers.get(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionClose);
+        std::string sc = boost::to_upper_copy(echoed_headers.get(Marvin::Http::Headers::Name::Connection));
+        CHECK(boost::to_upper_copy(echoed_headers.get(Marvin::Http::Headers::Name::Connection)) == Marvin::Http::Headers::Value::ConnectionClose);
 
         CHECK(echoed_headers.has(Marvin::Http::Headers::Name::AcceptEncoding));
-        CHECK(echoed_headers.has(Marvin::Http::Headers::Name::TE));
 
         /// check body
         std::string echoedBody = j["req"]["body"];
@@ -251,7 +252,7 @@ TEST_CASE_FIXTURE(ProxyFixture, "whiteacorn_post")
     boost::asio::io_service io;
     // get a testcase
     tp::TestcaseSPtr  tcSPtr = makePostRequestTestcase(
-            std::string("http://whiteacorn/utests/echo/index.php"),
+            std::string("http://whiteacorn.com/utests/echo/index.php"),
             this->m_proxy_scheme,
             this->m_proxy_host,
             std::to_string(this->m_proxy_port)

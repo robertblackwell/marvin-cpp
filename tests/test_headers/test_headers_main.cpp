@@ -13,7 +13,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/http_header.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_INFO)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 namespace Http {
     class HeadersIter;
 
