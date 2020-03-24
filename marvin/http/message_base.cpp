@@ -42,7 +42,6 @@ std::string traceMessage(MessageBase& msg)
     return ss.str();
 }
 
-//void serializeHeaders(MessageBase& msg, boost::asio::streambuf& b)
 void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
 {
     boost::asio::streambuf b;
@@ -74,7 +73,39 @@ void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
 }
 Marvin::MBufferSPtr serializeHeaders(MessageBase& msg)
 {
+    std::string h = "";
+    serialize_headers(msg, h);
+    return Marvin::MBuffer::makeSPtr(h);
+    // std::ostringstream os;
+
+    // std::string vers = "HTTP/" + std::to_string(msg.httpVersMajor()) + "." + std::to_string(msg.httpVersMinor());
+    // if( msg.isRequest() ){
+    //     std::string m = msg.getMethodAsString();
+    //     std::string u = msg.uri();
+    //     os << m << " " << u << " " << vers << "\r\n";
+    // } else{
+    //     os << vers << " " << msg.m_status_code << " " << msg.m_status <<  "\r\n";
+    // }
+    
+    // for(auto const& h : msg.m_headers) {
+    //     os << h.first << ": " << h.second << "\r\n";
+    // }
+    // // end of headers
+    // os << "\r\n";
+    // std::string h = os.str();
+    // return Marvin::MBuffer::makeSPtr(h);
+}
+std::string serialize_headers(MessageBase& msg)
+{
+    std::string h{""};
+    serialize_headers(msg, h);
+    return h;
+}
+void serialize_headers(MessageBase& msg, std::string& str)
+{
+    str = "";
     std::ostringstream os;
+    os.str(str);
 
     std::string vers = "HTTP/" + std::to_string(msg.httpVersMajor()) + "." + std::to_string(msg.httpVersMinor());
     if( msg.isRequest() ){
@@ -90,10 +121,8 @@ Marvin::MBufferSPtr serializeHeaders(MessageBase& msg)
     }
     // end of headers
     os << "\r\n";
-    std::string h = os.str();
-    return Marvin::MBuffer::makeSPtr(h);
+    str = os.str();
 }
-
 #pragma - http message base impl
 
 MessageBase::MessageBase()
@@ -137,10 +166,17 @@ void
 MessageBase::setUri(std::string u){ m_uri = u;}
 
 std::string
-MessageBase::uri(){
-return m_uri;
+MessageBase::uri()
+{
+    return m_uri;
 }
-
+std::string MessageBase::getPath()
+{
+    return m_uri;
+}
+void MessageBase::setPath(std::string path){
+    m_uri = path;
+}
 void
 MessageBase::setHttpVersMajor(int major){ m_http_major = major; }
 
@@ -208,20 +244,21 @@ MessageBase::getHeaders(){
 }
 std::string
 MessageBase::str(){
-    std::ostringstream ss;
-    if( isRequest() ) {
-        ss << getMethodAsString() << " " << uri() <<  " HTTP/" << httpVersMajor() << "." << httpVersMinor() << std::endl;
-    } else {
-        ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
-    }
-    Headers::Iterator it = m_headers.begin();
-    while(it != m_headers.end())
-    {
-        ss << it->first << ": " << it->second << "\r\n";
-        it++;
-    }
-    ss << "\r\n";
-    return ss.str();
+    return serialize_headers(*this);
+    // std::ostringstream ss;
+    // if( isRequest() ) {
+    //     ss << getMethodAsString() << " " << uri() <<  " HTTP/" << httpVersMajor() << "." << httpVersMinor() << std::endl;
+    // } else {
+    //     ss << "HTTP/" << httpVersMajor() << "." << httpVersMinor() << " " << statusCode() << " " << status() << "\r\n";
+    // }
+    // Headers::Iterator it = m_headers.begin();
+    // while(it != m_headers.end())
+    // {
+    //     ss << it->first << ": " << it->second << "\r\n";
+    //     it++;
+    // }
+    // ss << "\r\n";
+    // return ss.str();
 }
 Marvin::BufferChainSPtr
 MessageBase::getContentBuffer()

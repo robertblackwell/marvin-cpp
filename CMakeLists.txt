@@ -1,5 +1,5 @@
 # Works with 3.11 and tested through 3.15
-cmake_minimum_required(VERSION 3.11...3.16)
+cmake_minimum_required(VERSION 3.16)
 
 set(THISFILE_DEBUG 0)
 
@@ -14,7 +14,7 @@ project(Marvin
 # also a hack and breaks "best practices" as per Damiel Pfeiffer's presentation https://www.youtube.com/watch?v=rLopVhns4Zs&feature=youtu.be
 set(other_flags "${other_flags} -frtti -fvisibility-inlines-hidden")
 set(other_flags "${other_flags} -fvisibility=hidden")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${other_flags}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${other_flags} -pthread")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)

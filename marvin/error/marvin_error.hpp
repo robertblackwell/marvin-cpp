@@ -13,10 +13,8 @@
 #include <string>
 #include <iostream>
 namespace Marvin{
-    /// \ingroup OriginalErrors
     typedef boost::system::error_code ErrorType;
     
-    /// \ingroup OriginalErrors
     enum class errc {
         ok = 0,
         end_of_message = 21,
@@ -35,11 +33,8 @@ namespace Marvin{
 
 //    static Marvin::category cat;
     
-    /// \ingroup OriginalErrors
     const boost::system::error_category& category();
-    /// \ingroup OriginalErrors
     boost::system::error_code make_error_code(Marvin::errc e);
-    /// \ingroup OriginalErrors
     boost::system::error_condition make_error_condition(Marvin::errc e);
     
 } // namespace Marvin
@@ -53,33 +48,21 @@ namespace system {
 
 namespace Marvin{
     
-    /// \ingroup OriginalErrors
     ErrorType make_error_ok();
-    /// \ingroup OriginalErrors
     ErrorType make_error_eof();
-    /// \ingroup OriginalErrors
     ErrorType make_error_eom();
-    /// \ingroup OriginalErrors
     ErrorType make_error_eob();
-    /// \ingroup OriginalErrors
     ErrorType make_error_parse();
-    /// \ingroup OriginalErrors
     std::string make_error_description(const Marvin::ErrorType& err);
 } // namespace Marvin
 
 namespace Marvin{
 namespace Error{
-    /// \ingroup OriginalErrors
     ErrorType  make_ok();
-    /// \ingroup OriginalErrors
-        ErrorType  make_eof();
-    /// \ingroup OriginalErrors
-        ErrorType  make_eom();
-    /// \ingroup OriginalErrors
-        ErrorType  make_eob();
-    /// \ingroup OriginalErrors
-        ErrorType  make_eparse();
+    ErrorType  make_eof();
+    ErrorType  make_eom();
+    ErrorType  make_eob();
+    ErrorType  make_eparse();
 }} // namespace Marvin::Error
-
 
 #endif

@@ -211,7 +211,7 @@ std::vector<Testcase> tc_make_buffering()
 //    // 5 Chunked with headers with some body data - chunks not broken
      tcases.push_back(
             Testcase(
-                "index 5 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
+                "index 5 - simple 201 body chunked encoding SOME body data in buffer with blank line after header",
                 std::vector<std::string> {
                     "HTTP/1.1 201 OK Reason Phrase\r\n",
                     "Host: ahost\r\n",
@@ -250,7 +250,7 @@ std::vector<Testcase> tc_make_buffering()
 //    // 6 Chunked with headers with some body data - BROKEN chunks
      tcases.push_back(
                 Testcase(
-                "index 6 - simple 201 body chunked encoding SOME body data in buffer with black line after header",
+                "index 6 - simple 201 body chunked encoding SOME body data in buffer with blank line after header",
                 std::vector<std::string> {
                     "HTTP/1.1 201 OK Reason Phrase\r\n",
                     "Host: ahost\r\n",

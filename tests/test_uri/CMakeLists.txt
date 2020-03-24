@@ -7,6 +7,7 @@ add_executable(${TARGET}
 # set_property(TARGET ${TARGET} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
 target_include_directories(${TARGET} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
+target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET} ${TARGET})

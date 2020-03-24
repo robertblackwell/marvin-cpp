@@ -13,6 +13,7 @@
 //#define CATCH_CONFIG_RUNNER
 //#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 //#include "utest.hpp"
+#include <marvin/boost_stuff.hpp>
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest/doctest.h>
 
@@ -23,7 +24,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include "async_compound.cpp"
 #include "async_object.cpp"
-
+  
 /// test timing out an async operation
 //TEST_CASE("TimeoutcomposedOpOTO2")
 #if 0

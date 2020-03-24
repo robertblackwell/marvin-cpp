@@ -18,6 +18,7 @@ file(GLOB HEADERS
 	certificates/certificates.hpp
 
 	client/client.hpp
+	client/request.hpp 
 
 	collector/collector_base.hpp
 	collector/pipe_collector.hpp
@@ -75,7 +76,8 @@ set(SOURCES
 	
 	certificates/certificates.cpp
 
-	client/client.cpp  				
+	client/client.cpp  	
+	client/request.cpp 			
 	
 	collector/collector_base.cpp
 	collector/collector_interface.cpp
@@ -158,18 +160,48 @@ add_library(marvin_library STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(marvin_library SYSTEM PUBLIC ${HEADER_DIRS} ${VENDOR_DIR}/include)
 
-#target_precompile_headers(marvin_library PUBLIC
-#	<marvin/external_src/rb_logger/rb_logger.hpp>
-#	${VENDOR_DIR}/include/boost/asio.hpp
-#	<boost/filesystem.hpp>
-#	<memory>
-#	<stddef.h>
-#	<vector>
-#	<string>
-#	<iostream>
-#	<sstream>
-#	<marvin/error/marvin_error.hpp>
-#	)
+target_precompile_headers(marvin_library PUBLIC
+	<marvin/external_src/rb_logger/rb_logger.hpp>
+  	<marvin/boost_stuff.hpp>
+	<memory>
+	<stddef.h>
+	<vector>
+	<string>
+	<iostream>
+	<sstream>
+	<functional>
+	<iterator>
+	<thread>
+	<pthread.h>
+	<regex>
+	<map>
+	<boost/asio.hpp>
+	<boost/asio/ssl.hpp>
+	<boost/system/error_code.hpp>
+	<boost/asio/error.hpp>
+	<boost/bind.hpp>
+	<boost/function.hpp>
+	<boost/date_time/posix_time/posix_time.hpp>
+	<boost/algorithm/string.hpp>
+	<boost/uuid/uuid.hpp>
+	<boost/uuid/uuid_generators.hpp>
+	<boost/uuid/uuid_io.hpp>
+	<boost/filesystem.hpp>
+	<boost/unordered_set.hpp>	
+	<marvin/error/marvin_error.hpp>
+	<boost/process.hpp>
+	# )
+# <marvin/server/request_handler_base.hpp>
+# <marvin/external_src/uri-parser/UriParser.hpp>
+# <marvin/client/client.hpp>
+# <marvin/http/message_base.hpp>
+# <marvin/connection/connection.hpp>
+# <marvin/http/http_header.hpp>
+# <marvin/connection/tunnel_handler.hpp>
+# <marvin/forwarding/ssl_forwarding_handler.hpp>
+# <marvin/collector/collector_interface.hpp>
+
+	)
 
 # This depends on (header only) boost
 # target_link_libraries(cert_library PRIVATE Boost::boost)

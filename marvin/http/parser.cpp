@@ -397,7 +397,7 @@ body_data_cb(http_parser* parser, const char* at, size_t length)
 int chunk_size_start(http_parser* parser, const char* at, size_t length)
 {
     Parser* p =  getParser(parser);
-    
+    return 0;
 }
 int chunk_header_cb(http_parser* parser)
 {

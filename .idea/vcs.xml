@@ -2,12 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/packages/Catch2" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/packages/cpp-catch" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/packages/cxxurl" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/packages/http-parser" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/packages/json" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/packages/simple_buffer" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/packages/urlparser" vcs="Git" />
   </component>
 </project>

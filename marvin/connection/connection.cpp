@@ -153,7 +153,7 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
 {
     m_connect_cb = connect_cb; // save the connect callback
 
-    tcp::resolver::query query(this->m_server, m_port);
+    tcp::resolver::query query(this->m_server, this->m_port);
 #if 1
     m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
         m_lowest_layer_sock.cancel();

@@ -1,0 +1,57 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "inputs":[{
+        "id":"selectTest",
+        "type":"pickString",
+        "description": "Select the test to debug",
+        "options": [
+            "test_client_request",
+            "test_tcp",
+            "test_marvin_errors"
+        ],
+        "default": "test_client_request"
+    }],
+    "configurations": [
+        {
+            "name": "(gdb) App Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/tests/test_client_request/test_client_request_roundtrip",
+            "args": ["4", "5"],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/cmake-build-debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                }
+            ]
+        },
+        {
+            "name": "Test Debug Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/tests/${input:selectTest}/${input:selectTest}",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/cmake-build-debug/tests/${input:selectTest}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,92 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "inputs":[
+        {
+            "type": "promptString",
+            "id": "buildDir",
+            "description": "Build directory",
+            "default": "cmake-build-debug"
+          }
+    ],
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "my build",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "mycmake",
+            "command": "/usr/local/bin/cmake",
+            "args": [
+                "-DCMAKE_BUILD_TYPE=Debug",
+                ".."
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/${input:buildDir}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "mymake",
+            "command": "make",
+            "args": [
+                "-j8"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/${input:buildDir}"
+            },
+            "dependsOn": [
+                "cmake"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "myclean",
+            "command": "make",
+            "options": {
+                "cwd": "${workspaceRoot}/${input:buildDir}"
+            },
+            "dependsOn": [
+                "cmake"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "CTest",
+            "command": "ctest",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceRoot}/${input:buildDir}"
+            },
+            "problemMatcher": [],
+            "group": "build"
+        }
+    ]
+}

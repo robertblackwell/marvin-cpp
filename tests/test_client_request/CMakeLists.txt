@@ -5,6 +5,8 @@ add_executable(${TARGET}
 	pipeline.cpp
 )
 target_include_directories(${TARGET} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
+target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
+target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET} ${TARGET})
@@ -18,6 +20,8 @@ add_executable(${TARGET2}
 	roundtrip.cpp
 )
 target_include_directories(${TARGET2} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
+target_precompile_headers(${TARGET2} REUSE_FROM marvin_library)
+target_precompile_headers(${TARGET2} REUSE_FROM marvin_library)
 target_link_libraries(${TARGET2} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET2} ${TARGET2})
@@ -30,6 +34,7 @@ add_executable(${TARGET3}
 	multiple.cpp
 )
 target_include_directories(${TARGET3} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
+target_precompile_headers(${TARGET3} REUSE_FROM marvin_library)
 target_compile_features(${TARGET3} PRIVATE cxx_std_14)
 target_link_libraries(${TARGET3} PUBLIC marvin_library ${TEST_LINK_LIBS})
 

@@ -1,5 +1,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string.hpp>
+#include <marvin/connection/socket_factory.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <doctest/doctest.h>
@@ -7,10 +8,10 @@
 
 using namespace Marvin;
 using namespace Marvin::Http;
-
+#if 0
 std::shared_ptr<Client> do_client_connect(std::string code, boost::asio::io_service& io)
 {
-    Marvin::Uri uri("http://whiteacorn/utests/echo/test.php");
+    Marvin::Uri uri("http://whiteacorn.com/utests/echo/test.php");
     std::shared_ptr<Client> client = std::shared_ptr<Client>(new Client(io, uri));
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
     helpers::applyUriProxy(msg, uri);
@@ -27,7 +28,7 @@ std::shared_ptr<Client> do_client_connect(std::string code, boost::asio::io_serv
 
 std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service& io)
 {
-    Marvin::Uri uri("http://whiteacorn/utests/echo/");
+    Marvin::Uri uri("http://whiteacorn.com/utests/echo/");
     std::shared_ptr<Client> client = std::shared_ptr<Client>(new Client(io, uri ));
     
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
@@ -126,5 +127,37 @@ TEST_CASE("ClientRoundTrip-SixTimes")
 #endif
     io_service.run();
     rt.clear();
+}
+#endif
+TEST_CASE("request new")
+{
+    boost::asio::io_service io_service;
+
+    std::cout << __PRETTY_FUNCTION__  <<std::endl;
+    RequestSPtr req = std::make_shared<Request>(io_service, "http","www.whiteacorn.com","80");
+
+#if 1
+    req->setMethod(HttpMethod::GET) ;
+    req->setPath("/utests/echo/");
+    auto p1 = req->m_current_request->getPath();
+
+    req->setHeader(Marvin::Http::Headers::Name::ContentType, "text/html; charset=UTF-8");
+    req->setOnHeaders([](Marvin::ErrorType& err, MessageReaderSPtr msg_sptr) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+    });
+    req->setOnData([](Marvin::ErrorType err, Marvin::BufferChain buffer_chain) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+    });
+    req->setOnResponse([](Marvin::ErrorType err, MessageReaderSPtr msg_sptr) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+    });
+    std::string body{""};
+    auto p2 = req->m_current_request->str();
+    req->asyncWriteLastBodyData(body, [](Marvin::ErrorType& err) {
+        std::cout << "Completed the last write" << std::endl;
+    });
+#endif
+    io_service.run();
+
 }
 

@@ -3,6 +3,7 @@ set(TARGET test_timeout)
 add_executable(${TARGET} 
 	timeout_main.cpp
 )
+target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
 
 # set_property(TARGET ${TARGET} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 

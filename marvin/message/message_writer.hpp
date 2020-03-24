@@ -43,7 +43,7 @@ public:
     void asyncWriteBodyData(Marvin::BufferChainSPtr chain_ptr, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb);
 
-    void asyncWriteTrailers(Marvin::Http::MessageBaseSPtr msg, AsyncWriteCallbackType cb);
+    void asyncWriteTrailers(Marvin::Http::MessageBaseSPtr msg, WriteHeadersCallbackType cb);
     
     void end();
     

@@ -1,6 +1,10 @@
+Code tidy:
+  ☐ HttpServer does not conform to the naming scheme for private methods uses camelCase rather than p_snake_case 
 Tests:
+  ☐ replace whiteacorn as a test server 
   ☐ find all test that are #if out of action and get them working or remove
   ☐ uri and uri-v2 - see below
+  ☐ test trailers on message parsing and set/get of MessageBase
   ☐ test_buffers does no CHECK/REQUIRE anything
   ☐ message parsing needs to be clearer and also test continuation of headers
   ☐ proxy tunnel test required in addition to proxy_manual
@@ -9,6 +13,7 @@ Tests:
 class property names cleanup:
   ☐ some tests are still using the leading _varname naming scheme - fix
 Bugs:
+  ☐ segfault in test_server_client_bb HIGH PRIORITY
   ☐ not handling non-existence of connection header correctly when preparing upstream request
   ☐ test_ssl seg faults
 Logging:

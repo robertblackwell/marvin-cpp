@@ -8,8 +8,6 @@ using namespace Marvin;
 using namespace Marvin::Http;
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#define NO_CTORTRACE 1
-#define NO_FDTRACE 1
 
 std::string traceWriter(MessageWriter& writer)
 {
@@ -138,7 +136,7 @@ void MessageWriter::asyncWriteBodyData(boost::asio::const_buffer data, WriteBody
     });
 }
 
-void MessageWriter::asyncWriteTrailers(MessageBaseSPtr msg,  AsyncWriteCallbackType cb)
+void MessageWriter::asyncWriteTrailers(MessageBaseSPtr msg,  WriteHeadersCallbackType cb)
 {
 }
 

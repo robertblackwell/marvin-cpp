@@ -50,6 +50,7 @@ public:
     void setUri(std::string u);
     std::string uri();
     std::string getPath();
+    void setPath(std::string path);
     
     void setHttpVersMajor(int major);
     int  httpVersMajor();
@@ -92,6 +93,8 @@ public:
     friend std::string traceMessage(MessageBase& msg);
     friend void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
     friend Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
+    friend std::string serialize_headers(MessageBase& msg);
+    friend void serialize_headers(MessageBase& msg, std::string& str);
 //    friend void serializeHeaders(MessageBase& msg, boost::asio::streambuf& buf);
     friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);
 

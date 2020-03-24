@@ -6,8 +6,8 @@
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
 
-#ifndef marvin_uri_hpp
-#define marvin_uri_hpp
+#ifndef marvin_uriv2_hpp
+#define marvin_uriv2_hpp
 #include <string>
 #include <cassert>
 #include <marvin/external_src/uri-parser/UriParser.hpp>

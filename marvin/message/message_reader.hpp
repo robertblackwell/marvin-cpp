@@ -100,9 +100,8 @@ public:
     *
     *  The callback to readBody receives an error code and an instance (by value) of a BufferChain
     *  This is because the body data returned in that buffer is "de-chunked" and the buffer MAY contain
-    *  multiple chunk bodies. It was done this way to prevent copying the 
-    *  body data to eliminate the chunk headers.
-    *  the callback is responsible for handling the buffer and delete-ing it when appropriate
+    *  multiple chunk bodies. 
+    *  The callback is responsible for handling the buffer life time.
     *
     *  The BufferChain will release all the embedded buffers when the value goes out of scope.
     */
@@ -157,7 +156,7 @@ protected:
     bool p_parser_ok(int nparsed, Marvin::MBuffer& mb);
 
     /**
-    *  These methods are override for virtual methods in Paser
+    *  These methods are override for virtual methods in Parser
     */
     Marvin::Http::MessageInterface* currentMessage();
     void OnHeadersComplete(Marvin::Http::MessageInterface* msg, void* body_start_ptr, std::size_t remainder);

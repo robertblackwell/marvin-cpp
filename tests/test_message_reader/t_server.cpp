@@ -17,7 +17,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 TServer::TServer(boost::asio::io_service& io, Testcase tc): m_io(io), m_tc(tc), m_acceptor(m_io)
 {
-
 }
 void TServer::initialize()
 {
