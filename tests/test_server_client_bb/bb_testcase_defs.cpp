@@ -61,7 +61,7 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 200,
                 // expect error code in onHeader
                 Marvin::make_error_ok(),
-                // expexted headers
+                // expected headers
                     Marvin::Http::Headers::Initializer{
 //                    {Marvin::Http::Headers::Name::Host, "ahost"},
                     {Marvin::Http::Headers::Name::Connection,"close"},

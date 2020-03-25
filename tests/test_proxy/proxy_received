@@ -17,11 +17,11 @@ Body:
 RESPONSE : ========
 HTTP/1.1 200 OK
 SERVER : nginx
-DATE : Mon, 23 Mar 2020 20:46:19 GMT
+DATE : Wed, 25 Mar 2020 15:55:18 GMT
 CONTENT-TYPE : text/html; charset=UTF-8
 VARY : Accept-Encoding
 CONNECTION : CLOSE
-CONTENT-LENGTH : 1215
+CONTENT-LENGTH : 1229
 {
     "req": {
         "junk": "just to show got here012345678956",
@@ -39,7 +39,7 @@ CONTENT-LENGTH : 1215
             "X-FORWARDED-PROTO": "http",
             "HTTPS": "off",
             "FORWARDED-REQUEST-URI": "\/utests\/echo\/index.php",
-            "X-FORWARDED-FOR": "2601:603:1f80:84b0::2f2d",
+            "X-FORWARDED-FOR": "2601:603:1f80:84b0:2d86:1bcc:2dac:ff8b",
             "X-FORWARDED-SERVER": "whiteacorn.com",
             "X-FORWARDED-HOST": "whiteacorn.com",
             "HOST": "whiteacorn.com",

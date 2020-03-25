@@ -43,7 +43,7 @@ TEST_CASE("Simple GET with body") {
     CHECK(parser.last_message->headers.size() == 4 );
     CHECK(parser.last_message->hasHeader("Content-Length") );
     CHECK(parser.last_message->hasHeader("Connection") );
-    CHECK(parser.last_message->getHeader("Connection") == "keep-alive" );
+    CHECK(parser.last_message->getHeader("Connection")=="keep-alive" );
     CHECK(parser.last_message->hasHeader("Proxy-Connection") );
     CHECK(parser.last_message->getHeader("Proxy-Connection")=="keep-alive" );
     CHECK(parser.last_message->getHeader("Content-Length") == "10" );

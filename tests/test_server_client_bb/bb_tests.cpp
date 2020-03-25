@@ -19,9 +19,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include "test_server_client/tsc_req_handler.hpp"
 #include "server_runner.hpp"
-#include "test_server_client/bb/bb_client.hpp"
-#include "test_server_client/bb/bb_testcase.hpp"
-#include "test_server_client/bb/bb_testcase_defs.hpp"
+#include "bb_client.hpp"
+#include "bb_testcase.hpp"
+#include "bb_testcase_defs.hpp"
 
 using namespace Marvin;
 using namespace Http;
@@ -104,7 +104,7 @@ TEST_CASE("BodyBuffering-2-inparallel")
     io_service.run();
 }
 #endif
-#if 1
+#if 0
 TEST_CASE("bodybuffering-all-in-parallel")
 {
 //    body_buffering::Testcase testcase = tdefs.get_case(1);

@@ -305,6 +305,7 @@ void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_t
     if(er && (bytes_transfered > 0)) {
         p_post_message_cb(er);
         LogError("", er.message());
+        // TODO - should be a return ?
     }
     m_body_buffer_sptr->setSize(bytes_transfered);
     Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(bytes_transfered));

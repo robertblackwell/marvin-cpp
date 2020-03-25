@@ -8,9 +8,13 @@
         "type":"pickString",
         "description": "Select the test to debug",
         "options": [
+            "test_message",
             "test_client_request",
             "test_tcp",
-            "test_marvin_errors"
+            "test_marvin_errors",
+            "test_request",
+            "test_server_client_bb",
+            "test_server_client_bf"
         ],
         "default": "test_client_request"
     }],

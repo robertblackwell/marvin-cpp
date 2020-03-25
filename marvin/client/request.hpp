@@ -29,12 +29,13 @@ namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }  // lines 19-19
 
 using namespace Marvin;
+using namespace Marvin::Http;
 using boost::asio::ip::tcp;
 using RequestSPtr = std::shared_ptr<Request>;
 using RequestUPtr = std::unique_ptr<Request>;
 using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)>;
 
-using RequestDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err, Marvin::BufferChain buf_chain)>;
+using RequestDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err, Marvin::BufferChainSPtr buf_chain)>;
 
 #define REQUEST_RDR_WRTR_ONESHOT 1
 
@@ -102,6 +103,7 @@ public:
     void setOnResponse(ResponseHandlerCallbackType cb );
     void setOnHeaders(ResponseHandlerCallbackType cb);
     void setOnData(RequestDataHandlerCallbackType cb);
+    void setOnError(ErrorOnlyCallbackType cb);
 
 #if 0 // these are not yet implemented
     /**
@@ -181,9 +183,9 @@ public:
     void p_internal_write_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
 
     // steps in writing a full message in one go
-    void p_check_connected_before_internal_write_message();
-    void p_internal_connect_before_write_message();
-    void p_internal_write_message();
+    void p_msg_check_connected(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_connect(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_write(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
     // general write error handler
     void p_write_error();
     // @TODO need to determine role of this method
@@ -196,9 +198,16 @@ public:
     void p_response_complete();
     void p_response_error(Marvin::ErrorType err);
 
+    // event handler utility funcs
+    void p_resp_on_error(Marvin::ErrorType& ec2);
+    void p_resp_on_headers(Marvin::ErrorType& ec2, MessageReaderSPtr msg);
+    void p_resp_on_data(Marvin::ErrorType& err, BufferChainSPtr buf);
+    void p_resp_on_complete(Marvin::ErrorType& ec2, MessageReaderSPtr msg);
+
     ResponseHandlerCallbackType m_on_response_complete_cb;
     ResponseHandlerCallbackType m_on_headers_complete_cb;
     RequestDataHandlerCallbackType m_on_rdata_cb;
+    ErrorOnlyCallbackType m_on_error_cb;
 
     bool m_headers_written;
     bool m_trailers_written;

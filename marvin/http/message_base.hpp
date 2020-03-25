@@ -77,16 +77,16 @@ public:
     
     /// \brief return the current dechunked content buffer
     ::Marvin::BufferChainSPtr getContentBuffer();
-    /// \vrief sets the dechunked content buffer but does not set the CONTENT-LENGTH headers;
+    /// Sets the dechunked content buffer but does not set the CONTENT-LENGTH headers;
     /// this is because even for chunked incoming messages the de-chunked buffer is attached
     void setContentBuffer(::Marvin::BufferChainSPtr bufSPtr);
 
-    /// \brief return the current dechunked conent buffer
+    /// Returns the current dechunked conent buffer
     ::Marvin::BufferChainSPtr getContent();
-    /// \brief sets the dechunked content buffer and aslo updates the content-length field;
+    /// Sets the dechunked content buffer and also updates the content-length field;
     /// use this method when preparing an outgoing message
     void setContent(::Marvin::BufferChainSPtr bufSPtr);
-    /// \brief sets the dechunked content buffer and aslo updates the content-length field;
+    /// Sets the dechunked content buffer and aslo updates the content-length field;
     /// use this method when preparing an outgoing message
     void setContent(std::string content);
 

@@ -115,18 +115,6 @@ void Request::setTrailer(std::string key, std::string value)
     p_test_good_to_go();
     m_current_request->setTrailer(key, value);
 }
-void Request::setOnResponse(ResponseHandlerCallbackType cb )
-{
-    m_on_response_complete_cb = cb;
-}
-void Request::setOnHeaders(ResponseHandlerCallbackType cb)
-{
-    m_on_headers_complete_cb = cb;
-}
-void Request::setOnData(RequestDataHandlerCallbackType cb)
-{
-    m_on_rdata_cb = cb;
-}
 
 /*!--------------------------------------------------------------------------------
 * implement connect
@@ -212,13 +200,8 @@ void Request::asyncWriteLastBodyData(std::string& body_chunk_str, WriteBodyDataC
     if(p_test_not_headers_written()) {
         // compute buffer length, add content-length header
         // send the entire message
-        p_check_connected_before_internal_write_message();
-        return;
-        int content_length = m_body_mbuffer_sptr->size();
-        m_current_request->setHeader(Http::Headers::Name::ContentLength, std::to_string(content_length));
-        m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this, cb](Marvin::ErrorType err){
-            cb(err);
-        });
+        MBufferSPtr mbuf_sptr = MBuffer::makeSPtr(body_chunk_str);
+        p_msg_check_connected(m_current_request, mbuf_sptr, cb);
     } else {
         //  if buffer not empty send the buffer chunk encoded
         //  send chunk encoding final sequence after the buffer is gone
@@ -251,6 +234,55 @@ void Request::asyncWriteLastBodyData(Marvin::BufferChainSPtr body_chunk_chain_sp
         //  if buffer not empty send the buffer chunk encoded
         //  send chunk encoding final sequence after the buffer is gone
     }
+}
+
+//-----------------------------------------------------------------------------------------
+// utility functions to propgate events
+//------------------------------------------------------------------------------------------
+void Request::setOnResponse(ResponseHandlerCallbackType cb )
+{
+    m_on_response_complete_cb = cb;
+}
+void Request::setOnHeaders(ResponseHandlerCallbackType cb)
+{
+    m_on_headers_complete_cb = cb;
+}
+void Request::setOnData(RequestDataHandlerCallbackType cb)
+{
+    m_on_rdata_cb = cb;
+}
+void Request::setOnError(ErrorOnlyCallbackType cb)
+{
+    m_on_error_cb = cb;
+}
+void Request::p_resp_on_error(Marvin::ErrorType& ec2)
+{
+    if (!this->m_on_error_cb) {
+        throw "on_error event handler not set";
+    }
+    m_on_error_cb(ec2);
+}
+void Request::p_resp_on_headers(Marvin::ErrorType& ec2, MessageReaderSPtr msg)
+{
+    if (!this->m_on_headers_complete_cb) {
+        throw "on_response_complete event handler not set";
+    }
+    m_on_headers_complete_cb(ec2, msg);
+}
+void Request::p_resp_on_data(Marvin::ErrorType& err, BufferChainSPtr buf)
+{
+    if (!this->m_on_rdata_cb) {
+        throw "on_response_complete event handler not set";
+    }
+    Marvin::ErrorType err2 = err;
+    m_on_rdata_cb(err2, buf);
+}
+void Request::p_resp_on_complete(Marvin::ErrorType& ec2, MessageReaderSPtr msg)
+{
+    if (!this->m_on_response_complete_cb) {
+        throw "on_response_complete event handler not set";
+    }
+    m_on_response_complete_cb(ec2, msg);
 }
 
 //-----------------------------------------------------------------------------------------

@@ -31,31 +31,31 @@ using namespace Marvin::Http;
 //--------------------------------------------------------------------------------
 // come here to do a write of the full message
 //--------------------------------------------------------------------------------
-void Request::p_check_connected_before_internal_write_message()
+void Request::p_msg_check_connected(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
 {
     if(m_is_connected) {
-        p_internal_write_message();
+        p_msg_write(msg, mbuf_sptr, cb);
     } else {
-        p_internal_connect_before_write_message();
+        p_msg_connect(msg, mbuf_sptr, cb);
     }
 }
-void Request::p_internal_connect_before_write_message()
+void Request::p_msg_connect(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
 {
     LogInfo("", (long)this);
     using namespace Marvin;
     std::function<void(ErrorType& err)> h = [](ErrorType& err) {
 
     };
-    asyncConnect([this](Marvin::ErrorType& ec){
+    asyncConnect([this, msg, mbuf_sptr, cb](Marvin::ErrorType& ec){
         LogDebug("cb-connect");
         if(!ec) {
-            p_internal_write_message();
+            p_msg_write(msg, mbuf_sptr, cb);
         } else {
-            m_response_handler(ec, m_rdr);
+            cb(ec);
         }
     });
 }
-void Request::p_internal_write_message()
+void Request::p_msg_write(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
 {
     LogInfo("", (long)this);
 
@@ -65,21 +65,24 @@ void Request::p_internal_write_message()
     LogInfo("",traceWriter(*m_wrtr));
     
     assert(m_body_mbuffer_sptr != nullptr);
-    auto req_str = m_current_request->str();
-    m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
+    auto req_str = msg->str();
+    m_wrtr->asyncWrite(msg, mbuf_sptr, [this, cb](Marvin::ErrorType& ec){
         if (!ec) {
             LogDebug("start read");
             this->m_rdr->readMessage([this](Marvin::ErrorType ec2){
                 auto resp_str = m_rdr->str();
                 auto bdy_str = m_rdr->getContent()->to_string();
-                if (!ec2) {
-                    this->m_response_handler(ec2, m_rdr);
+                if (!!ec2) {
+                    p_resp_on_error(ec2);
                 } else {
-                    this->m_response_handler(ec2, m_rdr);
+                    p_resp_on_headers(ec2, m_rdr);
+                    auto ec_eom = Marvin::Error::make_eom();
+                    p_resp_on_data(ec_eom, m_rdr->getContentBuffer());
+                    p_resp_on_complete(ec2, m_rdr);
                 }
             });
         } else {
-            this->m_response_handler(ec, m_rdr);
+            cb(ec);
         }
     });
 }

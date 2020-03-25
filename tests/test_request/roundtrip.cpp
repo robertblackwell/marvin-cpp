@@ -129,4 +129,63 @@ TEST_CASE("ClientRoundTrip-SixTimes")
     rt.clear();
 }
 #endif
+TEST_CASE("client_single_roundtrip")
+{
+
+}
+TEST_CASE("request new")
+{
+    bool on_headers_flag = false;
+    bool on_data_flag;
+    bool on_response_flag = false;
+    bool on_error_flag = false;
+
+    boost::asio::io_service io_service;
+
+    std::cout << __PRETTY_FUNCTION__  <<std::endl;
+    RequestSPtr req;
+    if (true) {
+        req = std::make_shared<Request>(io_service, "http","localhost","3000");
+    } else {
+        req = std::make_shared<Request>(io_service, "http","www.whiteacorn.com","80");
+    }
+
+#if 1
+    req->setMethod(HttpMethod::POST) ;
+    req->setPath("/utests/echo/");
+    auto p1 = req->m_current_request->getPath();
+
+    req->setHeader(Marvin::Http::Headers::Name::ContentType, "text/html; charset=UTF-8");
+    req->setOnHeaders([&on_headers_flag](Marvin::ErrorType& err, MessageReaderSPtr msg_sptr) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+        on_headers_flag = true;
+    });
+    req->setOnData([&on_data_flag](Marvin::ErrorType err, Marvin::BufferChainSPtr buffer_chain) {
+        std::string s =  Marvin::make_error_description(err);
+        std::string s2 = buffer_chain->to_string();
+        std::cout << __PRETTY_FUNCTION__ << " error : " << s << std::endl;
+        std::cout << __PRETTY_FUNCTION__ << " body : " << s2 << std::endl;
+        on_data_flag = true;
+    });
+    req->setOnResponse([&on_response_flag](Marvin::ErrorType err, MessageReaderSPtr msg_sptr) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+        on_response_flag = true;
+    });
+    req->setOnError([&on_error_flag](Marvin::ErrorType err) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+        on_error_flag = true;
+    });
+    std::string body = "This is the body of the request";
+    auto p2 = req->m_current_request->str();
+    req->asyncWriteLastBodyData(body, [](Marvin::ErrorType& err) {
+        std::cout << "Completed the last write" << std::endl;
+    });
+#endif
+    io_service.run();
+    CHECK(on_headers_flag);
+    CHECK(on_data_flag);
+    CHECK(on_response_flag);
+    CHECK(!on_error_flag);
+
+}
 

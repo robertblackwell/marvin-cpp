@@ -16,9 +16,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
-#include "test_server_client/bf/bf_post.hpp"
-#include "test_server_client/bf/bf_pipeline.hpp"
-#include "test_server_client/bf/bf_testcase.hpp"
+#include "bf_post.hpp"
+#include "bf_pipeline.hpp"
+#include "bf_testcase.hpp"
 #include "test_server_client/tsc_req_handler.hpp"
 #include "server_runner.hpp"
 using namespace body_format;

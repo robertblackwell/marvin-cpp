@@ -34,13 +34,13 @@ exports.missing = function(req) {
     return handlerFactory.createHandler(function(req, res) {
       res.writeHead(200, {'Content-Type': mime});
       res.write(data);
-      res.close();
+      res.end();
     });        
   } catch (e) { 
     return handlerFactory.createHandler(function(req, res) {
       res.writeHead(404, {'Content-Type': 'text/plain'});
       res.write("No route registered for " + url.pathname);
-      res.close();
+      res.end();
     });      
   }  
 }

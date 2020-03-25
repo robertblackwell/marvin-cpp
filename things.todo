@@ -16,6 +16,8 @@ Bugs:
   ☐ segfault in test_server_client_bb HIGH PRIORITY
   ☐ not handling non-existence of connection header correctly when preparing upstream request
   ☐ test_ssl seg faults
+  ☐ potential - MessageWriter does not handle incomplete writes
+  ☐ messagereader does not read trailers
 Logging:
   ☐ is too complicated - try using the model from the node addin
 Exceptions and Error checking:

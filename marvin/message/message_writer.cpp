@@ -101,7 +101,7 @@ MessageWriter::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType 
     m_write_sock->asyncWrite(*m_header_buf_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
 
         LogDebug("");
-        // need to check and do something about insufficient write
+        // TODO need to check and do something about insufficient write
             auto pf = std::bind(cb, ec);
 //            _io.post(pf);
         cb(ec);

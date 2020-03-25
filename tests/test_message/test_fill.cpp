@@ -1,7 +1,9 @@
 ///
-/// \brief in this file we test the functions that apply the proxy transform to
-/// requests going upstream to the end server and responses coming back from that server
-/// and going downstream to the initial client
+/// This file tests fill in the fields in a MesasgeBase and/or MessageReader
+///
+/// Coincidentally some testing of the Uri() class also takes place.
+/// 
+/// No actual transmission is involved
 //
 #if 1
 #include <iostream>
@@ -10,8 +12,6 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
 #include <marvin/buffer/buffer.hpp>
@@ -32,6 +32,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 using namespace Marvin;
 using namespace Marvin::Http;
 namespace {
+
+/// Create a MessageReaderSPtr to be filled during various tests
 MessageReaderSPtr makeMock()
 {
     static boost::asio::io_service io;
@@ -53,6 +55,7 @@ MessageReaderSPtr makeMock()
 //x-ec-custom-error: 1
 //Content-Length: 1270
 
+/// Make a typical response message
 void fillMsgRdrAsResponse_01(MessageReaderSPtr msgRdr)
 {
     msgRdr->setStatus("OK");
@@ -73,6 +76,7 @@ void fillMsgRdrAsResponse_01(MessageReaderSPtr msgRdr)
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContentBuffer(bdy);
 }
+/// Verify the correctness of the typical response message
 void verifyResponse_01(MessageBaseSPtr msg)
 {
     auto trim = [](std::string s) -> std::string {
@@ -107,8 +111,8 @@ void verifyResponse_01(MessageBaseSPtr msg)
 //    msgRdr->setBody(bdy);
 
 }
-#pragma mark - sample filling of upstream request should be a non procy request
-void fillMsgRdrAsRequest01(MessageReaderSPtr msgRdr)
+/// Fill a typical pstream non proxy request
+void fillMsgRdrAsRequest_01(MessageReaderSPtr msgRdr)
 {
 // GET / HTTPS/1.1
 // Host: example.org
@@ -140,7 +144,7 @@ void fillMsgRdrAsRequest01(MessageReaderSPtr msgRdr)
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContent(bdy);
 }
-
+/// Verify the typical non proxy request
 void verifyRequest_01(MessageBaseSPtr msgSPtr)
 {
     /// relative url
@@ -156,33 +160,33 @@ void verifyRequest_01(MessageBaseSPtr msgSPtr)
     REQUIRE( ! msgSPtr->hasHeader(Marvin::Http::Headers::Name::TransferEncoding));
     REQUIRE( ! msgSPtr->hasHeader(Marvin::Http::Headers::Name::ETag));
 }
-#pragma mark - request 02 test a procy request
-void fillMsgRequest02(MessageBaseSPtr msgSPtr)
+/// request 02 test a proxy request
+void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
 {
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // proxy full uri
     helpers::applyUriProxy(msgSPtr, uri);
-//    helpers::fillRequestFromUri(*msgSPtr, "http://example.org:9999");
 }
+/// verify request 02 test a proxy request
 void verifyRequest_02(MessageBaseSPtr msgSPtr)
 {
     REQUIRE(msgSPtr->uri() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
     REQUIRE(msgSPtr->getHeader(Marvin::Http::Headers::Name::Host) == "example.org:9999" );
 }
-#pragma mark - request 03 non procy request
+/// Request 03 non proxy request
 void fillMsgRequest03(MessageBaseSPtr msgSPtr)
 {
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // non proxy relative uri
     helpers::applyUriNonProxy(msgSPtr, uri);
-//    helpers::fillRequestFromUri(*msgSPtr, "http://example.org:9999");
 }
+/// Verify request 03
 void verifyRequest_03(MessageBaseSPtr msgSPtr)
 {
     REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
     REQUIRE(msgSPtr->getHeader(Marvin::Http::Headers::Name::Host) == "example.org:9999" );
 }
-#pragma mark - verify minimum requirements for a request
+/// Fill minimum requirements for a request
 void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
 {
     msgRdr->setMethod(HTTP_POST);
@@ -194,29 +198,25 @@ void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContent(bdy);
 }
+/// Verify minimum requirements
 bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 {
     auto meth = msgSPtr->getMethodAsString();
-    REQUIRE_FALSE(meth == "");
-//    if (meth == "") return false;
+    CHECK_FALSE(meth == "");
     auto uri = msgSPtr->uri();
-    REQUIRE_FALSE(uri == "");
-//    if (uri == "") return false;
-    REQUIRE( msgSPtr->hasHeader(Marvin::Http::Headers::Name::Host));
-//    if( ! msgSPtr->hasHeader(Marvin::Http::Headers::Name::Host)) return false;
-    REQUIRE( msgSPtr->hasHeader(Marvin::Http::Headers::Name::Connection));
+    CHECK_FALSE(uri == "");
+    CHECK( msgSPtr->hasHeader(Marvin::Http::Headers::Name::Host));
+    CHECK( msgSPtr->hasHeader(Marvin::Http::Headers::Name::Connection));
     {
     auto bb = ( (msgSPtr->hasHeader(Marvin::Http::Headers::Name::ContentLength)) || (msgSPtr->hasHeader(Marvin::Http::Headers::Name::TransferEncoding)));
-    REQUIRE(bb);
+    CHECK(bb);
     }
-//    if( ! msgSPtr->hasHeader(Marvin::Http::Headers::Name::ContentLength)
-//        || (msgSPtr->hasHeader(Marvin::Http::Headers::Name::TransferEncoding))) return false;
     if(msgSPtr->hasHeader(Marvin::Http::Headers::Name::ContentLength) && (msgSPtr->getHeader(Marvin::Http::Headers::Name::ContentLength) != "0" )){
         int cl = std::stoi(msgSPtr->getHeader(Marvin::Http::Headers::Name::ContentLength));
         auto contentChain = msgSPtr->getContentBuffer();
-        REQUIRE(contentChain != nullptr);
+        CHECK(contentChain != nullptr);
         if( contentChain != nullptr) {
-            REQUIRE(contentChain->size() == cl);
+            CHECK(contentChain->size() == cl);
         }
     }
     return true;
@@ -233,62 +233,51 @@ TEST_CASE("Helpers_Example")
     CHECK(u.search() == "a=1111#fragment");
     CHECK(u.relativePath() == "/subdirpath/index.php?a=1111#fragment");
     CHECK(u.absolutePath() == "http://somewhere.com/subdirpath/index.php?a=1111#fragment");
-//    CHECK(u.absolutePath() == "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
-//    std::cout << msg->str() << std::endl;
 }
 TEST_CASE("Uri")
 {
     MessageReaderSPtr msg = makeMock();
     fillMsgRdrAsRequest(msg);
     verifyRequest_MimimumRequirements(msg);
-//    std::cout << msg->str() << std::endl;
 }
-TEST_CASE("Helpers_downstream01")
+TEST_CASE("response_01")
 {
     MessageReaderSPtr msgRdr = makeMock();
     fillMsgRdrAsResponse_01(msgRdr);
-//    verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     Marvin::ErrorType err = Marvin::make_error_ok();
     helpers::makeDownstreamResponse(msgSPtr,msgRdr, err);
     verifyResponse_01(msgSPtr);
-//    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("Helpers_upstream01")
+TEST_CASE("request_01")
 {
     MessageReaderSPtr msgRdr = makeMock();
-    fillMsgRdrAsRequest01(msgRdr);
+    fillMsgRdrAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     helpers::makeUpstreamRequest(msgSPtr, msgRdr);
     verifyRequest_01(msgSPtr);
-//    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("HelpersRequest02")
+TEST_CASE("request_02")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    fillMsgRequest02(msgSPtr);
+    fillMsgRequest_02(msgSPtr);
     verifyRequest_02(msgSPtr);
-//    std::cout << msgSPtr->str() << std::endl;
 }
 
-TEST_CASE("HelpersRequest03")
+TEST_CASE("request_03")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest03(msgSPtr);
     verifyRequest_03(msgSPtr);
-//    std::cout << msgSPtr->str() << std::endl;
 }
-TEST_CASE("copyexcept")
+TEST_CASE("min_requirement_request_01")
 {
     MessageReaderSPtr msgRdr = makeMock();
-    fillMsgRdrAsRequest01(msgRdr);
+    fillMsgRdrAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     std::cout << traceMessage(*msgSPtr) << std::endl;
     std::cout << *msgSPtr << std::endl;
-//    helpers::makeUpstreamRequest(msgSPtr, msgRdr);
-//    verifyRequest_01(msgSPtr);
-
 }
 

@@ -100,7 +100,7 @@ class Client
 public:
 #pragma mark - constructors and destructors
     /**
-     * \brief Create a client that is not connected; but provide the info it needs
+     * Create a client that is not connected; but provide the info it needs
      * to try and establish a connection; if connectiing through a proxy the host/port
      * should point at the proxy.
      *
@@ -113,7 +113,7 @@ public:
     Client(boost::asio::io_service& io, Marvin::Http::Headers::SchemeType scheme, std::string server, std::string port);
     
     /**
-     * @brief Conosttruct an not-yet-connected client instance and provide target host
+     * Conosttruct an not-yet-connected client instance and provide target host
      * information in the form of a Marvin::Uri instance.
      *
      * @param io - an io service
