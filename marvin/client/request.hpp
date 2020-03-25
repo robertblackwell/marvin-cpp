@@ -28,26 +28,14 @@ class Request;  // lines 21-21
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }  // lines 19-19
 
+using namespace Marvin;
 using boost::asio::ip::tcp;
 using RequestSPtr = std::shared_ptr<Request>;
 using RequestUPtr = std::unique_ptr<Request>;
-/**
-* \ingroup Client
-* \brief This is the type signature of callbacks that receive a fully or partially complete
-* response
-*/
 using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)>;
 
-/**
-* \ingroup Client
-* \brief This is the type signature of callbacks that receive chunks of body data
-*/
 using RequestDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err, Marvin::BufferChain buf_chain)>;
 
-/**
-* determines whether a new MessageReader and MessageWriter
-* are allocated for each new roundtrip. 
-*/
 #define REQUEST_RDR_WRTR_ONESHOT 1
 
 /**
@@ -107,8 +95,10 @@ public:
     Request& operator=(const Request&) = delete;
     
     ~Request();
+    // TODO not sure we need these
     MessageReaderSPtr  getResponse();
     void setContent(std::string& contentStr);
+    
     void setOnResponse(ResponseHandlerCallbackType cb );
     void setOnHeaders(ResponseHandlerCallbackType cb);
     void setOnData(RequestDataHandlerCallbackType cb);
@@ -135,6 +125,7 @@ public:
     void setHeader(std::string key, std::string value);
     void setTrailers(Marvin::Http::Headers trailers);
     void setTrailer(std::string key, std::string value);
+
     void asyncWriteHeaders(WriteHeadersCallbackType cb);
     void asyncWriteTrailers(WriteHeadersCallbackType cb);
 
@@ -163,23 +154,47 @@ public:
     friend std::string traceRequestMessage(Marvin::Http::MessageBase& request);
 
 public:
-    void p_internal_connect();
-    void p_internal_write();
-
-    void p_create_rdr_wrtr();
-    void p_test_good_to_go();
-    void p_async_write(Marvin::Http::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
-    void p_put_header_stuff_in_buffer();
-    void p_set_content_length();
+    // internal paranoid tests    
     bool p_test_not_headers_written();
-    void p_add_chunked_encoding_header();
     void p_assert_not_headers_written();
     void p_assert_not_trailers_written();
     void p_assert_trailers_permitted();
-    void p_check_connected_before_internal_write();
+    // utility methods
+    void p_create_rdr_wrtr();
+    void p_test_good_to_go();
+    // write headers steps
+    void p_check_connected_before_write_headers(WriteHeadersCallbackType write_headers_cb);
+    void p_internal_connect_before_write_headers(WriteHeadersCallbackType write_headers_cb);
+    void p_internal_write_headers(WriteHeadersCallbackType write_headers_cb);
+    // steps in connect/write the request
+    void p_put_header_stuff_in_buffer();
+    void p_prep_write_complete_headers();
+    void p_set_content_length();
+    void p_add_chunked_encoding_header();
+    // sequence for writing headers and a body chunk
+    void p_hbc_check_connected(BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
+    void p_hbc_connect(BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
+    void p_hbc_write(BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
+
+    // steps in writing a body chunk.
+    void p_internal_write_headers_and_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
+    void p_internal_write_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
+
+    // steps in writing a full message in one go
+    void p_check_connected_before_internal_write_message();
+    void p_internal_connect_before_write_message();
+    void p_internal_write_message();
+    // general write error handler
+    void p_write_error();
+    // @TODO need to determine role of this method
+    void p_async_write(Marvin::Http::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
+    // steps in read response
     void p_read_response_headers();
     void p_read_response_body();
     void p_read_response_body_next();
+    void p_read_response_handle_buffer(Marvin::BufferChainSPtr buf_sptr);
+    void p_response_complete();
+    void p_response_error(Marvin::ErrorType err);
 
     ResponseHandlerCallbackType m_on_response_complete_cb;
     ResponseHandlerCallbackType m_on_headers_complete_cb;

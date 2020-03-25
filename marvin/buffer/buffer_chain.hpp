@@ -6,19 +6,10 @@
 #include <vector>
 #include <boost/asio/buffer.hpp>
 #include <marvin/buffer/m_buffer.hpp>
-/**
-* \ingroup Buffer
-*/
-
 namespace Marvin {
 class BufferChain;
 
-/// \ingroup Buffer
 using BufferChainSPtr = std::shared_ptr<BufferChain>;
-/**
-* \ingroup Buffer
-* \brief Provides a chain of MBuffers to allow for reading data in chunks without copying into a single contigous buffer.
-*/
 class BufferChain
 {
     public:
@@ -33,6 +24,7 @@ class BufferChain
         std::size_t     size();
         std::string     to_string();
         MBufferSPtr     amalgamate();
+
         /**
          * outputs the content to a stream
          */
@@ -40,6 +32,10 @@ class BufferChain
     
         friend std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(BufferChain& bchain);
         friend std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
+        // chunk encoding helpers
+        friend BufferChainSPtr chunk_buffer(BufferChainSPtr buf_sptr);
+        friend BufferChainSPtr chunk_empty();
+        friend BufferChainSPtr chunk_last(BufferChainSPtr buf_sptr);
 
     private:
         std::vector<MBufferSPtr>                    m_chain;

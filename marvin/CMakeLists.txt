@@ -77,7 +77,12 @@ set(SOURCES
 	certificates/certificates.cpp
 
 	client/client.cpp  	
-	client/request.cpp 			
+	client/request.cpp 	
+	client/request_headers.cpp 			
+	client/request_msg.cpp 			
+	client/request_hbc.cpp 			
+	client/request_response.cpp 			
+	client/request_chunk.cpp 			
 	
 	collector/collector_base.cpp
 	collector/collector_interface.cpp

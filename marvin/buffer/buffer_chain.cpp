@@ -28,6 +28,20 @@ BufferChainSPtr BufferChain::makeSPtr(MBufferSPtr mb_sptr)
     sp->push_back(mb_sptr);
     return sp;
 }
+BufferChainSPtr chunk_buffer(BufferChainSPtr buf_sptr)
+{
+    return nullptr;
+}
+BufferChainSPtr chunk_empty()
+{
+    return nullptr;
+
+}
+BufferChainSPtr chunk_last(BufferChainSPtr buf_sptr)
+{
+    return nullptr;
+
+}
 
 
 BufferChain::BufferChain()

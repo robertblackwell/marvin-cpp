@@ -147,6 +147,70 @@ void Request::asyncConnect(std::function<void(Marvin::ErrorType& err)> cb)
     };
     m_conn_shared_ptr->asyncConnect(f);
 }
+//--------------------------------------------------------------------------------
+// asyncWriteHeaders
+//
+//--------------------------------------------------------------------------------
+void Request::asyncWriteHeaders(WriteHeadersCallbackType cb)
+{
+    p_check_connected_before_write_headers(cb);
+    // return;
+    // p_assert_not_headers_written();
+    // p_add_chunked_encoding_header();
+    // p_prep_write_complete_headers();
+    // p_check_connected_before_write_headers(cb);
+    // m_wrtr->asyncWriteHeaders(m_current_request, [this, cb](Marvin::ErrorType err){
+    //     m_headers_written = true;
+    //     cb(err);
+    // });
+}
+void Request::p_check_connected_before_write_headers(WriteHeadersCallbackType write_headers_cb)
+{
+    if(m_is_connected) {
+        p_internal_write_headers(write_headers_cb);
+    } else {
+        p_internal_connect_before_write_headers(write_headers_cb);
+    }
+}
+void Request::p_internal_connect_before_write_headers(WriteHeadersCallbackType write_headers_cb)
+{
+    LogInfo("", (long)this);
+    using namespace Marvin;
+    std::function<void(ErrorType& err)> h = [](ErrorType& err) {
+
+    };
+    asyncConnect([this, write_headers_cb](Marvin::ErrorType& ec){
+        LogDebug("cb-connect");
+        if(!ec) {
+            p_internal_write_headers(write_headers_cb);
+        } else {
+            m_response_handler(ec, m_rdr);
+        }
+    });
+}
+void Request::p_internal_write_headers(WriteHeadersCallbackType write_headers_cb)
+{
+    p_assert_not_headers_written();
+    p_add_chunked_encoding_header();
+    p_prep_write_complete_headers();
+    p_check_connected_before_write_headers(write_headers_cb);
+
+    m_wrtr->asyncWriteHeaders(m_current_request, [this, write_headers_cb](Marvin::ErrorType err){
+        m_headers_written = true;
+        write_headers_cb(err);
+    });
+}
+
+void Request::asyncWriteTrailers(WriteHeadersCallbackType cb)
+{
+    p_assert_not_trailers_written();
+    p_assert_trailers_permitted();
+    // trailers only permitted when in chunked mode and headers had a TE
+    m_wrtr->asyncWriteTrailers(m_current_request, [this, cb](Marvin::ErrorType err){
+        m_trailers_written = true;
+        cb(err);
+    });
+}
 
 //----------------------------------------------------------------------------------------------
 // asyncWriteBodyData - requires that headers NOT already sent and will force chunked encodiing
@@ -253,6 +317,166 @@ void Request::asyncWriteLastBodyData(Marvin::BufferChainSPtr body_chunk_chain_sp
     }
 }
 
+//--------------------------------------------------------------------------------
+// come here to do a write of the full message
+//--------------------------------------------------------------------------------
+void Request::p_check_connected_before_internal_write_message()
+{
+    if(m_is_connected) {
+        p_internal_write_message();
+    } else {
+        p_internal_connect_before_write_message();
+    }
+}
+void Request::p_internal_connect_before_write_message()
+{
+    LogInfo("", (long)this);
+    using namespace Marvin;
+    std::function<void(ErrorType& err)> h = [](ErrorType& err) {
+
+    };
+    asyncConnect([this](Marvin::ErrorType& ec){
+        LogDebug("cb-connect");
+        if(!ec) {
+            p_internal_write_message();
+        } else {
+            m_response_handler(ec, m_rdr);
+        }
+    });
+}
+void Request::p_internal_write_message()
+{
+    LogInfo("", (long)this);
+
+    // we are about to write the entire request message
+    // so make sure we have the content-length correct
+    p_set_content_length();
+    LogInfo("",traceWriter(*m_wrtr));
+    
+    assert(m_body_mbuffer_sptr != nullptr);
+    auto req_str = m_current_request->str();
+    m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
+        if (!ec) {
+            LogDebug("start read");
+            this->m_rdr->readMessage([this](Marvin::ErrorType ec2){
+                auto resp_str = m_rdr->str();
+                auto bdy_str = m_rdr->getContent()->to_string();
+                if (!ec2) {
+                    this->m_response_handler(ec2, m_rdr);
+                } else {
+                    this->m_response_handler(ec2, m_rdr);
+                }
+            });
+        } else {
+            this->m_response_handler(ec, m_rdr);
+        }
+    });
+}
+//--------------------------------------------------------------------------------
+// start sequence of functions to write a the headers and a single body buffer.
+// hbc = headers_and_body_chunk
+//--------------------------------------------------------------------------------
+void Request::p_hbc_check_connected(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+{
+    if(m_is_connected) {
+        p_hbc_write(body_chunk_chain_sptr, cb);
+    } else {
+        p_hbc_connect(body_chunk_chain_sptr, cb);
+    }
+}
+void Request::p_hbc_connect(::Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+{
+    LogInfo("", (long)this);
+    using namespace Marvin;
+    this->asyncConnect([this, body_chunk_chain_sptr, cb](Marvin::ErrorType& ec){
+        LogDebug("cb-connect");
+        if(!ec) {
+            p_hbc_write(body_chunk_chain_sptr, cb);
+        } else {
+            m_response_handler(ec, m_rdr);
+        }
+    });
+}
+void Request::p_hbc_write(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType write_headers_cb)
+{
+    p_assert_not_headers_written();
+    p_add_chunked_encoding_header();
+    p_prep_write_complete_headers();
+
+    m_wrtr->asyncWriteHeaders(m_current_request, [this, write_headers_cb](Marvin::ErrorType err){
+        m_headers_written = true;
+        write_headers_cb(err);
+    });
+}
+
+//--------------------------------------------------------------------------------
+// start sequence of functions to write a the headers and a single body buffer.
+//--------------------------------------------------------------------------------
+void Request::p_internal_write_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+{
+
+}
+
+//--------------------------------------------------------------------------------
+// start sequence of functions to read response
+//--------------------------------------------------------------------------------
+void Request::p_read_response_headers()
+{
+    this->m_rdr->readHeaders([this](Marvin::ErrorType ec2){
+        auto resp_str = m_rdr->str();
+        auto bdy_str = m_rdr->getContent()->to_string();
+        if (!ec2) {
+            // call onHeaders
+            // setup read of body unless content length == 0
+            if (this->m_rdr->hasHeader(Marvin::Http::Headers::Name::ContentLength)) {
+                std::string clstr = this->m_rdr->getHeader(Marvin::Http::Headers::Name::ContentLength);
+                if (clstr != "0") {
+                    p_read_response_body();
+                } else {
+                    p_response_complete();
+                }
+            }
+        } else {
+            // call on error handler
+            LogError("error on read headers");
+            p_response_error(ec2);
+        }
+    });
+
+}
+void Request::p_read_response_body()
+{
+    this->m_rdr->readBody([this](Marvin::ErrorType err, Marvin::BufferChainSPtr buf_sptr){
+        auto ex = err.value();
+        if(err) {
+            p_response_error(err);
+        } else {
+            p_read_response_handle_buffer(buf_sptr);
+            if (err == Marvin::make_error_eob() || err == Marvin::make_error_eom()) {
+                //call message complete cb
+                p_response_complete();
+            } else {
+                this->p_read_response_body_next();
+            }
+        }
+    });
+}
+void Request::p_read_response_body_next()
+{
+
+}
+void Request::p_read_response_handle_buffer(Marvin::BufferChainSPtr buf_sptr)
+{
+
+}
+void Request::p_response_complete()
+{
+
+}
+void Request::p_response_error(Marvin::ErrorType err)
+{
+
+}
 //-----------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
 void Request::p_write_error()
