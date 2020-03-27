@@ -8,7 +8,7 @@
 
 using namespace Marvin;
 using namespace Marvin::Http;
-#if 0
+#if 1
 std::shared_ptr<Client> do_client_connect(std::string code, boost::asio::io_service& io)
 {
     Marvin::Uri uri("http://whiteacorn.com/utests/echo/test.php");
@@ -58,7 +58,7 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
     client->asyncWrite(msg, f);
     return client;
 }
-/// \brief makes a GET request to the url provided and expects status=200/302 and a non empty content
+/// makes a GET request to the url provided and expects status=200/302 and a non empty content
 std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::string request_url)
 {
     Marvin::Uri uri(request_url);

@@ -13,12 +13,9 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/message/message_reader.hpp>
 
- using namespace Marvin;
- using namespace Marvin::Http;
+using namespace Marvin;
+using namespace Marvin::Http;
 
-
-
-#pragma mark - tracing functions
 std::string traceReader(MessageReader& rdr)
 {
     std::stringstream ss;
@@ -26,11 +23,9 @@ std::string traceReader(MessageReader& rdr)
         << " body.len: " << rdr.m_body.size() ;
     return ss.str();
 }
-#pragma mark - class default constants
 std::size_t MessageReader::s_headerBufferSize = 10000;
 std::size_t MessageReader::s_bodyBufferSize = 20000;
 
-#pragma mark - static functions to do once only config for the class
 /**
 * Called at program startup to override the default value
 * for the body buffer
@@ -146,11 +141,16 @@ void MessageReader::OnMessageComplete(MessageInterface* msg){
 */
 void MessageReader::OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder)
 {
+    return;
+    std::string s1 = m_raw_body_buffer_chain_sptr->to_string();
     if (remainder > 0) {
+        std::string tt((char*)body_start_ptr, remainder);
         Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(remainder));
         tmp->append(body_start_ptr, remainder);
         m_raw_body_buffer_chain_sptr->push_back(tmp);
     }
+    std::string s2 = m_raw_body_buffer_chain_sptr->to_string();
+    auto xx = s2;
     LogDebug("");
 }
 
@@ -165,9 +165,13 @@ MessageInterface* MessageReader::currentMessage(){  return this; }
 */
 void MessageReader::OnBodyData(void* buf, int len)
 {
+    std::string tt((char*)buf, len);
+    std::string senter = m_body_buffer_chain_sptr->to_string();
     Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(len));
     tmp->append(buf, len);
     m_body_buffer_chain_sptr->push_back(tmp);
+    std::string sexit = m_body_buffer_chain_sptr->to_string();
+    auto xx = sexit;
 }
 
 void MessageReader::OnChunkBegin(int chunkLength) { LogDebug("");}

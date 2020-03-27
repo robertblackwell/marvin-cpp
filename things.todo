@@ -18,6 +18,7 @@ Bugs:
   ☐ test_ssl seg faults
   ☐ potential - MessageWriter does not handle incomplete writes
   ☐ messagereader does not read trailers
+  ☐ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more.
 Logging:
   ☐ is too complicated - try using the model from the node addin
 Exceptions and Error checking:

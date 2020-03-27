@@ -1,5 +1,5 @@
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-set(TARGET test_reader_mock)
+set(TARGET test_message_reader)
 add_executable(${TARGET} 
 	reader_main.cpp
 	mock_socket.cpp

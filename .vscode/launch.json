@@ -9,6 +9,7 @@
         "description": "Select the test to debug",
         "options": [
             "test_message",
+            "test_message_reader",
             "test_client_request",
             "test_tcp",
             "test_marvin_errors",
