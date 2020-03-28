@@ -10,6 +10,8 @@
         "options": [
             "test_message",
             "test_message_reader",
+            "test_message_roundtrip",
+            "test_doctest",
             "test_client_request",
             "test_tcp",
             "test_marvin_errors",
@@ -24,7 +26,7 @@
             "name": "(gdb) App Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/cmake-build-debug/tests/test_client_request/test_client_request_roundtrip",
+            "program": "${workspaceFolder}/cmake-build-debug/tests/test_doctest/test_doctest",
             "args": ["4", "5"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}/cmake-build-debug",

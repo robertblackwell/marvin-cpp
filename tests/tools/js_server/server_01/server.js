@@ -7,8 +7,70 @@ router.register('/', function(req, res) {
 	res.end()
 });
 
-router.register('/echosmart', function(req, resp) {
-	console.log("Handler: /echo/plain")
+router.register('/chunked_error', function(req, resp) {
+	console.log("handler: /chunked")
+	resp.setHeader('Content-Type', 'text/html; charset=UTF-8');
+    resp.setHeader('Transfer-Encoding', 'chunked');
+
+    let body = [
+    	"abcedf",
+    	"ghijklm",
+    	"nopqrstuvw",
+    	"xyz012",
+    	"34567890ABC",
+    	"DEF",
+    	"GH",
+    	"IJKLMNOPQRST",
+    	"UVWXYZ"
+    ]
+    let count = 0;
+    let timer = setInterval(() => {
+    	if (count == body.length) {
+    		resp.end()
+    		clearInterval(timer)
+    	} else if (count == 3) {
+
+    		req.socket.destroy()
+
+    	} else {
+    		resp.write(body[count])
+    		count += 1
+    	}
+    }, 200)
+
+})
+
+router.register('/chunked', function(req, resp) {
+	console.log("handler: /chunked")
+	resp.setHeader('Content-Type', 'text/html; charset=UTF-8');
+    resp.setHeader('Transfer-Encoding', 'chunked');
+
+    let body = [
+    	"abcedf",
+    	"ghijklm",
+    	"nopqrstuvw",
+    	"xyz012",
+    	"34567890ABC",
+    	"DEF",
+    	"GH",
+    	"IJKLMNOPQRST",
+    	"UVWXYZ"
+    ]
+    let count = 0;
+    let timer = setInterval(() => {
+    	if (count == body.length) {
+    		resp.end()
+    		clearInterval(timer)
+    	} else {
+    		resp.write(body[count])
+    		count += 1
+    	}
+    }, 200)
+
+})
+
+router.register('/echo/smart', function(req, resp) {
+	console.log("Handler: /echo/smart")
 	let body = ""
 	req.on('data', (chunk) => {
 		console.log("echoplain: on data")
@@ -19,9 +81,15 @@ router.register('/echosmart', function(req, resp) {
 		console.log(["echoplain: on end", "headers: ", req.rawHeaders, "body : ", body,"trailers: ", req.rawTrailers.join()])
 		let rh = req.rawHeaders.join();
 		let obj = {
-			headers: req.headers,
-			body : body,
-			trailers: req.trailers
+			"req" : {
+				junk: "some junk",
+				method: req.method,
+				uri: req.url,
+				headers: req.headers,
+				headers_raw: rh,
+				body : body,
+				trailers: req.trailers
+			}
 		}
 		let outBody = JSON.stringify(obj);;
 		resp.writeHead(200, {'Content-Type': 'application/json'});
@@ -34,7 +102,7 @@ router.register('/echosmart', function(req, resp) {
 	})
 })
 
-router.register('/echoplain', function(req, resp) {
+router.register('/echo/plain', function(req, resp) {
 	console.log("Handler: /echo/plain")
 	let body = ""
 	req.on('data', (chunk) => {

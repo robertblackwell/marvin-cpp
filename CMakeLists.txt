@@ -9,7 +9,7 @@ project(Marvin
     DESCRIPTION "A man in the middle proxy"
     LANGUAGES CXX)
 
-
+set(CMAKE_BUILD_TYPE Debug)
 # this is a fix for a problem with boost libraries see https://github.com/Microsoft/vcpkg/issues/4497
 # also a hack and breaks "best practices" as per Damiel Pfeiffer's presentation https://www.youtube.com/watch?v=rLopVhns4Zs&feature=youtu.be
 set(other_flags "${other_flags} -frtti -fvisibility-inlines-hidden")
