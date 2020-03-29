@@ -80,6 +80,7 @@ void Parser::unPause()
 int Parser::appendBytes(void *buffer, unsigned length)
 {
     messageData.append((char*)buffer, length);
+    std::string tmp = std::string((char*)buffer, length);
     size_t nparsed = http_parser_execute(parser, parserSettings, (char*)buffer, (int)length);
     return (int)nparsed;
 }

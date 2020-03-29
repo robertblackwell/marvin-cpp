@@ -11,6 +11,8 @@
             "test_message",
             "test_message_reader",
             "test_message_roundtrip",
+            "test_server_v1",
+            "test_server_v2",
             "test_doctest",
             "test_client_request",
             "test_tcp",

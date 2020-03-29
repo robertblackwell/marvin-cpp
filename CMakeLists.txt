@@ -25,24 +25,24 @@ find_package(Threads REQUIRED)
 #   message(FATAL_ERROR "Could not find the program include-what-you-use")
 # endif()
 
-    MESSAGE("INSIDE IF STATEMENT")
-    # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
-    # Let's ensure -std=c++xx instead of -std=g++xx
-    set(CMAKE_CXX_STANDARD 14)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    set(CMAKE_CXX_EXTENSIONS OFF)
+MESSAGE("INSIDE IF STATEMENT")
+# Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
+# Let's ensure -std=c++xx instead of -std=g++xx
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-    if(${CMAKE_DL_LIBS})
-        set(DL_LIB_SO libdl.so)
-    endif()
+if(${CMAKE_DL_LIBS})
+    set(DL_LIB_SO libdl.so)
+endif()
 
-    # Let's nicely support folders in IDE's
-    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-    # allow scheme porperties in xcode - particularly environment variables
-    set_property(GLOBAL PROPERTY XCODE_GENERATE_SCHEME ON)
-    set(XCODE_GENERATE_SCHEME ON)
-    include(CTest) 
-    enable_testing()
+# Let's nicely support folders in IDE's
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# allow scheme porperties in xcode - particularly environment variables
+set_property(GLOBAL PROPERTY XCODE_GENERATE_SCHEME ON)
+set(XCODE_GENERATE_SCHEME ON)
+include(CTest) 
+enable_testing()
 
 set(PROJECT_DIR ${Marvin_SOURCE_DIR})
 set(VENDOR_DIR ${PROJECT_DIR}/vendor)

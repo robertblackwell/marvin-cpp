@@ -75,5 +75,6 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp"
-    }
+    },
+    "workbench.tree.indent": 24
 }

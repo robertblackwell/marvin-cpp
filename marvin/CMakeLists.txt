@@ -67,6 +67,13 @@ file(GLOB HEADERS
 	server/request_handler_base.hpp
 	server/server_connection_manager.hpp 
 	server/server_context.hpp
+
+	server_v2/connection_handler.hpp 
+	server_v2/http_server.hpp 
+	server_v2/request_handler_base.hpp
+	server_v2/server_connection_manager.hpp 
+	server_v2/server_context.hpp
+
 	)
 
 set(SOURCES 
@@ -129,12 +136,19 @@ set(SOURCES
 	server/server_connection_manager.cpp 
 	# leave out server_context - no functions in this file - produces library warning that is a bit obscure
 	# server/server_context.cpp
+
+	server_v2/connection_handler.cpp 
+	server_v2/http_server.cpp 
+	server_v2/request_handler_base.cpp
+	server_v2/server_connection_manager.cpp 
+	server_v2/server_context.cpp
+
+
 	)
 
 set_source_files_properties(${SOURCES} PROPERTIES LANGUAGE CXX)
 
-set(HEADER_DIRS
-	${PROJECT_DIR}
+set(HEADER_DIRS ${PROJECT_DIR}
 )
 	# ${PROJECT_DIR}/marvin/include
 	# ${PROJECT_DIR}/marvin/boost_ext

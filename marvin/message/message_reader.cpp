@@ -141,7 +141,6 @@ void MessageReader::OnMessageComplete(MessageInterface* msg){
 */
 void MessageReader::OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder)
 {
-    return;
     std::string s1 = m_raw_body_buffer_chain_sptr->to_string();
     if (remainder > 0) {
         std::string tt((char*)body_start_ptr, remainder);
@@ -254,9 +253,13 @@ void MessageReader::p_handle_header_read(Marvin::ErrorType er, std::size_t bytes
     }
     m_header_buffer_sptr->setSize(bytes_transfered);
 //    std::cout << *_header_buffer_sptr << std::endl;
-    Marvin::MBuffer& mb = *m_header_buffer_sptr;
-    int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
-    if( ! p_parser_ok(nparsed, mb)) {
+    Marvin::MBufferSPtr mbsptr = m_header_buffer_sptr;
+    void* bufptr = (void*)(mbsptr->data());
+    char* charptr = (char*)(mbsptr->data());
+    int buf_length = (int) (mbsptr->size());
+    std::string tmp = mbsptr->toString();
+    int  nparsed = this->appendBytes(bufptr, buf_length);
+    if( ! p_parser_ok(nparsed, *mbsptr)) {
         p_post_message_cb(Marvin::make_error_parse());
         return;
     }
