@@ -1,11 +1,11 @@
 
-#ifndef HTTP_SERVER_V2_CONNECTION_MANAGER_HPP
-#define HTTP_SERVER_V2_CONNECTION_MANAGER_HPP
+#ifndef HTTP_SERVER__CONNECTION_MANAGER_HPP
+#define HTTP_SERVER__CONNECTION_MANAGER_HPP
 
 #include <set>
 #include <map>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/server_v2/connection_handler_v2.hpp>
+#include <marvin/server_v3/connection_handler.hpp>
 
 /**
 * \ingroup Server
@@ -14,33 +14,33 @@
 */
 namespace Marvin {
 
-class ServerConnectionManagerV2;
+class ServerConnectionManager;
 /// \ingroup Server
-typedef std::shared_ptr<ServerConnectionManagerV2> ServerConnectionManagerV2SPtr;
+typedef std::shared_ptr<ServerConnectionManager> ServerConnectionManagerSPtr;
 /// \ingroup Server
-typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerV2SPtr conHandler_sptr)> ConnectionManagerCallback;
+typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerSPtr conHandler_sptr)> ConnectionManagerCallback;
 /// \ingroup Server
-typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerV2SPtr conHandler_sptr)> AllowAnotherCallback;
+typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerSPtr conHandler_sptr)> AllowAnotherCallback;
 
 /// \ingroup Server
-class ServerConnectionManagerV2
+class ServerConnectionManager
 {
     public:
         typedef std::function<void()> AllowAnotherCallback;
     
-        static ServerConnectionManagerV2* instance;
-        static ServerConnectionManagerV2* get_instance();
+        static ServerConnectionManager* instance;
+        static ServerConnectionManager* get_instance();
         static bool verify();
         
-        ServerConnectionManagerV2(const ServerConnectionManagerV2&) = delete;
-        ServerConnectionManagerV2& operator=(const ServerConnectionManagerV2&) = delete;
+        ServerConnectionManager(const ServerConnectionManager&) = delete;
+        ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
 
         /**
         * \brief Construct a connection manager. The connection handler must operate in
         * a single threaded manner. That is achieved by requiring it to always
         * execute on the server strand.
         */
-        ServerConnectionManagerV2(boost::asio::io_service& io, int max_connections);
+        ServerConnectionManager(boost::asio::io_service& io, int max_connections);
     
         /**
         * Called by server to verify that another accept is permitted
@@ -57,7 +57,7 @@ class ServerConnectionManagerV2
         ** \brief Register a connection handler in a table so that it stays around to process request/response
         ** and increments the count of connection handler active
         */
-        void registerConnectionHandler(ConnectionHandlerV2* connHandler);
+        void registerConnectionHandler(ConnectionHandler* connHandler);
      
         /**
         * \brief deregister the specified connection, removes from the table and decrements
@@ -67,7 +67,7 @@ class ServerConnectionManagerV2
         ** set invoke this callback if the number of active connection handlers is below the
         ** max allowed
         */
-        void deregister(ConnectionHandlerV2* ch);
+        void deregister(ConnectionHandler* ch);
 
         /**
         ** Stop all connections.
@@ -79,8 +79,8 @@ class ServerConnectionManagerV2
         * THese methods actually perform the register, deregister functions
         * and are posted to the serverStrand
         */
-        void p_register(ConnectionHandlerV2* ch);
-        void p_deregister(ConnectionHandlerV2* ch);
+        void p_register(ConnectionHandler* ch);
+        void p_deregister(ConnectionHandler* ch);
         int    m_connection_count;
 
         boost::asio::io_service&    m_io;
@@ -88,7 +88,7 @@ class ServerConnectionManagerV2
         int                         m_currentNumberConnections;
         AllowAnotherCallback        m_allow_more_callback;
         
-        std::map<ConnectionHandlerV2*, std::unique_ptr<ConnectionHandlerV2>> m_connections;
+        std::map<ConnectionHandler*, std::unique_ptr<ConnectionHandler>> m_connections;
         std::map<long, long>  m_fd_list;
 };
 } // namespace Marvin

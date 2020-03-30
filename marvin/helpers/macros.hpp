@@ -1,6 +1,15 @@
-#ifndef helper_macros_include_hpp
-#define helper_macros_include_hpp
+#ifndef marvin_helper_macros_include_hpp
+#define marvin_helper_macros_include_hpp
+#include <marvin/error/exception.hpp>
+
 #ifndef NDEBUG
+    #define MTHROW(msg) \
+        do { \
+            std::stringstream messageStream; \
+            messageStream << msg ; \
+            Marvin::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
+        } while(0);
+
 #   define ASSERT(condition, message) \
     do { \
         if (! (condition)) { \

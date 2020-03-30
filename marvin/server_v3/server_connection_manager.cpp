@@ -1,21 +1,21 @@
 #include <unistd.h>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include <marvin/server_v2/server_connection_manager_v2.hpp>
+#include <marvin/server_v3/server_connection_manager.hpp>
 using namespace Marvin;
 
-ServerConnectionManagerV2* ServerConnectionManagerV2::instance;
+ServerConnectionManager* ServerConnectionManager::instance;
 
-ServerConnectionManagerV2* ServerConnectionManagerV2::get_instance()
+ServerConnectionManager* ServerConnectionManager::get_instance()
 {
     return instance;
 }
-bool ServerConnectionManagerV2::verify()
+bool ServerConnectionManager::verify()
 {
     return true;
 }
 
-ServerConnectionManagerV2::ServerConnectionManagerV2(boost::asio::io_service& io, int max_connections)
+ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, int max_connections)
     : m_io(io),
     m_maxNumberOfConnections(max_connections),
     m_currentNumberConnections(0)
@@ -25,7 +25,7 @@ ServerConnectionManagerV2::ServerConnectionManagerV2(boost::asio::io_service& io
     instance = this;
 }
 
-void ServerConnectionManagerV2::allowAnotherConnection(ServerConnectionManagerV2::AllowAnotherCallback cb)
+void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
 {
     assert(m_allow_more_callback == nullptr);
     LogTrace(" num conn: ", m_connections.size(), " max: ", m_maxNumberOfConnections);
@@ -42,7 +42,7 @@ void ServerConnectionManagerV2::allowAnotherConnection(ServerConnectionManagerV2
  * This method is ALWAYS called from the server strand so do not have to post
  * it on that strand.
  */
-void ServerConnectionManagerV2::registerConnectionHandler(ConnectionHandlerV2* connHandler)
+void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connHandler)
 {
     LogDebug("");
 //    std::cout << "register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
@@ -57,7 +57,7 @@ void ServerConnectionManagerV2::registerConnectionHandler(ConnectionHandlerV2* c
     assert(m_fd_list.find(fd) == m_fd_list.end());
     assert(m_connections.find(connHandler) == m_connections.end()); // assert not already there
     assert(verify());
-    m_connections[connHandler] = std::unique_ptr<ConnectionHandlerV2>(connHandler);
+    m_connections[connHandler] = std::unique_ptr<ConnectionHandler>(connHandler);
     m_fd_list[fd] = fd;
     assert(verify());
 #endif
@@ -67,11 +67,11 @@ void ServerConnectionManagerV2::registerConnectionHandler(ConnectionHandlerV2* c
  * This is called from a ConnectionHandler running on an arbitary io_service.
  * need to post the real action on the server strand.
  */
-void ServerConnectionManagerV2::deregister(ConnectionHandlerV2* ch)
+void ServerConnectionManager::deregister(ConnectionHandler* ch)
 {
     LogDebug("nativeSocket:: ", ch->nativeSocketFD());
     LogDebug("num connections:: ", m_connections.size());
-    auto pf = (std::bind(&ServerConnectionManagerV2::p_deregister, this, ch));
+    auto pf = (std::bind(&ServerConnectionManager::p_deregister, this, ch));
     m_io.post(pf);
     LogTrace(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
     return;
@@ -79,7 +79,7 @@ void ServerConnectionManagerV2::deregister(ConnectionHandlerV2* ch)
 /**
 * Paranoid
 */
-void ServerConnectionManagerV2::p_deregister(ConnectionHandlerV2* ch)
+void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
 {
     LogDebug("");
 //    std::cout << "_deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
@@ -113,7 +113,7 @@ void ServerConnectionManagerV2::p_deregister(ConnectionHandlerV2* ch)
     }
 }
 
-void ServerConnectionManagerV2::stop_all()
+void ServerConnectionManager::stop_all()
 {
 //    for (auto c: _connections)
 //        c->stop();

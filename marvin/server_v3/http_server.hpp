@@ -14,9 +14,9 @@
 #include <marvin/message/message_writer.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
-#include <marvin/server_v2/server_connection_manager_v2.hpp>
-#include <marvin/server_v2/request_handler_base_v2.hpp>
-#include <marvin/server_v2/connection_handler_v2.hpp>
+#include <marvin/server_v3/server_connection_manager.hpp>
+#include <marvin/server_v3/request_handler_base.hpp>
+#include <marvin/server_v3/connection_handler.hpp>
 
 namespace Marvin {
 
@@ -43,7 +43,7 @@ namespace Marvin {
 *       the server does not get overloaded.
 *
 */
-class HttpServerV2
+class HttpServer
 {
 public:
 
@@ -57,29 +57,35 @@ public:
     static void configSet_NumberOfConnections(int num);
     static void configSet_NumberOfThreads(int num);
     static void configSet_HeartbeatInterval(int millisecs);
-    static HttpServerV2* get_instance();
+    static HttpServer* get_instance();
     
-    HttpServerV2(const HttpServerV2&) = delete;
-    HttpServerV2& operator=(const HttpServerV2&) = delete;
+    HttpServer(const HttpServer&) = delete;
+    HttpServer& operator=(const HttpServer&) = delete;
 
     /**
-    ** @brief Construct the server to listen on the specified TCP address and port.
-    ** @param port defaults to 9991
+    ** Construct the server. Each request will be serviced by a handler object
+    **  that conforms the RequestHandlerBase. A new instances of the handler object
+    ** will be returned by each call to the factory function.
     */
-    explicit HttpServerV2(RequestHandlerFactoryV2 factory);
-    ~HttpServerV2();
+    explicit HttpServer(RequestHandlerFactory factory);
+    ~HttpServer();
     /**
-    ** @brief starts the listen process on the servers port, and from there
-    ** dispatches instances of TRequestHandler to service the connection
+    ** Starts listen process on the servers port, and from there
+    ** dispatches instances of request handler bkects to service the connection
+    **
+    ** The callback function will be posted to run on the server's io_service
+    ** immediately before io_service.run() is called. This allows a caller to
+    ** be informed when the io_service is up and running. Good for detecting
+    ** when the server becomes fully functional.
     */
-    void listen(long port = 9991);
+    void listen(long port, std::function<void()> ready_cb = nullptr);
     void terminate();
 private:
 
     static int s_numberOfThreads;
     static int s_numberOfConnections;
     static int s_heartbeat_interval_ms;
-    static HttpServerV2* s_instance;
+    static HttpServer* s_instance;
 
     /**
     ** @brief just as it says - init the server ready to list
@@ -97,7 +103,7 @@ private:
     **          completed accept call.
     ** @param err a boost errorcide that described any error condition
     */
-    void p_handle_accept(ConnectionHandlerV2* handler, const boost::system::error_code& err);
+    void p_handle_accept(ConnectionHandler* handler, const boost::system::error_code& err);
 
     /**
     ** @brief sets up a signal callback
@@ -110,7 +116,6 @@ private:
     void p_do_stop(const Marvin::ErrorType& err);
     void p_start_heartbeat();
     void p_on_heartbeat(const boost::system::error_code& ec);
-
     
     int                                             m_heartbeat_interval_ms;
     int                                             m_numberOfThreads;
@@ -119,8 +124,8 @@ private:
     boost::asio::io_service                         m_io;
     boost::asio::signal_set                         m_signals;
     boost::asio::ip::tcp::acceptor                  m_acceptor;
-    ServerConnectionManagerV2                       m_connectionManager;
-    RequestHandlerFactoryV2                         m_factory;
+    ServerConnectionManager                       m_connectionManager;
+    RequestHandlerFactory                         m_factory;
     boost::asio::deadline_timer                     m_heartbeat_timer;
     bool                                            m_terminate_requested; // heartbeat will terminate server if this is set
 };

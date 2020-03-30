@@ -6,15 +6,15 @@
 // TAKE CARE - this object is only for information purposes and the values in this object are only ever traced
 // no destructor as the refs are weak.
 namespace Marvin {
-class HttpServerV2;
-class ServerConnectionManagerV2;
-class ConnectionHandlerV2;
+class HttpServer;
+class ServerConnectionManager;
+class ConnectionHandler;
 
-struct ServerContextV2
+struct ServerContext
 {
-    HttpServerV2*               server_ptr;
-    ServerConnectionManagerV2*    server_connection_manager_ptr;
-    ConnectionHandlerV2*          connection_handler_ptr;
+    HttpServer*               server_ptr;
+    ServerConnectionManager*    server_connection_manager_ptr;
+    ConnectionHandler*          connection_handler_ptr;
     ::ISocket*        			connection_ptr;
 };
 } // namespace Marvin

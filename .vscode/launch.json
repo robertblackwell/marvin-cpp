@@ -13,6 +13,10 @@
             "test_message_roundtrip",
             "test_server_v1",
             "test_server_v2",
+            "test_server_v3",
+            "test_server_v3/demo1/test_server_v3_demo_1",
+            "test_server_v3/demo2/test_server_v3_demo_2",
+            "test_server_v3/manual/test_server_v3_manual",
             "test_doctest",
             "test_client_request",
             "test_tcp",
@@ -51,6 +55,25 @@
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}/cmake-build-debug/tests/${input:selectTest}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Debug full path",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/tests/${input:selectTest}",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/cmake-build-debug/tests",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",

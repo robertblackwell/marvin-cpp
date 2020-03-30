@@ -8,43 +8,44 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #include <thread>
+#include <marvin/helpers/macros.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/server_v2/http_server_v2.hpp>
+#include <marvin/server_v3/http_server.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace Marvin;
 
-int HttpServerV2::s_numberOfThreads = 4;
-int HttpServerV2::s_numberOfConnections = 35;
-int HttpServerV2::s_heartbeat_interval_ms = 1000;
+int HttpServer::s_numberOfThreads = 4;
+int HttpServer::s_numberOfConnections = 35;
+int HttpServer::s_heartbeat_interval_ms = 1000;
 
-HttpServerV2* HttpServerV2::s_instance = nullptr;
+HttpServer* HttpServer::s_instance = nullptr;
 
-HttpServerV2* HttpServerV2::get_instance()
+HttpServer* HttpServer::get_instance()
 {
     return s_instance;
 }
-void HttpServerV2::configSet_NumberOfThreads(int n)
+void HttpServer::configSet_NumberOfThreads(int n)
 {
     s_numberOfThreads = n;
 }
-void HttpServerV2::configSet_NumberOfConnections(int n)
+void HttpServer::configSet_NumberOfConnections(int n)
 {
     s_numberOfConnections = n;
 }
-void HttpServerV2::configSet_HeartbeatInterval(int millisecs)
+void HttpServer::configSet_HeartbeatInterval(int millisecs)
 {
     s_heartbeat_interval_ms = millisecs;
 }
-bool HttpServerV2::verify()
+bool HttpServer::verify()
 {
     return true;
 }
 
 
 
-HttpServerV2::HttpServerV2(RequestHandlerFactoryV2 factory):
+HttpServer::HttpServer(RequestHandlerFactory factory):
     m_heartbeat_interval_ms(s_heartbeat_interval_ms),
     m_numberOfThreads(s_numberOfThreads),
     m_numberOfConnections(s_numberOfConnections),
@@ -61,7 +62,7 @@ HttpServerV2::HttpServerV2(RequestHandlerFactoryV2 factory):
 /**
 ** init
 */
- void HttpServerV2::p_initialize()
+ void HttpServer::p_initialize()
 {
     ///
     /// !! make sure this is big enough to handle the components with dedicated strands
@@ -94,17 +95,17 @@ HttpServerV2::HttpServerV2(RequestHandlerFactoryV2 factory):
     m_acceptor.bind(endpoint, err);
     if( err) {
         LogError("error port: ",m_port, err.message());
-        exit(1);
+        MTHROW(std::string("error binding server port ")+err.message());
     }
     p_start_heartbeat();
 
     LogDebug(err.message());
 }
-HttpServerV2::~HttpServerV2()
+HttpServer::~HttpServer()
 {
     LogTorTrace();
 }
-void HttpServerV2::terminate()
+void HttpServer::terminate()
 {
     m_terminate_requested = true;
 }
@@ -112,29 +113,32 @@ void HttpServerV2::terminate()
 //-------------------------------------------------------------------------------------
 // listen - starts the accept cycle
 //-------------------------------------------------------------------------------------
- void HttpServerV2::listen(long port)
+ void HttpServer::listen(long port, std::function<void()> ready_cb)
 {
     m_port = port;
     p_initialize();
     m_acceptor.listen();
     
     // start the accept process on the _serverStrand
-    auto hf = std::bind(&HttpServerV2::p_start_accept, this);
+    auto hf = std::bind(&HttpServer::p_start_accept, this);
     m_io.post(hf);
+    if (ready_cb != nullptr) {
+        m_io.post(ready_cb);
+    }
     m_io.run();
 }
 //-------------------------------------------------------------------------------------
 // startAccept
 //-------------------------------------------------------------------------------------
- void HttpServerV2::p_start_accept()
+ void HttpServer::p_start_accept()
 {
 
     LogInfo("");
     ::ISocketSPtr conn_sptr = socketFactory(m_io);
     
-    ConnectionHandlerV2* connectionHandler = new ConnectionHandlerV2(m_io, m_connectionManager, conn_sptr, m_factory);
+    ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
 
-    auto hf = (std::bind(&HttpServerV2::p_handle_accept, this, connectionHandler, std::placeholders::_1));
+    auto hf = (std::bind(&HttpServer::p_handle_accept, this, connectionHandler, std::placeholders::_1));
     conn_sptr->asyncAccept(m_acceptor, hf);
 //    _acceptor.async_accept(_boost_socket, hf);
 
@@ -143,7 +147,7 @@ void HttpServerV2::terminate()
 //-------------------------------------------------------------------------------------
 // handleAccept - called on _strand to handle a new client connection
 //-------------------------------------------------------------------------------------
- void HttpServerV2::p_handle_accept(ConnectionHandlerV2* connHandler, const boost::system::error_code& err)
+ void HttpServer::p_handle_accept(ConnectionHandler* connHandler, const boost::system::error_code& err)
 {
     LogInfo("", connHandler);
     if (! m_acceptor.is_open()){
@@ -163,7 +167,7 @@ void HttpServerV2::terminate()
         // liberate it from the strand
         //
 //        std::cout << "Server handleAccept " << std::hex << (long) this << " " << (long)connHandler << std::endl;
-        auto hf = std::bind(&ConnectionHandlerV2::serve, connHandler);
+        auto hf = std::bind(&ConnectionHandler::serve, connHandler);
         m_io.post(hf);
     }else{
 //        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
@@ -180,20 +184,20 @@ void HttpServerV2::terminate()
 //-------------------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------------------
- void HttpServerV2::p_wait_for_stop()
+ void HttpServer::p_wait_for_stop()
 {
     LogDebug("");
-    auto hf = (std::bind(&HttpServerV2::p_do_stop, this, std::placeholders::_1));
+    auto hf = (std::bind(&HttpServer::p_do_stop, this, std::placeholders::_1));
 
   m_signals.async_wait(hf);
 }
- void HttpServerV2::p_do_stop(const Marvin::ErrorType& err)
+ void HttpServer::p_do_stop(const Marvin::ErrorType& err)
 {
     LogDebug("");
     m_io.stop();
     m_acceptor.close();
 }
-void HttpServerV2::p_on_heartbeat(const boost::system::error_code& ec)
+void HttpServer::p_on_heartbeat(const boost::system::error_code& ec)
 {
     if(m_terminate_requested) {
         m_connectionManager.stop_all();
@@ -202,9 +206,9 @@ void HttpServerV2::p_on_heartbeat(const boost::system::error_code& ec)
     }
     p_start_heartbeat();
 }
-void HttpServerV2::p_start_heartbeat()
+void HttpServer::p_start_heartbeat()
 {
     m_heartbeat_timer.expires_from_now(boost::posix_time::milliseconds(m_heartbeat_interval_ms));
-    auto ds = (boost::bind(&HttpServerV2::p_on_heartbeat, this, boost::asio::placeholders::error));
+    auto ds = (boost::bind(&HttpServer::p_on_heartbeat, this, boost::asio::placeholders::error));
     m_heartbeat_timer.async_wait(ds);
 }

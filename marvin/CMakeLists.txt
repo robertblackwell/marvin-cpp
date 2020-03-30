@@ -33,6 +33,7 @@ file(GLOB HEADERS
 	connection/tunnel_handler.hpp
 
 	error/marvin_error.hpp 
+	error/exception.hpp
 	
 	external_src/CxxUrl/url.hpp 
 	external_src/uri-parser/UriParser.hpp 
@@ -74,6 +75,12 @@ file(GLOB HEADERS
 	server_v2/server_connection_manager.hpp 
 	server_v2/server_context.hpp
 
+
+	server_v3/connection_handler.hpp 
+	server_v3/http_server.hpp 
+	server_v3/request_handler_base.hpp
+	server_v3/server_connection_manager.hpp 
+	server_v3/server_context.hpp
 	)
 
 set(SOURCES 
@@ -101,7 +108,8 @@ set(SOURCES
 	connection/timeout.cpp				
 	connection/tunnel_handler.cpp  		
 	
-	error/marvin_error.cpp 				
+	error/marvin_error.cpp 		
+	error/exception.cpp		
 
 	external_src/CxxUrl/url.cpp
 	external_src/uri-parser/UriCodec.cpp
@@ -143,6 +151,11 @@ set(SOURCES
 	server_v2/server_connection_manager.cpp 
 	server_v2/server_context.cpp
 
+	server_v3/connection_handler.cpp 
+	server_v3/http_server.cpp 
+	server_v3/request_handler_base.cpp
+	server_v3/server_connection_manager.cpp 
+	server_v3/server_context.cpp
 
 	)
 
