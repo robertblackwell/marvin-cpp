@@ -19,7 +19,7 @@ ConnectionHandler::ConnectionHandler(
     m_connectionManager(connectionManager),
     m_factory(factory)
 {
-    LogTorTrace();
+    LogWarn("YYY ConnectionHandler constructor");
     /**
     * The connection and the request handler persist acrosss all messages served
     * by a connection handler. This is required to ensure that our MITM proxy
@@ -31,12 +31,13 @@ ConnectionHandler::ConnectionHandler(
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
     m_server_context.connection_ptr = conn_sptr.get();
+    LogFDTrace(m_connection->nativeSocketFD());
     LogDebug("");
 }
 
 ConnectionHandler::~ConnectionHandler()
 {
-    LogTorTrace();
+    LogWarn("YYY ConnectionHandler destructor");
     m_requestHandlerUnPtr = nullptr;
     m_connection = nullptr;
 }
@@ -58,9 +59,9 @@ std::string ConnectionHandler::uuid()
 */
 void ConnectionHandler::serve()
 {
-    LogTrace(" uuid: ", m_uuid,  " fd:", nativeSocketFD());
+    LogTrace("XX ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
     m_requestHandlerUnPtr->handle(m_server_context, m_connection, [this](){
-        LogTrace(" uuid: ", m_uuid,  " fd:", nativeSocketFD());
+        LogWarn("XX ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
         m_connectionManager.deregister(this); 
     });
 }

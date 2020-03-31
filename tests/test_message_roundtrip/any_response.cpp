@@ -4,10 +4,6 @@
 #include <boost/algorithm/string.hpp>
 #include <json/json.hpp>
 #include <marvin/buffer/buffer_chain.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
-
-#include <marvin/m_log.hpp>
 // #include <marvin/http/uri.hpp>
 // #include <marvin/http/message_base.hpp>
 // #include <marvin/http/message_factory.hpp>
@@ -15,10 +11,10 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
 // #include <marvin/helpers/helpers_fs.hpp>
 // #include <marvin/collector/collector_base.hpp>
 // #include <marvin/forwarding/forward_helpers.hpp>
-#include "chunked.hpp"
+#include "any_response.hpp"
 
 
-Chunked::Chunked(
+AnyResponse::AnyResponse(
             std::string path,   // the string that goes after the method usually for non proxy requests a relative path like /echo/smart
             HttpMethod  method,
             std::string scheme, // http or https
@@ -34,39 +30,23 @@ Chunked::Chunked(
     m_port = port;
     m_body = body;
 }
-std::string Chunked::getHost() {return m_host;}
-std::string Chunked::getPort() {return m_port;}
-void Chunked::verifyResponse(Marvin::ErrorType& er, Marvin::Http::MessageBaseSPtr response)
+std::string AnyResponse::getHost() {return m_host;}
+std::string AnyResponse::getPort() {return m_port;}
+void AnyResponse::verifyResponse(Marvin::ErrorType& er, Marvin::Http::MessageBaseSPtr response)
 {
     CHECK(!er);
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     Marvin::BufferChainSPtr bsp = response->getContentBuffer();
     std::string raw_body = bsp->to_string();
     CHECK(response->statusCode() == 200);
-    
-    bool te_check = response->hasHeader(Marvin::Http::Headers::Name::TransferEncoding);
-    CHECK(te_check);
-    if (te_check) {
-        std::string te = response->getHeader(Marvin::Http::Headers::Name::TransferEncoding);
-        CHECK(te == "chunked");
-    }
-
-    bool cl_check = response->hasHeader(Marvin::Http::Headers::Name::ContentLength);
-    CHECK(!cl_check);
-
-    std::string tech = response->getHeader(Marvin::Http::Headers::Name::TransferEncoding);
-    LogDebug("Body of response is : ", raw_body);
-    bool test = raw_body == "abcdefghijklmnopqrstuvwxyz1234567890ABCEDFGHIJKLMNOPQRSTUVWXYZ";
-    MTRACE( __func__ << std::endl);
-    return;
 }
-Marvin::BufferChainSPtr Chunked::makeBody()
+Marvin::BufferChainSPtr AnyResponse::makeBody()
 {
     using namespace Marvin;
     BufferChainSPtr chain_sptr  = BufferChain::makeSPtr(m_body);
     return chain_sptr;
 }
-Marvin::Http::MessageBaseSPtr Chunked::makeRequest()
+Marvin::Http::MessageBaseSPtr AnyResponse::makeRequest()
 {
     /// this sends the request to our mitm proxy
     Marvin::Http::MessageBaseSPtr msg = std::make_shared<Marvin::Http::MessageBase>();

@@ -6,6 +6,10 @@ add_executable(${TARGET}
 	echo_smart.hpp
 	chunked.cpp
 	chunked.hpp
+	chunked_error.cpp
+	chunked_error.hpp
+	any_response.cpp 
+	any_response.hpp
 )
 target_include_directories(${TARGET} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
 target_precompile_headers(${TARGET} REUSE_FROM marvin_library)

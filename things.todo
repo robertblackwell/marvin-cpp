@@ -19,6 +19,8 @@ Bugs:
   ☐ potential - MessageWriter does not handle incomplete writes
   ☐ messagereader does not read trailers
   ☐ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more.
+  ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
+  ☐ research how to test for keep-alive particulaly in regard to upper/lower case and also that more than one value can be on a line
 Logging:
   ☐ is too complicated - try using the model from the node addin
 Exceptions and Error checking:

@@ -28,143 +28,113 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/http/http_header.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/client/client.hpp>
+
 #include "tm_roundtrip_testcase_base.hpp"
 #include "echo_smart.hpp"
 #include "chunked.hpp"
+#include "chunked_error.hpp"
+#include "any_response.hpp"
+#include "runners.hpp"
 
-template <class T>
-class RoundTripRunner {
+std::string port = "3000";
+std::string scheme = "http";
+std::string host = "localhost";
+
+template <class T, class R>
+class ATest
+{
 public:
-    RoundTripRunner(boost::asio::io_service& io): m_io(io){}
-    void http_exec(T& testcase)
+    ATest(std::string url, HttpMethod method, std::string scheme, std::string host, std::string port, std::string body)
     {
-        using namespace Marvin::Http;
-        using namespace Marvin;
-        MessageBaseSPtr request_sptr = testcase.makeRequest();
-        Marvin::BufferChainSPtr body = testcase.makeBody();
-        m_host = testcase.getHost();
-        m_port = testcase.getPort();
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
-        m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
-        m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
-            testcase.verifyResponse(err, response_sptr);
-        });
+        boost::asio::io_service m_io;
+        T tc(url, method, scheme, host, port, body);
+        R runner{m_io};
+        runner.http_exec(tc);
+        m_io.run();
     }
-
-    void https_exec(std::string host, std::string port){};
-    std::string m_scheme;
-    std::string m_host;
-    std::string m_port;
-    boost::asio::io_service& m_io;
-    ClientSPtr  m_client_sptr;
-
-};
-template <class T>
-class ExplicitConnect {
-public:
-    ExplicitConnect(boost::asio::io_service& io): m_io(io){}
-    void http_exec(T& testcase)
-    {
-        using namespace Marvin::Http;
-        using namespace Marvin;
-        MessageBaseSPtr request_sptr = testcase.makeRequest();
-        Marvin::BufferChainSPtr body = testcase.makeBody();
-        m_host = testcase.getHost();
-        m_port = testcase.getPort();
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
-        m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
-        m_client_sptr->asyncConnect([this, &testcase, request_sptr, body](Marvin::ErrorType err){
-            m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
-                testcase.verifyResponse(err, response_sptr);
-            });
-        });
-    }
-
-    void https_exec(std::string host, std::string port){};
-    std::string m_scheme;
-    std::string m_host;
-    std::string m_port;
-    boost::asio::io_service& m_io;
-    ClientSPtr  m_client_sptr;
-};
-// two requests on the same connection
-template <class T>
-class TwoRequests {
-public:
-    TwoRequests(boost::asio::io_service& io): m_io(io){}
-    void http_exec(T& testcase)
-    {
-        using namespace Marvin::Http;
-        using namespace Marvin;
-        MessageBaseSPtr request_sptr = testcase.makeRequest();
-        Marvin::BufferChainSPtr body = testcase.makeBody();
-        m_host = testcase.getHost();
-        m_port = testcase.getPort();
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
-        m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
-        m_client_sptr->asyncConnect([this, &testcase, request_sptr, body](Marvin::ErrorType err){
-            m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
-                testcase.verifyResponse(err, response_sptr);
-                MessageBaseSPtr another_request_sptr = testcase.makeRequest();
-                Marvin::BufferChainSPtr another_body = testcase.makeBody();
-                m_client_sptr->asyncWrite(another_request_sptr, another_body, [this, &testcase](ErrorType& err,  MessageBaseSPtr another_response_sptr) {
-                    REQUIRE(!err);
-                    testcase.verifyResponse(err, another_response_sptr);
-                });
-            });
-        });
-    }
-
-    void https_exec(std::string host, std::string port){};
-    std::string m_scheme;
-    std::string m_host;
-    std::string m_port;
-    boost::asio::io_service& m_io;
-    ClientSPtr  m_client_sptr;
 };
 
-
-#if 0
+#define XMESSAGE_ROUNDTRIP_DISABLE
+#ifndef MESSAGE_ROUNDTRIP_DISABLE
+// make a round trip to a local nodejs server which echos back the request headers and body in a json response
+// the verify parses the json and tests a varierty of header fields
+TEST_CASE("roundtrip_test")
+{
+    std::cout << "first" << std::endl; 
+    ATest<AnyResponse, RoundTripRunner<AnyResponse>>(
+        "/echo/smart", 
+        HttpMethod::POST, 
+        scheme, host, 
+        port, 
+        "This is a body");
+    std::cout << "first" << std::endl; 
+}
 // make a round trip to a local nodejs server which echos back the request headers and body in a json response
 // the verify parses the json and tests a varierty of header fields
 TEST_CASE("rt_localhost_3000")
 {
     std::cout << "round trip test case" << std::endl; 
     boost::asio::io_service io;
-    EchoSmart echo{"/echo/smart", HttpMethod::POST, "http", "localhost", "3000", "Thisisthebodyoftherequest"};
+    EchoSmart echo{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
     RoundTripRunner<EchoSmart> runner{io};
     runner.http_exec(echo);
     io.run();
     std::cout << "round trip test case" << std::endl; 
 }
-TEST_CASE("rt_localhost_3000_cnhunked")
-{
-    std::cout << "round trip test case" << std::endl; 
-    boost::asio::io_service io;
-    Chunked chunked{"/chunked", HttpMethod::GET, "http", "localhost", "3000", ""};
-    RoundTripRunner<Chunked> runner{io};
-    runner.http_exec(chunked);
-    io.run();
-    std::cout << "round trip test case" << std::endl; 
-}
 #endif
+#ifndef MESSAGE_ROUNDTRIP_DISABLE
 // this makes a roundtrip to a nodejs server that sends a body using chunked encoding
 TEST_CASE("chunked error during reply")
 {
     std::cout << "round trip test case" << std::endl; 
     boost::asio::io_service io;
-    Chunked chunked{"/chunked_error", HttpMethod::GET, "http", "localhost", "3000", ""};
-    RoundTripRunner<Chunked> runner{io};
-    runner.http_exec(chunked);
+    ChunkedError chunked{"/chunked_error", HttpMethod::GET, scheme, host, port, ""};
+    RoundTripRunner<ChunkedError> runner{io};
+    runner(chunked);
     io.run();
     std::cout << "round trip test case" << std::endl; 
 }
-#if 0
+#endif
+TEST_CASE("rt_localhost_3000_cnhunked")
+{
+    std::cout << "round trip test case" << std::endl; 
+    boost::asio::io_service io;
+    Chunked chunked{"/chunked", HttpMethod::GET, scheme, host, port, ""};
+    RoundTripRunner<Chunked> runner{io};
+    runner(chunked);
+    io.run();
+    std::cout << "round trip test case" << std::endl; 
+}
+// this makes a roundtrip to a nodejs server that sends a body using chunked encoding
+TEST_CASE("roundtrip by 3")
+{
+    std::cout << "round trip by 3" << std::endl; 
+    boost::asio::io_service io;
+    EchoSmart echo{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
+    RoundTripByN<EchoSmart> runner{io, 10};
+    runner.http_exec(echo);
+    io.run();
+    std::cout << "round trip by 3" << std::endl; 
+}
+// this makes a roundtrip to a nodejs server that sends a body using chunked encoding
+TEST_CASE("any response by 3")
+{
+    std::cout << "round trip by 3" << std::endl; 
+    boost::asio::io_service io;
+    AnyResponse tc{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
+    RoundTripByN<AnyResponse> runner{io, 10};
+    runner.http_exec(tc);
+    io.run();
+    std::cout << "any response by 3" << std::endl; 
+}
+
+#ifndef MESSAGE_ROUNDTRIP_DISABLE
+
 TEST_CASE("rt_localhost_3000_explicit_connect_smart_echo")
 {
     std::cout << "explicit connect smart echo" << std::endl; 
     boost::asio::io_service io;
-    EchoSmart echo{"/echo/smart", HttpMethod::POST, "http", "localhost", "3000", "Thisisthebodyoftherequest"};
+    EchoSmart echo{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
     ExplicitConnect<EchoSmart> runner{io};
     runner.http_exec(echo);
     io.run();
@@ -176,7 +146,7 @@ TEST_CASE("two smart echo")
 {
     std::cout << "two requests" << std::endl; 
     boost::asio::io_service io;
-    EchoSmart echo{"/echo/smart", HttpMethod::POST, "http", "localhost", "3000", "Thisisthebodyoftherequest"};
+    EchoSmart echo{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
     TwoRequests<EchoSmart> runner{io};
     runner.http_exec(echo);
     io.run();
@@ -186,19 +156,20 @@ TEST_CASE("two chunked")
 {
     std::cout << "two requests" << std::endl; 
     boost::asio::io_service io;
-    Chunked chunked{"/echo/smart", HttpMethod::POST, "http", "localhost", "3000", "Thisisthebodyoftherequest"};
+    Chunked chunked{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
     TwoRequests<Chunked> runner{io};
     runner.http_exec(chunked);
     io.run();
     std::cout << "two requests" << std::endl; 
 }
 #endif
-#if 0
+#if 0 
+
 TEST_CASE("whiteacorn.com_utests_echo/")
 {
     std::cout << "round trip test case" << std::endl; 
     boost::asio::io_service io;
-    EchoSmart echo{"/utest/echo/", "http", "whiteacorn.com", "80", "Thisisthebodyoftherequest"};
+    EchoSmart echo{"/utest/echo/", HttpMethod::POST, scheme, "whiteacorn.com", "80", "Thisisthebodyoftherequest"};
     RoundTripRunner<EchoSmart> runner{io};
     runner.http_exec(echo);
     io.run();

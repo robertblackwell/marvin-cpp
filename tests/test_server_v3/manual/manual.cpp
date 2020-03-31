@@ -15,40 +15,79 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include "../timer.hpp"
-#include "../v3_handler.hpp"
-#include "../server_v3_runner.hpp"
-
-// This is a test - its a class to keep properties in scope during asyn tests
-class Test_ATimer 
+#include "timer.hpp"
+#include "v3_handler.hpp"
+#include "server_v3_runner.hpp"
+#include "any_response.hpp"
+#include "../../test_message_roundtrip/runners.hpp"
+template <class T, class R>
+class ATest
 {
-    public:
-    Test_ATimer(boost::asio::io_service& io, std::string label, long delay)
+public:
+    ATest(std::string url, HttpMethod method, std::string scheme, std::string host, std::string port, std::string body)
     {
-        m_label = label;
-        m_delay = delay;
-        m_t_sptr = std::make_shared<ATimer>(io, label);
-        this->fire();
+        boost::asio::io_service m_io;
+        T tc(url, method, scheme, host, port, body);
+        R runner{m_io};
+        runner.http_exec(tc);
+        m_io.run();
     }
-    void fire() 
-    {
-        m_t_sptr->arm(m_delay, [this]()
-        {
-            std::cout << "callback " << m_label << std::endl; 
-        });
-    }
-    std::string                 m_label;
-    long                        m_delay;
-    std::shared_ptr<ATimer>     m_t_sptr;
 };
 
-// Test package - keep the server alive long enough to issue a curl command
-TEST_CASE("01")
+
+// this is the Marvin server_v3 that was started by main()
+std::string scheme = "http";
+std::string host = "localhost";
+std::string port = "9000";
+
+TEST_CASE("roundtrip_anyresponse")
 {
-    boost::asio::io_service io;
-    Test_ATimer tst1(io, "Test 1.1", 200);
-    io.run();
+    std::cout << "first" << std::endl; 
+    ATest<AnyResponse, RoundTripRunner<AnyResponse>>(
+        "/echo/smart", 
+        HttpMethod::POST, 
+        scheme, host, 
+        port, 
+        "This is a body");
+    std::cout << "first" << std::endl; 
 }
+
+// this makes a roundtrip to a nodejs server that sends a body using chunked encoding
+TEST_CASE("roundtripanyresponse_x_3")
+{
+    std::cout << "round trip by 3" << std::endl; 
+    boost::asio::io_service io;
+    AnyResponse echo{"/delay/3", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
+    RoundTripByN<AnyResponse> runner{io, 10};
+    runner.http_exec(echo);
+    io.run();
+    // sleep(5);
+    std::cout << "round trip by 3" << std::endl; 
+}
+// Run a second time - this will allow us to see if the fd numbers start again. Since
+// the server is still active this will give some confidence that we are correctly recycling
+// file descriptors associated with sockets.
+TEST_CASE("roundtripanyresponse_x_3_v2")
+{
+    std::cout << "round trip by 3" << std::endl; 
+    boost::asio::io_service io;
+    AnyResponse echo{"/delay/3", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
+    RoundTripByN<AnyResponse> runner{io, 10};
+    runner.http_exec(echo);
+    io.run();
+    std::cout << "round trip by 3" << std::endl; 
+}
+TEST_CASE("pipeline_x2_roundtrip_anyresponse")
+{
+    std::cout << "two requests" << std::endl; 
+    boost::asio::io_service io;
+    AnyResponse echo{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
+    TwoRequests<AnyResponse> runner{io};
+    runner.http_exec(echo);
+    io.run();
+    std::cout << "two requests" << std::endl; 
+}
+
 //
 // This is an example of how to run a set of asyn tests that require a server
 // be running for those tests
@@ -56,6 +95,7 @@ TEST_CASE("01")
 int main(int argc, char* argv[])
 {
     RBLogging::setEnabled(true);
+    Marvin::HttpServer::configSet_NumberOfConnections(5);
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)
     {

@@ -10,6 +10,7 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS include/*.hpp)
 file(GLOB HEADERS 
 	boost_stuff.hpp 
 	callback_typedefs.hpp 
+	m_log.hpp
 
 	buffer/buffer.hpp
 	buffer/buffer_chain.hpp
@@ -85,6 +86,8 @@ file(GLOB HEADERS
 
 set(SOURCES 
 
+	m_log.cpp
+	
 	buffer/buffer_chain.cpp			
 	buffer/m_buffer.cpp				
 	

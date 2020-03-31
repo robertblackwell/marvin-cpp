@@ -1,6 +1,6 @@
 
-#ifndef HTTP_SERVER_v2_HPP
-#define HTTP_SERVER_v2_HPP
+#ifndef marvin_http_server_v3_hpp
+#define marvin_http_server_v3_hpp
 
 #include <string>
 #include <signal.h>

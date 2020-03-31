@@ -35,7 +35,7 @@ std::string EchoSmart::getPort() {return m_port;}
 void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::Http::MessageBaseSPtr response)
 {
     CHECK(!er);
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    // std::cout << __PRETTY_FUNCTION__ << std::endl;
     Marvin::BufferChainSPtr bsp = response->getContentBuffer();
     std::string raw_body = bsp->to_string();
     CHECK(response->statusCode() == 200);
@@ -87,7 +87,7 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::Http::MessageBaseS
         std::string k = boost::to_upper_copy(it.key());
         std::string v = it.value(); //boost::to_upper_copy(it.value());
 
-        std::cout << k << " : " << v << "\n";
+        // std::cout << k << " : " << v << "\n";
 
         header_values[k] = v;
     }
@@ -171,8 +171,7 @@ Marvin::Http::MessageBaseSPtr EchoSmart::makeRequest()
     msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
     msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
 
-    msg->setHeader(Marvin::Http::Headers::Name::Connection,"Keep-Alive, TE");
-    msg->setHeader("TE","deflate, gzip, chunked, trailer");
+    msg->setHeader(Marvin::Http::Headers::Name::Connection,"Close");
     msg->setHeader(Marvin::Http::Headers::Name::ETag,"1928273tefadseercnbdh");
     msg->setHeader("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";

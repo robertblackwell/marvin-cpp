@@ -1,6 +1,6 @@
 
-#ifndef HTTP_REQUEST_HANDLER_BASE_v2_HPP
-#define HTTP_REQUEST_HANDLER_BASE_v2_HPP
+#ifndef marvin_server_v3_request_handler_base_hpp
+#define marvin_server_v3_request_handler_base_hpp
 
 #include <string>
 #include <iostream>

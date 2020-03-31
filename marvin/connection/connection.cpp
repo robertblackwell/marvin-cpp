@@ -76,6 +76,7 @@ Connection::Connection(
             m_write_timeout_interval_ms(s_write_timeout_interval_ms)
 {
     LogTorTrace();
+    LogFDTrace(nativeSocketFD());
     auto x = nativeSocketFD();
     boost::asio::ip::tcp::socket& ll = m_ssl_socket.next_layer();
     LogDebug("constructor:: native handle :: ", x);
@@ -99,6 +100,7 @@ Connection::Connection(
 
 {
     LogTorTrace();
+    LogFDTrace(nativeSocketFD());
 }
 Connection::~Connection()
 {
@@ -106,6 +108,8 @@ Connection::~Connection()
     if( ! m_closed_already) {
         LogFDTrace(nativeSocketFD());
         m_ssl_socket.lowest_layer().close();
+    } else {
+        LogFDTrace(nativeSocketFD());
     }
 }
 #pragma mark - public interface getters
@@ -130,7 +134,7 @@ void Connection::close()
 void Connection::shutdown()
 {
     assert(! m_closed_already);
-    m_lowest_layer_sock.shutdown(boost::asio::socket_base::shutdown_both);
+    m_lowest_layer_sock.shutdown(boost::asio::socket_base::shutdown_send);
 }
 void Connection::setReadTimeout(long millisecs)
 {

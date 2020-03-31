@@ -58,6 +58,10 @@ class ISocket //: public IReadSocket, public IWriteSocket
 
     virtual void setReadTimeout(long millisecs) = 0;
     virtual void shutdown() = 0;
+    #if 0
+    virtual void shutdownSend() = 0;
+    virtual void shutdownReceive() = 0;
+    #endif
     virtual void close() = 0;
     virtual ~ISocket() = 0;
 };

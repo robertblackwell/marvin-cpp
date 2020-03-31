@@ -1,6 +1,6 @@
 
-#ifndef server_context_v2_hpp
-#define server_context_v2_hpp
+#ifndef marvin_server_v3_server_context_hpp
+#define marvin_server_v3_server_context_hpp
 #include <marvin/connection/socket_interface.hpp>
 
 // TAKE CARE - this object is only for information purposes and the values in this object are only ever traced

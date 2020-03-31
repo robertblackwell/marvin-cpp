@@ -162,13 +162,19 @@ void HttpServer::terminate()
         /// fd_inuse list
        
         m_connectionManager.registerConnectionHandler(connHandler);
-        //
-        // at this point we are running on _serveStrand start the connectionHandler with a post to
-        // liberate it from the strand
-        //
-//        std::cout << "Server handleAccept " << std::hex << (long) this << " " << (long)connHandler << std::endl;
+        // important sequence - if a call to p_start_accept() is defered
+        // by allowAnotherConnection() we need to be sure there is still
+        // an outstanding connection that will start an accept in the future.
+        m_connectionManager.allowAnotherConnection([this](){
+            LogWarn("allowAnother Callback");
+            p_start_accept();
+        });
+        #if 0
         auto hf = std::bind(&ConnectionHandler::serve, connHandler);
         m_io.post(hf);
+        #else
+        connHandler->serve();
+        #endif
     }else{
 //        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
         LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
@@ -176,9 +182,6 @@ void HttpServer::terminate()
         return;
 //        delete connHandler;
     }
-    m_connectionManager.allowAnotherConnection([this](){
-        p_start_accept();
-    });
 }
 
 //-------------------------------------------------------------------------------------

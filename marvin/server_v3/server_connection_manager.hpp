@@ -1,6 +1,6 @@
 
-#ifndef HTTP_SERVER__CONNECTION_MANAGER_HPP
-#define HTTP_SERVER__CONNECTION_MANAGER_HPP
+#ifndef marvin_server_v3_server_connection_manager_hpp
+#define marvin_server_v3_server_connection_manager_hpp
 
 #include <set>
 #include <map>
@@ -36,9 +36,8 @@ class ServerConnectionManager
         ServerConnectionManager& operator=(const ServerConnectionManager&) = delete;
 
         /**
-        * \brief Construct a connection manager. The connection handler must operate in
-        * a single threaded manner. That is achieved by requiring it to always
-        * execute on the server strand.
+        * Construct a connection manager. The connection handler must operate in
+        * a single threaded manner.
         */
         ServerConnectionManager(boost::asio::io_service& io, int max_connections);
     

@@ -1,6 +1,6 @@
 
-#ifndef marvin_connection_handler_v2_hpp
-#define marvin_connection_handler_v2_hpp
+#ifndef marvin_server_v3_connection_handler_hpp
+#define marvin_server_v3_connection_handler_hpp
 /// \ingroup Server
 #include <cstdio>
 
