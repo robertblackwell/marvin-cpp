@@ -32,6 +32,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/unordered_set.hpp>
+#include <boost/optional/optional.hpp>
 
 #pragma clang diagnostic pop
 

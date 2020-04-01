@@ -6,31 +6,26 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/external_src/http-parser/http_parser.h>
-#include <marvin/http/http_header.hpp>
+// #include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_interface.hpp>
 namespace Marvin {
 namespace Http {
 /**
-* \defgroup HttpMessage
-* \brief This group deals with the structure, parsing and construction of HTTP/1.1 messages.
-*/
-#pragma mark - http message interfaces
-/**
-* \ingroup HttpMessage
-* \brief Defines an interface that all representations of a Http Message should conform to.
+* Defines an interface that all representations of a Http Message should conform to.
 */
 using MessageInterface = IMessage;
 
 #pragma - http message base
 class MessageBase;
-/// \ingroup HttpMessage
+
 using MessageBaseSPtr = std::shared_ptr<MessageBase>;
 std::string traceMessage(MessageBase& msg);
 void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
 Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
 
-/// \ingroup HttpMessage
-/// \brief A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
+/// HttpMessage
+/// A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
 class MessageBase : public MessageInterface
 {
 public:
@@ -58,8 +53,8 @@ public:
     void setHttpVersMinor(int minor);
     int  httpVersMinor();
     
-    Marvin::Http::Headers& getHeaders();
-    bool hasHeader( std::string key);
+    Marvin::Http::HeadersV2& getHeaders();
+    bool hasHeader(std::string key);
     std::string header(std::string key);
     std::string getHeader(std::string key);
     void setHeader(std::string key, std::string value);
@@ -113,8 +108,8 @@ protected:
 
 //    Marvin::Http::Headers                     m_headers;
 //    Marvin::Http::Headers                     m_trailers;
-    Marvin::Http::Headers               m_headers;
-    Marvin::Http::Headers               m_trailers;
+    Marvin::Http::HeadersV2              m_headers;
+    Marvin::Http::HeadersV2              m_trailers;
 
     Marvin::BufferChainSPtr             m_body_chain_sptr;
     
