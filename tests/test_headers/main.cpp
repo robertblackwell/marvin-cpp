@@ -9,14 +9,160 @@
 #include <algorithm>
 #include <iterator>
 #include <cassert>
+#include <regex>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 #include <json/json.hpp>
 #include <marvin/http/ordered_key_value.hpp>
 #include <marvin/http/http_header.hpp>
+#include <marvin/http/message_base.hpp>
+#include <marvin/http/headers_v2.hpp>
+
+using namespace Marvin;
+using namespace Http;
+
+///
+/// KeepAlive is true if:
+///     there is a connection header that contains the string "[ ,]keep-alive[ ,]" case independent
+///     or
+///     there is NOT a connection header that contain the string 'close' case insensitive
+///         and the msg http version is 1.1
+///
+/// Keepalive is explicitly false
+///     there is a connection header that contain the string 'close' case insensitive
+///     or
+///     there is NOT a connection header that contain the string 'keep-alive' case insensitive
+///         and the msg http version is 1.0
+///
+#if 0
+bool isKeepAlive(Marvin::Http::MessageBase& msg)
+{
+    if (msg.hasHeader(Headers::Name::Connection)) {
+        return isKeepAlive(msg.getHeader(Headers::Name::Connection));
+    } else {
+        if (msg.httpVersMinor() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    Headers hdrs = msg.getHeader(Headers::Name::Connection);
+    return isKeepAlive(hdrs);
+}
+bool isKeepAlive(MessageBaseSPtr msg_sptr)
+{
+    return isKeepAlive(*msg_sptr);
+}
+
+bool isKeepAlive(Marvin::Http::Headers& headers)
+{
+    OrderedKeyValues::Iterator it = headers.find("Connection");
+    if (it  == headers.end()) {
+        return false;
+    }
+    std::string value = (*it).value();
+    if (isKeepAlive(value)) {
+        return true;
+    }
+    return false;
+}
+#endif
+bool isKeepAlive(std::string value)
+{
+    std::regex r("keep-alive", std::regex::icase);
+    auto x = std::regex_search(value, r);
+    return x;
+}
+
+TEST_CASE("new headres")
+{
+    Marvin::Http::HeadersV2 headers;
+    CHECK(headers.size() == 0);
+    headers.setAtKey("Connection", "keep-alive");
+    CHECK(headers.size() == 1);
+    CHECK( ( !!headers.atKey(Marvin::Http::HeadersV2::Connection )) );
+    CHECK( ( !!headers.atKey("Connection")) );
+    CHECK( ( !!headers.atKey("conNecTion")) );
+    CHECK( ( !!headers.atKey("CONNECTION")) );
+    CHECK(headers.atKey("Connection").get() == "keep-alive");
+    CHECK(headers.findAtIndex("Connection").get() == 0);
+    auto it1 = headers.find("connection");
+    auto it2 = headers.end();
+    CHECK( !(headers.find("connection") == headers.end()) );
+
+    headers.setAtKey("Content-Length", "33");
+    CHECK(headers.size() == 2);
+    CHECK( ( !!headers.atKey(Marvin::Http::HeadersV2::ContentLength )) );
+    CHECK( ( !!headers.atKey("Content-length")) );
+    CHECK(headers.findAtIndex("content-length").get() == 1);
+    CHECK( !!(headers.find("content-length") != headers.end()) );
+
+    CHECK( (! headers.atKey("some-other-key")) );
+    CHECK( (! headers.findAtIndex("someother-keyvalue")) );
+    CHECK( (headers.find("someother-key") == headers.end()) );
+    
+    headers.removeAtKey("connection");
+    CHECK(headers.size() == 1);
+    CHECK( ( !headers.atKey("CONNECTION")) );
+    CHECK( ( !headers.findAtIndex("CONNECTION")) );
+    CHECK( (headers.find("connection") == headers.end()) );
+    CHECK( ( !!headers.atKey("COntent-length")) );
+    CHECK( ( !!headers.findAtIndex("COntent-length")) );
+    CHECK( !!(headers.find("content-length") != headers.end()) );
+
+    headers.removeAtKey("content-length");
+    CHECK(headers.size() == 0);
+    CHECK( ( !headers.atKey("COntent-length")) );
+    CHECK( ( !headers.findAtIndex("COntent-length")) );
+    CHECK( !!(headers.find("content-length") == headers.end()) );
+
+}
 
 using namespace nlohmann;
+TEST_CASE("header alternative")
+{
+    std::pair<std::string, std::string> a{"one", "two"};
+    std::pair<std::string, std::string> b{"one", "two1"};
+    std::pair<std::string, std::string> c{"one", "two"};
+    
+    bool xb = (a == b);
+    bool xb2 = (a == c);
 
+    std::vector<std::pair<std::string, std::string>> hdr{{
+        {"Connection", "Keep-Alive, another1, another2"},
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"33","3333333"},
+        {"44","4444444"}
+    }};
+    auto x = hdr[0];
+
+}
+TEST_CASE("headers")
+{
+    Marvin::Http::Headers hh;
+    Marvin::Http::Headers headers{{
+        {"Connection", "Keep-Alive, another1, another2"},
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"33","3333333"},
+        {"44","4444444"}
+    }};
+    CHECK(isKeepAlive(std::string(" this has keep-alive embedded")));
+    CHECK(isKeepAlive(std::string(" this has Keep-alive embedded")));
+    CHECK(isKeepAlive(std::string(" this, has, Keep-Alive, embedded")));
+    CHECK(! isKeepAlive(std::string(" this, has, Close, embedded")));
+    auto value = headers["Connection"];
+    CHECK(value == "Keep-Alive, another1, another2");
+    auto b = isKeepAlive(value);
+    // CHECK(b);
+
+    
+}
 TEST_CASE("OKV")
 {
     Marvin::Http::Headers hh;

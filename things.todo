@@ -1,6 +1,8 @@
 Code tidy:
   ☐ HttpServer does not conform to the naming scheme for private methods uses camelCase rather than p_snake_case 
 Tests:
+  ☐ test new version of headers
+  ☐ put timeout on subsequent reads into the handler for server v3
   ☐ replace whiteacorn as a test server 
   ☐ find all test that are #if out of action and get them working or remove
   ☐ uri and uri-v2 - see below

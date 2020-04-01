@@ -14,6 +14,7 @@
             "test_server_v1",
             "test_server_v2",
             "test_server_v3",
+            "test_headers",
             "test_server_v3/demo1/test_server_v3_demo_1",
             "test_server_v3/demo2/test_server_v3_demo_2",
             "test_server_v3/manual/test_server_v3_manual",

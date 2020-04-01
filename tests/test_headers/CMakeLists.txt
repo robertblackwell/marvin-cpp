@@ -1,7 +1,7 @@
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 set(TARGET test_headers)
 add_executable(${TARGET} 
-	new_main.cpp
+    main.cpp
 )
 target_include_directories(${TARGET} PUBLIC ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
 target_precompile_headers(${TARGET} REUSE_FROM marvin_library)

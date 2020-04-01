@@ -51,6 +51,7 @@ file(GLOB HEADERS
 	helpers/macros.hpp
 	
 	http/http_header.hpp 
+	http/headers_v2.hpp 
 	http/http_method.hpp 
 	http/message_base.hpp 
 	http/message_factory.hpp
@@ -128,6 +129,7 @@ set(SOURCES
 	helpers/error.cpp
 	
 	http/http_header.cpp 		
+	http/headers_v2.cpp 		
 	http/http_method.cpp 		
 	http/message_base.cpp
 	http/message_factory.cpp 		
