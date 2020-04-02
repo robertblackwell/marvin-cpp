@@ -111,9 +111,11 @@ class Connection : public ISocket
     /// same as asyncRead except that can set the read timeout specifically for this read
     void asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb);
 
-    void shutdown() override;
+    void shutdown(ISocket::ShutdownType type) override;
+    void cancel() override;
     void close() override;
     void setReadTimeout(long millisecs) override;
+    long getReadTimeout() override;
     /**
     * Utility getter functions®
     */

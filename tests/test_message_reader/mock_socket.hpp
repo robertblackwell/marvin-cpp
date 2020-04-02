@@ -25,7 +25,7 @@ class MockReadSocket : public ISocket
 public:
 //    MockReadSocket(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
     MockReadSocket(boost::asio::io_service& io, Testcase tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
-    ~MockReadSocket();
+    ~MockReadSocket() override;
     void startRead();
 
     void asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb);
@@ -49,7 +49,9 @@ public:
     Cert::Certificate getServerCertificate();
 
     void setReadTimeout(long interval);
-    void shutdown();
+    long getReadTimeout();
+    void cancel();
+    void shutdown(ISocket::ShutdownType type);
     void close();
     boost::asio::io_service& getIO();
 

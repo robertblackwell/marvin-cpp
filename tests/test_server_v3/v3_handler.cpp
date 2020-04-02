@@ -192,7 +192,7 @@ void Handler::p_req_resp_cycle_complete()
     if (keep_alive) {
         p_internal_handle();
     } else {
-        m_socket_sptr->shutdown(); // remember this is actually shutdown send side
+        m_socket_sptr->shutdown(ISocket::ShutdownSend); // remember this is actually shutdown send side
         m_done_callback();
     }
     // m_done_callback();

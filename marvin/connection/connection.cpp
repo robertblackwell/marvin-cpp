@@ -135,16 +135,23 @@ void Connection::close()
     m_lowest_layer_sock.cancel();
     m_lowest_layer_sock.close();
 }
-void Connection::shutdown()
+void Connection::shutdown(ISocket::ShutdownType type)
 {
     assert(! m_closed_already);
     m_lowest_layer_sock.shutdown(boost::asio::socket_base::shutdown_send);
+}
+void Connection::cancel()
+{
+    m_lowest_layer_sock.cancel();
 }
 void Connection::setReadTimeout(long millisecs)
 {
     m_read_timeout_interval_ms = millisecs;
 }
-
+long Connection::getReadTimeout()
+{
+    return m_read_timeout_interval_ms;
+}
 #pragma mark - public interface async io operations
 void Connection::asyncAccept(
     boost::asio::ip::tcp::acceptor&                     acceptor,

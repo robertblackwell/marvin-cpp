@@ -26,11 +26,10 @@ MockReadSocket::~MockReadSocket()
 long MockReadSocket::nativeSocketFD(){ return 9876; };
 
 boost::asio::io_service& MockReadSocket::getIO() {return m_io; }
+long MockReadSocket::getReadTimeout(){return 99;}
+void MockReadSocket::cancel(){}
+void MockReadSocket::startRead(){}
 
-void MockReadSocket::startRead()
-{
-        
-}
 void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb){}
 //
 // New buffer strategy make the upper level provide the buffer. All we do is check the size
@@ -126,6 +125,6 @@ Cert::Certificate MockReadSocket::getServerCertificate()
 
 void MockReadSocket::setReadTimeout(long interval){assert(false);}
 
-void MockReadSocket::shutdown(){ assert(false);}
+void MockReadSocket::shutdown(ISocket::ShutdownType type){ assert(false);}
 void MockReadSocket::close(){ assert(false);}
 

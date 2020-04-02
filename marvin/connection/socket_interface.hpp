@@ -30,6 +30,8 @@ using ISocketSPtr = std::shared_ptr<ISocket>;
 /// \ingroup SocketIO
 using ISocketUPtr = std::unique_ptr<ISocket>;
 
+
+
 /**
 * \ingroup SocketIO
 * \brief Interface defines all the methods read, write, connect, accept, shutdown, close common to tcp and ssl sockets
@@ -38,6 +40,14 @@ class ISocket //: public IReadSocket, public IWriteSocket
 {
     public:
     using SPtr = std::shared_ptr<ISocket>;
+
+    enum ShutdownType {
+        ShutdownSend = boost::asio::ip::tcp::socket::shutdown_send,
+        ShutdownReceive = boost::asio::ip::tcp::socket::shutdown_receive,
+        ShutdownBoth = boost::asio::ip::tcp::socket::shutdown_both,
+    };
+
+
     virtual long nativeSocketFD() = 0;
     virtual void asyncConnect(ConnectCallbackType cb) = 0;
     virtual void asyncAccept(
@@ -58,7 +68,10 @@ class ISocket //: public IReadSocket, public IWriteSocket
     virtual void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
 
     virtual void setReadTimeout(long millisecs) = 0;
-    virtual void shutdown() = 0;
+    virtual long getReadTimeout() = 0;
+    virtual void shutdown(ShutdownType type) = 0;
+    // cancel current operation
+    virtual void cancel() = 0;
     virtual boost::asio::io_service& getIO() = 0;
     #if 0
     virtual void shutdownSend() = 0;
