@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 
 namespace body_buffering {
     typedef std::vector<std::string> TestcaseType;
@@ -61,7 +61,7 @@ namespace body_buffering {
         Marvin::ErrorType                       m_result_onheaders_err;
         std::string                             m_result_first_line;
         Marvin::Http::Headers::Initializer      m_result_headers_vec;
-        Marvin::Http::Headers                   m_result_headers;
+        Marvin::Http::HeadersV2                 m_result_headers;
         std::string                             m_result_body;
     };
 }

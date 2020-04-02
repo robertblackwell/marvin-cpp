@@ -7,7 +7,7 @@
 //
 #include <boost/algorithm/string.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_factory.hpp>
 
 using namespace Marvin;
@@ -21,7 +21,7 @@ namespace {
             msg->setUri(uri.absolutePath());
         else
             msg->setUri(uri.relativePath());
-        msg->setHeader(Marvin::Http::Headers::Name::Host, uri.host());
+        msg->setHeader(Marvin::Http::HeadersV2::Host, uri.host());
     }
     void applyUriProxy(MessageBaseSPtr msgSPtr, Marvin::Uri& uri)
     {
@@ -37,13 +37,13 @@ namespace {
     {
         msg.setMethod(method);
         msg.setUri(uri.relativePath());
-        msg.setHeader(Marvin::Http::Headers::Name::Host, uri.host());
+        msg.setHeader(Marvin::Http::HeadersV2::Host, uri.host());
     }
     void makeProxyRequest(MessageBase& msg, HttpMethod method,  Marvin::Uri& uri)
     {
         msg.setMethod(method);
         msg.setUri(uri.absolutePath());
-        msg.setHeader(Marvin::Http::Headers::Name::Host, uri.host());
+        msg.setHeader(Marvin::Http::HeadersV2::Host, uri.host());
     }
     void makeProxyConnectRequest(MessageBase& msg, std::string server, std::string port)
     {
@@ -52,7 +52,7 @@ namespace {
         std::string host_port = trim_left_copy(trim_right_copy(server)) + ":" + trim_left_copy(trim_right_copy(port));
         msg.setMethod(HttpMethod::CONNECT);
         msg.setUri(host_port);
-        msg.setHeader(Marvin::Http::Headers::Name::Host, host_port);
+        msg.setHeader(Marvin::Http::HeadersV2::Host, host_port);
         msg.setContent(std::string(""));
     }
 

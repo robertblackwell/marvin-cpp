@@ -11,24 +11,27 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "testcase.hpp"
 #include "mock_socket.hpp"
 
-//MockReadSocket::MockReadSocket(boost::asio::io_service& io, int tc): io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.get_case(tc))
-MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): io_(io), _tcObj(tcObj)
+MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): m_io(io), m_tcObj(tcObj)
 {
-    index = 0;
-    _rdBuf = (char*)malloc(100000);
-    st = new SingleTimer(io_, TIMER_INTERVAL_MS);
+    m_index = 0;
+    m_rdBuf = (char*)malloc(100000);
+    m_single_timer = new SingleTimer(m_io, TIMER_INTERVAL_MS);
 }
 MockReadSocket::~MockReadSocket()
 {
-    delete st;
+    delete m_single_timer;
     LogDebug(""); 
-    free((void*)_rdBuf);
+    free((void*)m_rdBuf);
 }
 long MockReadSocket::nativeSocketFD(){ return 9876; };
+
+boost::asio::io_service& MockReadSocket::getIO() {return m_io; }
+
 void MockReadSocket::startRead()
 {
         
 }
+void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb){}
 //
 // New buffer strategy make the upper level provide the buffer. All we do is check the size
 //
@@ -37,21 +40,20 @@ void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
     LogDebug("");
     char* buf;
     std::size_t len;
-    if( ! _tcObj.finished() )
-    {
+    if( ! m_tcObj.finished() ) {
         // we still have some test data so simulate an io wait and then call the read callback
         // these triggers should be the last buffer
-        std::string s = _tcObj.next();
+        std::string s = m_tcObj.next();
         if( (s == "eof")||(s=="close")||(s=="shutdown")) {
             // start a timer and at expiry call cb with error code for eof
-            st->start([this, s, cb](const boost::system::error_code& ec)->bool{
+            m_single_timer->start([this, s, cb](const boost::system::error_code& ec)->bool{
                 
                 auto f = [this, s, cb](Marvin::ErrorType& er, std::size_t bytes){
                     cb(er, bytes);
                 };
                 
                 auto pf = std::bind(f, Marvin::make_error_eof(), (std::size_t)0);
-                io_.post(pf);
+                m_io.post(pf);
                 return true;
             });
 
@@ -78,29 +80,27 @@ void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
                 x = bb;
             }
             LogDebug("::new buffer: [", x, "] len:", len);
-            index++;
+            m_index++;
             
             // at this point we have moved len bytes into the buffer mb
-    //            st = new SingleTimer(io_, 500);
-            st->start([this, buf, len, cb](const boost::system::error_code& ec)->bool{
+    //            st = new SingleTimer(m_io, 500);
+            m_single_timer->start([this, buf, len, cb](const boost::system::error_code& ec)->bool{
                 
                 auto f = [this, buf, len, cb](Marvin::ErrorType& er, std::size_t bytes){
                     cb(er, bytes);
                 };
                 
                 auto pf = std::bind(f, Marvin::make_error_ok(), (std::size_t)len);
-                io_.post(pf);
+                m_io.post(pf);
                 return true;
             });
         }
-    }
-    else
-    {
+    } else {
         LogDebug("test case finished");
         //  we have run out of test data so simulate an end of input - read of length zero
         ((char*)mb->data())[0] = (char)0;
         auto pf = std::bind(cb, Marvin::make_error_eom(), (std::size_t) 0);
-        io_.post(pf);
+        m_io.post(pf);
         return;
     }
 }

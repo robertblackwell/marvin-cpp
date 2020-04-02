@@ -12,6 +12,19 @@
 
 namespace Marvin {
 namespace Http {
+class HeadersV2;
+
+// test a string for a token 'keep-alive' case insensitive
+bool isConnectionKeepAlive(std::string value);
+// test a string for a token 'close' case insensitive
+bool isConnectionClose(std::string value);
+
+// tests whether a header structure has a connection header with a 'keep-alive' substring
+bool isConnectionKeepAlive(Marvin::Http::HeadersV2& h);
+// tests whether a header structure has a connection header with a 'close' substring
+bool isConnectionClose(Marvin::Http::HeadersV2& h);
+
+
 /**
  * A class that represents http headers in request and response messages.
  * Maintains an ordered list of std::pair<std::string, std::string>
@@ -29,6 +42,12 @@ namespace Http {
 class HeadersV2
 {
     public:
+
+
+
+        /// \ingroup HttpMessage
+        /// \brief  Filters a header map to remove all headers whose keys are IN the filterList
+        static void copyExcept(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList);
         
         class Exception: public std::exception
         {
@@ -38,6 +57,7 @@ class HeadersV2
             protected:
                 std::string marvin_message;
         };
+        typedef std::vector<std::pair<std::string, std::string>>  Initializer;
 
         typedef std::pair<std::string, std::string> Pair;
 
@@ -114,6 +134,8 @@ class HeadersV2
         /** deprecated*/
         void erase(std::string k);
 
+        bool sameValues(HeadersV2& other);
+        bool sameOrderAndValues(HeadersV2& other);
         /** Iterator base find function*/
         Iterator find(std::string k);
         Iterator begin();

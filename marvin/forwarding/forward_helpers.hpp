@@ -18,7 +18,7 @@
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/client/client.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
 namespace helpers {
 

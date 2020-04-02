@@ -13,8 +13,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 #include <json/json.hpp>
-#include <marvin/http/ordered_key_value.hpp>
-#include <marvin/http/http_header.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/headers_v2.hpp>
 
@@ -34,47 +32,66 @@ using namespace Http;
 ///     there is NOT a connection header that contain the string 'keep-alive' case insensitive
 ///         and the msg http version is 1.0
 ///
-#if 0
-bool isKeepAlive(Marvin::Http::MessageBase& msg)
+
+// std::regex r_close(R"(\s*,\s*|\s*;\s*|\s*)close(\s*,\s*|\s*;\s*|\s*))", std::regex::icase);
+// std::regex r_keep_alive(R"(\s*,\s*|\s*;\s*|\s*)keep-malive(\s*,\s*|\s*;\s*|\s*))", std::regex::icase);
+void testHeaderKeepAlive(std::string test_value, bool expected)
 {
-    if (msg.hasHeader(Headers::Name::Connection)) {
-        return isKeepAlive(msg.getHeader(Headers::Name::Connection));
-    } else {
-        if (msg.httpVersMinor() == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    Headers hdrs = msg.getHeader(Headers::Name::Connection);
-    return isKeepAlive(hdrs);
+    Marvin::Http::HeadersV2 h1_1{{
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"Connection", test_value},
+        {"11","1111111"},
+        {"22","2222222"}
+    }};
+    CHECK( (expected == isConnectionKeepAlive(h1_1)));
 }
-bool isKeepAlive(MessageBaseSPtr msg_sptr)
+void testHeaderConnectionClose(std::string test_value, bool expected)
 {
-    return isKeepAlive(*msg_sptr);
+    Marvin::Http::HeadersV2 h1_1{{
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"Connection", test_value},
+        {"11","1111111"},
+        {"22","2222222"}
+    }};
+    CHECK( (expected == isConnectionClose(h1_1)));
+}
+void testMessageConnectionKeepAlive(std::string test_value, int minor_version, bool expected)
+{
+    MessageBase msg;
+    msg.setHttpVersMinor(minor_version);
+    msg.setHeader("bb","BBBBB");
+    msg.setHeader("ccc", "CCCCCC");
+    msg.setHeader("11","1111111");
+    msg.setHeader("22","2222222");
+    msg.setHeader("Connection", test_value);
+    msg.setHeader("11","1111111");
+    msg.setHeader("22","2222222");
+
+    CHECK( (expected == isConnectionKeepAlive(msg)));
+}
+void testMessageConnectionClose(std::string test_value, int minor_version, bool expected)
+{
+    MessageBase msg;
+    msg.setHttpVersMinor(minor_version);
+    msg.setHeader("bb","BBBBB");
+    msg.setHeader("ccc", "CCCCCC");
+    msg.setHeader("11","1111111");
+    msg.setHeader("22","2222222");
+    msg.setHeader("Connection", test_value);
+    msg.setHeader("11","1111111");
+    msg.setHeader("22","2222222");
+
+    CHECK( (expected != isConnectionKeepAlive(msg)));
 }
 
-bool isKeepAlive(Marvin::Http::Headers& headers)
-{
-    OrderedKeyValues::Iterator it = headers.find("Connection");
-    if (it  == headers.end()) {
-        return false;
-    }
-    std::string value = (*it).value();
-    if (isKeepAlive(value)) {
-        return true;
-    }
-    return false;
-}
-#endif
-bool isKeepAlive(std::string value)
-{
-    std::regex r("keep-alive", std::regex::icase);
-    auto x = std::regex_search(value, r);
-    return x;
-}
 
-TEST_CASE("new headres")
+TEST_CASE("headers_add_remove")
 {
     Marvin::Http::HeadersV2 headers;
     CHECK(headers.size() == 0);
@@ -117,18 +134,9 @@ TEST_CASE("new headres")
     CHECK( !!(headers.find("content-length") == headers.end()) );
 
 }
-
-using namespace nlohmann;
-TEST_CASE("header alternative")
+TEST_CASE("headers_same")
 {
-    std::pair<std::string, std::string> a{"one", "two"};
-    std::pair<std::string, std::string> b{"one", "two1"};
-    std::pair<std::string, std::string> c{"one", "two"};
-    
-    bool xb = (a == b);
-    bool xb2 = (a == c);
-
-    std::vector<std::pair<std::string, std::string>> hdr{{
+    Marvin::Http::HeadersV2 h1{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -137,13 +145,7 @@ TEST_CASE("header alternative")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    auto x = hdr[0];
-
-}
-TEST_CASE("headers")
-{
-    Marvin::Http::Headers hh;
-    Marvin::Http::Headers headers{{
+    Marvin::Http::HeadersV2 h1_dup{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -152,220 +154,112 @@ TEST_CASE("headers")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    CHECK(isKeepAlive(std::string(" this has keep-alive embedded")));
-    CHECK(isKeepAlive(std::string(" this has Keep-alive embedded")));
-    CHECK(isKeepAlive(std::string(" this, has, Keep-Alive, embedded")));
-    CHECK(! isKeepAlive(std::string(" this, has, Close, embedded")));
-    auto value = headers["Connection"];
-    CHECK(value == "Keep-Alive, another1, another2");
-    auto b = isKeepAlive(value);
-    // CHECK(b);
+    Marvin::Http::HeadersV2 h1_reversed{{
+        {"Connection", "Keep-Alive, another1, another2"},
+        {"44","4444444"},
+        {"33","3333333"},
+        {"22","2222222"},
+        {"11","1111111"},
+        {"ccc", "CCCCCC"},
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+    }};
 
-    
+    CHECK(h1.sameValues(h1_dup));
+    CHECK(h1.sameValues(h1_reversed));
+
+    CHECK(h1.sameOrderAndValues(h1_dup));
+    CHECK( ! h1.sameOrderAndValues(h1_reversed));
 }
-TEST_CASE("OKV")
+
+TEST_CASE("header_iskeep_alive")
 {
-    Marvin::Http::Headers hh;
-    Marvin::Http::Headers headers{{
-        {"aaa", "AAAAA"},
+    Marvin::Http::HeadersV2 h1{{
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
         {"11","1111111"},
         {"22","2222222"},
+        {"Connection", "Keep-AliVe, another1, another2"},
         {"33","3333333"},
         {"44","4444444"}
     }};
-    OrderedKeyValues hdrs{};
-    OrderedKeyValues hdrs02{{
-        {"aaa", "AAAAA"},
-        {"bb","BBBBB"}
-    }};
-    OrderedKeyValues hdrs03({
-        {"aaa", "AAAAA"},
-        {"bb","BBBBB"},
-        {"ccc", "CCCCCC"}
-    });
-    OrderedKeyValues hdrs04({
-        {"aaa", "AAAAA"},
-        {"bb","BBBBB"},
-        {"ccc", "CCCCCC"},
-        {"11","1111111"},
-        {"22","2222222"},
-        {"33","3333333"},
-        {"44","4444444"}
-    });
-    std::map<std::string, std::string> vals{
-        {"aaa", "AAAAA"},
-        {"bb","BBBBB"},
-        {"ccc", "CCCCCC"},
-        {"11","1111111"},
-        {"22","2222222"},
-        {"33","3333333"},
-        {"44","4444444"}
-    };
-//    Marvin::Http::Headers h(vals);
-//    OrderedKeyValues hdrs06(vals);
-    hdrs["one"] = "headers1";
-    hdrs["two"] = "headers2";
-    hdrs["three"] = "headers3";
-    hdrs.set("four", "headers4");
+    CHECK(isConnectionKeepAlive(std::string(" this has keep-alive embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this has Keep-alive embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this, has, Keep-Alive, embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this, has, KEEP-ALIVE, embedded")));
+    CHECK(! isConnectionKeepAlive(std::string(" this, has, Close, embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this has ,keep-alive, embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this has,Keep-alive,embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this, has, Keep-Alive , embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this, has, KEEP-ALIVE     embedded")));
+    CHECK(! isConnectionKeepAlive(std::string(" this, has, keep-aliveembedded")));
+    CHECK(! isConnectionKeepAlive(std::string(" this, haskeepalive, embedded")));
+    CHECK(isConnectionKeepAlive(std::string(" this, has, keep-alive;, embedded")));
+    CHECK(isConnectionKeepAlive(std::string("keep-alive;, embedded")));
+    CHECK(isConnectionKeepAlive(std::string("thi keep-alive")));
+    CHECK(isConnectionKeepAlive(std::string("keep-alive")));
 
-    SUBCASE("constructors and [] access")
-    {
-        CHECK(hdrs.size() == 4);
-        CHECK(hdrs03.size() == 3);
-        CHECK(hdrs02.size() == 2);
-        CHECK(hdrs["one"] == "headers1");
-        CHECK(hdrs["two"] == "headers2");
-        CHECK(hdrs["three"] == "headers3");
-        CHECK(hdrs["four"] == "headers4");
-
-        CHECK(hdrs03["aaa"] == "AAAAA");
-        CHECK(hdrs03["bb"] == "BBBBB");
-        CHECK(hdrs03["ccc"] == "CCCCCC");
-    }
-    SUBCASE("set and get")
-    {
-        CHECK(hdrs.size() == 4);
-        hdrs.set("ten", "anotherten");
-        CHECK(hdrs.size() == 5);
-        CHECK(hdrs.get("ten") == "anotherten");
-        CHECK(hdrs["ten"] == "anotherten");
-        CHECK(hdrs.size() == 5);
-    }
-    SUBCASE("remove")
-    {
-        CHECK(hdrs.size() == 4);
-        hdrs.set("ten", "anotherten");
-        CHECK(hdrs.size() == 5);
-        hdrs.remove("ten");
-        CHECK(hdrs.size() == 4);
-        auto f = hdrs.find("ten");
-        auto e = hdrs.end();
-        auto b = (f == e);
-        CHECK( (hdrs.find("ten") == hdrs.end()) );
-        CHECK(hdrs.size() == 4);
-    }
-    SUBCASE("remove group")
-    {
-        CHECK(hdrs.size() == 4);
-        hdrs.set("ten", "anotherten");
-        CHECK(hdrs.size() == 5);
-        hdrs.remove({"two","four","ten"});
-        CHECK(hdrs.size() == 2);
-        CHECK(hdrs["one"] == "headers1");
-        CHECK(hdrs["three"] == "headers3");
-    }
-    SUBCASE("pointer")
-    {
-        auto h = hdrs.find("two");
-        auto hs = *h;
-        auto hpf = h->first;
-        auto hps = h->second;
-        auto hpk = h->key();
-        auto hpv = h->value();
-        CHECK(true);
-    }
-    SUBCASE("demonstrate_json")
-    {
-        auto jz = hdrs.jsonizable();
-        nlohmann::json j;
-        typedef std::vector<std::pair<std::string, std::string>> kvt;
-        for(kvt::iterator it = jz.begin(); it != jz.end(); it++) {
-            std::string f = (*it).first;
-            std::string s = (*it).second;
-            nlohmann::json jtmp({ {"key",f}, {"value", s}});
-            std::cout << "" << jtmp.dump() << std::endl;
-            j.push_back(jtmp);
-        }
-        std::cout << "" << j.dump() << std::endl;
-        std::string js = j.dump();
-        nlohmann::json jout = nlohmann::json::parse(js);
-        OrderedKeyValues kvOut;
-        for (nlohmann::json::iterator it = jout.begin(); it != jout.end(); ++it) {
-          auto k = (*it)["key"].get<std::string>();
-          auto v = (*it)["value"].get<std::string>();
-          std::cout << "k: " << k << " v:" << v << std::endl;
-          kvOut[k] = v;
-        }
-        auto b = (kvOut == hdrs);
-        std::cout << "done" << std::endl;
-    }
-    SUBCASE("json_with_fucntions")
-    {
-        nlohmann::json j;
-        OrderedKeyValues::to_json(j, hdrs);
-        std::cout << j.dump() << std::endl;
-        OrderedKeyValues kvout;
-        OrderedKeyValues::from_json(j,kvout);
-        auto b = (hdrs == kvout);
-        std::cout << "done" << std::endl;
-    }
-    SUBCASE("json the correct wayt")
-    {
-        nlohmann::json j(hdrs);
-        std::cout << j.dump() << std::endl;
-        nlohmann::json jout = nlohmann::json::parse(j.dump());
-        OrderedKeyValues kvout = jout.get<OrderedKeyValues>();
-        auto b = (hdrs == kvout);
-        std::cout << "done" << std::endl;
-    }
-    SUBCASE("json headers")
-    {
-        nlohmann::json j(headers);
-        std::cout << j.dump() << std::endl;
-        Marvin::Http::Headers h2 = j.get<Marvin::Http::Headers>();
-        std::cout << j.dump() << std::endl;
-
-    }
+    testHeaderKeepAlive(" this has keep-alive embedded", true); 
+    testHeaderKeepAlive(" this, has, Keep-Alive, embedded", true);
+    testHeaderKeepAlive(" this, has, KEEP-ALIVE, embedded", true);
+    testHeaderKeepAlive(" this, has, Close, embedded", false);
+    testHeaderKeepAlive(" this has ,keep-alive, embedded", true);
+    testHeaderKeepAlive(" this has,Keep-alive,embedded", true);
+    testHeaderKeepAlive(" this, has, Keep-Alive , embedded", true);
+    testHeaderKeepAlive(" this, has, KEEP-ALIVE     embedded", true);
+    testHeaderKeepAlive(" this, has, keep-aliveembedded", false);
+    testHeaderKeepAlive(" this, haskeepalive, embedded", false);
+    testHeaderKeepAlive(" this, has, keep-alive;, embedded", true);
+    testHeaderKeepAlive("keep-alive;, embedded", true);
+    testHeaderKeepAlive("thi keep-alive", true);
+    testHeaderKeepAlive("keep-alive", true);
 }
-
-#pragma mark - main
-#if 0
-int main()
+TEST_CASE("header_connectionclose")
 {
-    OrderedKeyValues hdrs{};
-    OrderedKeyValues hdrs02{{
-        {"aaa", "AAAAA"},
-        {"bb","BBBBB"}
-    }};
-    OrderedKeyValues hdrs03({
-        {"aaa", "AAAAA"},
-        {"bb","BBBBB"},
-        {"ccc", "CCCCCC"}
-    });
-    hdrs03.remove("bb");
-    hdrs["one"] = "header1";
-    hdrs["two"] = "headers2";
-    hdrs["three"] = "headers3";
-    hdrs.set("four", "headers4");
-    auto hd2 = hdrs;
-    auto bb = (hd2 == hdrs);
-    auto i = hdrs.begin();
-    auto end = hdrs.end();
-    auto f = hdrs.find("two");
-    auto b = (f == hdrs.end());
-    auto hs = hdrs.has("two");
-    for(OrderedKeyValues::Iterator i = hdrs.begin(); i != hdrs.end(); i++)
-    {
-        auto xx = *i;
-        std::cout << "key: " << (*i).key() << " value: " << (*i).value() << " " << hdrs[(*i).key()] << std::endl;
-    }
-    for(auto& h : hdrs){
-        std::cout << h.key() << " " << h.value() << std::endl;
-    }
 
-    std::cout << std::endl;
+    CHECK(isConnectionClose(std::string(" this has close embedded")));
+    CHECK(isConnectionClose(std::string(" this has close embedded")));
+    CHECK(isConnectionClose(std::string(" this, has, cloSe, embedded")));
+    CHECK(isConnectionClose(std::string(" this, has, CLOSE, embedded")));
+    CHECK(! isConnectionClose(std::string(" this, has, keep-alive, embedded")));
+    CHECK(isConnectionClose(std::string(" this has ,close, embedded")));
+    CHECK(isConnectionClose(std::string(" this has,Close,embedded")));
+    CHECK(isConnectionClose(std::string(" this, has, Close , embedded")));
+    CHECK(isConnectionClose(std::string(" this, has, CLOSE     embedded")));
+    CHECK(! isConnectionClose(std::string(" this, has, closeembedded")));
+    CHECK(! isConnectionClose(std::string(" this, hasclose, embedded")));
+    CHECK(isConnectionClose(std::string(" this, has, close;, embedded")));
+    CHECK(isConnectionClose(std::string("close;, embedded")));
+    CHECK(isConnectionClose(std::string("thi close")));
+    CHECK(isConnectionClose(std::string("close")));
 
-//    std::vector<double> vec;
-//    std::copy(point3d.begin(), point3d.end(), std::back_inserter(vec));
-//
-//    for(std::vector<double>::iterator i = vec.begin(); i != vec.end(); i++)
-//    {
-//        std::cout << *i << " ";
-//    }
-//
-//    std::cout << std::endl;
-    return 0;
+    testHeaderConnectionClose(" this has close embedded" , true);
+    testHeaderConnectionClose(" this has close embedded" , true);
+    testHeaderConnectionClose(" this, has, cloSe, embedded" , true);
+    testHeaderConnectionClose(" this, has, CLOSE, embedded" , true);
+    testHeaderConnectionClose(" this, has, keep-alive, embedded" , false);
+    testHeaderConnectionClose(" this has ,close, embedded" , true);
+    testHeaderConnectionClose(" this has,Close,embedded" , true);
+    testHeaderConnectionClose(" this, has, Close , embedded" , true);
+    testHeaderConnectionClose(" this, has, CLOSE     embedded" , true);
+    testHeaderConnectionClose(" this, has, closeembedded" , false);
+    testHeaderConnectionClose(" this, hasclose, embedded" , false);
+    testHeaderConnectionClose(" this, has, close;, embedded" , true);
+    testHeaderConnectionClose("close;, embedded" , true);
+    testHeaderConnectionClose("thi close" , true);
+    testHeaderConnectionClose("close" , true);
+
 }
-#endif
+TEST_CASE("message_connection_keep_alive")
+{
+    testMessageConnectionKeepAlive(" this has keep-alive embedded", 1, true);
+    testMessageConnectionKeepAlive(" this, has, embedded", 1, true);
+    testMessageConnectionKeepAlive(" this, has, close", 1, false);
+    testMessageConnectionKeepAlive(" this, has, close", 0, false);
+    testMessageConnectionKeepAlive(" this, has, embedded", 0, false);
+
+}
+TEST_CASE("message_connection_close")
+{
+
+}

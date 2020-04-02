@@ -35,9 +35,9 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
     
     msg->setMethod(HttpMethod::GET);
     helpers::applyUriProxy(msg, uri);
-    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
-    msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding, "identity");
-    msg->setHeader(Marvin::Http::Headers::Name::TE, "");
+    msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+    msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
+    msg->setHeader(Marvin::Http::HeadersV2::TE, "");
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
@@ -73,9 +73,9 @@ std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::stri
     
     msg->setMethod(HttpMethod::GET);
     helpers::applyUriProxy(msg, uri);
-    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
-    msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding, "identity");
-    msg->setHeader(Marvin::Http::Headers::Name::TE, "");
+    msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+    msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
+    msg->setHeader(Marvin::Http::HeadersV2::TE, "");
     // Http versions defaults to 1.1, so force it to the same as the request
     msg->setContent("");
 
@@ -155,7 +155,7 @@ TEST_CASE("request new")
     req->setPath("/utests/echo/");
     auto p1 = req->m_current_request->getPath();
 
-    req->setHeader(Marvin::Http::Headers::Name::ContentType, "text/html; charset=UTF-8");
+    req->setHeader(Marvin::Http::HeadersV2::ContentType, "text/html; charset=UTF-8");
     req->setOnHeaders([&on_headers_flag](Marvin::ErrorType& err, MessageReaderSPtr msg_sptr) {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         on_headers_flag = true;

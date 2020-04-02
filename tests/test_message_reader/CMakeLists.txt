@@ -7,8 +7,10 @@ add_executable(${TARGET}
 	testcase.cpp
 	test_runner.cpp
 	testcase_defs.cpp
-	t_client.cpp
-	t_server.cpp
+	# t_client.cpp
+	# t_server.cpp
+	# ../test_helpers/test_headers.cpp 
+	# ../test_helpers/test_headers.hpp
 )
 target_include_directories(${TARGET} PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
 target_precompile_headers(${TARGET} REUSE_FROM marvin_library)

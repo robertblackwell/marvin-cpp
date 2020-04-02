@@ -6,7 +6,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/external_src/http-parser/http_parser.h>
-// #include <marvin/http/http_header.hpp>
+// #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_interface.hpp>
 namespace Marvin {
@@ -15,14 +15,27 @@ namespace Http {
 * Defines an interface that all representations of a Http Message should conform to.
 */
 using MessageInterface = IMessage;
-
-#pragma - http message base
 class MessageBase;
 
 using MessageBaseSPtr = std::shared_ptr<MessageBase>;
 std::string traceMessage(MessageBase& msg);
 void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
 Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
+///
+/// KeepAlive is true if:
+///     there is a connection header that contains the string "[ ,]keep-alive[ ,]" case independent
+///     or
+///     there is NOT a connection header that contain the string 'close' case insensitive
+///         and the msg http version is 1.1
+///
+/// Keepalive is explicitly false if
+///     there is a connection header that contain the string 'close' case insensitive
+///     or
+///     there is NOT a connection header that contain the string 'keep-alive' case insensitive
+///         and the msg http version is 1.0
+///
+bool isConnectionKeepAlive(Marvin::Http::MessageBase& msg);
+bool isKeepConnectionAlive(MessageBaseSPtr msg_sptr);
 
 /// HttpMessage
 /// A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
@@ -106,8 +119,8 @@ protected:
     int									m_http_major;
     int									m_http_minor;
 
-//    Marvin::Http::Headers                     m_headers;
-//    Marvin::Http::Headers                     m_trailers;
+//    Marvin::Http::HeadersV2                   m_headers;
+//    Marvin::Http::HeadersV2                   m_trailers;
     Marvin::Http::HeadersV2              m_headers;
     Marvin::Http::HeadersV2              m_trailers;
 

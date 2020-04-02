@@ -41,10 +41,10 @@ namespace {
         Uri uri("https://www.ssllabs.com:443");
 #endif
         ::Marvin::Http::makeRequest(*msg, HttpMethod::GET, uri);
-        msg->setHeader(Headers::Name::Host, std::string("www.ssllabs.com"));//uri.host());
-        msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
-        msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding, "identity");
-        msg->setHeader(Marvin::Http::Headers::Name::TE, "");
+        msg->setHeader(HeadersV2::Host, std::string("www.ssllabs.com"));//uri.host());
+        msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+        msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
+        msg->setHeader(Marvin::Http::HeadersV2::TE, "");
         // Http versions defaults to 1.1, so force it to the same as the request
         msg->setContent("");
         return msg;

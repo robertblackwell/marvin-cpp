@@ -24,7 +24,7 @@
 #include <marvin/boost_stuff.hpp>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/client/client.hpp>
 
@@ -97,7 +97,7 @@ public:
         using namespace Marvin::Http;
         using namespace Marvin;
         MessageBaseSPtr request_sptr = testcase.makeRequest();
-        request_sptr->setHeader(Marvin::Http::Headers::Name::Connection,"Keep-Alive");
+        request_sptr->setHeader(Marvin::Http::HeadersV2::Connection,"Keep-Alive");
         Marvin::BufferChainSPtr body = testcase.makeBody();
         m_host = testcase.getHost();
         m_port = testcase.getPort();

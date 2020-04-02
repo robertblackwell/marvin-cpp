@@ -3,7 +3,7 @@
 #define client_hpp
 #include <functional>                              // for function
 #include <istream>                                 // for string
-#include <marvin/http/http_header.hpp>             // for Headers, Headers::...
+#include <marvin/http/headers_v2.hpp>             // for Headers, Headers::...
 #include <marvin/http/uri.hpp>                     // for Uri
 #include <marvin/message/message_reader.hpp>       // for MessageReaderSPtr
 #include <marvin/message/message_writer.hpp>       // for MessageWriterSPtr
@@ -110,7 +110,7 @@ public:
      * @param port - a string like "443"
      * \deprecated
      */
-    Client(boost::asio::io_service& io, Marvin::Http::Headers::SchemeType scheme, std::string server, std::string port);
+    Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port);
     
     /**
      * Conosttruct an not-yet-connected client instance and provide target host

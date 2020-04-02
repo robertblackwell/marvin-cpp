@@ -15,7 +15,7 @@
 #include <marvin/boost_stuff.hpp>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/client/client.hpp>
 
 

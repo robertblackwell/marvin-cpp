@@ -215,7 +215,7 @@ protected:
     simple_buffer_t*   status_buf;
     simple_buffer_t*   name_buf;
     simple_buffer_t*   value_buf;
-    Marvin::Http::Headers    headers;
+    Marvin::Http::HeadersV2  headers;
     ////////////////////////////////////////////////////////////////////
     
     

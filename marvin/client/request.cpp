@@ -9,7 +9,7 @@
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
 #include <cert/error.hpp>                               // for THROW
-#include <marvin/http/http_header.hpp>                  // for Headers, Head...
+#include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -35,7 +35,7 @@ Request::Request(
     std::cout << "Constructor" << std::endl;
     m_conn_shared_ptr = socketFactory(m_io, m_scheme, m_server, m_port);
     p_create_rdr_wrtr();
-    m_current_request->setHeader(Marvin::Http::Headers::Name::Host, m_server+":"+m_port);
+    m_current_request->setHeader(Marvin::Http::HeadersV2::Host, m_server+":"+m_port);
     m_is_connected = false;
 }
 Request::Request(
@@ -96,7 +96,7 @@ void Request::setVersion(int major, int minor)
     m_current_request->setHttpVersMajor(major);
     m_current_request->setHttpVersMinor(minor);
 }
-void Request::setHeaders(Marvin::Http::Headers headers)
+void Request::setHeaders(Marvin::Http::HeadersV2 headers)
 {
     p_test_good_to_go();
 
@@ -106,7 +106,7 @@ void Request::setHeader(std::string key, std::string value)
     p_test_good_to_go();
     m_current_request->setHeader(key, value);
 }
-void Request::setTrailers(Marvin::Http::Headers trailers)
+void Request::setTrailers(Marvin::Http::HeadersV2 trailers)
 {
     p_test_good_to_go();
 }
@@ -314,7 +314,7 @@ void Request::p_set_content_length()
     if( m_body_mbuffer_sptr != nullptr ) {
         len = m_body_mbuffer_sptr->size();
     }
-    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(len));
+    msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(len));
 }
 /*!--------------------------------------------------------------------------------
 * implement helper functions
@@ -332,17 +332,17 @@ void Request::p_test_good_to_go()
 void Request::p_prep_write_complete_headers()
 {
     using namespace Marvin::Http;
-    if(!m_current_request->hasHeader(Headers::Name::ContentLength)) {
-        if (!m_current_request->hasHeader(Headers::Name::TransferEncoding)) {
+    if(!m_current_request->hasHeader(HeadersV2::ContentLength)) {
+        if (!m_current_request->hasHeader(HeadersV2::TransferEncoding)) {
             throw "Request::p_prep_write_complete_headers - no content length or chunked header";
         } else {
-            auto te = m_current_request->getHeader(Headers::Name::TransferEncoding);
+            auto te = m_current_request->getHeader(HeadersV2::TransferEncoding);
             if (te != "chunked") {
                 throw "Request::p_prep_write_complete_headers - no content-length header and transfer-encoding header is not chunked";
             }
         }
     }
-    m_current_request->setHeader(Headers::Name::Host, m_server+":"+m_port);
+    m_current_request->setHeader(HeadersV2::Host, m_server+":"+m_port);
 }
 
 void Request::p_create_rdr_wrtr()

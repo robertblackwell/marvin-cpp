@@ -35,10 +35,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                 // expexted headers
                 Marvin::Http::Headers::Initializer{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                    {Marvin::Http::Headers::Name::ContentLength,"11"}
+                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                    {Marvin::Http::HeadersV2::ContentLength,"11"}
                 },
                  // expected body
                  std::string("01234567890")
@@ -63,10 +63,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                 // expected headers
                     Marvin::Http::Headers::Initializer{
-//                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                    {Marvin::Http::Headers::Name::ContentLength,"11"}
+//                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                    {Marvin::Http::HeadersV2::ContentLength,"11"}
                 },
 
                 std::string("11234567890")                            // expected body
@@ -91,10 +91,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                 // expected headers
                     Marvin::Http::Headers::Initializer{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                    {Marvin::Http::Headers::Name::ContentLength,"10"}
+                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                    {Marvin::Http::HeadersV2::ContentLength,"10"}
                 },
                 // body
                 std::string("ABCDEFGHIJ")
@@ -120,10 +120,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                 // expected headers
                     Marvin::Http::Headers::Initializer{
-                        {Marvin::Http::Headers::Name::Host, "ahost"},
-                        {Marvin::Http::Headers::Name::Connection,"close"},
-                        {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                        {Marvin::Http::Headers::Name::ContentLength,"10"}
+                        {Marvin::Http::HeadersV2::Host, "ahost"},
+                        {Marvin::Http::HeadersV2::Connection,"close"},
+                        {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                        {Marvin::Http::HeadersV2::ContentLength,"10"}
                     },
                 //             },
                 std::string("ABCDEFGHIJ")
@@ -156,10 +156,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                 // expected headers
                     Marvin::Http::Headers::Initializer{
-                        {Marvin::Http::Headers::Name::Host, "ahost"},
-                        {Marvin::Http::Headers::Name::Connection,"close"},
-                        {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                        {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
+                        {Marvin::Http::HeadersV2::Host, "ahost"},
+                        {Marvin::Http::HeadersV2::Connection,"close"},
+                        {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                        {Marvin::Http::HeadersV2::TransferEncoding,"chunked"}
                     },
 
                 // body
@@ -196,10 +196,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                  // expected headers
                     Marvin::Http::Headers::Initializer{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                    {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
+                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                    {Marvin::Http::HeadersV2::TransferEncoding,"chunked"}
                 },
                      // body
                      std::string("1234567890")
@@ -236,10 +236,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                 // expected headers
                     Marvin::Http::Headers::Initializer{
-                        {Marvin::Http::Headers::Name::Host, "ahost"},
-                        {Marvin::Http::Headers::Name::Connection,"close"},
-                        {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                        {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
+                        {Marvin::Http::HeadersV2::Host, "ahost"},
+                        {Marvin::Http::HeadersV2::Connection,"close"},
+                        {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                        {Marvin::Http::HeadersV2::TransferEncoding,"chunked"}
                     },
                 // body
                 std::string("1234567890")
@@ -277,10 +277,10 @@ std::vector<body_buffering::Testcase> body_buffering::make_test_cases()
                 Marvin::make_error_ok(),
                 // expected headers
                     Marvin::Http::Headers::Initializer{
-                        {Marvin::Http::Headers::Name::Host, "ahost"},
-                        {Marvin::Http::Headers::Name::Connection,"close"},
-                        {Marvin::Http::Headers::Name::ProxyConnection,"close"},
-                        {Marvin::Http::Headers::Name::TransferEncoding,"chunked"}
+                        {Marvin::Http::HeadersV2::Host, "ahost"},
+                        {Marvin::Http::HeadersV2::Connection,"close"},
+                        {Marvin::Http::HeadersV2::ProxyConnection,"close"},
+                        {Marvin::Http::HeadersV2::TransferEncoding,"chunked"}
                     },
                 // body
                 std::string("1234567890")
@@ -315,9 +315,9 @@ std::vector<body_buffering::Testcase> body_buffering::make_eof_cases()
                 Marvin::make_error_ok(),
                 // expexted headers
                     Marvin::Http::Headers::Initializer{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"}
+                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"}
                 },
                  // expected body
                  std::string("01234567890")
@@ -343,9 +343,9 @@ std::vector<body_buffering::Testcase> body_buffering::make_eof_cases()
                 Marvin::make_error_ok(),
                 // expexted headers
                     Marvin::Http::Headers::Initializer{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"}
+                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"}
                 },
                  // expected body
                  std::string("01234567890")
@@ -370,9 +370,9 @@ std::vector<body_buffering::Testcase> body_buffering::make_eof_cases()
                 Marvin::make_error_ok(),
                 // expexted headers
                     Marvin::Http::Headers::Initializer{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"}
+                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"}
                 },
                  // expected body
                  std::string("")
@@ -412,9 +412,9 @@ std::vector<body_buffering::Testcase> body_buffering::make_timeout_cases()
                 asio_op_aborted,
                 // expexted headers
                     Marvin::Http::Headers::Initializer{
-                    {Marvin::Http::Headers::Name::Host, "ahost"},
-                    {Marvin::Http::Headers::Name::Connection,"close"},
-                    {Marvin::Http::Headers::Name::ProxyConnection,"close"}
+                    {Marvin::Http::HeadersV2::Host, "ahost"},
+                    {Marvin::Http::HeadersV2::Connection,"close"},
+                    {Marvin::Http::HeadersV2::ProxyConnection,"close"}
                 },
                  // expected body
                  std::string("01234567890")

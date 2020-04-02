@@ -139,7 +139,7 @@ void TClient::onMessage(Marvin::ErrorType er)
         assert(b1 == req_body);
         REQUIRE(b1 == req_body);
         auto desc = m_testcase.getDescription();
-        if(m_rdr->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionClose) {
+        if(m_rdr->getHeader(Marvin::Http::HeadersV2::Connection) == Marvin::Http::HeadersV2::ConnectionClose) {
             // should close here - but client does not know how to do that cleanly.
             this->m_conn_sptr->close();
             this->m_rdr = nullptr;

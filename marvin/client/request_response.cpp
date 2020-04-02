@@ -12,7 +12,7 @@
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
 #include <cert/error.hpp>                               // for THROW
-#include <marvin/http/http_header.hpp>                  // for Headers, Head...
+#include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -39,8 +39,8 @@ void Request::p_read_response_headers()
         if (!ec2) {
             // call onHeaders
             // setup read of body unless content length == 0
-            if (this->m_rdr->hasHeader(Marvin::Http::Headers::Name::ContentLength)) {
-                std::string clstr = this->m_rdr->getHeader(Marvin::Http::Headers::Name::ContentLength);
+            if (this->m_rdr->hasHeader(Marvin::Http::HeadersV2::ContentLength)) {
+                std::string clstr = this->m_rdr->getHeader(Marvin::Http::HeadersV2::ContentLength);
                 if (clstr != "0") {
                     p_read_response_body();
                 } else {

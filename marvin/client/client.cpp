@@ -9,7 +9,7 @@
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
 #include <cert/error.hpp>                               // for THROW
-#include <marvin/http/http_header.hpp>                  // for Headers, Head...
+#include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
@@ -187,7 +187,7 @@ void Client::setContentLength()
     if( m_body_mbuffer_sptr != nullptr ) {
         len = m_body_mbuffer_sptr->size();
     }
-    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(len));
+    msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(len));
 }
 MessageReaderSPtr Client::getResponse()
 {

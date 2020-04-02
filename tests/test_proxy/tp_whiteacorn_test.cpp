@@ -113,8 +113,8 @@ namespace  {
         auto ra = j["req"];
         auto hh = ra["headers"];
         std::string l32 = hh["CONTENT-LENGTH"];
-        std::string s33 = Marvin::Http::Headers::Name::ContentLength;
-        std::string l2 = hh[Marvin::Http::Headers::Name::ContentLength];
+        std::string s33 = Marvin::Http::HeadersV2::ContentLength;
+        std::string l2 = hh[Marvin::Http::HeadersV2::ContentLength];
         std::string ll = ra["headers"]["CONTENT-LENGTH"];
         struct kv_t {
             std::string k;
@@ -143,30 +143,30 @@ namespace  {
     //    auto jj = j["req"]["headers"];
     //    auto echoed_headers2 = (j["req"]["headers"]);
         auto echoed_headers = test::helpers::headersFromJson(j["req"]["headers"]);
-    //    std::string lenstr = echoed_headers[Marvin::Http::Headers::Name::ContentLength];
+    //    std::string lenstr = echoed_headers[Marvin::Http::HeadersV2::ContentLength];
 
         auto original_headers = m_testcase_sptr->m_msg_sptr->getHeaders();
         /// these are the headers that should be preserved - they arer [present in every test case just for convenience
-        CHECK( (echoed_headers["ACCEPT"] == original_headers["ACCEPT"]) );
-        CHECK( (echoed_headers["ACCEPT-CHARSET"] == original_headers["ACCEPT-CHARSET"]) );
-        CHECK( (echoed_headers["ACCEPT-LANGUAGE"] == original_headers["ACCEPT-LANGUAGE"]) );
-        CHECK( (echoed_headers[Marvin::Http::Headers::Name::ContentLength] == original_headers[Marvin::Http::Headers::Name::ContentLength]) );
-        CHECK( (echoed_headers[Marvin::Http::Headers::Name::Host] == original_headers[Marvin::Http::Headers::Name::Host]) );
-        CHECK( (echoed_headers["USER-AGENT"] == original_headers["USER-AGENT"]) );
+        CHECK( (echoed_headers["ACCEPT"] == original_headers.atKey("ACCEPT").get() ) );
+        CHECK( (echoed_headers["ACCEPT-CHARSET"] == original_headers.atKey("ACCEPT-CHARSET").get() ));
+        CHECK( (echoed_headers["ACCEPT-LANGUAGE"] == original_headers.atKey("ACCEPT-LANGUAGE").get() ));
+        CHECK( (echoed_headers[Marvin::Http::HeadersV2::ContentLength] == original_headers.atKey(Marvin::Http::HeadersV2::ContentLength).get()) );
+        CHECK( (echoed_headers[Marvin::Http::HeadersV2::Host] == original_headers.atKey(Marvin::Http::HeadersV2::Host).get()) );
+        CHECK( (echoed_headers["USER-AGENT"] == original_headers.atKey("USER-AGENT").get()) );
         /// these headers should be present but changed
-        CHECK(echoed_headers.has(Marvin::Http::Headers::Name::Connection));
+        CHECK(echoed_headers.has(Marvin::Http::HeadersV2::Connection));
         /// the proxy only allows connection close
-        std::string sc = boost::to_upper_copy(echoed_headers.get(Marvin::Http::Headers::Name::Connection));
-        CHECK(boost::to_upper_copy(echoed_headers.get(Marvin::Http::Headers::Name::Connection)) == Marvin::Http::Headers::Value::ConnectionClose);
+        std::string sc = boost::to_upper_copy(echoed_headers.atKey(Marvin::Http::HeadersV2::Connection).get());
+        CHECK(boost::to_upper_copy(echoed_headers.get(Marvin::Http::HeadersV2::Connection)) == Marvin::Http::HeadersV2::ConnectionClose);
 
-        CHECK(echoed_headers.has(Marvin::Http::Headers::Name::AcceptEncoding));
+        CHECK(echoed_headers.has(Marvin::Http::HeadersV2::AcceptEncoding));
 
         /// check body
         std::string echoedBody = j["req"]["body"];
         std::string originalBody = (m_testcase_sptr->m_msg_sptr->getContentBuffer())->to_string();
         CHECK(echoedBody == originalBody);
 
-        if(rdr->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionClose) {
+        if(rdr->getHeader(Marvin::Http::HeadersV2::Connection) == Marvin::Http::HeadersV2::ConnectionClose) {
             m_client_sptr->close();
             m_client_sptr = nullptr;
         }
@@ -215,17 +215,17 @@ namespace  {
             Marvin::Uri uri(uriString);
             helpers::applyUriProxy(msg, uri);
     //        msg->setUri("http://localhost/echo");
-    //        msg->setHeader(Marvin::Http::Headers::Name::Host, "localhost:9991");
+    //        msg->setHeader(Marvin::Http::HeadersV2::Host, "localhost:9991");
             msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
             msg->setHeader(
                 "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
             msg->setHeader("Accept-Language","en");
             msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-            msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
-            msg->setHeader(Marvin::Http::Headers::Name::Connection,"Keep-Alive, TE");
+            msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+            msg->setHeader(Marvin::Http::HeadersV2::Connection,"Keep-Alive, TE");
             msg->setHeader("TE","deflate, gzip, chunked, trailer");
-    //        msg->setHeader(Marvin::Http::Headers::Name::TransferEncoding,"chunked");
-            msg->setHeader(Marvin::Http::Headers::Name::ETag,"1928273tefadseercnbdh");
+    //        msg->setHeader(Marvin::Http::HeadersV2::TransferEncoding,"chunked");
+            msg->setHeader(Marvin::Http::HeadersV2::ETag,"1928273tefadseercnbdh");
             std::string s = "012345678956";
             Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
             msg->setContent(bdy);

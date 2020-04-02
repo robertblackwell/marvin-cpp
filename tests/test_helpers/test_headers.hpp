@@ -10,12 +10,11 @@
 #define test_json_hpp
 #include <string>
 #include <map>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <json/json.hpp>
 namespace test {
 namespace helpers {
-    Marvin::Http::Headers  headersFromJson(nlohmann::json& j);
-    bool checkHeaders(Marvin::Http::Headers& h1, Marvin::Http::Headers h2);
+    Marvin::Http::HeadersV2 headersFromJson(nlohmann::json& j);
 }
 }
 

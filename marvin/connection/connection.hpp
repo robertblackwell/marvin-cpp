@@ -106,13 +106,18 @@ class Connection : public ISocket
     void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb) override;
     void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) override;
 
+    /// read with default timeout
     void asyncRead(Marvin::MBufferSPtr mb,  AsyncReadCallbackType cb) override;
+    /// same as asyncRead except that can set the read timeout specifically for this read
+    void asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb);
+
     void shutdown() override;
     void close() override;
     void setReadTimeout(long millisecs) override;
     /**
     * Utility getter functions®
     */
+    boost::asio::io_service& getIO();
     long nativeSocketFD() override;
     std::string scheme();
     std::string server();

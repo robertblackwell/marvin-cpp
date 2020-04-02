@@ -19,7 +19,7 @@
 #include <marvin/client/client.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/connection/connection.hpp>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
 #include <marvin/forwarding/ssl_forwarding_handler.hpp>
 #include <marvin/collector/collector_interface.hpp>

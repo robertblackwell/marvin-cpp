@@ -50,11 +50,14 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     REQUIRE(m_rdr->statusCode() == m_tcObj.result_status_code());
     auto h1 = m_tcObj.result_headers();
     auto h2 = m_rdr->getHeaders();
-    bool hh = (h1 == h2);
-    if( m_tcObj.result_headers() != m_rdr->getHeaders())
-        assert(m_tcObj.result_headers() == m_rdr->getHeaders());
-    bool catch_is_stupid = (m_tcObj.result_headers() == m_rdr->getHeaders() );
+    bool hh = h1.sameValues(h2);
+
+    if( m_tcObj.result_headers().sameValues(m_rdr->getHeaders()))
+        assert(m_tcObj.result_headers().sameValues(m_rdr->getHeaders()));
+
+    bool catch_is_stupid = m_tcObj.result_headers().sameValues(m_rdr->getHeaders());
     REQUIRE( catch_is_stupid );
+    
     auto b1 = m_tcObj.result_body();
     auto b2 = m_rdr->getContentBuffer();
 //    auto b3 = rdr_->get_raw_body_chain();
@@ -102,7 +105,7 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     bool hhh = m_tcObj.verify_headers(h2);
     //assert(hhh);
     REQUIRE(hhh);
-    bool catch_is_stupid = (h1 == h2);
+    bool catch_is_stupid = h1.sameValues(h2);
     REQUIRE( catch_is_stupid );
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
 //        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << tcObj.getDescription() <<std::endl;

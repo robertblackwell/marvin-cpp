@@ -26,7 +26,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "testcase_defs.hpp"
 //-------------------------------------------------------------------------------------
 // Run a list of testcases (that exercise a MessageReader instance) using a mock socket 
-// reading an entire message -- using MessageReader::readMessage() -- in a single call 
+// (that simulates asyn data arrival with a timer) reading an entire 
+// message -- using MessageReader::readMessage() -- in a single call 
 // to the messagereader
 //-------------------------------------------------------------------------------------
 void test_fullmessage(std::vector<Testcase> tcs)
@@ -41,8 +42,9 @@ void test_fullmessage(std::vector<Testcase> tcs)
     }
 }
 //-------------------------------------------------------------------------------------
-// Run a list of testcases (that exercise a MessageReader instance) using a mock socket 
-// reading a message in chunks, headers first (using MessageReader::readHeader())
+// Run a list of testcases (that exercise a MessageReader instance) using a mock socket
+// (as above simulating async io with a timer) reading a message in chunks, headers first
+// (using MessageReader::readHeader())
 // and then reads the message body in chunks (using MessageReader.readBodyData())
 // until EOM
 //-------------------------------------------------------------------------------------
@@ -81,6 +83,7 @@ TEST_CASE( "Reader_buffering_streaming")
     test_streamingBody(tc_make_buffering());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
+#if 0
 //------------------------------------------------------------------------------------------------------
 // Run a single testcases using a tcp (not http) client and server pair built specifically for this
 // application. The client sends a message consisting of a single line of text that identifies the 
@@ -146,3 +149,4 @@ TEST_CASE("Reader_socket_hv")
     test_vector_socketReader(tc_make_hv());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
+#endif

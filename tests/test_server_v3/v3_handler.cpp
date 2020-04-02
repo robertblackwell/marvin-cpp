@@ -8,7 +8,7 @@
 #include <json/json.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/external_src/CxxUrl/url.hpp>
@@ -39,8 +39,8 @@ MessageBaseSPtr make_200_response(std::string body)
     msg->setHttpVersMinor(1);
 
     // Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
-    // msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(body.length() ));
-    msg->setHeader(Marvin::Http::Headers::Name::ContentType, std::string("plain/text"));
+    // msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(body.length() ));
+    msg->setHeader(Marvin::Http::HeadersV2::ContentType, std::string("plain/text"));
     msg->setContent(body);
     return msg;
 }
@@ -54,7 +54,7 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->setHttpVersMinor(1);
 
     Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
-    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(body.length() ));
+    msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 Handler::Handler(boost::asio::io_service& io): Marvin::RequestHandlerBase(io)
@@ -185,8 +185,8 @@ void Handler::p_req_resp_cycle_complete()
     LogWarn("Handler::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
-    if (m_rdr->hasHeader(Marvin::Http::Headers::Name::Connection)) {
-        std::string conhdr = m_rdr->getHeader(Marvin::Http::Headers::Name::Connection);
+    if (m_rdr->hasHeader(Marvin::Http::HeadersV2::Connection)) {
+        std::string conhdr = m_rdr->getHeader(Marvin::Http::HeadersV2::Connection);
         keep_alive = (conhdr == "Keep-Alive");
     }
     if (keep_alive) {

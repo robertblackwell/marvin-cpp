@@ -81,7 +81,7 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::Http::MessageBaseS
 
     std::string headers_dump = headers_j.dump();
     std::map<std::string, std::string> header_values;
-    for (json::iterator it = headers_j.begin(); it != headers_j.end(); ++it) {
+    for (nlohmann::json::iterator it = headers_j.begin(); it != headers_j.end(); ++it) {
         // std::cout << it.key() << " : " << it.value() << "\n";
         // servers can modify the upper/lower case of the headers keys
         std::string k = boost::to_upper_copy(it.key());
@@ -131,15 +131,15 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::Http::MessageBaseS
     std::string hdrv_connection = header_values["CONNECTION"];
     std::string hdrv_xspecial = header_values["X-SPECIAL-HEADER"];
 
-    Marvin::Http::Headers original_headers = this->m_request_sptr->getHeaders();
+    Marvin::Http::HeadersV2 original_headers = this->m_request_sptr->getHeaders();
 
-    std::string orig_content_length = original_headers["CONTENT-LENGTH"];
-    std::string orig_accept = original_headers["ACCEPT"];
-    std::string orig_accept_charset = original_headers["ACCEPT-CHARSET"];
-    std::string orig_accept_language = original_headers["ACCEPT-LANGUAGE"];
-    std::string orig_user_agent = original_headers["USER-AGENT"];
-    std::string orig_connection = original_headers["CONNECTION"];
-    std::string orig_xspecial = original_headers["X-SPECIAL-HEADER"];
+    std::string orig_content_length = original_headers.atKey("CONTENT-LENGTH").get();
+    std::string orig_accept = original_headers.atKey("ACCEPT").get();
+    std::string orig_accept_charset = original_headers.atKey("ACCEPT-CHARSET").get();
+    std::string orig_accept_language = original_headers.atKey("ACCEPT-LANGUAGE").get();
+    std::string orig_user_agent = original_headers.atKey("USER-AGENT").get();
+    std::string orig_connection = original_headers.atKey("CONNECTION").get();
+    std::string orig_xspecial = original_headers.atKey("X-SPECIAL-HEADER").get();
 
     CHECK(hdrv_accept == orig_accept);
     CHECK(hdrv_accept_charset == orig_accept_charset);
@@ -163,16 +163,16 @@ Marvin::Http::MessageBaseSPtr EchoSmart::makeRequest()
     Marvin::Http::MessageBaseSPtr msg = std::make_shared<Marvin::Http::MessageBase>();
     msg->setMethod(m_method);
     msg->setUri(m_path);
-    msg->setHeader(Marvin::Http::Headers::Name::Host, m_host);
+    msg->setHeader(Marvin::Http::HeadersV2::Host, m_host);
     msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
     msg->setHeader(
         "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
     msg->setHeader("Accept-Language","en");
     msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+    msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
 
-    msg->setHeader(Marvin::Http::Headers::Name::Connection,"Close");
-    msg->setHeader(Marvin::Http::Headers::Name::ETag,"1928273tefadseercnbdh");
+    msg->setHeader(Marvin::Http::HeadersV2::Connection,"Close");
+    msg->setHeader(Marvin::Http::HeadersV2::ETag,"1928273tefadseercnbdh");
     msg->setHeader("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);

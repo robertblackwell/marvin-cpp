@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 
 typedef std::vector<std::string> TestcaseType;
 typedef std::string TestcaseResultType;
@@ -23,7 +23,7 @@ public:
     std::string result_first_line,
     int status_code,
     Marvin::ErrorType result_onheader_err,
-    Marvin::Http::Headers::Initializer result_headers,
+    Marvin::Http::HeadersV2::Initializer result_headers,
     std::string result_body
 );
     std::string getDescription();
@@ -31,7 +31,7 @@ public:
     std::vector<std::string> buffers();
     bool verify_first_line(std::string fl);
     
-    bool verify_headers(Marvin::Http::Headers& h);
+    bool verify_headers(Marvin::Http::HeadersV2& h);
     
     bool verify_body(std::string b);
     
@@ -41,7 +41,7 @@ public:
     
     Marvin::ErrorType result_onheaders_err();
 
-    Marvin::Http::Headers& result_headers();
+    Marvin::Http::HeadersV2& result_headers();
     
     std::string result_body();
     
@@ -53,15 +53,15 @@ public:
     
     std::string case_result();
     
-    int                                     _index;
-    std::string                             _description;
-    std::vector<std::string>                _rawMessage;
-    int                                     _result_status_code;
-    Marvin::ErrorType                       _result_onheaders_err;
-    std::string                             _result_first_line;
-    Marvin::Http::Headers::Initializer      _result_headers_vec;
-    Marvin::Http::Headers                   _result_headers;
-    std::string                             _result_body;
+    int                                     m_index;
+    std::string                             m_description;
+    std::vector<std::string>                m_rawMessage;
+    int                                     m_result_status_code;
+    Marvin::ErrorType                       m_result_onheaders_err;
+    std::string                             m_result_first_line;
+    Marvin::Http::HeadersV2::Initializer    m_result_headers_vec;
+    Marvin::Http::HeadersV2                 m_result_headers;
+    std::string                             m_result_body;
 };
 
 #endif

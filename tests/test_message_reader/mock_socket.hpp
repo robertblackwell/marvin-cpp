@@ -27,6 +27,9 @@ public:
     MockReadSocket(boost::asio::io_service& io, Testcase tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
     ~MockReadSocket();
     void startRead();
+
+    void asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb);
+    
     void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb);
     long nativeSocketFD();
 
@@ -48,27 +51,28 @@ public:
     void setReadTimeout(long interval);
     void shutdown();
     void close();
+    boost::asio::io_service& getIO();
 
     
 private:
-    SingleTimer*                st;
-    RepeatingTimer*             rt;
-    boost::asio::io_service&    io_;
+    SingleTimer*                m_single_timer;
+    RepeatingTimer*             m_repeating_timer;
+    boost::asio::io_service&    m_io;
     
 //    Testcases                   _tcObjs;
-    Testcase                    _tcObj;
-    int                         _tcLineIndex;
+    Testcase                    m_tcObj;
+    int                         m_tcLineIndex;
     // the test case - vector of strings
     std::vector<std::string> rawData;
     
     // a read buffer malloc'd by the constructor
-    char*       _rdBuf;
+    char*       m_rdBuf;
     
     //index into the array strings representing the test case
-    int         index;
+    int         m_index;
     
     // the index into the list of test cases
-    int         _tc;
+    int         m_tc;
 };
 
 

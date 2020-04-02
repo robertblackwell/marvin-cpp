@@ -25,7 +25,7 @@
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/client/client.hpp>
 #include <marvin/client/request.hpp>
 
@@ -57,7 +57,7 @@ TEST_CASE("request new")
     req->setPath("/utests/echo/");
     auto p1 = req->m_current_request->getPath();
 
-    req->setHeader(Marvin::Http::Headers::Name::ContentType, "text/html; charset=UTF-8");
+    req->setHeader(Marvin::Http::HeadersV2::ContentType, "text/html; charset=UTF-8");
     req->setOnHeaders([&on_headers_flag](Marvin::ErrorType& err, MessageReaderSPtr msg_sptr) {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         on_headers_flag = true;

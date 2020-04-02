@@ -50,6 +50,7 @@ class ISocket //: public IReadSocket, public IWriteSocket
     virtual Cert::Certificate getServerCertificate() =0 ;
 
     virtual void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb) = 0;
+    virtual void asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb) = 0;
     virtual void asyncWrite(std::string& str, AsyncWriteCallbackType cb) = 0;
     virtual void asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallback) = 0;
     virtual void asyncWrite(Marvin::BufferChainSPtr chain_sptr, AsyncWriteCallback) = 0;
@@ -58,6 +59,7 @@ class ISocket //: public IReadSocket, public IWriteSocket
 
     virtual void setReadTimeout(long millisecs) = 0;
     virtual void shutdown() = 0;
+    virtual boost::asio::io_service& getIO() = 0;
     #if 0
     virtual void shutdownSend() = 0;
     virtual void shutdownReceive() = 0;

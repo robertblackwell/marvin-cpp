@@ -24,7 +24,7 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
     
     msg->setMethod(HttpMethod::GET);
     helpers::applyUriNonProxy(msg, uri);
-    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
+    msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {

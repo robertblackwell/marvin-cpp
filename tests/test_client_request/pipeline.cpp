@@ -18,9 +18,9 @@ void Pipeline::setup()
     m_msg_sptr->setMethod(HttpMethod::GET);
     helpers::applyUriNonProxy(m_msg_sptr, m_uri);
     if( m_counter < m_max_counter - 1)
-        m_msg_sptr->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionKeepAlive);
+        m_msg_sptr->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionKeepAlive);
     else
-        m_msg_sptr->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
+        m_msg_sptr->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
     m_msg_sptr->setContent("");
 //    auto h = std::bind(&Pipeline::handler, this, _1, _2, _3);
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [this](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {

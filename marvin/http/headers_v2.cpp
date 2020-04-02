@@ -1,3 +1,5 @@
+#include <set>
+#include <regex>
 #include <boost/algorithm/string.hpp>
 #include <marvin/http/headers_v2.hpp>
 
@@ -11,6 +13,8 @@ namespace {
 }
 
 namespace Marvin::Http {
+
+
 
 const std::string HeadersV2::AcceptEncoding = "ACCEPT-ENCODING";
 const std::string HeadersV2::Authorization = "AUTHORIZATION";
@@ -29,6 +33,52 @@ const std::string HeadersV2::RequestHandlerId = "REQUEST-HANDLER-ID";
 const std::string HeadersV2::ConnectionClose = "CLOSE";
 const std::string HeadersV2::ConnectionKeepAlive = "KEEP-ALIVE";
 
+
+bool isConnectionKeepAlive(std::string value)
+{
+    std::regex r( R"((\s*)(,|;|\s|^)(\s*)keep-alive(\s*)(,|;|\s|$))", std::regex::icase);
+    auto x = std::regex_search(value, r);
+    return x;
+}
+// test whether a header string value has a 'close' substring
+bool isConnectionClose(std::string value)
+{
+    std::regex r(R"((\s*)(,|;|\s|^)(\s*)close(\s*)(,|;|\s|$))", std::regex::icase);
+    auto x = std::regex_search(value, r);
+    return x;
+}
+// tests whether a header structure has a connection header with a 'keep-alive' substring
+bool isConnectionKeepAlive(Marvin::Http::HeadersV2& h)
+{
+    boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
+    if(opt) {
+        std::string s = opt.get();
+        return isConnectionKeepAlive(s);
+    }
+    return false;
+}
+// tests whether a header structure has a connection header with a 'close' substring
+bool isConnectionClose(Marvin::Http::HeadersV2& h)
+{
+    boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
+    if(opt) {
+        std::string s = opt.get();
+        return isConnectionClose(s);
+    }
+    return false;
+}
+
+
+void HeadersV2::copyExcept(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList)
+{
+    for(auto it = source.begin(); it != source.end(); it++) {
+        std::string k = it->first;
+        if( filterList.end() == filterList.find(k) ) {
+            /// if not in list copy
+            dest.setAtKey(it->first, it->second);
+        }
+    }
+}
 
 HeadersV2::Iterator HeadersV2::Iterator::operator++()
 {
@@ -158,5 +208,36 @@ bool HeadersV2::hasKey(std::string k)
 {
     return !(!(this->atKey(k)));
 }
+
+bool HeadersV2::sameValues(HeadersV2& other)
+{
+    if (this->size() != other.size()) return false;
+    for (std::size_t index = 0; index < this->size(); index++ ) {
+    
+        std::pair<std::string, std::string> this_element = m_pairs_vector[index];
+        auto found_optional = other.atKey(this_element.first);
+        if(found_optional) {
+            // found it and unwrapped the options
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+bool HeadersV2::sameOrderAndValues(HeadersV2& other)
+{
+    if (this->size() != other.size()) return false;
+    for (std::size_t index = 0; index < this->size(); index++ ) {
+    
+        std::pair<std::string, std::string> other_element = other.atIndex(index);
+        std::pair<std::string, std::string> this_element = m_pairs_vector[index];
+
+        if(other_element != this_element) {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 } // namespace NewHeaders

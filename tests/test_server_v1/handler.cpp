@@ -8,7 +8,7 @@
 #include <json/json.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/external_src/CxxUrl/url.hpp>
@@ -50,7 +50,7 @@ MessageBaseSPtr make_200_response(std::string body)
     msg->setHttpVersMinor(1);
 
     Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
-    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(body.length() ));
+    msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 MessageBaseSPtr make_response(int status_code, std::string status, std::string body)
@@ -63,13 +63,13 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->setHttpVersMinor(1);
 
     Marvin::BufferChainSPtr bchain_sptr = Marvin::BufferChain::makeSPtr(body);
-    msg->setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(body.length() ));
+    msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 
 bool apply_connection_close(MessageReaderSPtr req, MessageBaseSPtr response)
 {
-    response->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
+    response->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
     return false;
 }
 
@@ -77,12 +77,12 @@ bool apply_keepalive_rules(MessageReaderSPtr req, MessageBaseSPtr response)
 {
     /// correctly handle keep-alive/close
     bool keep_alive;
-    if(req->getHeader(Marvin::Http::Headers::Name::Connection) == Marvin::Http::Headers::Value::ConnectionKeepAlive) {
+    if(req->getHeader(Marvin::Http::HeadersV2::Connection) == Marvin::Http::HeadersV2::ConnectionKeepAlive) {
         keep_alive = true;
-        response->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionKeepAlive);
+        response->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionKeepAlive);
     } else {
         keep_alive = false;
-        response->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
+        response->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
     }
     return keep_alive;
 }
@@ -237,7 +237,7 @@ void V1Handler::handle_get(
     };
     std::string body = f(parm);
     MessageBaseSPtr msg = make_200_response(body);
-    msg->setHeader(Marvin::Http::Headers::Name::Connection, Marvin::Http::Headers::Value::ConnectionClose);
+    msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
     resp->asyncWrite(msg, body, [this, done](Marvin::ErrorType& err)
     {
         done(err, false);

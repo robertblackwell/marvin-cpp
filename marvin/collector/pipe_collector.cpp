@@ -33,8 +33,8 @@ bool bodyIsCollectable(MessageBase& msg, std::vector<std::regex>& regexs)
 {
     bool capture = false;
     std::string hv;
-    if( msg.hasHeader(Marvin::Http::Headers::Name::ContentType) ){
-        hv = msg.getHeader(Marvin::Http::Headers::Name::ContentType);
+    if( msg.hasHeader(Marvin::Http::HeadersV2::ContentType) ){
+        hv = msg.getHeader(Marvin::Http::HeadersV2::ContentType);
         capture = headerValueMatched(hv, regexs);
     }
     return capture;

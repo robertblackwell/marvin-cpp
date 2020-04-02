@@ -123,6 +123,10 @@ long Connection::nativeSocketFD()
 }
 
 #pragma mark - public interface connection management
+boost::asio::io_service& Connection::getIO()
+{
+    return m_io;
+}
 void Connection::close()
 {
     LogFDTrace(nativeSocketFD());
@@ -205,22 +209,27 @@ Cert::Certificate Connection::getServerCertificate()
     return m_server_certificate;
 }
 
+void Connection::asyncRead(Marvin::MBufferSPtr buffer, AsyncReadCallbackType cb)
+{
+    asyncRead(buffer, m_read_timeout_interval_ms, cb);
+}
+
 /**
  * read
  */
-void Connection::asyncRead(Marvin::MBufferSPtr buffer, AsyncReadCallbackType cb)
+void Connection::asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb)
 {
     /// a bit of explanation -
     /// -   set a time out with a handler, the handler knows what to do, in this case cancel outstanding
     ///     ops on the socket
-    m_timeout.setTimeout(m_read_timeout_interval_ms, [this](){
+    m_timeout.setTimeout(timeout_ms, [this](){
         m_lowest_layer_sock.cancel();
     });
     auto handler = ([this, cb, buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         /// when a handler is called the first thing to do is call timeout.cancel()
-        /// when timeout object is finshed it will call the CB and then we can conlete
-        /// out processing knowing that both the IO and tineout are both done
+        /// when timeout object is finshed it will call the CB and then we can complete
+        /// our processing knowing that both the IO and tineout are both done
         m_timeout.cancelTimeout([this, cb, buffer, err, bytes_transfered](){
             Marvin::ErrorType m_err = err;
             buffer->setSize(bytes_transfered);

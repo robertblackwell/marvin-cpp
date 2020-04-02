@@ -6,7 +6,7 @@
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
 #include <doctest/doctest.h>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 #include "test_headers.hpp"
 
 struct kv_t {
@@ -14,11 +14,11 @@ struct kv_t {
     std::string v;
 };
 
-std::vector<std::pair<std::string, std::string>> jsonParseHeaders(json jsonHeaders) {
+std::vector<std::pair<std::string, std::string>> jsonParseHeaders(nlohmann::json jsonHeaders) {
     typedef std::vector<kv_t> header_list;
     header_list hl{};
     std::vector<std::pair<std::string, std::string>> hm{};
-    for (json::iterator it = jsonHeaders.begin(); it != jsonHeaders.end(); ++it) {
+    for (nlohmann::json::iterator it = jsonHeaders.begin(); it != jsonHeaders.end(); ++it) {
 //        std::cout << it.key() << " : " << it.value() << "\n";
         auto z = *it;
         std::string k = it.key();
@@ -47,17 +47,17 @@ std::vector<std::pair<std::string, std::string>> jsonParseHeaders(json jsonHeade
 
 namespace test{
 namespace helpers{
-Marvin::Http::Headers headersFromJson(nlohmann::json& j)
+Marvin::Http::HeadersV2 headersFromJson(nlohmann::json& j)
 {
     auto h = jsonParseHeaders(j);
-    Marvin::Http::Headers result(h);
+    Marvin::Http::HeadersV2 result(h);
     return result;
 }
-bool checkHeaders(Marvin::Http::Headers& h1, Marvin::Http::Headers h2)
+bool checkHeaders(Marvin::Http::HeadersV2& h1, Marvin::Http::HeadersV2 h2)
 {
     bool result = (h1.size() == h2.size());
     CHECK(h1.size() == h2.size());
-    Marvin::Http::Headers tmp_h, other_h;
+    Marvin::Http::HeadersV2 tmp_h, other_h;
     if (h1.size() > h2.size()) {
         tmp_h = h1; other_h = h2;
     } else {
@@ -70,7 +70,7 @@ bool checkHeaders(Marvin::Http::Headers& h1, Marvin::Http::Headers h2)
         result = result && d;
         INFO("k " + k + " not in other_h");
         CHECK(d);
-        auto x = h2[k];
+        auto x = h2.atKey(k).get();
 //        std::cout << k << std::endl;
     }
     return result;

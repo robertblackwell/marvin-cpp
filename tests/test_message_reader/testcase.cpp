@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
+// #include "../test_helpers/test_headers.hpp"
+
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include "testcase.hpp"
@@ -15,69 +17,69 @@ Testcase::Testcase(
     std::string result_first_line,
     int status_code,
     Marvin::ErrorType err,
-    Marvin::Http::Headers::Initializer result_headers,
+    Marvin::Http::HeadersV2::Initializer result_headers,
     std::string result_body
 )
     :
-    _rawMessage(rawMessage),
-    _result_first_line(result_first_line),
-    _result_headers_vec(result_headers),
-    _result_body(result_body)
+    m_rawMessage(rawMessage),
+    m_result_first_line(result_first_line),
+    m_result_headers_vec(result_headers),
+    m_result_body(result_body)
     {
-        _result_headers = _result_headers_vec;
-        _description = description;
-        _index = 0;
-        _result_status_code = status_code;
-        _result_onheaders_err = err;
+        m_result_headers = m_result_headers_vec;
+        m_description = description;
+        m_index = 0;
+        m_result_status_code = status_code;
+        m_result_onheaders_err = err;
     }
     std::string Testcase::getDescription()
     {
-        return _description;
+        return m_description;
     }
     std::string Testcase::lineAt(std::size_t ix)
     {
-        assert(ix < _rawMessage.size());
-        std::string line = _rawMessage[ix];
+        assert(ix < m_rawMessage.size());
+        std::string line = m_rawMessage[ix];
         return line;
     }
     std::vector<std::string> Testcase::buffers()
     {
-        return _rawMessage;
+        return m_rawMessage;
     }
     bool Testcase::verify_first_line(std::string fl)
     {
-        return (fl == _result_first_line);
+        return (fl == m_result_first_line);
     }
-    bool Testcase::verify_headers(::Marvin::Http::Headers& h)
+    bool Testcase::verify_headers(::Marvin::Http::HeadersV2& h)
     {
-        return (_result_headers == h);
+        return h.sameValues(m_result_headers);
     }
     bool Testcase::verify_body(std::string b)
     {
-        return (b == _result_body);
+        return (b == m_result_body);
     }
     std::string Testcase::result_first_line(){
-        return _result_first_line;
+        return m_result_first_line;
     }
-    int Testcase::result_status_code(){return _result_status_code;}
+    int Testcase::result_status_code(){return m_result_status_code;}
 
-    Marvin::ErrorType Testcase::result_onheaders_err(){ return _result_onheaders_err; }
+    Marvin::ErrorType Testcase::result_onheaders_err(){ return m_result_onheaders_err; }
 
-    Marvin::Http::Headers& Testcase::result_headers(){
-        return _result_headers;
+    Marvin::Http::HeadersV2& Testcase::result_headers(){
+        return m_result_headers;
     }
     std::string Testcase::result_body(){
-        return _result_body;
+        return m_result_body;
     }
     std::string Testcase::next()
     {
-        std::string line = lineAt(_index);
-        _index++;
+        std::string line = lineAt(m_index);
+        m_index++;
         return line;
     }
     bool Testcase::finished()
     {
-        bool r = (_index >= _rawMessage.size() );
+        bool r = (m_index >= m_rawMessage.size() );
         return r;
     }
     bool Testcase::is_error_case(){return false;}

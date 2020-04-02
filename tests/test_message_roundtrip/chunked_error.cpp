@@ -48,16 +48,16 @@ Marvin::Http::MessageBaseSPtr ChunkedError::makeRequest()
     Marvin::Http::MessageBaseSPtr msg = std::make_shared<Marvin::Http::MessageBase>();
     msg->setMethod(HTTP_POST);
     msg->setUri(m_path);
-    msg->setHeader(Marvin::Http::Headers::Name::Host, m_host);
+    msg->setHeader(Marvin::Http::HeadersV2::Host, m_host);
     msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
     msg->setHeader(
         "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
     msg->setHeader("Accept-Language","en");
     msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    msg->setHeader(Marvin::Http::Headers::Name::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+    msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
 
-    msg->setHeader(Marvin::Http::Headers::Name::Connection,"Close");
-    msg->setHeader(Marvin::Http::Headers::Name::ETag,"1928273tefadseercnbdh");
+    msg->setHeader(Marvin::Http::HeadersV2::Connection,"Close");
+    msg->setHeader(Marvin::Http::HeadersV2::ETag,"1928273tefadseercnbdh");
     msg->setHeader("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);

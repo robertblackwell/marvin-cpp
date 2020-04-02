@@ -97,6 +97,41 @@ void serialize_headers(MessageBase& msg, std::string& str)
     os << "\r\n";
     str = os.str();
 }
+
+///
+/// KeepAlive is true if:
+///     there is a connection header that contains the string "[ ,]keep-alive[ ,]" case independent
+///     or
+///     there is NOT a connection header that contain the string 'close' case insensitive
+///         and the msg http version is 1.1
+///
+/// Keepalive is explicitly false if
+///     there is a connection header that contain the string 'close' case insensitive
+///     or
+///     there is NOT a connection header that contain the string 'keep-alive' case insensitive
+///         and the msg http version is 1.0
+///
+bool isConnectionKeepAlive(Marvin::Http::MessageBase& msg)
+{
+    if (msg.hasHeader(HeadersV2::Connection)) {
+        if (isConnectionKeepAlive(msg.getHeader(HeadersV2::Connection))) {
+            return true;
+        } else if (isConnectionClose(msg.getHeader(HeadersV2::Connection))) {
+            return false;
+        }
+    }
+    if (msg.httpVersMinor() == 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool isKeepConnectionAlive(MessageBaseSPtr msg_sptr)
+{
+    return isConnectionKeepAlive(*msg_sptr);
+}
+
+
 #pragma - http message base impl
 
 MessageBase::MessageBase()
@@ -213,14 +248,14 @@ Marvin::BufferChainSPtr MessageBase::getContent()
 void MessageBase::setContent(Marvin::BufferChainSPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
-    removeHeader(Marvin::Http::Headers::Name::TransferEncoding);
-    setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(bufSPtr->size()));
+    removeHeader(Marvin::Http::HeadersV2::TransferEncoding);
+    setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(bufSPtr->size()));
 }
 void MessageBase::setContent(std::string content)
 {
     m_body_chain_sptr = Marvin::BufferChain::makeSPtr(content);
-    removeHeader(Marvin::Http::Headers::Name::TransferEncoding);
-    setHeader(Marvin::Http::Headers::Name::ContentLength, std::to_string(m_body_chain_sptr->size()));
+    removeHeader(Marvin::Http::HeadersV2::TransferEncoding);
+    setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(m_body_chain_sptr->size()));
 }
 
 void MessageBase::dumpHeaders(std::ostream& os)

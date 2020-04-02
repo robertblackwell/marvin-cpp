@@ -3,7 +3,7 @@
 #define marvin_client_request_hpp
 #include <functional>                              // for function
 #include <istream>                                 // for string
-#include <marvin/http/http_header.hpp>             // for Headers, Headers::...
+#include <marvin/http/headers_v2.hpp>             // for Headers, Headers::...
 #include <marvin/http/uri.hpp>                     // for Uri
 #include <marvin/message/message_reader.hpp>       // for MessageReaderSPtr
 #include <marvin/message/message_writer.hpp>       // for MessageWriterSPtr
@@ -87,7 +87,7 @@ class Request
 {
 public:
 #pragma mark - constructors and destructors
-    Request(boost::asio::io_service& io, Marvin::Http::Headers::SchemeType scheme, std::string server, std::string port);
+    Request(boost::asio::io_service& io, std::string scheme, std::string server, std::string port);
     Request(boost::asio::io_service& io, Marvin::Uri uri);
     Request(boost::asio::io_service& io, ISocketSPtr conn);
 
@@ -123,9 +123,9 @@ public:
 
     void setPath(std::string path);
     void setVersion(int major, int minor);
-    void setHeaders(Marvin::Http::Headers headers);
+    void setHeaders(Marvin::Http::HeadersV2 headers);
     void setHeader(std::string key, std::string value);
-    void setTrailers(Marvin::Http::Headers trailers);
+    void setTrailers(Marvin::Http::HeadersV2 trailers);
     void setTrailer(std::string key, std::string value);
 
     void asyncWriteHeaders(WriteHeadersCallbackType cb);

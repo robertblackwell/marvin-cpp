@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cassert>
-#include <marvin/http/http_header.hpp>
+#include <marvin/http/headers_v2.hpp>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <marvin/http/parser.hpp>
@@ -250,23 +250,16 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
     n = sb_to_string(name, &n_p);
     n = sb_to_string(value,&v_p);
     
-    Marvin::Http::Headers::canonicalKey(name->buffer, name->used);
+    // Marvin::Http::Headers::canonicalKey(name->buffer, name->used);
     
     std::string n_str = std::string(name->buffer, name->used);
     std::string v_str = std::string(value->buffer, value->used);
-//    Marvin::Http::Headers::canonicalKey(n_str);
     free(v_p);
     free(n_p);
     
-    (p->headers)[n_str] = v_str;
+    (p->headers).setAtKey(n_str, v_str);
     MessageInterface* m = p->currentMessage();
     m->setHeader(n_str, v_str);
-//    std::cout << "SaveNameValuePair::set " << n_str << " " << v_str << std::endl;
-//    auto h = p->headers;
-//    for (auto iter = h.begin(); iter != h.end(); iter++)
-//    {
-//        std::cout << "SaveNameValuePair: "<< "Key: " << iter->first << " : " << iter->second << std::endl;
-//    }
     
 }
 
