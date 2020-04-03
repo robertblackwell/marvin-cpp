@@ -17,7 +17,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/server_v3/http_server.hpp>
 #include <marvin/server_v3/request_handler_base.hpp>
 
-#include "v3_handler.hpp"
+#include "handler.hpp"
+#include "handle_app.hpp"
 
 using namespace Marvin;
 using namespace Http;
@@ -57,51 +58,24 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }
-Handler::Handler(boost::asio::io_service& io): Marvin::RequestHandlerBase(io)
+AppHandler::AppHandler(boost::asio::io_service& io): Handler(io)
 {
 
 }
-Handler::~Handler()
+AppHandler::~AppHandler()
 {
 }
-void Handler::p_invalid_request()
+void AppHandler::handleRequest()
 {
-    std::string body = "INVALID REQUEST";
-    MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
-    m_wrtr->asyncWrite(response_msg, body, [this](Marvin::ErrorType& err) 
-    {
-        std::cout << __PRETTY_FUNCTION__ << "" << std::endl;
-        if (err) {
-            p_on_write_error(err);
-        } else {
-            p_req_resp_cycle_complete();
-        }
-    });    
+    p_internal_handle();
 }
-void Handler::p_handle_echo()
-{
-    std::string body = "THIS IS A RESPONSE BODY";
-    MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
-    m_wrtr->asyncWrite(response_msg, body, [this](Marvin::ErrorType& err) 
-    {
-        std::cout << __PRETTY_FUNCTION__ << "" << std::endl;
-        if (err) {
-            p_on_write_error(err);
-        } else {
-            p_req_resp_cycle_complete();
-        }
-    });    
-}
-void Handler::p_handle_smart_echo()
+void AppHandler::p_invalid_request()
 {
     std::string body = "INVALID REQUEST";
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->str();
     m_wrtr->asyncWrite(response_msg, body, [this](Marvin::ErrorType& err) 
     {
-        std::cout << __PRETTY_FUNCTION__ << "" << std::endl;
         if (err) {
             p_on_write_error(err);
         } else {
@@ -109,14 +83,13 @@ void Handler::p_handle_smart_echo()
         }
     });    
 }
-void Handler::p_non_specific_response()
+void AppHandler::p_handle_echo()
 {
     std::string body = "THIS IS A RESPONSE BODY";
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->str();
     m_wrtr->asyncWrite(response_msg, body, [this](Marvin::ErrorType& err) 
     {
-        std::cout << __PRETTY_FUNCTION__ << "" << std::endl;
         if (err) {
             p_on_write_error(err);
         } else {
@@ -124,7 +97,35 @@ void Handler::p_non_specific_response()
         }
     });    
 }
-void  Handler::p_handle_delay(std::vector<std::string>& bits)
+void AppHandler::p_handle_smart_echo()
+{
+    std::string body = "INVALID REQUEST";
+    MessageBaseSPtr response_msg = make_200_response(body);
+    auto s = response_msg->str();
+    m_wrtr->asyncWrite(response_msg, body, [this](Marvin::ErrorType& err) 
+    {
+        if (err) {
+            p_on_write_error(err);
+        } else {
+            p_req_resp_cycle_complete();
+        }
+    });    
+}
+void AppHandler::p_non_specific_response()
+{
+    std::string body = "THIS IS A RESPONSE BODY";
+    MessageBaseSPtr response_msg = make_200_response(body);
+    auto s = response_msg->str();
+    m_wrtr->asyncWrite(response_msg, body, [this](Marvin::ErrorType& err) 
+    {
+        if (err) {
+            p_on_write_error(err);
+        } else {
+            p_req_resp_cycle_complete();
+        }
+    });    
+}
+void  AppHandler::p_handle_delay(std::vector<std::string>& bits)
 {
     int delay;
     if ((bits.size() == 3) && (is_number(bits[2]))) {
@@ -139,7 +140,7 @@ void  Handler::p_handle_delay(std::vector<std::string>& bits)
         p_invalid_request();
     }
 }
-void Handler::p_internal_handle()
+void AppHandler::p_internal_handle()
 {
     m_rdr->readMessage([this](Marvin::ErrorType err)
     {
@@ -165,49 +166,4 @@ void Handler::p_internal_handle()
             }
         }
     });
-}
-void Handler::handle(
-    Marvin::ServerContext&          server_context,
-    ISocketSPtr                     socket_sptr,
-    Marvin::HandlerDoneCallbackType done
-)
-{
-    m_socket_sptr = socket_sptr;
-    m_rdr = std::make_shared<MessageReader>(m_io, socket_sptr);
-    m_wrtr = std::make_shared<MessageWriter>(m_io, socket_sptr);
-    m_done_callback = done;
-    p_internal_handle();
-}
-/// determine whether to callback to the server or start another read/write cycle
-void Handler::p_req_resp_cycle_complete()
-{
-    // assume all connections are persistent
-    LogWarn("Handler::p_req_resp_cycle_complete");
-    bool keep_alive = false;
-    /// @TODO - this is a hack
-    if (m_rdr->hasHeader(Marvin::Http::HeadersV2::Connection)) {
-        std::string conhdr = m_rdr->getHeader(Marvin::Http::HeadersV2::Connection);
-        keep_alive = (conhdr == "Keep-Alive");
-    }
-    if (keep_alive) {
-        p_internal_handle();
-    } else {
-        m_socket_sptr->shutdown(ISocket::ShutdownSend); // remember this is actually shutdown send side
-        m_done_callback();
-    }
-    // m_done_callback();
-}
-void Handler::p_on_read_error(Marvin::ErrorType err)
-{
-    std::cout << __PRETTY_FUNCTION__ << err.message() << std::endl;
-    LogWarn("Handler p_on_read_error : ", err.message());
-    // m_socket_sptr->close();
-    m_done_callback();
-}
-void Handler::p_on_write_error(Marvin::ErrorType err)
-{
-    std::cout << __PRETTY_FUNCTION__ << err.message() << std::endl;
-    LogWarn("Handler p_on_write_error : ", err.message());
-    // m_socket_sptr->close();
-    m_done_callback();
 }

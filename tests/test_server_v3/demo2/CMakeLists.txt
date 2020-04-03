@@ -2,7 +2,10 @@
 set(TARGET test_server_v3_demo_2)
 add_executable(${TARGET} 
 	demo_2.cpp
-	../v3_handler.cpp
+	../handler.cpp
+	../handler.hpp
+	../handle_app.cpp
+	../handle_app.hpp
 	../server_v3_runner.cpp
 )
 target_include_directories(${TARGET} PUBLIC ./ ./bf ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})

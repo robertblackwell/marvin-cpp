@@ -18,7 +18,8 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN | LOG_LEVEL_TORTRACE | LOG_LEVEL_TRACE)
 
 #include "timer.hpp"
-#include "v3_handler.hpp"
+#include "handler.hpp"
+#include "handle_app.hpp"
 #include "server_v3_runner.hpp"
 #include "any_response.hpp"
 #include "../../test_message_roundtrip/runners.hpp"
@@ -102,7 +103,7 @@ int main(int argc, char* argv[])
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)
     {
-        return new Handler(io);
+        return new AppHandler(io);
     });
     doctest::Context context;
     context.applyCommandLine(argc, argv);

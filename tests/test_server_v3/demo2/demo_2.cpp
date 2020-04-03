@@ -16,7 +16,8 @@
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "../timer.hpp"
-#include "../v3_handler.hpp"
+#include "../handler.hpp"
+#include "../handle_app.hpp"
 #include "../server_v3_runner.hpp"
 
 
@@ -70,7 +71,7 @@ int main(int argc, char* argv[])
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)
     {
-        return new Handler(io);
+        return new AppHandler(io);
     });
     doctest::Context context;
     context.applyCommandLine(argc, argv);

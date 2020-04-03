@@ -1,20 +1,7 @@
 #include <boost/asio.hpp>
 #include "server_v3_runner.hpp"
-#include "v3_handler.hpp"
-
-#ifdef SERVER_RUNNER_STATIC
-static ServerRunnerSPtr runner_saved_sptr;
-
-void startTestServer(long port)
-{
-    runner_saved_sptr = std::make_shared<ServerRunner>();
-    runner_saved_sptr->setup(port);
-}
-void stopTestServer()
-{
-    runner_saved_sptr->teardown();
-}
-#endif
+#include "handler.hpp"
+#include "handle_app.hpp"
 
 #define SERVER_RUNNER_CVAR
 ServerRunner::ServerRunner(){ m_server_ready = false;}

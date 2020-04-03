@@ -7,7 +7,6 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include "repeating_timer.hpp"
-#include "error.hpp"
 #include "testcase.hpp"
 #include <marvin/connection/socket_interface.hpp>
 

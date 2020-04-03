@@ -1,4 +1,12 @@
 Next projects:
+☐ server_v3 becomes part of mainstream without the v3 bit
+☐ test_roundtrip and test_server_v3 should be combined and unused files deleted
+☐ handler : break test_server_v3/handler into two pieces, one that handles the interface and the other that services requests.
+☐ handler : integrate the new isConnectionKeepAlice() isConnectionClosed() functions into this class
+☐ move the interface bit of handler in marvin++/marvin/server as part of the main source and new server
+☐ test_message_reader - remove the stuff to do with the hack server and client
+☐ rename header_v2 to header
+☐ 
 ☐ remove outdated or unused test files
 ☐ determine which tests will be kept - there is currently a lot of overlap
 ☐ make server_v3 the mainstream - implement the idea of an Adapter and work out how to fit ForwardingHandler into this server. The goal is to get `test_proxy` working.

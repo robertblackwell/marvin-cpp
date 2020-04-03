@@ -2,7 +2,10 @@
 set(TARGET test_server_v3_manual)
 add_executable(${TARGET} 
 	manual.cpp
-	../v3_handler.cpp
+	../handler.cpp
+	../handler.hpp
+	../handle_app.cpp
+	../handle_app.hpp
 	../server_v3_runner.cpp
 	../../test_message_roundtrip/any_response.cpp
 	../../test_message_roundtrip/any_response.hpp

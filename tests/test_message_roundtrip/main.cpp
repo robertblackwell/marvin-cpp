@@ -29,7 +29,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/http/message_base.hpp>
 #include <marvin/client/client.hpp>
 
-#include "tm_roundtrip_testcase_base.hpp"
 #include "echo_smart.hpp"
 #include "chunked.hpp"
 #include "chunked_error.hpp"

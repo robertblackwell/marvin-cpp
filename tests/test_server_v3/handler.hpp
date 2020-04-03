@@ -16,7 +16,6 @@
 #include <marvin/server_v3/server_context.hpp>
 #include <marvin/server_v3/request_handler_base.hpp>
 #include "timer.hpp"
-
 /**
 * Class used to handle requests in the test server for both the bb abd bf
 * set of tests. This handler:
@@ -31,22 +30,15 @@ public:
     static int counter; // to see if there are multiple instances of the handler
     // boost::asio::deadline_timer m_imer;
     boost::uuids::uuid       m_uuid;
-    // these are the minimum requirements to send a response
-    // the subordinate handlers fill these in
-    Marvin::Http::MessageBaseSPtr       response_msg;
-    std::string                         response_body;
-    bool                                keep_alive;
     
-    MessageWriterSPtr                   m_resp;
+    ISocketSPtr                         m_socket_sptr;
     MessageWriterSPtr                   m_wrtr;
     MessageReaderSPtr                   m_rdr;
     Marvin::Http::MessageBaseSPtr       m_msg;
     std::string                         m_body;
     Marvin::HandlerDoneCallbackType     m_done;
-    bool                                m_keep_alive;
     ATimerSPtr                          m_timer_sptr;
-
-
+    std::function<void()>               m_done_callback;
 
     Handler(boost::asio::io_service& io);
     ~Handler();
@@ -56,9 +48,16 @@ public:
         ISocketSPtr                       connPtr,
         Marvin::HandlerDoneCallbackType   done
     );
-    void p_handle_echo();
-    void p_handle_smart_echo();
-    void p_handle_delay(std::vector<std::string>& bits);
+
+    virtual void handleRequest(
+        // ISocketSPtr                       connPtr,
+        // MessageWriterSPtr                   m_wrtr,
+        // MessageReaderSPtr                   m_rdr
+    ) = 0;
+protected:
+    void p_req_resp_cycle_complete();
+    void p_on_read_error(Marvin::ErrorType err);
+    void p_on_write_error(Marvin::ErrorType err);
 
 };
 #endif /* test_server_h */
