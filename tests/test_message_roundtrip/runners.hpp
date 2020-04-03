@@ -87,7 +87,7 @@ public:
     boost::asio::io_service& m_io;
     ClientSPtr  m_client_sptr;
 };
-// two requests on the same connection
+// two requests serially on the same connection
 template <class T>
 class TwoRequests {
 public:
@@ -124,6 +124,64 @@ public:
     ClientSPtr  m_client_sptr;
 };
 
+//  runs N requests serially on the same connection. 
+// Applies connection keep-alive to all requests except the last
+// which is made connection close
+template <class T>
+class NBackToBackRequests 
+{
+public:
+    NBackToBackRequests(boost::asio::io_service& io, T& testcase, long times): m_io(io), m_testcase(testcase)
+    {
+        m_times = times;
+        m_host = testcase.getHost();
+        m_port = testcase.getPort();
+    }
+    void http_exec()
+    {
+        using namespace Marvin::Http;
+        using namespace Marvin;
+        m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
+        p_one_request();
+    }
+    void p_one_request()
+    {
+        using namespace Marvin::Http;
+        using namespace Marvin;
+        MessageBaseSPtr request_sptr = m_testcase.makeRequest();
+        Marvin::BufferChainSPtr body = m_testcase.makeBody();
+        if (m_times == 1) {
+            request_sptr->setHeader(Marvin::Http::HeadersV2::Connection,"Close");
+        } else {
+            request_sptr->setHeader(Marvin::Http::HeadersV2::Connection,"Keep-Alive");
+        }
+        m_client_sptr->asyncWrite(request_sptr, body, [this](ErrorType& err,  MessageBaseSPtr response_sptr) {
+            m_testcase.verifyResponse(err, response_sptr);
+            p_next();
+        });
+    }
+    void p_next()
+    {
+        if (m_times > 1) {
+            m_times--;
+            p_one_request();
+        } else {
+            m_client_sptr = nullptr; // force deallocation of client connection and connection close
+        }
+    }
+
+    void https_exec(std::string host, std::string port){};
+    std::string m_scheme;
+    std::string m_host;
+    std::string m_port;
+    long        m_times;
+    boost::asio::io_service& m_io;
+    T&          m_testcase;
+    ClientSPtr  m_client_sptr;
+};
+
+
+/** Runs a number of roundtrips in parallel*/
 template <class T>
 class RoundTripByN 
 {

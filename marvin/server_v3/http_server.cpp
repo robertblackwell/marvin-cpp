@@ -12,7 +12,7 @@
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/server_v3/http_server.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
 
 using namespace Marvin;
 
@@ -133,7 +133,7 @@ void HttpServer::terminate()
  void HttpServer::p_start_accept()
 {
 
-    LogInfo("");
+    LogTrace("");
     ::ISocketSPtr conn_sptr = socketFactory(m_io);
     
     ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
@@ -156,7 +156,7 @@ void HttpServer::terminate()
         return; // something is wrong
     }
     if (!err){
-        LogInfo("got a connection", connHandler->nativeSocketFD());
+        LogTrace("got a connection", connHandler->nativeSocketFD());
         /// at this point the native socket fd is assigned
         /// so for debug purposes we can stash it in the
         /// fd_inuse list
@@ -166,7 +166,7 @@ void HttpServer::terminate()
         // by allowAnotherConnection() we need to be sure there is still
         // an outstanding connection that will start an accept in the future.
         m_connectionManager.allowAnotherConnection([this](){
-            LogWarn("allowAnother Callback");
+            LogTrace("allowAnother Callback");
             p_start_accept();
         });
         #if 0
@@ -177,7 +177,7 @@ void HttpServer::terminate()
         #endif
     }else{
 //        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
-        LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
+        LogTrace("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         m_io.stop();
         return;
 //        delete connHandler;

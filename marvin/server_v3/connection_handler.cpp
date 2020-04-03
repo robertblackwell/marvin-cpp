@@ -5,7 +5,7 @@
 #include <marvin/server_v3/http_server.hpp>
 #include <marvin/server_v3/server_context.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
 using namespace Marvin;
 
 ConnectionHandler::ConnectionHandler(
@@ -19,7 +19,7 @@ ConnectionHandler::ConnectionHandler(
     m_connectionManager(connectionManager),
     m_factory(factory)
 {
-    LogWarn("YYY ConnectionHandler constructor");
+    LogTorTrace("ConnectionHandler constructor");
     /**
     * The connection and the request handler persist acrosss all messages served
     * by a connection handler. This is required to ensure that our MITM proxy
@@ -37,7 +37,7 @@ ConnectionHandler::ConnectionHandler(
 
 ConnectionHandler::~ConnectionHandler()
 {
-    LogWarn("YYY ConnectionHandler destructor");
+    LogTrace(" ConnectionHandler destructor");
     m_requestHandlerUnPtr = nullptr;
     m_connection = nullptr;
 }
@@ -59,9 +59,9 @@ std::string ConnectionHandler::uuid()
 */
 void ConnectionHandler::serve()
 {
-    LogTrace("XX ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
+    LogTrace("ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
     m_requestHandlerUnPtr->handle(m_server_context, m_connection, [this](){
-        LogWarn("XX ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
+        LogTrace("ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
         m_connectionManager.deregister(this); 
     });
 }

@@ -66,7 +66,7 @@ TEST_CASE("02")
 //
 int main(int argc, char* argv[])
 {
-    RBLogging::setEnabled(true);
+    RBLogger::setEnabled(true);
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)
     {

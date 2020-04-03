@@ -54,7 +54,7 @@ public:
     }
 };
 
-#define XMESSAGE_ROUNDTRIP_DISABLE
+#define MESSAGE_ROUNDTRIP_DISABLE
 #ifndef MESSAGE_ROUNDTRIP_DISABLE
 // make a round trip to a local nodejs server which echos back the request headers and body in a json response
 // the verify parses the json and tests a varierty of header fields
@@ -94,7 +94,6 @@ TEST_CASE("chunked error during reply")
     io.run();
     std::cout << "round trip test case" << std::endl; 
 }
-#endif
 TEST_CASE("rt_localhost_3000_cnhunked")
 {
     std::cout << "round trip test case" << std::endl; 
@@ -127,6 +126,7 @@ TEST_CASE("any response by 3")
     io.run();
     std::cout << "any response by 3" << std::endl; 
 }
+#endif
 
 #ifndef MESSAGE_ROUNDTRIP_DISABLE
 
@@ -163,6 +163,16 @@ TEST_CASE("two chunked")
     std::cout << "two requests" << std::endl; 
 }
 #endif
+TEST_CASE("N chunked")
+{
+    std::cout << "N requests" << std::endl; 
+    boost::asio::io_service io;
+    Chunked chunked{"/echo/smart", HttpMethod::POST, scheme, host, port, "Thisisthebodyoftherequest"};
+    NBackToBackRequests<Chunked> runner{io, chunked, 3};
+    runner.http_exec();
+    io.run();
+    std::cout << "N requests" << std::endl; 
+}
 #if 0 
 
 TEST_CASE("whiteacorn.com_utests_echo/")

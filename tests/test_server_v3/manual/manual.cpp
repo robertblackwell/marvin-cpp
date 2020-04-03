@@ -13,8 +13,10 @@
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
+
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN | LOG_LEVEL_TORTRACE | LOG_LEVEL_TRACE)
+
 #include "timer.hpp"
 #include "v3_handler.hpp"
 #include "server_v3_runner.hpp"
@@ -94,7 +96,8 @@ TEST_CASE("pipeline_x2_roundtrip_anyresponse")
 //
 int main(int argc, char* argv[])
 {
-    RBLogging::setEnabled(true);
+    RBLogger::setEnabled(true);
+    RBLogger::enableForLevel(LOG_LEVEL_WARN);
     Marvin::HttpServer::configSet_NumberOfConnections(5);
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)

@@ -1,6 +1,6 @@
 #include <unistd.h>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TORTRACE|LOG_LEVEL_TRACE)
 #include <marvin/server_v3/server_connection_manager.hpp>
 using namespace Marvin;
 
@@ -53,7 +53,7 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
     LogTrace(" num conn: ", m_connection_count);
     return;
 #else
-    LogWarn("registerConnectionHandler num connections: ", m_connections.size());
+    LogTrace("registerConnectionHandler num connections: ", m_connections.size());
     long fd = connHandler->nativeSocketFD();
     assert(m_fd_list.find(fd) == m_fd_list.end());
     assert(m_connections.find(connHandler) == m_connections.end()); // assert not already there
@@ -70,8 +70,8 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
  */
 void ServerConnectionManager::deregister(ConnectionHandler* ch)
 {
-    LogWarn("deregister nativeSocket:: ", ch->nativeSocketFD());
-    LogWarn("deregister num connections:: ", m_connections.size());
+    LogTrace("deregister nativeSocket:: ", ch->nativeSocketFD());
+    LogTrace("deregister num connections:: ", m_connections.size());
     #if 0
     auto pf = (std::bind(&ServerConnectionManager::p_deregister, this, ch));
     m_io.post(pf);
@@ -113,11 +113,11 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
     m_fd_list.erase(fd);
     long num_fds = (long)getdtablesize();
 #endif
-    LogWarn(" p_deregister num connections : ", m_connections.size() ," num FDs: ", getdtablesize(), " m_callback != null", (m_allow_more_callback != nullptr));
+    LogTrace(" p_deregister num connections : ", m_connections.size() ," num FDs: ", getdtablesize(), " m_callback != null", (m_allow_more_callback != nullptr));
     if (m_allow_more_callback && (m_connections.size() < m_maxNumberOfConnections)) {
-        LogWarn("p_deregister  allowing more connections from inside p_deregister");
+        LogTrace("p_deregister  allowing more connections from inside p_deregister");
         auto tmp = m_allow_more_callback;
-        LogInfo("releasing cb: ", (void*)(&tmp) );
+        LogTrace("releasing cb: ", (void*)(&tmp) );
         m_allow_more_callback = nullptr;
         m_io.post(tmp);
     }

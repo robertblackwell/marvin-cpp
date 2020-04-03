@@ -42,6 +42,10 @@ void Chunked::verifyResponse(Marvin::ErrorType& er, Marvin::Http::MessageBaseSPt
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     Marvin::BufferChainSPtr bsp = response->getContentBuffer();
     std::string raw_body = bsp->to_string();
+    if (response->statusCode() != 200) {
+        auto x = response->statusCode();
+        std::cout << "chunked verifyResponse statusCode: " << x << std::endl;
+    }
     CHECK(response->statusCode() == 200);
     
     bool te_check = response->hasHeader(Marvin::Http::HeadersV2::TransferEncoding);
