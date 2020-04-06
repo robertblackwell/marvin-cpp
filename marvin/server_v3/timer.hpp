@@ -1,10 +1,11 @@
-#ifndef marvin_test_server_v3_timer_hpp
-#define marvin_test_server_v3_timer_hpp
+#ifndef marvin_server_v3_timer_hpp
+#define marvin_server_v3_timer_hpp
 
 #include <string>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
+namespace Marvin {
 class ATimer;
 typedef std::shared_ptr<ATimer> ATimerSPtr;
 class ATimer
@@ -41,4 +42,5 @@ public:
     int m_count;
     std::function<void()> m_callback;
 };
+}
 #endif /* test_server_h */

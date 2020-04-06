@@ -1,18 +1,12 @@
-//
-//  ConnectionHandler.cpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/12/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
-#include <marvin/http/headers_v2.hpp>
 #include <marvin/server/connection_handler.hpp>
+
+#include <marvin/http/headers_v2.hpp>
 #include <marvin/server/server_connection_manager.hpp>
-#include <marvin/server/http_server.hpp>
 #include <marvin/server/server_context.hpp>
+#include <marvin/server/http_server.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-
+namespace Marvin {
 #if 0
 ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&    io,
@@ -49,7 +43,7 @@ ConnectionHandler::ConnectionHandler(
 ):
     m_uuid(boost::uuids::random_generator()()),
     m_io(io),
-    m_connectionManager(connectionManager),
+    m_connection_manager(connectionManager),
     m_factory(factory)
 {
     LogTorTrace();
@@ -59,7 +53,7 @@ ConnectionHandler::ConnectionHandler(
     * can handle keep-alive
     */
     m_connection = conn_sptr;
-    m_requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(m_factory(m_io));
+    m_request_handler_unPtr = std::unique_ptr<RequestHandlerBase>(m_factory(m_io));
     m_server_context.server_ptr = HTTPServer::get_instance();
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
@@ -73,7 +67,7 @@ ConnectionHandler::ConnectionHandler(
 ConnectionHandler::~ConnectionHandler()
 {
     LogTorTrace();
-    m_requestHandlerUnPtr = nullptr;
+    m_request_handler_unPtr = nullptr;
     m_connection = nullptr;
     m_reader = nullptr;
     m_writer = nullptr;
@@ -103,7 +97,7 @@ void ConnectionHandler::p_handle_connect_complete(bool hijacked)
         assert(false); // requires a decision about how to manage closing connections
         m_connection->close();
     }
-    m_connectionManager.deregister(this); // should be maybe called deregister
+    m_connection_manager.deregister(this); // should be maybe called deregister
 }
 /*!
 * Called when a request/response cycle is complete and starts a read
@@ -150,7 +144,7 @@ void ConnectionHandler::p_handler_complete(Marvin::ErrorType err)
     #endif
     
     // TODO - this does not close the socket  - change to make that happen
-    m_connectionManager.deregister(this); // should be maybe called deregister
+    m_connection_manager.deregister(this); // should be maybe called deregister
     
 }
 /*!
@@ -181,13 +175,13 @@ void ConnectionHandler::p_read_message_handler(Marvin::ErrorType err)
     } else {
         if(m_reader->method() == HttpMethod::CONNECT ){
             LogWarn("CONNECT request");
-             m_requestHandlerUnPtr->handleConnect(m_server_context, m_reader, m_writer, m_connection, [this](Marvin::ErrorType& err, bool keepAlive){
+             m_request_handler_unPtr->handleConnect(m_server_context, m_reader, m_writer, m_connection, [this](Marvin::ErrorType& err, bool keepAlive){
                 this->p_request_complete(err, false);
              });
         } else {
             LogTrace(traceMessage(*m_reader));
             
-            m_requestHandlerUnPtr->handleRequest(
+            m_request_handler_unPtr->handleRequest(
                 m_server_context, 
                 m_reader, 
                 m_writer, m_connection,  
@@ -242,3 +236,4 @@ void ConnectionHandler::p_serve_another()
     auto rmh = std::bind(&ConnectionHandler::p_read_message_handler, this, std::placeholders::_1 );
     m_reader->readMessage(rmh);
 }
+} // namespace

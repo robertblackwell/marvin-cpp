@@ -12,7 +12,7 @@ namespace {
     }
 }
 
-namespace Marvin::Http {
+namespace Marvin {
 
 
 
@@ -48,7 +48,7 @@ bool isConnectionClose(std::string value)
     return x;
 }
 // tests whether a header structure has a connection header with a 'keep-alive' substring
-bool isConnectionKeepAlive(Marvin::Http::HeadersV2& h)
+bool isConnectionKeepAlive(Marvin::HeadersV2& h)
 {
     boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
     if(opt) {
@@ -58,7 +58,7 @@ bool isConnectionKeepAlive(Marvin::Http::HeadersV2& h)
     return false;
 }
 // tests whether a header structure has a connection header with a 'close' substring
-bool isConnectionClose(Marvin::Http::HeadersV2& h)
+bool isConnectionClose(Marvin::HeadersV2& h)
 {
     boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
     if(opt) {

@@ -18,12 +18,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
 
-using boost::asio::ip::tcp;
-using boost::system::error_code;
-using boost::asio::io_service;
-using boost::asio::streambuf;
-using namespace Marvin;
-using namespace Marvin::Http;
+namespace Marvin {
+using ::boost::asio::ip::tcp;
+using ::boost::system::error_code;
+using ::boost::asio::io_service;
+using ::boost::asio::streambuf;
 
 Request::Request(
     boost::asio::io_service& io, 
@@ -35,7 +34,7 @@ Request::Request(
     std::cout << "Constructor" << std::endl;
     m_conn_shared_ptr = socketFactory(m_io, m_scheme, m_server, m_port);
     p_create_rdr_wrtr();
-    m_current_request->setHeader(Marvin::Http::HeadersV2::Host, m_server+":"+m_port);
+    m_current_request->setHeader(Marvin::HeadersV2::Host, m_server+":"+m_port);
     m_is_connected = false;
 }
 Request::Request(
@@ -96,7 +95,7 @@ void Request::setVersion(int major, int minor)
     m_current_request->setHttpVersMajor(major);
     m_current_request->setHttpVersMinor(minor);
 }
-void Request::setHeaders(Marvin::Http::HeadersV2 headers)
+void Request::setHeaders(Marvin::HeadersV2 headers)
 {
     p_test_good_to_go();
 
@@ -106,7 +105,7 @@ void Request::setHeader(std::string key, std::string value)
     p_test_good_to_go();
     m_current_request->setHeader(key, value);
 }
-void Request::setTrailers(Marvin::Http::HeadersV2 trailers)
+void Request::setTrailers(Marvin::HeadersV2 trailers)
 {
     p_test_good_to_go();
 }
@@ -314,7 +313,7 @@ void Request::p_set_content_length()
     if( m_body_mbuffer_sptr != nullptr ) {
         len = m_body_mbuffer_sptr->size();
     }
-    msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(len));
+    msg->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(len));
 }
 /*!--------------------------------------------------------------------------------
 * implement helper functions
@@ -331,7 +330,6 @@ void Request::p_test_good_to_go()
 // add host header
 void Request::p_prep_write_complete_headers()
 {
-    using namespace Marvin::Http;
     if(!m_current_request->hasHeader(HeadersV2::ContentLength)) {
         if (!m_current_request->hasHeader(HeadersV2::TransferEncoding)) {
             throw "Request::p_prep_write_complete_headers - no content length or chunked header";
@@ -373,3 +371,4 @@ void Request::p_assert_trailers_permitted()
 {
     assert(true);
 }
+} // namespace

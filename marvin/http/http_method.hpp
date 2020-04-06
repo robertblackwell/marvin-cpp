@@ -7,15 +7,12 @@
 #include <marvin/external_src/http-parser/http_parser.h>
 #include <marvin/boost_stuff.hpp>
 
-/**
-* \ingroup HttpMessage
-* \brief Enum for HTTP method. It is a BAD kludge to get C++ enum same as http_parser c enum;
-* usage HttpMethod::GET -- see http_parser.h for list of names
-*/
+namespace Marvin {
 enum class HttpMethod{
 #define EC(num, name, string) name = HTTP_##name,
     HTTP_METHOD_MAP(EC)
 #undef EC
 };
 std::string httpMethodString(HttpMethod m);
+} // namespace
 #endif

@@ -24,13 +24,14 @@
 #include <marvin/connection/socket_interface.hpp>       // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>                // for ErrorType
 #include <marvin/http/message_base.hpp>                 // for MessageBaseSPtr
-class Request;  // lines 21-21
+
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }  // lines 19-19
 
-using namespace Marvin;
-using namespace Marvin::Http;
-using boost::asio::ip::tcp;
+namespace Marvin {
+class Request;  // lines 21-21
+
+using ::boost::asio::ip::tcp;
 using RequestSPtr = std::shared_ptr<Request>;
 using RequestUPtr = std::unique_ptr<Request>;
 using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)>;
@@ -123,9 +124,9 @@ public:
 
     void setPath(std::string path);
     void setVersion(int major, int minor);
-    void setHeaders(Marvin::Http::HeadersV2 headers);
+    void setHeaders(Marvin::HeadersV2 headers);
     void setHeader(std::string key, std::string value);
-    void setTrailers(Marvin::Http::HeadersV2 trailers);
+    void setTrailers(Marvin::HeadersV2 trailers);
     void setTrailer(std::string key, std::string value);
 
     void asyncWriteHeaders(WriteHeadersCallbackType cb);
@@ -153,7 +154,7 @@ public:
 #pragma mark - friend utility functions
    
     friend std::string traceRequest(Request& request);
-    friend std::string traceRequestMessage(Marvin::Http::MessageBase& request);
+    friend std::string traceRequestMessage(Marvin::MessageBase& request);
 
 public:
     // internal paranoid tests    
@@ -189,7 +190,7 @@ public:
     // general write error handler
     void p_write_error();
     // @TODO need to determine role of this method
-    void p_async_write(Marvin::Http::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
+    void p_async_write(Marvin::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     // steps in read response
     void p_read_response_headers();
     void p_read_response_body();
@@ -221,7 +222,7 @@ public:
     std::string m_path;
 
     boost::asio::io_service&                        m_io;
-    Marvin::Http::MessageBaseSPtr                   m_current_request;
+    Marvin::MessageBaseSPtr                   m_current_request;
     Marvin::MBufferSPtr                             m_body_mbuffer_sptr;
     MessageWriterSPtr                               m_wrtr;
     MessageReaderSPtr                               m_rdr;
@@ -236,5 +237,6 @@ public:
 //    std::string _server;    // as used in boost resolve/connect WITHOUT port number
     
 };
+} // namespace
 #endif
 

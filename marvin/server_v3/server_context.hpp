@@ -15,7 +15,7 @@ struct ServerContext
     HttpServer*               server_ptr;
     ServerConnectionManager*    server_connection_manager_ptr;
     ConnectionHandler*          connection_handler_ptr;
-    ::ISocket*        			connection_ptr;
+    ISocket*        			connection_ptr;
 };
 } // namespace Marvin
 #endif /* server_context_hpp */

@@ -16,11 +16,10 @@ std::set<std::string> s{"one","two"};
 #include <marvin/http/http_header.hpp>
 
 using namespace Marvin;
-using namespace Http;
 using namespace nlohmann;
 
 namespace Marvin {
-namespace Http {
+
     void to_json(json& j, const Headers& h)
     {
 //        std::cout << __FUNCTION__ <<" " <<  __FILE__ <<  " " << __LINE__ <<std::endl;
@@ -36,7 +35,7 @@ namespace Http {
 
     Headers::Headers() : OrderedKeyValues() {}
 //    Headers::Headers(std::vector<std::pair<std::string, std::string>> vals) : OrderedKeyValues(vals) {}
-    Headers::Headers(Marvin::Http::Headers::Initializer vals) : OrderedKeyValues(vals) {}
+    Headers::Headers(Marvin::Headers::Initializer vals) : OrderedKeyValues(vals) {}
 
     void Headers::canonicalKey(char* key, int length)
     {
@@ -47,7 +46,7 @@ namespace Http {
     }
     void Headers::canonicalKey(std::string& key) {  boost::algorithm::to_upper(key);}
     
-    void Headers::copyExcept(Marvin::Http::Headers& source, Marvin::Http::Headers& dest, std::set<std::string> filterList)
+    void Headers::copyExcept(Marvin::Headers& source, Marvin::Headers& dest, std::set<std::string> filterList)
     {
         for(auto it = source.begin(); it != source.end(); it++) {
             std::string k = it->first;
@@ -59,7 +58,7 @@ namespace Http {
     }
 #if 0
     
-    static void removeInList(Marvin::Http::Headers& hdrs, std::set<std::string> filterList) {
+    static void removeInList(Marvin::Headers& hdrs, std::set<std::string> filterList) {
         for(auto it = hdrs.begin(); it != hdrs.end(); ) {
             std::string k = it->first;
             if( filterList.end() != filterList.find(k) ) {
@@ -69,9 +68,9 @@ namespace Http {
         }
     }
 
-    void Headers::filterNotInList(Marvin::Http::Headers& hdrs,
+    void Headers::filterNotInList(Marvin::Headers& hdrs,
             HttpHeaderFilterSetType filterList,
-            std::function<void(Marvin::Http::Headers& hdrs, std::string key, std::string value)> cb)
+            std::function<void(Marvin::Headers& hdrs, std::string key, std::string value)> cb)
     {
     
         for(auto it = hdrs.begin(); it != hdrs.end(); it++ )
@@ -89,7 +88,7 @@ namespace Http {
     }
 
 
-    void Headers::keepInList(Marvin::Http::Headers& hdrs, std::set<std::string> filterList)
+    void Headers::keepInList(Marvin::Headers& hdrs, std::set<std::string> filterList)
     {
     
         for(auto it = hdrs.begin(); it != hdrs.end(); )
@@ -103,9 +102,9 @@ namespace Http {
         }
     }
 
-    void Headers::filterInList(Marvin::Http::Headers&  hdrs,
+    void Headers::filterInList(Marvin::Headers&  hdrs,
             HttpHeaderFilterSetType filterList,
-            std::function<void(Marvin::Http::Headers& hdrs, std::string key, std::string value)> cb)
+            std::function<void(Marvin::Headers& hdrs, std::string key, std::string value)> cb)
     {
     
         for(auto it = hdrs.begin(); it != hdrs.end(); it++)
@@ -143,6 +142,5 @@ namespace Http {
     const std::string Headers::Scheme::http = "http";
 
 
-} // namespace Http
 } //namespace Marvin
 

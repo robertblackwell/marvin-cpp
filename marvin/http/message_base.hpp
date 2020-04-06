@@ -10,7 +10,7 @@
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_interface.hpp>
 namespace Marvin {
-namespace Http {
+
 /**
 * Defines an interface that all representations of a Http Message should conform to.
 */
@@ -34,7 +34,7 @@ Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
 ///     there is NOT a connection header that contain the string 'keep-alive' case insensitive
 ///         and the msg http version is 1.0
 ///
-bool isConnectionKeepAlive(Marvin::Http::MessageBase& msg);
+bool isConnectionKeepAlive(Marvin::MessageBase& msg);
 bool isKeepConnectionAlive(MessageBaseSPtr msg_sptr);
 
 /// HttpMessage
@@ -66,7 +66,7 @@ public:
     void setHttpVersMinor(int minor);
     int  httpVersMinor();
     
-    Marvin::Http::HeadersV2& getHeaders();
+    Marvin::HeadersV2& getHeaders();
     bool hasHeader(std::string key);
     std::string header(std::string key);
     std::string getHeader(std::string key);
@@ -119,15 +119,14 @@ protected:
     int									m_http_major;
     int									m_http_minor;
 
-//    Marvin::Http::HeadersV2                   m_headers;
-//    Marvin::Http::HeadersV2                   m_trailers;
-    Marvin::Http::HeadersV2              m_headers;
-    Marvin::Http::HeadersV2              m_trailers;
+//    Marvin::HeadersV2                   m_headers;
+//    Marvin::HeadersV2                   m_trailers;
+    Marvin::HeadersV2              m_headers;
+    Marvin::HeadersV2              m_trailers;
 
     Marvin::BufferChainSPtr             m_body_chain_sptr;
     
 };
 
-} // namespace Http
 } // namespace Marvin
 #endif

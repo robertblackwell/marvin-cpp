@@ -13,12 +13,13 @@
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
+#include <marvin/server_v3/adapter.hpp>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN | LOG_LEVEL_TORTRACE | LOG_LEVEL_TRACE)
 
-#include "timer.hpp"
-#include "handler.hpp"
+#include <marvin/server_v3/timer.hpp>
+
 #include "handle_app.hpp"
 #include "server_v3_runner.hpp"
 #include "any_response.hpp"

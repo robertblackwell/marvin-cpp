@@ -7,9 +7,11 @@
 #include <cert/cert_store_locator.hpp>  // for LocatorSPtr
 #include <cert/cert_store_store.hpp>    // for StoreSPtr
 #include <openssl/ossl_typ.h>           // for X509_STORE
-class Certificates;  // lines 12-12
+
 namespace Cert { class Builder; }
 
+namespace Marvin {
+class Certificates;  // lines 12-12
 typedef  std::shared_ptr<Certificates> CertificatesSPtr;
 class Certificates
 {
@@ -29,5 +31,5 @@ private:
     Cert::AuthoritySPtr             m_authority_sptr;
 
 };
-
+} //namespace 
 #endif

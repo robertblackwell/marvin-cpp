@@ -7,23 +7,25 @@
 #include <doctest/doctest.h>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
+
+namespace Marvin {
 /**
 * A simple implementation of a concrete working http parser. Required to test the abstract Parser class.
  */
-class ConcreteParser: public Marvin::Http::Parser {
+class ConcreteParser: public Parser {
 public:
-    Marvin::Http::MessageBase* m_message;
+    MessageBase* m_message;
     
-    Marvin::Http::MessageInterface* currentMessage() {
+    MessageInterface* currentMessage() {
         return m_message;
     };
     void OnParseBegin() {
-        m_message = new Marvin::Http::MessageBase();
+        m_message = new MessageBase();
     }
-    void OnHeadersComplete(Marvin::Http::MessageInterface* msg, void* body_start_ptr, std::size_t remainder) {
+    void OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder) {
 
     }
-    void OnMessageComplete(Marvin::Http::MessageInterface* msg) {
+    void OnMessageComplete(MessageInterface* msg) {
     }
     void OnParseError() {
 
@@ -35,10 +37,10 @@ public:
 
     }
     void OnChunkData(void* buf, int len) {
-        Marvin::MBufferSPtr mb_sptr = Marvin::MBuffer::makeSPtr(buf, len);
-        Marvin::BufferChainSPtr chain_sptr = m_message->getContentBuffer();
+        MBufferSPtr mb_sptr = Marvin::MBuffer::makeSPtr(buf, len);
+        BufferChainSPtr chain_sptr = m_message->getContentBuffer();
         if (chain_sptr == nullptr) {
-            chain_sptr = Marvin::BufferChain::makeSPtr(mb_sptr);
+            chain_sptr = BufferChain::makeSPtr(mb_sptr);
             m_message->setContentBuffer(chain_sptr);
         } else {
             chain_sptr->push_back(mb_sptr);
@@ -52,6 +54,7 @@ public:
     }
 
 };
+} // namespace
 
 TEST_CASE("simple good message ") {
     
@@ -63,7 +66,7 @@ TEST_CASE("simple good message ") {
     NULL
     };
     
-    ConcreteParser parser;
+    Marvin::ConcreteParser parser;
     for(int i = 0; str[i] != NULL  ;i++)
     {
         char* buf = str[i];
@@ -71,7 +74,7 @@ TEST_CASE("simple good message ") {
         int nparsed = parser.appendBytes((void*) buf, len);
         CHECK(nparsed == len);
     }
-    Marvin::Http::MessageBase* msg_p = dynamic_cast<Marvin::Http::MessageBase*>(parser.currentMessage());
+    Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(parser.currentMessage());
     CHECK(msg_p->httpVersMajor() == 1);
     CHECK(msg_p->httpVersMinor() == 1);
     CHECK(msg_p->getMethodAsString() == "GET");
@@ -82,7 +85,6 @@ TEST_CASE("simple good message ") {
     CHECK(msg_p->getContent()->to_string() == "9123456789");
 }
 
-#if 1
 TEST_CASE("test streaming - two or more messages back to back") {
     // to test this our concrete Parser will need to acquire some extra capability
     // specifically the ability to tell someone that the message has arrived
@@ -102,8 +104,8 @@ TEST_CASE("test streaming - two or more messages back to back") {
         (char*) "ABCDEFGHIJK",
         NULL
     };
-    ConcreteParser parser;
-    std::vector<Marvin::Http::MessageInterface*> messages;
+    Marvin::ConcreteParser parser;
+    std::vector<Marvin::MessageInterface*> messages;
     
     for(int i = 0; str[i] != NULL  ;i++)
     {
@@ -118,7 +120,7 @@ TEST_CASE("test streaming - two or more messages back to back") {
         }
         CHECK(nparsed == len);
     }
-    Marvin::Http::MessageBase* m0 = dynamic_cast<Marvin::Http::MessageBase*>(messages[0]);
+    Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
     CHECK(m0->httpVersMajor() == 1);
     CHECK(m0->httpVersMinor() == 1);
     CHECK(m0->statusCode() == 200);
@@ -127,7 +129,7 @@ TEST_CASE("test streaming - two or more messages back to back") {
     CHECK(m0->header("PROXY-CONNECTION") == "keep-alive");
     auto b0 = m0->getContentBuffer()->to_string();
     CHECK(m0->getContent()->to_string() == "1234567890");
-    Marvin::Http::MessageBase* m1 = dynamic_cast<Marvin::Http::MessageBase*>(messages[1]);
+    Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
     CHECK(m1->httpVersMajor() == 1);
     CHECK(m1->httpVersMinor() == 1);
     CHECK(m1->statusCode() == 201);
@@ -138,8 +140,6 @@ TEST_CASE("test streaming - two or more messages back to back") {
     CHECK(m1->getContent()->to_string() == "ABCDEFGHIJK");
     
 }
-#endif
-#if 1
 
 TEST_CASE("test chunked message ") {
 
@@ -168,7 +168,7 @@ TEST_CASE("test chunked message ") {
         NULL
     };
     
-    ConcreteParser parser;
+    Marvin::ConcreteParser parser;
     for(int i = 0; str[i] != NULL  ;i++)
     {
         char* buf = str[i];
@@ -177,7 +177,7 @@ TEST_CASE("test chunked message ") {
         
         CHECK(nparsed == len);
     }
-    Marvin::Http::MessageBase* msg_p = dynamic_cast<Marvin::Http::MessageBase*>(parser.currentMessage());
+    Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(parser.currentMessage());
     CHECK(msg_p->httpVersMajor() == 1);
     CHECK(msg_p->httpVersMinor() == 1);
     CHECK(msg_p->statusCode() == 201);
@@ -229,7 +229,7 @@ TEST_CASE("header-data-same-buffer chunked message ") {
         NULL
     };
     
-    ConcreteParser parser;
+    Marvin::ConcreteParser parser;
     for(int i = 0; str[i] != NULL  ;i++)
     {
         char* buf = str[i];
@@ -238,7 +238,7 @@ TEST_CASE("header-data-same-buffer chunked message ") {
         
         CHECK(nparsed == len);
     }
-    Marvin::Http::MessageBase* msg_p = dynamic_cast<Marvin::Http::MessageBase*>(parser.currentMessage());
+    Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(parser.currentMessage());
     CHECK(msg_p->httpVersMajor() == 1);
     CHECK(msg_p->httpVersMinor() == 1);
     CHECK(msg_p->statusCode() == 201);
@@ -265,4 +265,3 @@ TEST_CASE("header-data-same-buffer chunked message ") {
     //std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
 }
 
-#endif

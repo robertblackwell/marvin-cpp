@@ -37,6 +37,8 @@
 /// To prevent this delaying the entire proxy process the server should start an additional thread and connect it
 /// to the general io_service to aleviate this issue.
 ///
+namespace Marvin {
+
 class PipeCollector : public ICollector
 {
     public:
@@ -63,7 +65,7 @@ class PipeCollector : public ICollector
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,
-            Marvin::Http::MessageBaseSPtr resp);
+            Marvin::MessageBaseSPtr resp);
     
     private:
         /**
@@ -75,13 +77,14 @@ class PipeCollector : public ICollector
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,
-            Marvin::Http::MessageBaseSPtr resp);
+            Marvin::MessageBaseSPtr resp);
 
         boost::asio::io_service::strand     m_my_strand;
         boost::asio::io_service&            m_io;
         std::ofstream                       m_out_pipe;
         bool                                m_pipe_open;
 };
+} // namespace
 #endif
 
 

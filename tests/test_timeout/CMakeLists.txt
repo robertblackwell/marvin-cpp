@@ -1,7 +1,8 @@
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 set(TARGET test_timeout)
 add_executable(${TARGET} 
-	timeout_main.cpp
+    timeout_main.cpp
+
 )
 target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
 

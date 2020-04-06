@@ -10,6 +10,8 @@
 #include <marvin/message/message_writer.hpp>
 #include <marvin/server/server_context.hpp>
 
+namespace Marvin {
+
 class RequestHandlerBase;
 
 typedef std::shared_ptr<RequestHandlerBase> RequestHandlerBaseSPtr;
@@ -64,6 +66,6 @@ public:
         boost::asio::io_service&    m_io;
 };
 
-
+} // namespace
 
 #endif // HTTP_REQUEST_HANDLER_INTERFACE_HPP

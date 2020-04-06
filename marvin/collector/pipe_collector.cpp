@@ -1,6 +1,4 @@
-//
-// The main entry point for Marvin - a mitm proxy for http/https 
-//
+#include <marvin/collector/pipe_collector.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -13,9 +11,8 @@
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
-#include <marvin/collector/pipe_collector.hpp>
-using namespace Marvin;
-using namespace Http;
+namespace Marvin {
+
 bool headerValueMatched(std::string& hv, std::vector<std::regex>& regexs)
 {
     bool capture = false;
@@ -33,8 +30,8 @@ bool bodyIsCollectable(MessageBase& msg, std::vector<std::regex>& regexs)
 {
     bool capture = false;
     std::string hv;
-    if( msg.hasHeader(Marvin::Http::HeadersV2::ContentType) ){
-        hv = msg.getHeader(Marvin::Http::HeadersV2::ContentType);
+    if( msg.hasHeader(Marvin::HeadersV2::ContentType) ){
+        hv = msg.getHeader(Marvin::HeadersV2::ContentType);
         capture = headerValueMatched(hv, regexs);
     }
     return capture;
@@ -165,5 +162,5 @@ void PipeCollector::collect(
     auto pf = m_my_strand.wrap(std::bind(&PipeCollector::postedCollect, this, scheme, host, req, resp));
     m_io.post(pf);
 }
-    
+} // namespace    
 

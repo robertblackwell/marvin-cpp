@@ -12,7 +12,7 @@
 * \brief Manages open connection handlers so as to limit the number of simultanious requests that are active
 * and to ensure that all request connections can be closed when thes erver shuts down.
 */
-
+namespace Marvin {
 class ServerConnectionManager;
 /// \ingroup Server
 typedef std::shared_ptr<ServerConnectionManager> ServerConnectionManagerSPtr;
@@ -90,5 +90,5 @@ class ServerConnectionManager
         std::map<ConnectionHandler*, std::unique_ptr<ConnectionHandler>> m_connections;
         std::map<long, long>  m_fd_list;
 };
-
+} // namespace
 #endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

@@ -4,14 +4,15 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
+
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/http/message_base.hpp>
-#include <marvin/http/parser.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/callback_typedefs.hpp>
+#include <marvin/http/message_base.hpp>
+#include <marvin/http/parser.hpp>
+
+namespace Marvin {
 
 class MessageReader;
 typedef std::shared_ptr<MessageReader> MessageReaderSPtr;
@@ -67,7 +68,7 @@ typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
  *      sequence for i/o.
  *
  */
-class MessageReader : public Marvin::Http::Parser, public Marvin::Http::MessageBase
+class MessageReader : public Marvin::Parser, public Marvin::MessageBase
 {
 public:
 
@@ -158,9 +159,9 @@ protected:
     /**
     *  These methods are override for virtual methods in Parser
     */
-    Marvin::Http::MessageInterface* currentMessage();
-    void OnHeadersComplete(Marvin::Http::MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
-    void OnMessageComplete(Marvin::Http::MessageInterface* msg);
+    Marvin::MessageInterface* currentMessage();
+    void OnHeadersComplete(Marvin::MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
+    void OnMessageComplete(Marvin::MessageInterface* msg);
     void OnBodyData(void* buf, int len);
     void OnChunkBegin(int chunkLength);
     void OnChunkData(void* buf, int len);
@@ -199,5 +200,5 @@ protected:
     /// used to collect body data when doing a full message read
     std::string                 m_body;
 };
-
+} // namespcae
 #endif

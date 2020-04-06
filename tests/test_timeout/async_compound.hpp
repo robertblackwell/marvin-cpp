@@ -1,10 +1,14 @@
+#ifndef marvin_test_timeout_async_compound_hpp
+#define marvin_test_timeout_async_compound_hpp
 
-/// \ingroup Tests
-/// \brief A class that simulates composed asyn operations in the precense of timeouts.
-///
 #include <string>
+
 #include <marvin/boost_stuff.hpp>
+#include <marvin/connection/timeout.hpp>
+#include <doctest/doctest.h>
+#include <marvin/error/marvin_error.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
+// RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 class AsyncComposedOp
 {
@@ -96,10 +100,10 @@ private:
     boost::asio::io_service&        m_io;
     boost::asio::io_service::strand m_strand;
     boost::asio::deadline_timer     m_timer;
-    Timeout m_timeout;
+    ::Marvin::Timeout m_timeout;
     int m_count;
     std::string m_result, m_op_1_result, m_op_2_result;
     long m_op_1_interval_secs, m_op_2_interval_secs, m_op_1_timeout_interval_secs, m_op_2_timeout_interval_secs;
 };
-
+#endif
 

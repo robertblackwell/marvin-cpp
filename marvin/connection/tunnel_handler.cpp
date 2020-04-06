@@ -1,16 +1,14 @@
-//
-//  TunnelHandler.cpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/31/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
-#include <memory>
-#include <marvin/error/marvin_error.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
+
+#include <memory>
+
+#include <marvin/error/marvin_error.hpp>
 #include <marvin/connection/half_tunnel.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+
+namespace Marvin {
+
 std::string traceTunnel(TunnelHandlerUPtr t_ptr)
 {
     std::stringstream ss;
@@ -84,3 +82,4 @@ void TunnelHandler::tryDone()
         m_callback(m_first_err);
     }
 }
+} // namespace Marvin

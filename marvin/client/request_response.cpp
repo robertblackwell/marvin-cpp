@@ -21,12 +21,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
 
-using boost::asio::ip::tcp;
-using boost::system::error_code;
-using boost::asio::io_service;
-using boost::asio::streambuf;
-using namespace Marvin;
-using namespace Marvin::Http;
+namespace Marvin {
+using ::boost::asio::ip::tcp;
+using ::boost::system::error_code;
+using ::boost::asio::io_service;
+using ::boost::asio::streambuf;
 
 //--------------------------------------------------------------------------------
 // start sequence of functions to read response
@@ -39,8 +38,8 @@ void Request::p_read_response_headers()
         if (!ec2) {
             // call onHeaders
             // setup read of body unless content length == 0
-            if (this->m_rdr->hasHeader(Marvin::Http::HeadersV2::ContentLength)) {
-                std::string clstr = this->m_rdr->getHeader(Marvin::Http::HeadersV2::ContentLength);
+            if (this->m_rdr->hasHeader(Marvin::HeadersV2::ContentLength)) {
+                std::string clstr = this->m_rdr->getHeader(Marvin::HeadersV2::ContentLength);
                 if (clstr != "0") {
                     p_read_response_body();
                 } else {
@@ -88,3 +87,4 @@ void Request::p_response_error(Marvin::ErrorType err)
 {
 
 }
+} // namespace

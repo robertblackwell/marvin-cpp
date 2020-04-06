@@ -22,12 +22,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
 
-using boost::asio::ip::tcp;
-using boost::system::error_code;
-using boost::asio::io_service;
-using boost::asio::streambuf;
-using namespace Marvin;
-using namespace Marvin::Http;
+namespace Marvin {
+using ::boost::asio::ip::tcp;
+using ::boost::system::error_code;
+using ::boost::asio::io_service;
+using ::boost::asio::streambuf;
 
 //--------------------------------------------------------------------------------
 // start sequence of functions to write a the headers and a single body buffer.
@@ -65,3 +64,4 @@ void Request::p_hbc_write(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCa
         write_headers_cb(err);
     });
 }
+} // namespace

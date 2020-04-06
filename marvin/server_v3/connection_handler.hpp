@@ -1,21 +1,19 @@
 
 #ifndef marvin_server_v3_connection_handler_hpp
 #define marvin_server_v3_connection_handler_hpp
-/// \ingroup Server
-#include <cstdio>
+
+// #include <cstdio>
 
 #include <marvin/boost_stuff.hpp>
-#include <marvin/message/message_reader.hpp>
-#include <marvin/message/message_writer.hpp>
-
-#include <marvin/server_v3/server_context.hpp>
-#include <marvin/server_v3/request_handler_base.hpp>
 
 #include <marvin/connection/socket_interface.hpp>
+#include <marvin/server_v3/server_context.hpp>
+#include <marvin/server_v3/request_handler_interface.hpp>
+
 namespace Marvin {
+
 class ServerConnectionManager;
 class ConnectionHandler;
-/// \ingroup Server
 using ConnectionHandlerSPtr = std::shared_ptr<ConnectionHandler>;
 
 /// An instance of this class is created by the server for every open client connection;
@@ -25,9 +23,9 @@ class ConnectionHandler
 {
     public:
         ConnectionHandler(
-            boost::asio::io_service&     io,
+            boost::asio::io_service&   io,
             ServerConnectionManager&   connectionManager,
-            ::ISocketSPtr                  conn_sptr, 
+            ISocketSPtr              conn_sptr, 
             RequestHandlerFactory      factory
         );
 
@@ -41,14 +39,14 @@ class ConnectionHandler
         void p_handler_complete(Marvin::ErrorType err);
         void p_handle_connect_complete(bool hijack);
         
-        boost::uuids::uuid                     m_uuid;
-        boost::asio::io_service&               m_io;
-        ServerConnectionManager&             m_connectionManager;
-        std::unique_ptr<RequestHandlerBase>  m_requestHandlerUnPtr;
-        RequestHandlerFactory                m_factory;
+        boost::uuids::uuid                      m_uuid;
+        boost::asio::io_service&                m_io;
+        ServerConnectionManager&                m_connectionManager;
+        std::unique_ptr<RequestHandlerInterface>  m_requestHandlerUnPtr;
+        RequestHandlerFactory                   m_factory;
     
-        ISocketSPtr                            m_connection;
-        ServerContext                        m_server_context;
+        ISocketSPtr                             m_connection;
+        ServerContext                           m_server_context;
 };
 } // namespace Marvin
 #endif /* ConnectionHandler_hpp */

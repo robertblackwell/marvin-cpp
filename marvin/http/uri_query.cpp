@@ -9,7 +9,7 @@
 #include <marvin/http/uri_query.hpp>
 #include <regex>
 using namespace Marvin;
-
+namespace Marvin {
 void printMap(std::map<std::string, std::string> m)
 {
     for(auto const& ent: m){
@@ -44,3 +44,4 @@ UriQuery::parse(std::string s)
     }
 //    printMap(_keyValues);
 }
+} // namespace

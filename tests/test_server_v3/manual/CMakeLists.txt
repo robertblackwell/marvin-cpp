@@ -2,8 +2,6 @@
 set(TARGET test_server_v3_manual)
 add_executable(${TARGET} 
 	manual.cpp
-	../handler.cpp
-	../handler.hpp
 	../handle_app.cpp
 	../handle_app.hpp
 	../server_v3_runner.cpp

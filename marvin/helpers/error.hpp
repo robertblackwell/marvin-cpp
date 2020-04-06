@@ -1,9 +1,9 @@
-#ifndef helpers_error_include_hpp
-#define helpers_error_include_hpp
+#ifndef marvin_helpers_error_include_hpp
+#define marvin_helpers_error_include_hpp
 #include <string>
 #include <openssl/err.h>
 
-namespace Helpers {
+namespace Marvin {
 
     /**
     * In the following macros the msg argument can be a stream expression of the form
@@ -17,7 +17,7 @@ namespace Helpers {
             if(value) { \
                 std::stringstream messageStream; \
                 messageStream << msg ; \
-                ::Helpers::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
+                ::Marvin::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
             } \
         } while(0);
         
@@ -26,7 +26,7 @@ namespace Helpers {
             if(!(value)) { \
                 std::stringstream messageStream; \
                 messageStream << msg ; \
-                ::Helpers::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
+                ::Marvin::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
             } \
         } while(0);
 
@@ -34,7 +34,7 @@ namespace Helpers {
         do { \
             std::stringstream messageStream; \
             messageStream << msg ; \
-            ::Helpers::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
+            ::Marvin::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
         } while(0);
 
     #define NOT_IMPLEMENTED() Cert::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, "function not implemented"); 

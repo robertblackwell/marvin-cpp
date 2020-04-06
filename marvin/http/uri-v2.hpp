@@ -6,15 +6,16 @@
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
 
-#ifndef marvin_uri_hpp
-#define marvin_uri_hpp
+#ifndef marvin_uri_dash_v2_hpp
+#define marvin_uri_dash_v2_hpp
 #include <string>
 #include <cassert>
+#include <memory>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 namespace Marvin {
-namespace Http {
+
     class UriV2;
-    using UriSPtr = std::shared_ptr<Uri>;
+    using UriSPtr = std::shared_ptr<UriV2>;
     class UriV2
     {
         public:
@@ -62,6 +63,5 @@ namespace Http {
             std::string m_search;
             http::url m_uri;
     };
-} //namespace Marvin::Http
 } //namespace Marvin
 #endif /* marvin_uri_hpp */

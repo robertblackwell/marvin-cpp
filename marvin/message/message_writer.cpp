@@ -1,11 +1,11 @@
-#include <marvin/buffer/buffer.hpp>
 #include <marvin/message/message_writer.hpp>
+
+#include <marvin/buffer/buffer.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <exception>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
-using namespace Marvin;
-using namespace Marvin::Http;
+namespace Marvin {
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
@@ -168,3 +168,4 @@ void MessageWriter::p_async_write_full_body(WriteMessageCallbackType cb)
         });
     }
 }
+} // namespace

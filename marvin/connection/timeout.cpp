@@ -1,3 +1,5 @@
+#include <marvin/connection/timeout.hpp>
+
 #include <string>
 #include <cassert>
 
@@ -6,15 +8,13 @@
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
-#include <marvin/connection/timeout.hpp>
+namespace Marvin {
+using ::boost::asio::ip::tcp;
+using ::boost::bind;
+using ::boost::function;
+using ::boost::system::error_code;
+using ::boost::asio::io_service;
 
-using boost::asio::ip::tcp;
-using boost::bind;
-using boost::function;
-using boost::system::error_code;
-using boost::asio::io_service;
-
-#pragma mark - CTOR
 Timeout::Timeout(
             boost::asio::io_service& io_service
             )
@@ -31,7 +31,6 @@ Timeout::~Timeout()
 {
     LogTorTrace();
 }
-#pragma mark - public interface getters
 
 void Timeout::cancelTimeout(std::function<void()> handler)
 {
@@ -70,7 +69,7 @@ void Timeout::setTimeout(long interval_millisecs, std::function<void()> handler)
     m_timer.async_wait(whandler);
 #endif
 }
-#pragma mark - private methods
+
 void Timeout::p_handle_timeout(const boost::system::error_code& err)
 {
     boost::system::error_code ec = err;
@@ -104,3 +103,4 @@ void Timeout::p_handle_timeout(const boost::system::error_code& err)
     }
     m_active = false;
 }
+} // namespace

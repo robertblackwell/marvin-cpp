@@ -6,6 +6,8 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/error/marvin_error.hpp>
 
+using namespace Marvin;
+
 class Chunked
 {
 public:
@@ -17,14 +19,14 @@ public:
             std::string port,    // port such as 3000
             std::string body
     );
-    void verifyResponse(Marvin::ErrorType& err, Marvin::Http::MessageBaseSPtr response);
-    Marvin::Http::MessageBaseSPtr makeRequest();
-    Marvin::BufferChainSPtr makeBody();
+    void verifyResponse(ErrorType& err, MessageBaseSPtr response);
+    MessageBaseSPtr makeRequest();
+    BufferChainSPtr makeBody();
     std::string getHost();
     std::string getPort();
 protected:
-    Marvin::Http::MessageBaseSPtr   m_request_sptr;
-    Marvin::Http::MessageBaseSPtr   m_response_sptr;
+    MessageBaseSPtr   m_request_sptr;
+    MessageBaseSPtr   m_response_sptr;
     std::string                     m_path;
     HttpMethod                      m_method;
     std::string                     m_scheme;

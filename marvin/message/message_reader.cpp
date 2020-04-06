@@ -1,3 +1,4 @@
+#include <marvin/message/message_reader.hpp>
 
 #include <iostream>
 #include <iterator>
@@ -11,10 +12,8 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/connection/socket_interface.hpp>
-#include <marvin/message/message_reader.hpp>
 
-using namespace Marvin;
-using namespace Marvin::Http;
+namespace Marvin {
 
 std::string traceReader(MessageReader& rdr)
 {
@@ -448,3 +447,4 @@ bool MessageReader::p_parser_ok(int nparsed, Marvin::MBuffer& mb)
         return false;
     }
 }
+} // namespace

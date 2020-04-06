@@ -15,22 +15,21 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/http/uri_query.hpp>
 
 #include <marvin/server_v3/http_server.hpp>
-#include <marvin/server_v3/request_handler_base.hpp>
-
-#include "handler.hpp"
+#include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/server_v3/adapter.hpp>
 
 using namespace Marvin;
 using namespace Http;
 
-Handler::Handler(boost::asio::io_service& io): Marvin::RequestHandlerBase(io)
+Marvin::Adapter::Adapter(boost::asio::io_service& io): m_io(io)
 {
 
 }
-Handler::~Handler()
+Marvin::Adapter::~Adapter()
 {
 }
 
-void Handler::handle(
+void Marvin::Adapter::handle(
     Marvin::ServerContext&          server_context,
     ISocketSPtr                     socket_sptr,
     Marvin::HandlerDoneCallbackType done
@@ -40,22 +39,26 @@ void Handler::handle(
     m_rdr = std::make_shared<MessageReader>(m_io, socket_sptr);
     m_wrtr = std::make_shared<MessageWriter>(m_io, socket_sptr);
     m_done_callback = done;
-    // handleRequest(m_socket_sptr, m_wrtr, m_rdr);
+    // Adapterequest(m_socket_sptr, m_wrtr, m_rdr);
     handleRequest();
 }
+void Marvin::Adapter::p_on_completed()
+{
+    p_req_resp_cycle_complete();
+}
 /// determine whether to callback to the server or start another read/write cycle
-void Handler::p_req_resp_cycle_complete()
+void Marvin::Adapter::p_req_resp_cycle_complete()
 {
     // assume all connections are persistent
-    LogWarn("Handler::p_req_resp_cycle_complete");
+    LogWarn("Adapter::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
-    if (m_rdr->hasHeader(Marvin::Http::HeadersV2::Connection)) {
-        std::string conhdr = m_rdr->getHeader(Marvin::Http::HeadersV2::Connection);
+    if (m_rdr->hasHeader(Marvin::HeadersV2::Connection)) {
+        std::string conhdr = m_rdr->getHeader(Marvin::HeadersV2::Connection);
         keep_alive = (conhdr == "Keep-Alive");
     }
     if (keep_alive) {
-        // handleRequest(m_socket_sptr, m_wrtr, m_rdr);
+        // Adapterequest(m_socket_sptr, m_wrtr, m_rdr);
         handleRequest();
     } else {
         m_socket_sptr->shutdown(ISocket::ShutdownSend); // remember this is actually shutdown send side
@@ -63,15 +66,15 @@ void Handler::p_req_resp_cycle_complete()
     }
     // m_done_callback();
 }
-void Handler::p_on_read_error(Marvin::ErrorType err)
+void Marvin::Adapter::p_on_read_error(Marvin::ErrorType err)
 {
-    LogWarn("Handler p_on_read_error : ", err.message());
+    LogWarn("Adapter p_on_read_error : ", err.message());
     // m_socket_sptr->close();
     m_done_callback();
 }
-void Handler::p_on_write_error(Marvin::ErrorType err)
+void Marvin::Adapter::p_on_write_error(Marvin::ErrorType err)
 {
-    LogWarn("Handler p_on_write_error : ", err.message());
+    LogWarn("Adapter p_on_write_error : ", err.message());
     // m_socket_sptr->close();
     m_done_callback();
 }

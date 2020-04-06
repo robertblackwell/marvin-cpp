@@ -1,3 +1,4 @@
+#include "mock_socket.hpp"
 
 #include <iostream>
 #include <iterator>
@@ -8,7 +9,6 @@
 #include <cert/cert_certificate.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include "testcase.hpp"
-#include "mock_socket.hpp"
 
 MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): m_io(io), m_tcObj(tcObj)
 {
@@ -16,12 +16,12 @@ MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): m_i
     m_rdBuf = (char*)malloc(100000);
     m_single_timer = new SingleTimer(m_io, TIMER_INTERVAL_MS);
 }
-MockReadSocket::~MockReadSocket()
-{
-    delete m_single_timer;
-    LogDebug(""); 
-    free((void*)m_rdBuf);
-}
+// MockReadSocket::~MockReadSocket()
+// {
+//     delete m_single_timer;
+//     LogDebug(""); 
+//     free((void*)m_rdBuf);
+// }
 long MockReadSocket::nativeSocketFD(){ return 9876; };
 
 boost::asio::io_service& MockReadSocket::getIO() {return m_io; }
@@ -102,12 +102,12 @@ void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
         return;
     }
 }
-void MockReadSocket::asyncWrite(std::string& str, AsyncWriteCallbackType cb){ assert(false);}
-void MockReadSocket::asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallback){ assert(false);}
-void MockReadSocket::asyncWrite(Marvin::BufferChainSPtr chain_sptr, AsyncWriteCallback){ assert(false);}
-void MockReadSocket::asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb){ assert(false);}
-void MockReadSocket::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback){ assert(false);}
-void MockReadSocket::asyncConnect(ConnectCallbackType cb){ assert(false);}
+void MockReadSocket::asyncWrite(std::string& str, Marvin::AsyncWriteCallbackType cb){ assert(false);}
+void MockReadSocket::asyncWrite(Marvin::MBuffer& fb, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::asyncWrite(Marvin::BufferChainSPtr chain_sptr, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::asyncWrite(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb){ assert(false);}
+void MockReadSocket::asyncWrite(boost::asio::streambuf& sb, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::asyncConnect(Marvin::ConnectCallbackType cb){ assert(false);}
 void MockReadSocket::asyncAccept(
     boost::asio::ip::tcp::acceptor& acceptor,
     std::function<void(const boost::system::error_code& err)> cb

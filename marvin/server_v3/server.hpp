@@ -7,16 +7,14 @@
 #include <utility>
 
 #include <marvin/boost_stuff.hpp>
-#include <marvin/error/marvin_error.hpp>
 
 #include <marvin/connection/socket_interface.hpp>
+#include <marvin/error/marvin_error.hpp>
 #include <marvin/message/message_reader.hpp>
 #include <marvin/message/message_writer.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-
-#include <marvin/server_v3/server_connection_manager.hpp>
-#include <marvin/server_v3/request_handler_base.hpp>
 #include <marvin/server_v3/connection_handler.hpp>
+#include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/server_v3/server_connection_manager.hpp>
 
 namespace Marvin {
 

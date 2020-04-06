@@ -16,7 +16,7 @@
 #include <cert/cert_store_store.hpp>        // for Store, StoreSPtr
 #include <openssl/ossl_typ.h>               // for X509_STORE
 
-
+namespace Marvin {
 
 Certificates& Certificates::getInstance()
 {
@@ -54,4 +54,4 @@ Cert::Identity Certificates::buildServerMitmCertificate(Cert::Certificate origin
     Cert::Identity tmp = m_builder_sptr->buildMitmIdentity(original_certificate);
     return tmp;
 }
-
+} // namespace Marvin

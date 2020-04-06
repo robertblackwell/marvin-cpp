@@ -17,9 +17,9 @@
 
 using HttpHeaderFilterSetType = std::set<std::string>;
 using namespace nlohmann;
-/// \ingroup HttpMessage
+
 namespace Marvin {
-namespace Http {
+
     class Headers;
     
     void to_json(json& j, const Headers& h);
@@ -43,7 +43,7 @@ namespace Http {
             static void canonicalKey(std::string& key);
             /// \ingroup HttpMessage
             /// \brief  Filters a header map to remove all headers whose keys are IN the filterList
-            static void copyExcept(Marvin::Http::Headers& source, Marvin::Http::Headers& dest, std::set<std::string> filterList);
+            static void copyExcept(Marvin::Headers& source, Marvin::Headers& dest, std::set<std::string> filterList);
         
         
             class Name {
@@ -76,6 +76,5 @@ namespace Http {
             };
 
     };
-}
-}
+} // namespace
 #endif /* http_header_hpp */

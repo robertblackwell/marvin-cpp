@@ -23,8 +23,7 @@
 #include <marvin/connection/tunnel_handler.hpp>
 #include <marvin/collector/collector_interface.hpp>
 
-using namespace Marvin;
-using namespace Marvin::Http;
+namespace Marvin {
 
 enum class ConnectAction;
 class SSLForwardingHandler;
@@ -123,4 +122,5 @@ class SSLForwardingHandler
         std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)>       m_collect_function;
 
 };
+} // namespace
 #endif /* forwarding_handler_hpp */

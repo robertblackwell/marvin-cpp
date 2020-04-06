@@ -1,9 +1,6 @@
 
-#ifndef marvin_connection_hpp
-#define marvin_connection_hpp
-/**
-* \ingroup SocketIO
-*/
+#ifndef marvin_connection_connection_hpp
+#define marvin_connection_connection_hpp
 
 #include <iostream>
 #include <istream>
@@ -20,11 +17,11 @@
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/connection/timeout.hpp>
 
-using namespace boost;
-using namespace boost::system;
-using namespace boost::asio;
+namespace Marvin {
 
-
+using namespace ::boost;
+using namespace ::boost::system;
+using namespace ::boost::asio;
 using ip::tcp;
 using system::error_code;
 
@@ -91,7 +88,7 @@ class Connection : public ISocket
         boost::asio::io_service& io_service
     );
     
-    ~Connection() override;
+    ~Connection();
     void asyncConnect(ConnectCallbackType cb) override;
     void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb) override;
     
@@ -178,6 +175,6 @@ private:
     long                            m_read_timeout_interval_ms;
     long                            m_write_timeout_interval_ms;
 };
-
+} // namespace
 
 #endif

@@ -1,14 +1,9 @@
-//
-//  half_tunnel.cpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/31/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
+#include <marvin/connection/half_tunnel.hpp>
+
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
-#include <marvin/connection/half_tunnel.hpp>
+namespace Marvin {
 
 HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd, long firstReadTimeoutMillisecs, long subsequentReadTimeoutMillisecs)
 : m_first_read_timeout_millisecs(firstReadTimeoutMillisecs), m_subsequent_read_timeout_millisecs(subsequentReadTimeoutMillisecs)
@@ -53,3 +48,4 @@ void HalfTunnel::p_handle_write(Marvin::ErrorType& err, std::size_t bytes_transf
 //        assert(false);
     }
 }
+} // namespace Marvin

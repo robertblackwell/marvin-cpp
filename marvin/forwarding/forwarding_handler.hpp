@@ -1,31 +1,27 @@
-//
-//  forwarding_handler.hpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/25/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
 
 #ifndef marvin_forwarding_handler_hpp
 #define marvin_forwarding_handler_hpp
 
-#include <stdio.h>
-#include <iostream>
-#include <sstream>
+// #include <stdio.h>
+// #include <iostream>
+// #include <sstream>
+#include <string>
+#include <vector>
 #include <regex>
-#include <marvin/server/request_handler_base.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-#include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/client/client.hpp>
+#include <marvin/collector/collector_interface.hpp>
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_writer.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/connection/connection.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/server/request_handler_base.hpp>
+#include <marvin/server/server_context.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
 #include <marvin/forwarding/ssl_forwarding_handler.hpp>
-#include <marvin/collector/collector_interface.hpp>
 
-using namespace Marvin;
-using namespace Marvin::Http;
+
+namespace Marvin {
 
 enum class ConnectAction;
 class ForwardingHandler;
@@ -80,13 +76,13 @@ class ForwardingHandler : public RequestHandlerBase
         // methods that are used in handleRequest
         void p_round_trip_upstream(
             MessageReaderSPtr req,
-            std::function<void(Marvin::ErrorType& err, MessageBaseSPtr downstreamReplyMsg)> upstreamCb
+            std::function<void(ErrorType& err, MessageBaseSPtr downstreamReplyMsg)> upstreamCb
         );
-        void p_handle_upstream_response_received(Marvin::ErrorType& err);
+        void p_handle_upstream_response_received(ErrorType& err);
         void p_make_downstream_response();
-        void p_make_downstream_error_response(Marvin::ErrorType& err);
+        void p_make_downstream_error_response(ErrorType& err);
         void p_handle_upgrade();
-        void p_on_complete(Marvin::ErrorType& err);
+        void p_on_complete(ErrorType& err);
     
         // methods that are used in handleConnect
         ConnectAction p_determine_connection_action(std::string host, int port);
@@ -137,4 +133,5 @@ class ForwardingHandler : public RequestHandlerBase
         std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)>       m_collect_function;
 
 };
+} // namespace
 #endif /* forwarding_handler_hpp */

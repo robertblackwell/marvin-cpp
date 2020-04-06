@@ -30,8 +30,8 @@ class Testrunner
 {
     
 public:
-    MessageReaderSPtr           m_rdr;
-    ISocketSPtr                 m_conn;
+    Marvin::MessageReaderSPtr           m_rdr;
+    Marvin::ISocketSPtr                 m_conn;
     boost::asio::io_service&    m_io;
     std::string                 m_body;
     std::ostringstream          m_bodyStream;
@@ -42,7 +42,7 @@ public:
     * Constructor - tcIndex is an index into the set of testcases
     * that the class TestCases knows about
     */
-    Testrunner(boost::asio::io_service& io, ISocketSPtr rd_sock, Testcase tcObj);
+    Testrunner(boost::asio::io_service& io, Marvin::ISocketSPtr rd_sock, Testcase tcObj);
     ~Testrunner();
     /**
     * runs a test that reads reads a full message

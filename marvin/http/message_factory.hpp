@@ -14,7 +14,7 @@
 #include <marvin/http/http_method.hpp>
 #include <marvin/http/uri.hpp>
 namespace Marvin {
-namespace Http {
+
     void makeRequest(MessageBase& msg, HttpMethod method, Marvin::Uri& uri);
     void makeProxyRequest(MessageBase& msg, HttpMethod method,  Marvin::Uri& uri);
     void makeProxyConnectRequest(MessageBase& msg, std::string server, std::string port);
@@ -23,6 +23,5 @@ namespace Http {
     void makeResponse200OKConnected(MessageBase& msg);
     void makeResponse502Badgateway(MessageBase& msg);
     
-} // namespace Http
 } // namespace Marvin
 #endif /* http_request_hpp */

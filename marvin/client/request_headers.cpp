@@ -20,12 +20,11 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
 
-using boost::asio::ip::tcp;
-using boost::system::error_code;
-using boost::asio::io_service;
-using boost::asio::streambuf;
-using namespace Marvin;
-using namespace Marvin::Http;
+namespace Marvin {
+using ::boost::asio::ip::tcp;
+using ::boost::system::error_code;
+using ::boost::asio::io_service;
+using ::boost::asio::streambuf;
 
 //--------------------------------------------------------------------------------
 // asyncWriteHeaders
@@ -91,4 +90,4 @@ void Request::asyncWriteTrailers(WriteHeadersCallbackType cb)
         cb(err);
     });
 }
-
+} // namespace

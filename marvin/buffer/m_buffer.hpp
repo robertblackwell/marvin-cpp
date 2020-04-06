@@ -10,6 +10,7 @@
 */
 
 namespace Marvin {
+
 class MBuffer;
 /// \ingroup Buffer
 using MBufferSPtr =  std::shared_ptr<MBuffer>;
@@ -26,7 +27,7 @@ using MBufferUPtr =  std::unique_ptr<MBuffer>;
  * Once constructed the Mbuffer instance "own" the raw memory.
  * MBuffer destructor releases the raw memory.
  */
-struct MBuffer {
+class MBuffer {
 public:
     static MBufferSPtr makeSPtr(std::size_t capacity);
     static MBufferSPtr makeSPtr(std::string s);

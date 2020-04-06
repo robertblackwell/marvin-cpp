@@ -1,8 +1,11 @@
+#include <marvin/server_v3/server_connection_manager.hpp>
+
 #include <unistd.h>
+
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TORTRACE|LOG_LEVEL_TRACE)
-#include <marvin/server_v3/server_connection_manager.hpp>
-using namespace Marvin;
+
+namespace Marvin {
 
 ServerConnectionManager* ServerConnectionManager::instance;
 
@@ -129,4 +132,4 @@ void ServerConnectionManager::stop_all()
 //        c->stop();
 //    _connections.clear();
 }
-
+} // namespace Marvin

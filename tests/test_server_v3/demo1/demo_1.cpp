@@ -13,10 +13,10 @@
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
+#include <marvin/server_v3/adapter.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include "../timer.hpp"
-#include "../handler.hpp"
+#include <marvin/server_v3/timer.hpp>
 #include "../handle_app.hpp"
 #include "../server_v3_runner.hpp"
 
@@ -29,7 +29,7 @@ class Test_ATimer
     {
         m_label = label;
         m_delay = delay;
-        m_t_sptr = std::make_shared<ATimer>(io, label);
+        m_t_sptr = std::make_shared<Marvin::ATimer>(io, label);
         this->arm();
     }
     void arm() 
@@ -41,7 +41,7 @@ class Test_ATimer
     }
     std::string                 m_label;
     long                        m_delay;
-    std::shared_ptr<ATimer>     m_t_sptr;
+    std::shared_ptr<Marvin::ATimer>     m_t_sptr;
 };
 
 // Test package - this is 2 asyn tests in parallel

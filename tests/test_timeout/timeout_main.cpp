@@ -22,8 +22,8 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/connection/timeout.hpp>
 #define USE_STRANDx
 
-#include "async_compound.cpp"
-#include "async_object.cpp"
+#include "async_compound.hpp"
+#include "async_object.hpp"
   
 /// test timing out an async operation
 //TEST_CASE("TimeoutcomposedOpOTO2")

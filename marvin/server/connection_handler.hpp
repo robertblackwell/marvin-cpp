@@ -6,8 +6,8 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef marvin_connection_handler_hpp
-#define marvin_connection_handler_hpp
+#ifndef marvin_server_connection_handler_hpp
+#define marvin_server_connection_handler_hpp
 /// \ingroup Server
 #include <cstdio>
 
@@ -18,6 +18,8 @@
 #include <marvin/server/request_handler_base.hpp>
 #include <marvin/server/connection_handler.hpp>
 #include <marvin/connection/socket_interface.hpp>
+
+namespace Marvin {
 
 class ServerConnectionManager;
 class ConnectionHandler;
@@ -59,8 +61,8 @@ class ConnectionHandler
         
         boost::uuids::uuid                     m_uuid;
         boost::asio::io_service&               m_io;
-        ServerConnectionManager&               m_connectionManager;
-        std::unique_ptr<RequestHandlerBase>    m_requestHandlerUnPtr;
+        ServerConnectionManager&               m_connection_manager;
+        std::unique_ptr<RequestHandlerBase>    m_request_handler_unPtr;
         RequestHandlerFactory                  m_factory;
     
         ISocketSPtr                            m_connection;
@@ -68,5 +70,5 @@ class ConnectionHandler
         MessageWriterSPtr                      m_writer;
         ServerContext                          m_server_context;
 };
-
+} // namespace
 #endif /* ConnectionHandler_hpp */

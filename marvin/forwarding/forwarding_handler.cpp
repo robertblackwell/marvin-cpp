@@ -6,6 +6,8 @@
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
+namespace Marvin {
+
 std::string traceForwardingHandler(ForwardingHandler* fh_ptr)
 {
     std::stringstream ss;
@@ -105,7 +107,7 @@ void ForwardingHandler::handleConnect(
         ISocketSPtr                 clientConnectionSPtr,// the connection to the client
         HandlerDoneCallbackType     done
 ){
-    LogTrace(traceForwardingHandler(this), Marvin::Http::traceMessage(*(request.get())));
+    LogTrace(traceForwardingHandler(this), Marvin::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_downstream_connection  = clientConnectionSPtr;
     m_done_callback = done;
@@ -173,7 +175,7 @@ void ForwardingHandler::p_initiate_tunnel()
         } else {
             LogTrace("initiateTunnel: connection SUCCEEDED scheme:", traceForwardingHandler(this), " scheme:",this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
-            Http::makeResponse200OKConnected(*m_response_sptr);
+            makeResponse200OKConnected(*m_response_sptr);
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
                 LogInfo("");
                 if( err ) {
@@ -214,7 +216,7 @@ void ForwardingHandler::handleRequest(
         ISocketSPtr             clientConnectionPtr,
         HandlerDoneCallbackType done
 ){
-    LogTrace("from downstream", Marvin::Http::traceMessage(*(request.get())));
+    LogTrace("from downstream", Marvin::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_response_writer_sptr = responseWriter;
     m_done_callback = done;
@@ -227,7 +229,7 @@ void ForwardingHandler::handleRequest(
     p_round_trip_upstream(request, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_response_sptr = downMsg;
-        LogTrace("for downstream", Marvin::Http::traceMessage(*downMsg));
+        LogTrace("for downstream", Marvin::traceMessage(*downMsg));
         Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
         /// perform the MITM collection
         
@@ -264,11 +266,11 @@ void ForwardingHandler::p_round_trip_upstream(
     /// the MessageBase that will be the up stream request
     m_upstream_request_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
     /// format upstream msg for transmission
-    helpers::makeUpstreamRequest(m_upstream_request_msg_sptr, req);
+    Helpers::makeUpstreamRequest(m_upstream_request_msg_sptr, req);
     assert( ! m_request_sptr->hasHeader("Upgrade") );
     Marvin::BufferChainSPtr content = req->getContentBuffer();
     
-    LogTrace("upstream request", Marvin::Http::traceMessage(*m_upstream_request_msg_sptr));
+    LogTrace("upstream request", Marvin::traceMessage(*m_upstream_request_msg_sptr));
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
@@ -276,10 +278,10 @@ void ForwardingHandler::p_round_trip_upstream(
             LogWarn("async write failed");
             // TODO: how to handle error
         } else {
-            LogTrace("upstream rresponse", Marvin::Http::traceMessage(*(upstrmRdr.get())));
+            LogTrace("upstream rresponse", Marvin::traceMessage(*(upstrmRdr.get())));
             m_downstream_msg_sptr = std::make_shared<MessageBase>();
             m_response_body_sptr = upstrmRdr->getContentBuffer();
-            helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
+            Helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
             upstreamCb(ec, m_downstream_msg_sptr);
         }
     });
@@ -310,5 +312,5 @@ ConnectAction ForwardingHandler::p_determine_connection_action(std::string host,
     }
     return ConnectAction::TUNNEL;
 }
-
+}
 //

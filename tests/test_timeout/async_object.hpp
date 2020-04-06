@@ -1,11 +1,14 @@
+#ifndef marvin_test_timeout_async_object_hpp
+#define marvin_test_timeout_async_object_hpp
 
-/// \ingroup Tests
-/// \brief A class that simulates successful and failed async operations with timeout; it runs all its handlers on a strand
-/// and passes that strand to a timeout handler, the tiimeout handler is a member of this object..
-///
 #include <string>
+#include <doctest/doctest.h>
+
 #include <marvin/boost_stuff.hpp>
+#include <marvin/connection/timeout.hpp>
+#include <marvin/error/marvin_error.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
+// RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 class AsyncObject
 {
@@ -88,7 +91,7 @@ private:
     std::function<void(const boost::system::error_code err)>  m_op_handler;
     boost::asio::io_service&        m_io;
     boost::asio::deadline_timer     m_timer;
-    Timeout m_timeout;
+    Marvin::Timeout m_timeout;
     int m_count;
 };
-
+#endif

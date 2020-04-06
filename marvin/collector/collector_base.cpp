@@ -4,6 +4,7 @@
 
 
 #include <marvin/collector/collector_base.hpp>
+
 #include <stdio.h>                                      // for perror
 #include <sys/fcntl.h>                                  // for open, O_NONBLOCK
 #include <unistd.h>                                     // for close
@@ -17,6 +18,8 @@
 #include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+
+namespace Marvin {
 
 bool testPipeReaderExists(char* pipeName)
 {
@@ -52,7 +55,7 @@ void CollectorBase::postedCollect(
         std::string scheme,
         std::string host,
         MessageReaderSPtr req,
-        Marvin::Http::MessageBaseSPtr resp)
+        Marvin::MessageBaseSPtr resp)
 {
     
     /**
@@ -92,7 +95,7 @@ void CollectorBase::collect(
         std::string scheme,
         std::string host,
         MessageReaderSPtr req,
-        Marvin::Http::MessageBaseSPtr resp)
+        Marvin::MessageBaseSPtr resp)
 {
     /**
     ** In here implement the creation the summary records but dont do any IO or sending
@@ -101,5 +104,5 @@ void CollectorBase::collect(
     auto pf = m_my_strand.wrap(std::bind(&CollectorBase::postedCollect, this, scheme, host, req, resp));
     m_io.post(pf);
 }
-
+} // namespace
 

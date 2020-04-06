@@ -78,9 +78,10 @@ file(GLOB HEADERS
 	server_v2/server_context.hpp
 
 
+	server_v3/adapter.hpp 
 	server_v3/connection_handler.hpp 
-	server_v3/http_server.hpp 
-	server_v3/request_handler_base.hpp
+	server_v3/server.hpp 
+	server_v3/request_handler_interface.hpp
 	server_v3/server_connection_manager.hpp 
 	server_v3/server_context.hpp
 	)
@@ -143,22 +144,23 @@ set(SOURCES
 	message/message_reader.cpp 	
 	message/message_writer.cpp 	
 	
-	server/connection_handler.cpp 			
-	server/request_handler_base.cpp
-	server/http_server.cpp 					
-	server/server_connection_manager.cpp 
-	# leave out server_context - no functions in this file - produces library warning that is a bit obscure
-	# server/server_context.cpp
+	# server/connection_handler.cpp 			
+	# server/request_handler_base.cpp
+	# server/http_server.cpp 					
+	# server/server_connection_manager.cpp 
+	# # leave out server_context - no functions in this file - produces library warning that is a bit obscure
+	# # server/server_context.cpp
 
-	server_v2/connection_handler.cpp 
-	server_v2/http_server.cpp 
-	server_v2/request_handler_base.cpp
-	server_v2/server_connection_manager.cpp 
-	server_v2/server_context.cpp
+	# server_v2/connection_handler.cpp 
+	# server_v2/http_server.cpp 
+	# server_v2/request_handler_base.cpp
+	# server_v2/server_connection_manager.cpp 
+	# server_v2/server_context.cpp
 
+	# server_v3/adapter.cpp
 	server_v3/connection_handler.cpp 
-	server_v3/http_server.cpp 
-	server_v3/request_handler_base.cpp
+	server_v3/server.cpp 
+	server_v3/request_handler_interface.cpp
 	server_v3/server_connection_manager.cpp 
 	server_v3/server_context.cpp
 

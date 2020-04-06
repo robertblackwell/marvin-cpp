@@ -1,5 +1,5 @@
-#ifndef marvin_test_server_v3_handler_hpp
-#define marvin_test_server_v3_handler_hpp
+#ifndef marvin_server_v3_adapter_hpp
+#define marvin_server_v3_adapter_hpp
 
 #include <doctest/doctest.h>
 #include <iostream>
@@ -12,10 +12,11 @@
 #include <marvin/connection/connection.hpp>
 #include <marvin/http/uri_query.hpp>
 
-#include <marvin/server_v3/http_server.hpp>
+#include <marvin/server_v3/server.hpp>
 #include <marvin/server_v3/server_context.hpp>
-#include <marvin/server_v3/request_handler_base.hpp>
-#include "timer.hpp"
+#include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/server_v3/timer.hpp>
+namespace Marvin {
 /**
 * Class used to handle requests in the test server for both the bb abd bf
 * set of tests. This handler:
@@ -24,24 +25,24 @@
 *
 * and puts that in the body of the response
 */
-class Handler : public Marvin::RequestHandlerBase
+class Adapter : public Marvin::RequestHandlerInterface
 {
 public:
     static int counter; // to see if there are multiple instances of the handler
     // boost::asio::deadline_timer m_imer;
     boost::uuids::uuid       m_uuid;
-    
+    boost::asio::io_service&            m_io;
     ISocketSPtr                         m_socket_sptr;
     MessageWriterSPtr                   m_wrtr;
     MessageReaderSPtr                   m_rdr;
-    Marvin::Http::MessageBaseSPtr       m_msg;
+    Marvin::MessageBaseSPtr       m_msg;
     std::string                         m_body;
     Marvin::HandlerDoneCallbackType     m_done;
     ATimerSPtr                          m_timer_sptr;
     std::function<void()>               m_done_callback;
 
-    Handler(boost::asio::io_service& io);
-    ~Handler();
+    Adapter(boost::asio::io_service& io);
+    ~Adapter();
     
     void handle(
         Marvin::ServerContext&            server_context,
@@ -56,8 +57,10 @@ public:
     ) = 0;
 protected:
     void p_req_resp_cycle_complete();
+    void p_on_completed();
     void p_on_read_error(Marvin::ErrorType err);
     void p_on_write_error(Marvin::ErrorType err);
 
 };
+} // namespace
 #endif /* test_server_h */

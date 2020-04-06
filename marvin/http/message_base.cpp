@@ -4,10 +4,8 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <marvin/external_src/http-parser/http_parser.h>
 #include <marvin/http/message_base.hpp>
-using namespace Marvin;
-using namespace Marvin::Http;
+
 namespace Marvin{
-namespace Http{
 
 std::string traceMessage(MessageBase& msg)
 {
@@ -20,13 +18,13 @@ std::string traceMessage(MessageBase& msg)
         ss << "|RESP|"<< "HTTP/1." << msg.httpVersMinor() << " " << msg.statusCode() << "[" << msg.status()<< "] ";
     }
     
-    if( msg.hasHeader(Marvin::Http::HeadersV2::Host) ){
-        ss << "Host[" << msg.getHeader(Marvin::Http::HeadersV2::Host) << "]";
+    if( msg.hasHeader(Marvin::HeadersV2::Host) ){
+        ss << "Host[" << msg.getHeader(Marvin::HeadersV2::Host) << "]";
     }else{
         ss << "Host[]";
     }
-    if( msg.hasHeader(Marvin::Http::HeadersV2::ContentLength) ){
-        ss << "Len[" << msg.getHeader(Marvin::Http::HeadersV2::ContentLength) << "]";
+    if( msg.hasHeader(Marvin::HeadersV2::ContentLength) ){
+        ss << "Len[" << msg.getHeader(Marvin::HeadersV2::ContentLength) << "]";
     }else{
         ss << "Len[]";
     }
@@ -111,7 +109,7 @@ void serialize_headers(MessageBase& msg, std::string& str)
 ///     there is NOT a connection header that contain the string 'keep-alive' case insensitive
 ///         and the msg http version is 1.0
 ///
-bool isConnectionKeepAlive(Marvin::Http::MessageBase& msg)
+bool isConnectionKeepAlive(Marvin::MessageBase& msg)
 {
     if (msg.hasHeader(HeadersV2::Connection)) {
         if (isConnectionKeepAlive(msg.getHeader(HeadersV2::Connection))) {
@@ -225,7 +223,7 @@ std::string MessageBase::getHeader(std::string key)
     throw "trying to access non-existent header value";
     return nullptr;
 }
-Marvin::Http::HeadersV2& MessageBase::getHeaders()
+Marvin::HeadersV2& MessageBase::getHeaders()
 {
     return m_headers;
 }
@@ -248,14 +246,14 @@ Marvin::BufferChainSPtr MessageBase::getContent()
 void MessageBase::setContent(Marvin::BufferChainSPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
-    removeHeader(Marvin::Http::HeadersV2::TransferEncoding);
-    setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(bufSPtr->size()));
+    removeHeader(Marvin::HeadersV2::TransferEncoding);
+    setHeader(Marvin::HeadersV2::ContentLength, std::to_string(bufSPtr->size()));
 }
 void MessageBase::setContent(std::string content)
 {
     m_body_chain_sptr = Marvin::BufferChain::makeSPtr(content);
-    removeHeader(Marvin::Http::HeadersV2::TransferEncoding);
-    setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(m_body_chain_sptr->size()));
+    removeHeader(Marvin::HeadersV2::TransferEncoding);
+    setHeader(Marvin::HeadersV2::ContentLength, std::to_string(m_body_chain_sptr->size()));
 }
 
 void MessageBase::dumpHeaders(std::ostream& os)
@@ -290,5 +288,4 @@ std::ostream &operator<< (std::ostream &os, MessageBase &msg)
     return os;
 }
 
-} //namespace Http
 } //namespace Marvin

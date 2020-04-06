@@ -1,4 +1,5 @@
-
+#ifndef marvin_collector_base_hpp
+#define marvin_collector_base_hpp
 #include <iostream>                                  // for string, ostream
 #include <marvin/collector/collector_interface.hpp>  // for ICollector
 #include <boost/asio/io_context.hpp>                 // for io_context
@@ -6,6 +7,9 @@
 #include <boost/asio/io_service.hpp>                 // for io_service
 #include <marvin/http/message_base.hpp>              // for MessageBaseSPtr
 #include <marvin/message/message_reader.hpp>         // for MessageReaderSPtr
+
+namespace Marvin {
+
 class CollectorBase: public ICollector
 {
     public:
@@ -23,7 +27,7 @@ class CollectorBase: public ICollector
         /**
         ** Interface method for client code to call collect
         **/
-        void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::Http::MessageBaseSPtr resp);
+        void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::MessageBaseSPtr resp);
     
     private:
         /**
@@ -35,12 +39,12 @@ class CollectorBase: public ICollector
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,
-            Marvin::Http::MessageBaseSPtr resp);
+            Marvin::MessageBaseSPtr resp);
 
         boost::asio::io_context::strand         m_my_strand;
         boost::asio::io_service&                m_io;
         std::ostream&                           m_output_stream;
     
 };
-
-
+} //namespace
+#endif

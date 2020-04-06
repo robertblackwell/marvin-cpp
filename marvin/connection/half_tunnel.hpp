@@ -1,13 +1,11 @@
 
-#ifndef marvin_half_tunnel_hpp
-#define marvin_half_tunnel_hpp
-/**
-* \ingroup SocketIO
-*/
+#ifndef marvin_connection_half_tunnel_hpp
+#define marvin_connection_half_tunnel_hpp
 
-#include <stdio.h>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/connection/socket_interface.hpp>
+
+namespace Marvin {
 
 class HalfTunnel;
 /// \ingroup SocketIO
@@ -38,5 +36,5 @@ class HalfTunnel
 //        Marvin::MBufferUPtr                 m_bufferUPtr;
         Marvin::MBufferSPtr                 m_bufferSPtr;
 };
-
+} // namespace
 #endif /* half_tunnel_hpp */

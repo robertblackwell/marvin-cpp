@@ -1,26 +1,14 @@
 
-#ifndef marvin_timeout_hpp
-#define marvin_timeout_hpp
-/**
-* \ingroup SocketIO
-*/
-
-#include <iostream>
-#include <istream>
-#include <ostream>
-#include <string>
-#include <functional>
-#include <memory>
+#ifndef marvin_connection_timeout_hpp
+#define marvin_connection_timeout_hpp
 
 #include <marvin/boost_stuff.hpp>
-#include <marvin/error/marvin_error.hpp>
-#include <marvin/callback_typedefs.hpp>
-#include <marvin/buffer/buffer.hpp>
-#include <marvin/connection/socket_interface.hpp>
 
-using namespace boost;
-using namespace boost::system;
-using namespace boost::asio;
+namespace Marvin {
+
+using namespace ::boost;
+using namespace ::boost::system;
+using namespace ::boost::asio;
 
 
 using ip::tcp;
@@ -94,5 +82,5 @@ private:
                                                 /// \note this depends requires the timer run on a strand
 };
 
-
+} // namespace 
 #endif

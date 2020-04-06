@@ -6,11 +6,12 @@
 //  Copyright © 2016 Blackwellapps. All rights reserved.
 //
 
-#ifndef callback_typedefs_h
-#define callback_typedefs_h
+#ifndef marvin_callback_typedefs_h
+#define marvin_callback_typedefs_h
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/buffer/buffer.hpp>
 
+namespace Marvin {
 
 class ISocket;
 typedef std::function<void(Marvin::ErrorType& err)>                    ErrorOnlyCallbackType;
@@ -40,5 +41,5 @@ typedef std::function<void(Marvin::ErrorType& err)>                    ReadHeade
 /// Call back when reading full message is complete
 typedef std::function<void(Marvin::ErrorType& err)>                    ReadMessageCallbackType;
 
-
+} // namespace
 #endif /* callback_typedefs_h */

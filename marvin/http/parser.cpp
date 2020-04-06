@@ -16,10 +16,8 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace Marvin;
-using namespace Http;
 
 namespace Marvin {
-namespace Http {
 
 /******************************************************************************/
 #pragma mark - forward decleration of parser c-language call back functions
@@ -250,7 +248,7 @@ void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer
     n = sb_to_string(name, &n_p);
     n = sb_to_string(value,&v_p);
     
-    // Marvin::Http::Headers::canonicalKey(name->buffer, name->used);
+    // Marvin::Headers::canonicalKey(name->buffer, name->used);
     
     std::string n_str = std::string(name->buffer, name->used);
     std::string v_str = std::string(value->buffer, value->used);
@@ -431,5 +429,4 @@ message_complete_cb(http_parser* parser)
      */
     return 0;
 }
-} //namespace Http
 } //namespace Marvin

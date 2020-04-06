@@ -11,7 +11,7 @@
 
 
 namespace Marvin {
-namespace Http {
+
 class HeadersV2;
 
 // test a string for a token 'keep-alive' case insensitive
@@ -20,9 +20,9 @@ bool isConnectionKeepAlive(std::string value);
 bool isConnectionClose(std::string value);
 
 // tests whether a header structure has a connection header with a 'keep-alive' substring
-bool isConnectionKeepAlive(Marvin::Http::HeadersV2& h);
+bool isConnectionKeepAlive(Marvin::HeadersV2& h);
 // tests whether a header structure has a connection header with a 'close' substring
-bool isConnectionClose(Marvin::Http::HeadersV2& h);
+bool isConnectionClose(Marvin::HeadersV2& h);
 
 
 /**
@@ -95,7 +95,6 @@ class HeadersV2
         // important connect header values
         static const std::string ConnectionClose;
         static const std::string ConnectionKeepAlive;
-
         HeadersV2();
         /// \brief This construct provide a means of initializing a OrderedKeyValues object
         /// using a literal value; specifically a vector of pairs of string values.
@@ -147,6 +146,5 @@ class HeadersV2
         std::vector<Pair> m_pairs_vector;
         // std::map<std::string, long> m_keys;
 };
-} //namespace
 } //namespace
 #endif

@@ -19,12 +19,11 @@ typedef std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>
 class MockReadSocket;
 typedef std::shared_ptr<MockReadSocket> MockReadSocketSPtr;
 
-class MockReadSocket : public ISocket
+class MockReadSocket : public Marvin::ISocket
 {
 public:
 //    MockReadSocket(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
     MockReadSocket(boost::asio::io_service& io, Testcase tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
-    ~MockReadSocket() override;
     void startRead();
 
     void asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb);
@@ -32,12 +31,12 @@ public:
     void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb);
     long nativeSocketFD();
 
-    void asyncWrite(std::string& str, AsyncWriteCallbackType cb);
-    void asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallback);
-    void asyncWrite(Marvin::BufferChainSPtr chain_sptr, AsyncWriteCallback);
-    void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb);
-    void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback);
-    void asyncConnect(ConnectCallbackType cb);
+    void asyncWrite(std::string& str, Marvin::AsyncWriteCallbackType cb);
+    void asyncWrite(Marvin::MBuffer& fb, Marvin::AsyncWriteCallback);
+    void asyncWrite(Marvin::BufferChainSPtr chain_sptr, Marvin::AsyncWriteCallback);
+    void asyncWrite(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb);
+    void asyncWrite(boost::asio::streambuf& sb, Marvin::AsyncWriteCallback);
+    void asyncConnect(Marvin::ConnectCallbackType cb);
     void asyncAccept(
         boost::asio::ip::tcp::acceptor& acceptor,
         std::function<void(const boost::system::error_code& err)> cb

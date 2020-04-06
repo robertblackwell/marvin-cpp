@@ -11,10 +11,11 @@
 #include <string>
 #include <cassert>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
+
 namespace Marvin {
-namespace Http {
+
     class UriV2;
-    using UriSPtr = std::shared_ptr<UriV2>;
+    using UriV2SPtr = std::shared_ptr<UriV2>;
     class UriV2
     {
         public:
@@ -62,6 +63,5 @@ namespace Http {
             std::string m_search;
             http::url m_uri;
     };
-} //namespace Marvin::Http
 } //namespace Marvin
 #endif /* marvin_uri_hpp */

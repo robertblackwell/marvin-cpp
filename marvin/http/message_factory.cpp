@@ -1,49 +1,42 @@
-//
-//  http_request.cpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 1/7/18.
-//  Copyright © 2018 Blackwellapps. All rights reserved.
-//
+#include <marvin/http/message_factory.hpp>
+
 #include <boost/algorithm/string.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_factory.hpp>
 
-using namespace Marvin;
-using namespace Marvin::Http;
 namespace Marvin {
-namespace Http {
+
 namespace {
-    void applyUri(MessageBaseSPtr msg, Marvin::Uri& uri, bool proxy)
+    void applyUri(MessageBaseSPtr msg, Uri& uri, bool proxy)
     {
         if(proxy)
             msg->setUri(uri.absolutePath());
         else
             msg->setUri(uri.relativePath());
-        msg->setHeader(Marvin::Http::HeadersV2::Host, uri.host());
+        msg->setHeader(HeadersV2::Host, uri.host());
     }
-    void applyUriProxy(MessageBaseSPtr msgSPtr, Marvin::Uri& uri)
+    void applyUriProxy(MessageBaseSPtr msgSPtr, Uri& uri)
     {
         applyUri(msgSPtr, uri, true);
     }
-    void applyUriNonProxy(MessageBaseSPtr msgSPtr, Marvin::Uri& uri)
+    void applyUriNonProxy(MessageBaseSPtr msgSPtr, Uri& uri)
     {
         applyUri(msgSPtr, uri, false);
     }
 } // namespace anonymous
 
-    void makeRequest(MessageBase& msg, HttpMethod method, Marvin::Uri& uri)
+    void makeRequest(MessageBase& msg, HttpMethod method, Uri& uri)
     {
         msg.setMethod(method);
         msg.setUri(uri.relativePath());
-        msg.setHeader(Marvin::Http::HeadersV2::Host, uri.host());
+        msg.setHeader(HeadersV2::Host, uri.host());
     }
-    void makeProxyRequest(MessageBase& msg, HttpMethod method,  Marvin::Uri& uri)
+    void makeProxyRequest(MessageBase& msg, HttpMethod method,  Uri& uri)
     {
         msg.setMethod(method);
         msg.setUri(uri.absolutePath());
-        msg.setHeader(Marvin::Http::HeadersV2::Host, uri.host());
+        msg.setHeader(HeadersV2::Host, uri.host());
     }
     void makeProxyConnectRequest(MessageBase& msg, std::string server, std::string port)
     {
@@ -52,7 +45,7 @@ namespace {
         std::string host_port = trim_left_copy(trim_right_copy(server)) + ":" + trim_left_copy(trim_right_copy(port));
         msg.setMethod(HttpMethod::CONNECT);
         msg.setUri(host_port);
-        msg.setHeader(Marvin::Http::HeadersV2::Host, host_port);
+        msg.setHeader(HeadersV2::Host, host_port);
         msg.setContent(std::string(""));
     }
 
@@ -105,5 +98,4 @@ void ForwardingHandler::response502Badgateway(MessageWriter& writer)
     writer.setContent(n);
 }
 #endif
-} //namespace Http
 } // namespace Marvin

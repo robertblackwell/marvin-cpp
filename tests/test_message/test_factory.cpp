@@ -24,7 +24,6 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/http/message_factory.hpp>
 
 using namespace Marvin;
-using namespace Marvin::Http;
 
 TEST_CASE("OK")
 {

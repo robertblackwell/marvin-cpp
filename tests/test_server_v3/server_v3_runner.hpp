@@ -11,11 +11,14 @@
 #include <unistd.h>
 #include <thread>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/server_v3/http_server.hpp>
+#include <marvin/server_v3/server.hpp>
 #if SERVER_RUNNER_STATIC
 void startTestServer(long port=9991);
 void stopTestServer();
 #endif
+
+using namespace Marvin;
+
 class ServerRunner;
 typedef std::shared_ptr<ServerRunner> ServerRunnerSPtr;
 
@@ -32,15 +35,15 @@ public:
     * 
     * Does not return until the server is fully operational
     */
-    void setup(long port, Marvin::RequestHandlerFactory factory);
+    void setup(long port, RequestHandlerFactory factory);
     /* terminate the http_server previously started*/
     void waitForServerToComplete();
     void terminateServer();
     void teardown();
 
     void waitForServerToStart();
-    Marvin::HttpServer* 	m_server_ptr;
-    Marvin::RequestHandlerFactory   m_factory;
+    HttpServer* 	        m_server_ptr;
+    RequestHandlerFactory   m_factory;
     std::thread* 			m_server_thread_ptr;
     std::mutex 				m_mutex;
 	std::condition_variable m_cond_var; 

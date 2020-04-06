@@ -3,8 +3,6 @@ set(TARGET test_server_v3_demo_1)
 add_executable(${TARGET} 
 	../main.cpp
 	demo_1.cpp
-	../handler.cpp
-	../handler.hpp
 	../handle_app.cpp
 	../handle_app.hpp
 	../server_v3_runner.cpp

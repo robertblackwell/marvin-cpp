@@ -1,11 +1,13 @@
 
-#ifndef marvin_tunnel_handler_hpp
-#define marvin_tunnel_handler_hpp
+#ifndef marvin_connection_tunnel_handler_hpp
+#define marvin_connection_tunnel_handler_hpp
 
 #include <stdio.h>
 #include <memory>
-#include <marvin/error/marvin_error.hpp>
 #include <marvin/connection/half_tunnel.hpp>
+#include <marvin/error/marvin_error.hpp>
+
+namespace Marvin {
 
 class TunnelHandler;
 /// \ingroup SocketIO
@@ -47,5 +49,5 @@ class TunnelHandler
         long                    m_first_read_timeout_millisecs;
         long                    m_subsequent_read_timeout_millisecs;
 };
-
+} // namespace Marvin
 #endif /* tunnel_handler_hpp */

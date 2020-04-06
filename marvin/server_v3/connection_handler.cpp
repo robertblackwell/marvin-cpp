@@ -1,17 +1,17 @@
-//
-#include <marvin/http/headers_v2.hpp>
 #include <marvin/server_v3/connection_handler.hpp>
+
+#include <marvin/http/headers_v2.hpp>
+#include <marvin/server_v3/server.hpp>
 #include <marvin/server_v3/server_connection_manager.hpp>
-#include <marvin/server_v3/http_server.hpp>
 #include <marvin/server_v3/server_context.hpp>
 
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
-using namespace Marvin;
+namespace Marvin {
 
 ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&    io,
     ServerConnectionManager&  connectionManager,
-    ::ISocketSPtr                 conn_sptr,
+    ISocketSPtr                 conn_sptr,
     RequestHandlerFactory     factory
 ):
     m_uuid(boost::uuids::random_generator()()),
@@ -26,7 +26,7 @@ ConnectionHandler::ConnectionHandler(
     * can handle keep-alive
     */
     m_connection = conn_sptr;
-    m_requestHandlerUnPtr = std::unique_ptr<RequestHandlerBase>(m_factory(m_io));
+    m_requestHandlerUnPtr = std::unique_ptr<RequestHandlerInterface>(m_factory(m_io));
     m_server_context.server_ptr = HttpServer::get_instance();
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
@@ -65,3 +65,4 @@ void ConnectionHandler::serve()
         m_connectionManager.deregister(this); 
     });
 }
+} // namespace Marvin

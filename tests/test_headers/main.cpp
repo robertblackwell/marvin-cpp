@@ -17,7 +17,6 @@
 #include <marvin/http/headers_v2.hpp>
 
 using namespace Marvin;
-using namespace Http;
 
 ///
 /// KeepAlive is true if:
@@ -37,7 +36,7 @@ using namespace Http;
 // std::regex r_keep_alive(R"(\s*,\s*|\s*;\s*|\s*)keep-malive(\s*,\s*|\s*;\s*|\s*))", std::regex::icase);
 void testHeaderKeepAlive(std::string test_value, bool expected)
 {
-    Marvin::Http::HeadersV2 h1_1{{
+    HeadersV2 h1_1{{
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
         {"11","1111111"},
@@ -50,7 +49,7 @@ void testHeaderKeepAlive(std::string test_value, bool expected)
 }
 void testHeaderConnectionClose(std::string test_value, bool expected)
 {
-    Marvin::Http::HeadersV2 h1_1{{
+    HeadersV2 h1_1{{
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
         {"11","1111111"},
@@ -93,11 +92,11 @@ void testMessageConnectionClose(std::string test_value, int minor_version, bool 
 
 TEST_CASE("headers_add_remove")
 {
-    Marvin::Http::HeadersV2 headers;
+    HeadersV2 headers;
     CHECK(headers.size() == 0);
     headers.setAtKey("Connection", "keep-alive");
     CHECK(headers.size() == 1);
-    CHECK( ( !!headers.atKey(Marvin::Http::HeadersV2::Connection )) );
+    CHECK( ( !!headers.atKey(HeadersV2::Connection )) );
     CHECK( ( !!headers.atKey("Connection")) );
     CHECK( ( !!headers.atKey("conNecTion")) );
     CHECK( ( !!headers.atKey("CONNECTION")) );
@@ -109,7 +108,7 @@ TEST_CASE("headers_add_remove")
 
     headers.setAtKey("Content-Length", "33");
     CHECK(headers.size() == 2);
-    CHECK( ( !!headers.atKey(Marvin::Http::HeadersV2::ContentLength )) );
+    CHECK( ( !!headers.atKey(HeadersV2::ContentLength )) );
     CHECK( ( !!headers.atKey("Content-length")) );
     CHECK(headers.findAtIndex("content-length").get() == 1);
     CHECK( !!(headers.find("content-length") != headers.end()) );
@@ -136,7 +135,7 @@ TEST_CASE("headers_add_remove")
 }
 TEST_CASE("headers_same")
 {
-    Marvin::Http::HeadersV2 h1{{
+    HeadersV2 h1{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -145,7 +144,7 @@ TEST_CASE("headers_same")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    Marvin::Http::HeadersV2 h1_dup{{
+    HeadersV2 h1_dup{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -154,7 +153,7 @@ TEST_CASE("headers_same")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    Marvin::Http::HeadersV2 h1_reversed{{
+    HeadersV2 h1_reversed{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"44","4444444"},
         {"33","3333333"},
@@ -174,7 +173,7 @@ TEST_CASE("headers_same")
 
 TEST_CASE("header_iskeep_alive")
 {
-    Marvin::Http::HeadersV2 h1{{
+    HeadersV2 h1{{
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
         {"11","1111111"},

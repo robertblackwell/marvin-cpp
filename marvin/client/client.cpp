@@ -1,5 +1,6 @@
 //
 #include <marvin/client/client.hpp>
+
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socketFactory
@@ -23,7 +24,8 @@ using boost::system::error_code;
 using boost::asio::io_service;
 using boost::asio::streambuf;
 using namespace Marvin;
-using namespace Marvin::Http;
+
+namespace Marvin {
 
 Client::Client(
     boost::asio::io_service& io, 
@@ -63,7 +65,7 @@ Client::~Client()
 /*!--------------------------------------------------------------------------------
 * implement connect
 *--------------------------------------------------------------------------------*/
-void Client::asyncConnect(ErrorOnlyCallbackType cb)
+void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
 {
     LogInfo("", (long)this);
 //    std::cout << "client asyncConnect " << std::hex << (long) this << std::endl;
@@ -187,9 +189,10 @@ void Client::setContentLength()
     if( m_body_mbuffer_sptr != nullptr ) {
         len = m_body_mbuffer_sptr->size();
     }
-    msg->setHeader(Marvin::Http::HeadersV2::ContentLength, std::to_string(len));
+    msg->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(len));
 }
 MessageReaderSPtr Client::getResponse()
 {
     return m_rdr;
 }
+} // namespace

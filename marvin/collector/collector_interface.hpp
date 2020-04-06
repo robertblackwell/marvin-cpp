@@ -12,15 +12,18 @@
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>
 
+namespace Marvin {
+
 class ICollector
 {
     public:
         /**
         ** Interface method for client code to call collect
         **/
-        virtual void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::Http::MessageBaseSPtr resp) = 0;
+        virtual void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::MessageBaseSPtr resp) = 0;
     
     private:
 };
-
+typedef std::shared_ptr<ICollector> ICollectorSPtr;
+} // namespace
 #endif

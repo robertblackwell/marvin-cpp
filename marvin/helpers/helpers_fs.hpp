@@ -1,5 +1,5 @@
-#ifndef helpers_helpers_fs_h
-#define helpers_helpers_fs_h
+#ifndef marvin_helpers_helpers_fs_h
+#define Marvin_helpers_helpers_fs_h
 
 #include <fstream>
 #include <iostream>
@@ -11,7 +11,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <cerrno>
-namespace Helpers{
+
+namespace Marvin{
 
 /**
 * @brief provides convenience functions for manipulating files and directories. Base on boost::filesystem

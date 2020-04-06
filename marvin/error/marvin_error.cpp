@@ -1,9 +1,10 @@
+#include <marvin/error/marvin_error.hpp>
+
 #include <iostream>
 #include <boost/system/error_code.hpp>
 #include <boost/asio.hpp>
 #include <string>
 #include <iostream>
-#include <marvin/error/marvin_error.hpp>
 
 /**
  * This file defines a few Marvin specific error codes based on boost::system::error_code

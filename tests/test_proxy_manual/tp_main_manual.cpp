@@ -9,8 +9,8 @@
 #include <marvin/server/http_server.hpp>
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/collector/collector_base.hpp>
-// #define CATCH_CONFIG_RUNNER
-// #include <doctest/doctest.h>
+#define DOCTEST_CONFIG_IMPLEMENT
+#include <doctest/doctest.h>
 
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
@@ -45,7 +45,7 @@ int main( int argc, char* argv[] )
 {
     LogTrace("hello");
     VLogDebug("hello");
-    RBLogging::enableForLevel(LOG_LEVEL_WARN);
+    RBLogger::enableForLevel(LOG_LEVEL_WARN);
 
     std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
     std::vector<int> ports{443, 9443};

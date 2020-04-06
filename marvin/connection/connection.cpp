@@ -9,12 +9,12 @@
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/connection/connection.hpp>
-
-using boost::asio::ip::tcp;
-using boost::bind;
-using boost::function;
-using boost::system::error_code;
-using boost::asio::io_service;
+namespace Marvin {
+using ::boost::asio::ip::tcp;
+using ::boost::bind;
+using ::boost::function;
+using ::boost::system::error_code;
+using ::boost::asio::io_service;
 
 #pragma mark - timeout interval config
 long Connection::s_connect_timeout_interval_ms = 500000;
@@ -501,4 +501,4 @@ void Connection::p_post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType er
     cb(err, bytes_transfered);
     #endif
 }
-
+} // namespace

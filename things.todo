@@ -1,15 +1,12 @@
 Next projects:
 ☐ server_v3 becomes part of mainstream without the v3 bit
 ☐ test_roundtrip and test_server_v3 should be combined and unused files deleted
-☐ handler : break test_server_v3/handler into two pieces, one that handles the interface and the other that services requests.
 ☐ handler : integrate the new isConnectionKeepAlice() isConnectionClosed() functions into this class
-☐ move the interface bit of handler in marvin++/marvin/server as part of the main source and new server
-☐ test_message_reader - remove the stuff to do with the hack server and client
 ☐ rename header_v2 to header
 ☐ 
 ☐ remove outdated or unused test files
 ☐ determine which tests will be kept - there is currently a lot of overlap
-☐ make server_v3 the mainstream - implement the idea of an Adapter and work out how to fit ForwardingHandler into this server. The goal is to get `test_proxy` working.
+☐ work out how to fit ForwardingHandler into this server_v3/adapter model. The goal is to get `test_proxy` working.
 Code tidy:
   ☐ HttpServer does not conform to the naming scheme for private methods uses camelCase rather than p_snake_case 
 Tests:
@@ -34,8 +31,6 @@ Bugs:
   ☐ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more.
   ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
   ☐ research how to test for keep-alive particulaly in regard to upper/lower case and also that more than one value can be on a line
-Logging:
-  ☐ is too complicated - try using the model from the node addin
 Exceptions and Error checking:
   ☐ try taking the model from x509 and importing it into this project
 Uri-UriV2:
@@ -59,6 +54,10 @@ Forwarding Handler:
    ☐ Root certificate store, MitmBuild and X509 Identity - need a way of encapsulating and passing this info around 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ is too complicated - try using the model from the node addin @done (20-04-03 15:08) @project(Logging)
+ ✔ test_message_reader - remove the stuff to do with the hack server and client @done (20-04-03 15:07)
+ ✔ move the interface bit of handler in marvin++/marvin/server as part of the main source and new server @done (20-04-03 15:07)
+ ✔ handler : break test_server_v3/handler into two pieces, one that handles the interface and the other that services requests. @done (20-04-03 15:06)
   ✔ test new version of headers @done(20-04-01 18:23) @project(Tests)
  ✔ convert tests to doctest @done (20-03-19 18:57) @project(Tests)
  ✔ Integrate libcert into marvin @done (20-03-04 12:23) @project(Start work on SSL/TLS)

@@ -1,6 +1,6 @@
 
-#ifndef HTTP_SERVER_HPP
-#define HTTP_SERVER_HPP
+#ifndef marvin_HTTP_SERVER_HPP
+#define marvin_HTTP_SERVER_HPP
 
 #include <string>
 #include <signal.h>
@@ -15,6 +15,8 @@
 #include <marvin/message/message_writer.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 #include <marvin/server/connection_handler.hpp>
+
+namespace Marvin {
 
 /**
 * @brief HTTP server class.
@@ -120,4 +122,5 @@ private:
     boost::asio::deadline_timer                     m_heartbeat_timer;
     bool                                            m_terminate_requested; // heartbeat will terminate server if this is set
 };
+} // namspace
 #endif // HTTP_SERVER_HPP

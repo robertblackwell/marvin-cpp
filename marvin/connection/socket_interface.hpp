@@ -1,23 +1,21 @@
 
-#ifndef marvin_socket_interface_hpp
-#define marvin_socket_interface_hpp
-/**
-* \defgroup SocketIO
-*/
-#include <iostream>
-#include <istream>
-#include <ostream>
+#ifndef marvin_connection_socket_interface_hpp
+#define marvin_connection_socket_interface_hpp
+
 #include <string>
+
 #include <marvin/boost_stuff.hpp>
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/callback_typedefs.hpp>
 #include <cert/cert_identity.hpp>
 #include <cert/cert_certificate.hpp>
-#include <marvin/callback_typedefs.hpp>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/buffer/buffer.hpp>
 
-using namespace boost;
-using namespace boost::system;
-using namespace boost::asio;
+namespace Marvin {
+
+using namespace ::boost;
+using namespace ::boost::system;
+using namespace ::boost::asio;
 
 /// \ingroup SocketIO
 using AsyncReadCallback = std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>;
@@ -78,7 +76,7 @@ class ISocket //: public IReadSocket, public IWriteSocket
     virtual void shutdownReceive() = 0;
     #endif
     virtual void close() = 0;
-    virtual ~ISocket() = 0;
 };
-inline ISocket::~ISocket() {}
+
+} // namespace
 #endif

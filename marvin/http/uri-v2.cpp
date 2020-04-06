@@ -7,10 +7,11 @@
 //
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include <marvin/http/uri.hpp>
+#include <marvin/http/uri-v2.hpp>
 using namespace Marvin;
+
 namespace Marvin {
-namespace Http {
+
     UriV2::UriV2(std::string uri_in)
     {
         std::string uri(uri_in);
@@ -87,5 +88,4 @@ std::string UriV2::absolutePath(){ return m_abs_path;}
 std::string UriV2::absoluteUriV2() { return m_absolute_uri;}
 std::string UriV2::search(){ return m_search;}
 
-} //namespace
 } //namespace

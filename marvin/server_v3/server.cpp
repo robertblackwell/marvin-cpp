@@ -1,20 +1,13 @@
-//
-// server.cpp
-// ~~~~~~~~~~
-//
-// Copyright (c) 2003-2016 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
+#include <marvin/server_v3/server.hpp>
+
 #include <thread>
+
 #include <marvin/helpers/macros.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/server_v3/http_server.hpp>
-
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
 
-using namespace Marvin;
+namespace Marvin {
 
 int HttpServer::s_numberOfThreads = 4;
 int HttpServer::s_numberOfConnections = 35;
@@ -42,8 +35,6 @@ bool HttpServer::verify()
 {
     return true;
 }
-
-
 
 HttpServer::HttpServer(RequestHandlerFactory factory):
     m_heartbeat_interval_ms(s_heartbeat_interval_ms),
@@ -134,7 +125,7 @@ void HttpServer::terminate()
 {
 
     LogTrace("");
-    ::ISocketSPtr conn_sptr = socketFactory(m_io);
+    ISocketSPtr conn_sptr = socketFactory(m_io);
     
     ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
 
@@ -215,3 +206,4 @@ void HttpServer::p_start_heartbeat()
     auto ds = (boost::bind(&HttpServer::p_on_heartbeat, this, boost::asio::placeholders::error));
     m_heartbeat_timer.async_wait(ds);
 }
+} // namespace Marvin

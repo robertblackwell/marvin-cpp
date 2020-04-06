@@ -1,15 +1,15 @@
+#include "testcase.hpp"
+
 #include <iostream>
 #include <iterator>
 #include <algorithm>
 #include <vector>
 #include <string>
 #include <map>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-// #include "../test_helpers/test_headers.hpp"
 
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
-#include "testcase.hpp"
 
 Testcase::Testcase(
     std::string description,
@@ -17,7 +17,7 @@ Testcase::Testcase(
     std::string result_first_line,
     int status_code,
     Marvin::ErrorType err,
-    Marvin::Http::HeadersV2::Initializer result_headers,
+    Marvin::HeadersV2::Initializer result_headers,
     std::string result_body
 )
     :
@@ -50,7 +50,7 @@ Testcase::Testcase(
     {
         return (fl == m_result_first_line);
     }
-    bool Testcase::verify_headers(::Marvin::Http::HeadersV2& h)
+    bool Testcase::verify_headers(::Marvin::HeadersV2& h)
     {
         return h.sameValues(m_result_headers);
     }
@@ -65,7 +65,7 @@ Testcase::Testcase(
 
     Marvin::ErrorType Testcase::result_onheaders_err(){ return m_result_onheaders_err; }
 
-    Marvin::Http::HeadersV2& Testcase::result_headers(){
+    Marvin::HeadersV2& Testcase::result_headers(){
         return m_result_headers;
     }
     std::string Testcase::result_body(){

@@ -28,9 +28,7 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/client/client.hpp>
 
-// #include "tm_roundtrip_testcase_base.hpp"
-// #include "echo_smart.hpp"
-// #include "chunked.hpp"
+using namespace Marvin;
 
 template <class T>
 class RoundTripRunner {
@@ -38,8 +36,6 @@ public:
     RoundTripRunner(boost::asio::io_service& io): m_io(io){}
     void http_exec(T& testcase)
     {
-        using namespace Marvin::Http;
-        using namespace Marvin;
         MessageBaseSPtr request_sptr = testcase.makeRequest();
         Marvin::BufferChainSPtr body = testcase.makeBody();
         m_host = testcase.getHost();
@@ -65,8 +61,6 @@ public:
     ExplicitConnect(boost::asio::io_service& io): m_io(io){}
     void http_exec(T& testcase)
     {
-        using namespace Marvin::Http;
-        using namespace Marvin;
         MessageBaseSPtr request_sptr = testcase.makeRequest();
         Marvin::BufferChainSPtr body = testcase.makeBody();
         m_host = testcase.getHost();
@@ -94,10 +88,8 @@ public:
     TwoRequests(boost::asio::io_service& io): m_io(io){}
     void http_exec(T& testcase)
     {
-        using namespace Marvin::Http;
-        using namespace Marvin;
         MessageBaseSPtr request_sptr = testcase.makeRequest();
-        request_sptr->setHeader(Marvin::Http::HeadersV2::Connection,"Keep-Alive");
+        request_sptr->setHeader(HeadersV2::Connection,"Keep-Alive");
         Marvin::BufferChainSPtr body = testcase.makeBody();
         m_host = testcase.getHost();
         m_port = testcase.getPort();
@@ -139,21 +131,17 @@ public:
     }
     void http_exec()
     {
-        using namespace Marvin::Http;
-        using namespace Marvin;
         m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
         p_one_request();
     }
     void p_one_request()
     {
-        using namespace Marvin::Http;
-        using namespace Marvin;
         MessageBaseSPtr request_sptr = m_testcase.makeRequest();
         Marvin::BufferChainSPtr body = m_testcase.makeBody();
         if (m_times == 1) {
-            request_sptr->setHeader(Marvin::Http::HeadersV2::Connection,"Close");
+            request_sptr->setHeader(HeadersV2::Connection,"Close");
         } else {
-            request_sptr->setHeader(Marvin::Http::HeadersV2::Connection,"Keep-Alive");
+            request_sptr->setHeader(HeadersV2::Connection,"Keep-Alive");
         }
         m_client_sptr->asyncWrite(request_sptr, body, [this](ErrorType& err,  MessageBaseSPtr response_sptr) {
             m_testcase.verifyResponse(err, response_sptr);
