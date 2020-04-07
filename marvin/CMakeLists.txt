@@ -85,7 +85,11 @@ file(GLOB HEADERS
 	server_v3/request_handler_interface.hpp
 	server_v3/server_connection_manager.hpp 
 	server_v3/server_context.hpp
-	server_v3/mitm_app.cpp
+	server_v3/mitm_app.hpp
+	server_v3/mitm_https.hpp
+	server_v3/mitm_http.hpp
+	server_v3/mitm_tunnel.hpp
+
 	)
 
 set(SOURCES 
@@ -167,6 +171,9 @@ set(SOURCES
 	server_v3/server_connection_manager.cpp 
 	server_v3/server_context.cpp
 	server_v3/mitm_app.cpp
+	server_v3/mitm_https.cpp
+	server_v3/mitm_http.cpp
+	server_v3/mitm_tunnel.cpp
 
 	)
 

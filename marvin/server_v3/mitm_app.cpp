@@ -3,7 +3,11 @@
 #include <marvin/http/message_factory.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/forwarding/forward_helpers.hpp>
+#include <marvin/helpers/mitm.hpp>
+#include <marvin/server_v3/mitm_https.hpp>
+#include <marvin/server_v3/mitm_http.hpp>
+#include <marvin/server_v3/mitm_tunnel.hpp>
+
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
@@ -62,10 +66,6 @@ void MitmApp::p_on_completed()
     m_io.post(m_done_callback);
 }
 
-void MitmApp::p_handle_upgrade()
-{
-}
-
 void MitmApp::handleRequest()
 {
     p_read_first_message();
@@ -81,12 +81,23 @@ void MitmApp::p_read_first_message()
         }
     });
 }
+#if defined MARVIN_MITM_INLINE_HTTP || defined MARVIN_MITM_INLINE_HTTPS
 void MitmApp::p_read_another_message()
 {
     // maybe do something about shortening the read timeout so we dont wait on a client 
     // that has gone away
     p_read_first_message();
 }
+void MitmApp::p_on_request_completed()
+{
+    if ((isConnectionKeepAlive(*m_rdr) && isConnectionKeepAlive(*m_downstream_response_sptr))) {
+        p_read_another_message();
+    } else {
+        p_connection_end();
+    }
+}
+#endif
+
 void MitmApp::p_on_first_message()
 {   
     std::string tmp_url = m_rdr->uri();
@@ -105,10 +116,30 @@ void MitmApp::p_on_first_message()
 
         switch(action){
             case ConnectAction::TUNNEL :
-                p_initiate_tunnel();
+                m_mitm_tunnel_uptr = std::make_unique<MitmTunnel>(
+                    *this,
+                    m_socket_sptr,
+                    m_rdr,
+                    m_wrtr,
+                    m_scheme,
+                    m_host,
+                    m_port
+                );
+                m_mitm_tunnel_uptr->handle();
+                // p_initiate_tunnel();
                 break;
             case ConnectAction::MITM :
-                p_initiate_https_upstream_roundtrip();
+                m_mitm_secure_uptr = std::make_unique<MitmHttps>(
+                    *this,
+                    m_socket_sptr,
+                    m_rdr,
+                    m_wrtr,
+                    m_scheme,
+                    m_host,
+                    m_port,
+                    m_collector_sptr
+                );
+                m_mitm_secure_uptr->handle();
                 break;
             case ConnectAction::REJECT :
                 assert(false);
@@ -116,11 +147,23 @@ void MitmApp::p_on_first_message()
         };
 
     } else {
-        p_initiate_http_upstream_roundtrip();
+        m_mitm_http_uptr = std::make_unique<MitmHttp>(
+                    *this,
+                    m_socket_sptr,
+                    m_rdr,
+                    m_wrtr,
+                    m_scheme,
+                    m_host,
+                    m_port,
+                    m_collector_sptr
+                );
+                
+        m_mitm_http_uptr->handle();
+        // p_initiate_http_upstream_roundtrip();
     }
 
 };
-
+#ifdef MARVIN_MITM_INLINE_TUNNEL
 void MitmApp::p_initiate_tunnel()
 {
     LogTrace("scheme:", m_scheme, " host:", m_host, " port:", m_port);
@@ -164,15 +207,21 @@ void MitmApp::p_initiate_tunnel()
         }
     });
 }
+#endif
+#ifdef MARVIN_MITM_INLINE_HTTPS
 void MitmApp::p_initiate_https_upstream_roundtrip()
 {
 
 }
+#endif
+#ifdef MARVIN_MITM_INLINE_HTTP
+
 void MitmApp::p_initiate_http_upstream_roundtrip()
 {
    
     Marvin::Uri tmp_uri(m_rdr->uri());
     assert( ! m_rdr->hasHeader("Upgrade") );
+    m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_scheme, m_host, m_port));
     p_roundtrip_upstream(m_rdr, [this](MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_downstream_response_sptr = downMsg;
@@ -206,7 +255,7 @@ void MitmApp::p_roundtrip_upstream(
     /// a client object to manage the round trip of request and response to
     /// the final destination. m_host m_scheme and m_port already setup
 
-    m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_scheme, m_host, m_port));
+    // m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_scheme, m_host, m_port));
     /// the MessageBase that will be the up stream request
     m_upstream_request_sptr = std::make_shared<MessageBase>();
     /// format upstream msg for transmission
@@ -222,7 +271,7 @@ void MitmApp::p_roundtrip_upstream(
             p_on_upstream_roundtrip_error(ec);
             // TODO: how to handle error
         } else {
-            LogTrace("upstream rresponse", traceMessage(*(upstrmRdr.get())));
+            LogTrace("upstream response", traceMessage(*(upstrmRdr.get())));
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             m_upstream_response_body_sptr = upstrmRdr->getContentBuffer();
             Helpers::makeDownstreamResponse(m_downstream_response_sptr, upstrmRdr, ec);
@@ -231,18 +280,10 @@ void MitmApp::p_roundtrip_upstream(
     });
     
 };
+#endif
 void MitmApp::p_on_tunnel_completed()
 {
     p_connection_end();
-}
-void MitmApp::p_on_request_completed()
-{
-    if ((isConnectionKeepAlive(*m_rdr) && isConnectionKeepAlive(*m_downstream_response_sptr))) {
-        p_read_another_message();
-    } else {
-        p_connection_end();
-    }
-
 }
 void MitmApp::p_connection_end()
 {
@@ -284,8 +325,8 @@ ConnectAction MitmApp::p_determine_action(std::string host, std::string port)
     std::vector<std::regex>  regexs = this->m_https_hosts;
     std::vector<int>         ports  = this->m_https_ports;
     /// !!! this needs to be upgraded
-    if (std::stoi(port) == 443) {
-        return ConnectAction::TUNNEL;
+    if ((std::stoi(port) == 443) &&(host == std::string("hackernoon.com"))) {
+        return ConnectAction::MITM;
     }
     return ConnectAction::TUNNEL;
 }

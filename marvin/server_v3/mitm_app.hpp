@@ -1,10 +1,3 @@
-//
-//  forwarding_handler.hpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/25/16.
-//  Copyright © 2016 Blackwellapps. All rights reserved.
-//
 
 #ifndef marvin_mitm_app_hpp
 #define marvin_mitm_app_hpp
@@ -26,8 +19,11 @@
 #include <marvin/server_v3/request_handler_interface.hpp>
 #include <marvin/collector/collector_interface.hpp>
 #include <marvin/server_v3/adapter.hpp>
-
 namespace Marvin {
+
+class MitmHttps;
+class MitmHttp;
+class MitmTunnel;
 
 enum class ConnectAction;
 class MitmApp;
@@ -53,25 +49,33 @@ class MitmApp : public Marvin::RequestHandlerInterface
 
         void handleRequest();
 
+        friend class MitmHttps;
+        friend class MitmHttp;
+        friend MitmTunnel;
+    
     private:
+    
+        std::unique_ptr<MitmHttps>  m_mitm_secure_uptr;
+        std::unique_ptr<MitmHttp>   m_mitm_http_uptr;
+        std::unique_ptr<MitmTunnel> m_mitm_tunnel_uptr;
 
         void p_on_completed();
     
         // methods that are used in handleRequest
         void p_read_first_message();
-        void p_read_another_message();
+        // void p_read_another_message();
         void p_on_first_message();
 
         // methods that are used in handleConnect
         ConnectAction p_determine_connection_action(std::string host, int port);
-        void p_initiate_tunnel();
-        void p_initiate_https_upstream_roundtrip();
-        void p_initiate_http_upstream_roundtrip();
+        // void p_initiate_tunnel();
+        // void p_initiate_https_upstream_roundtrip();
+        // void p_initiate_http_upstream_roundtrip();
 
-        void p_roundtrip_upstream(
-            MessageReaderSPtr req,
-            std::function<void(MessageBaseSPtr downstreamReplyMsg)> upstreamCb
-        );
+        // void p_roundtrip_upstream(
+        //     MessageReaderSPtr req,
+        //     std::function<void(MessageBaseSPtr downstreamReplyMsg)> upstreamCb
+        // );
 
         // called to signal that a tunnel has completed
         // so end the connection as keep-alive should have
@@ -80,7 +84,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         // called to signal that a request/response cycle has completed without error
         // only real job now is to determine if we are doing keep-alive and should do another read of
         // end the connection
-        void p_on_request_completed();
+        // void p_on_request_completed();
         // called to signal no more request will be processed.
         // give control back to the adapter or connection handler
         void p_connection_end();
@@ -96,17 +100,17 @@ class MitmApp : public Marvin::RequestHandlerInterface
 
         void p_log_error(std::string label, Marvin::ErrorType err);
 
-        void p_handle_upstream_response_received(Marvin::ErrorType& err);
-        void p_make_downstream_response();
-        void p_make_downstream_error_response(Marvin::ErrorType& err);
-        void p_handle_upgrade();
+        // void p_handle_upstream_response_received(Marvin::ErrorType& err);
+        // void p_make_downstream_response();
+        // void p_make_downstream_error_response(Marvin::ErrorType& err);
+        // void p_handle_upgrade();
 
         ConnectAction p_determine_action(std::string host, std::string port);
         
         // utility methods
-        void p_response403Forbidden(MessageWriter& writer);
-        void p_response200OKConnected(MessageWriter& writer);
-        void p_response502Badgateway(MessageWriter& writer);
+        // void p_response403Forbidden(MessageWriter& writer);
+        // void p_response200OKConnected(MessageWriter& writer);
+        // void p_response502Badgateway(MessageWriter& writer);
 
         static std::vector<std::regex>      s_https_hosts;
         static std::vector<int>             s_https_ports;
@@ -115,7 +119,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         /// list of port numbers that can be https mitm'd rather than tunneled
         std::vector<int>                    m_https_ports;
 
-        std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)> m_collect_function;
+        // std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)> m_collect_function;
 
         boost::uuids::uuid                  m_uuid;
         boost::asio::io_service&            m_io;
@@ -132,15 +136,15 @@ class MitmApp : public Marvin::RequestHandlerInterface
         std::string                         m_host;
         std::string                         m_port;
         // properties for upstream request/response
-        ISocketSPtr                         m_upstream_connection_sptr;
-        ClientUPtr                          m_upstream_client_uptr;
-        BufferChainSPtr                     m_upstream_response_body_sptr;
-        MessageBaseSPtr       m_upstream_request_sptr;
+        // ISocketSPtr                         m_upstream_connection_sptr;
+        // ClientUPtr                          m_upstream_client_uptr;
+        // BufferChainSPtr                     m_upstream_response_body_sptr;
+        // MessageBaseSPtr                     m_upstream_request_sptr;
 
         // response to downstream client - used for each of the original request types
-        MessageBaseSPtr       m_downstream_response_sptr;
+        // MessageBaseSPtr       m_downstream_response_sptr;
         // obvious - tunnel handler
-        TunnelHandlerSPtr                   m_tunnel_handler_sptr;
+        // TunnelHandlerSPtr                   m_tunnel_handler_sptr;
 
 };
 } // namespace

@@ -55,6 +55,7 @@ class ISocket //: public IReadSocket, public IWriteSocket
     virtual void becomeSecureClient(X509_STORE* certificate_store_ptr) = 0;
     virtual void becomeSecureServer(Cert::Identity server_identity) =0;
     virtual void asyncHandshake(std::function<void(const boost::system::error_code& err)> cb)=0;
+    
     virtual Cert::Certificate getServerCertificate() =0 ;
 
     virtual void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb) = 0;
