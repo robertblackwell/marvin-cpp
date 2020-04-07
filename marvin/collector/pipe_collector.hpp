@@ -10,10 +10,11 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
+#include <marvin/http/message_base.hpp>
+#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_writer.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 
-#include <marvin/server/http_server.hpp>
-#include <marvin/server/request_handler_base.hpp>
 #include <marvin/collector/collector_interface.hpp>
 //#include <marvin/forwarding/forwarding_handler.hpp>
 
@@ -65,7 +66,7 @@ class PipeCollector : public ICollector
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,
-            Marvin::MessageBaseSPtr resp);
+            MessageBaseSPtr resp);
     
     private:
         /**

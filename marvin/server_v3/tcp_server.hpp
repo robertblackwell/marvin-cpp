@@ -41,7 +41,7 @@ namespace Marvin {
 *       the server does not get overloaded.
 *
 */
-class HttpServer
+class TcpServer
 {
 public:
 
@@ -55,18 +55,18 @@ public:
     static void configSet_NumberOfConnections(int num);
     static void configSet_NumberOfThreads(int num);
     static void configSet_HeartbeatInterval(int millisecs);
-    static HttpServer* get_instance();
+    static TcpServer* get_instance();
     
-    HttpServer(const HttpServer&) = delete;
-    HttpServer& operator=(const HttpServer&) = delete;
+    TcpServer(const TcpServer&) = delete;
+    TcpServer& operator=(const TcpServer&) = delete;
 
     /**
     ** Construct the server. Each request will be serviced by a handler object
     **  that conforms the RequestHandlerBase. A new instances of the handler object
     ** will be returned by each call to the factory function.
     */
-    explicit HttpServer(RequestHandlerFactory factory);
-    ~HttpServer();
+    explicit TcpServer(RequestHandlerUPtrFactory factory);
+    ~TcpServer();
     /**
     ** Starts listen process on the servers port, and from there
     ** dispatches instances of request handler bkects to service the connection
@@ -83,7 +83,7 @@ private:
     static int s_numberOfThreads;
     static int s_numberOfConnections;
     static int s_heartbeat_interval_ms;
-    static HttpServer* s_instance;
+    static TcpServer* s_instance;
 
     /**
     ** @brief just as it says - init the server ready to list
@@ -122,8 +122,8 @@ private:
     boost::asio::io_service                         m_io;
     boost::asio::signal_set                         m_signals;
     boost::asio::ip::tcp::acceptor                  m_acceptor;
-    ServerConnectionManager                       m_connectionManager;
-    RequestHandlerFactory                         m_factory;
+    ServerConnectionManager                         m_connectionManager;
+    RequestHandlerUPtrFactory                       m_factory;
     boost::asio::deadline_timer                     m_heartbeat_timer;
     bool                                            m_terminate_requested; // heartbeat will terminate server if this is set
 };

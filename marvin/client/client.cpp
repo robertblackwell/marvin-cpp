@@ -72,7 +72,7 @@ void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
     if (m_conn_shared_ptr != nullptr ) {
         THROW("should not have a connection at this point");
     }
-    m_conn_shared_ptr = socketFactory(m_io,m_scheme,m_server, m_port);
+    m_conn_shared_ptr = socketFactory(m_io, m_scheme, m_server, m_port);
 
     auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);

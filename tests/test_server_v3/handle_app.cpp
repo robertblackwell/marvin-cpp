@@ -16,7 +16,7 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/external_src/CxxUrl/url.hpp>
 #include <marvin/http/uri_query.hpp>
 
-#include <marvin/server_v3/server.hpp>
+#include <marvin/server_v3/tcp_server.hpp>
 #include <marvin/server_v3/request_handler_interface.hpp>
 
 using namespace Marvin;

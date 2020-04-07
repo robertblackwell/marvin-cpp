@@ -25,8 +25,8 @@ class ConnectionHandler
         ConnectionHandler(
             boost::asio::io_service&   io,
             ServerConnectionManager&   connectionManager,
-            ISocketSPtr              conn_sptr, 
-            RequestHandlerFactory      factory
+            ISocketSPtr                conn_sptr, 
+            RequestHandlerUPtrFactory  factory
         );
 
         ~ConnectionHandler();
@@ -42,8 +42,8 @@ class ConnectionHandler
         boost::uuids::uuid                      m_uuid;
         boost::asio::io_service&                m_io;
         ServerConnectionManager&                m_connectionManager;
-        std::unique_ptr<RequestHandlerInterface>  m_requestHandlerUnPtr;
-        RequestHandlerFactory                   m_factory;
+        RequestHandlerInterfaceUPtr             m_requesthandler_uptr;
+        RequestHandlerUPtrFactory               m_factory;
     
         ISocketSPtr                             m_connection;
         ServerContext                           m_server_context;

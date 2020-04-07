@@ -5,6 +5,7 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
+#include <regex>
 #include <marvin/boost_stuff.hpp>
 #include <regex>
 #include <marvin/helpers/macros.hpp>

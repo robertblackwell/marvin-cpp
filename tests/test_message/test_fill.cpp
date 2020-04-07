@@ -12,19 +12,20 @@
 #include <unistd.h>
 #include <thread>
 #include <pthread.h>
-#include <doctest/doctest.h>
-
-#include <marvin/buffer/buffer.hpp>
-#include <marvin/collector/pipe_collector.hpp>
-#include <marvin/server/http_server.hpp>
-#include <marvin/boost_stuff.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <doctest/doctest.h>
+
+#include <marvin/boost_stuff.hpp>
+
+#include <marvin/buffer/buffer.hpp>
+
+#include <marvin/http/uri.hpp>
+#include <marvin/helpers/mitm.hpp>
+#include <marvin/connection/socket_factory.hpp>
+
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
-#include <marvin/http/uri.hpp>
-#include <marvin/forwarding/forward_helpers.hpp>
-#include <marvin/connection/socket_factory.hpp>
 
 #endif 
 #pragma mark - mock up a MessageReader

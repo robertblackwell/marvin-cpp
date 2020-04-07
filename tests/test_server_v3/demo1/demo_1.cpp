@@ -7,6 +7,7 @@
 #include <string>
 #include <unistd.h>
 #include <thread>
+#include <memory>
 #include <pthread.h>
 // #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
@@ -73,7 +74,7 @@ TEST_CASE("0")
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)
     {
-        return new AppHandler(io);
+        return std::make_unique<AppHandler>(io);
     });
     //===========================================================================================
     // Now run the tests

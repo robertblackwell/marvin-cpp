@@ -46,5 +46,7 @@ class CollectorBase: public ICollector
         std::ostream&                           m_output_stream;
     
 };
+typedef std::shared_ptr<CollectorBase> CollectorBaseSPtr;
+
 } //namespace
 #endif

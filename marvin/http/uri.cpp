@@ -12,6 +12,7 @@ using namespace Marvin;
 namespace Marvin{
     Uri::Uri(std::string uri_in)
     {
+        // protect the input string from being changed by ParseHttpUrl -- yuk
         std::string uri(uri_in);
         http::url us = http::ParseHttpUrl(uri);
         LogDebug(" uri:", uri);
@@ -35,9 +36,9 @@ namespace Marvin{
         }
         assert(port_int != 0);
         std::string host_header = us.host+":"+std::to_string(port_int);
-        if(port_int == 80) {
-            host_header = us.host;
-        }
+        // if(port_int == 80) {
+        //     host_header = us.host;
+        // }
         std::string path_value;
         if( (us.path == "") && (us.search == "")) {
             path_value = "/";

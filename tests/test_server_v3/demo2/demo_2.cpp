@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)
     {
-        return new AppHandler(io);
+        return std::make_unique<AppHandler>(io);
     });
     doctest::Context context;
     context.applyCommandLine(argc, argv);

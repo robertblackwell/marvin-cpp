@@ -41,7 +41,7 @@ namespace Marvin{
             std::string absolutePath();
             /// \brief returns everything after the "?" including the fragment
             std::string search();
-        private:
+            bool m_valid;
             std::string m_scheme;
             std::string m_user;
             std::string m_user_and_password;

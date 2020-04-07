@@ -1,48 +1,42 @@
-//
-// server.cpp
-// ~~~~~~~~~~
-//
-// Copyright (c) 2003-2016 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
+#include <marvin/server_v3/tcp_server.hpp>
+
 #include <thread>
+
+#include <marvin/helpers/macros.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/server/http_server.hpp>
+#include <marvin/external_src/rb_logger/rb_logger.hpp>
+RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+namespace Marvin {
 
-int HTTPServer::s_numberOfThreads = 4;
-int HTTPServer::s_numberOfConnections = 35;
-int HTTPServer::s_heartbeat_interval_ms = 1000;
+int TcpServer::s_numberOfThreads = 4;
+int TcpServer::s_numberOfConnections = 35;
+int TcpServer::s_heartbeat_interval_ms = 1000;
 
-HTTPServer* HTTPServer::s_instance = nullptr;
+TcpServer* TcpServer::s_instance = nullptr;
 
-HTTPServer* HTTPServer::get_instance()
+TcpServer* TcpServer::get_instance()
 {
     return s_instance;
 }
-void HTTPServer::configSet_NumberOfThreads(int n)
+void TcpServer::configSet_NumberOfThreads(int n)
 {
     s_numberOfThreads = n;
 }
-void HTTPServer::configSet_NumberOfConnections(int n)
+void TcpServer::configSet_NumberOfConnections(int n)
 {
     s_numberOfConnections = n;
 }
-void HTTPServer::configSet_HeartbeatInterval(int millisecs)
+void TcpServer::configSet_HeartbeatInterval(int millisecs)
 {
     s_heartbeat_interval_ms = millisecs;
 }
-bool HTTPServer::verify()
+bool TcpServer::verify()
 {
     return true;
 }
 
-
-
-HTTPServer::HTTPServer(RequestHandlerFactory factory):
+TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
     m_heartbeat_interval_ms(s_heartbeat_interval_ms),
     m_numberOfThreads(s_numberOfThreads),
     m_numberOfConnections(s_numberOfConnections),
@@ -59,7 +53,7 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory):
 /**
 ** init
 */
- void HTTPServer::initialize()
+ void TcpServer::p_initialize()
 {
     ///
     /// !! make sure this is big enough to handle the components with dedicated strands
@@ -84,7 +78,7 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory):
     _signals.async_wait(handler);
 #endif
     
-    waitForStop();
+    p_wait_for_stop();
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), m_port);
     m_acceptor.open(endpoint.protocol());
     m_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
@@ -92,17 +86,17 @@ HTTPServer::HTTPServer(RequestHandlerFactory factory):
     m_acceptor.bind(endpoint, err);
     if( err) {
         LogError("error port: ",m_port, err.message());
-        exit(1);
+        MTHROW(std::string("error binding server port ")+err.message());
     }
-    start_heartbeat();
+    p_start_heartbeat();
 
     LogDebug(err.message());
 }
-HTTPServer::~HTTPServer()
+TcpServer::~TcpServer()
 {
     LogTorTrace();
 }
-void HTTPServer::terminate()
+void TcpServer::terminate()
 {
     m_terminate_requested = true;
 }
@@ -110,53 +104,32 @@ void HTTPServer::terminate()
 //-------------------------------------------------------------------------------------
 // listen - starts the accept cycle
 //-------------------------------------------------------------------------------------
- void HTTPServer::listen(long port)
+ void TcpServer::listen(long port, std::function<void()> ready_cb)
 {
     m_port = port;
-    initialize();
+    p_initialize();
     m_acceptor.listen();
     
     // start the accept process on the _serverStrand
-    auto hf = std::bind(&HTTPServer::startAccept, this);
+    auto hf = std::bind(&TcpServer::p_start_accept, this);
     m_io.post(hf);
-    
-#define XMULTI_THREAD
-#ifndef MULTI_THREAD
-    m_io.run();
-#else
-    long numThreads = m_numberOfThreads;
-    std::thread threads[15];
-    
-    boost::asio::io_service& tmp_io = m_io;
-    for(int t_count = 0; t_count < numThreads - 1; t_count++)
-    {
-        threads[t_count] = std::thread([&tmp_io](){
-            LogDebug("thread");
-            tmp_io.run();
-        });
+    if (ready_cb != nullptr) {
+        m_io.post(ready_cb);
     }
-    LogDebug("original thread");
     m_io.run();
-//    std::cout << __FUNCTION__ << " after io.run() " << std::endl;
-    for(int t_count = 0; t_count < numThreads - 1; t_count++)
-    {
-        threads[t_count].join();
-    }
-//    std::cout << __FUNCTION__<<" after join" << std::endl;
-#endif
 }
 //-------------------------------------------------------------------------------------
 // startAccept
 //-------------------------------------------------------------------------------------
- void HTTPServer::startAccept()
+ void TcpServer::p_start_accept()
 {
 
-    LogInfo("");
+    LogTrace("");
     ISocketSPtr conn_sptr = socketFactory(m_io);
     
     ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
 
-    auto hf = (std::bind(&HTTPServer::handleAccept, this, connectionHandler, std::placeholders::_1));
+    auto hf = (std::bind(&TcpServer::p_handle_accept, this, connectionHandler, std::placeholders::_1));
     conn_sptr->asyncAccept(m_acceptor, hf);
 //    _acceptor.async_accept(_boost_socket, hf);
 
@@ -165,9 +138,8 @@ void HTTPServer::terminate()
 //-------------------------------------------------------------------------------------
 // handleAccept - called on _strand to handle a new client connection
 //-------------------------------------------------------------------------------------
- void HTTPServer::handleAccept(ConnectionHandler* connHandler, const boost::system::error_code& err)
+ void TcpServer::p_handle_accept(ConnectionHandler* connHandler, const boost::system::error_code& err)
 {
-
     LogInfo("", connHandler);
     if (! m_acceptor.is_open()){
         delete connHandler;
@@ -175,68 +147,63 @@ void HTTPServer::terminate()
         return; // something is wrong
     }
     if (!err){
-        LogInfo("got a connection", connHandler->nativeSocketFD());
+        LogTrace("got a connection", connHandler->nativeSocketFD());
         /// at this point the native socket fd is assigned
         /// so for debug purposes we can stash it in the
         /// fd_inuse list
        
         m_connectionManager.registerConnectionHandler(connHandler);
-        //
-        // at this point we are running on _serveStrand start the connectionHandler with a post to
-        // liberate it from the strand
-        //
-//        std::cout << "Server handleAccept " << std::hex << (long) this << " " << (long)connHandler << std::endl;
+        // important sequence - if a call to p_start_accept() is defered
+        // by allowAnotherConnection() we need to be sure there is still
+        // an outstanding connection that will start an accept in the future.
+        m_connectionManager.allowAnotherConnection([this](){
+            LogTrace("allowAnother Callback");
+            p_start_accept();
+        });
+        #if 0
         auto hf = std::bind(&ConnectionHandler::serve, connHandler);
         m_io.post(hf);
+        #else
+        connHandler->serve();
+        #endif
     }else{
 //        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
-        LogWarn("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
+        LogTrace("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         m_io.stop();
         return;
 //        delete connHandler;
     }
-    m_connectionManager.allowAnotherConnection([this](){
-        startAccept();
-    });
 }
 
-#pragma mark - signal handling
 //-------------------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------------------
- void HTTPServer::waitForStop()
+ void TcpServer::p_wait_for_stop()
 {
     LogDebug("");
-    auto hf = (std::bind(&HTTPServer::doStop, this, std::placeholders::_1));
+    auto hf = (std::bind(&TcpServer::p_do_stop, this, std::placeholders::_1));
 
   m_signals.async_wait(hf);
 }
- void HTTPServer::doStop(const Marvin::ErrorType& err)
+ void TcpServer::p_do_stop(const Marvin::ErrorType& err)
 {
     LogDebug("");
-//    std::cout << "doStop" << std::endl;
     m_io.stop();
     m_acceptor.close();
-//  connection_manager_.stop_all();
 }
-void HTTPServer::on_heartbeat(const boost::system::error_code& ec)
+void TcpServer::p_on_heartbeat(const boost::system::error_code& ec)
 {
-//    std::cout << __FUNCTION__ << std::endl;
     if(m_terminate_requested) {
         m_connectionManager.stop_all();
-        m_acceptor.cancel(); // let the accept handler close the server down
-                            // all we want here is to cancel the accept handlers waiting
-                            // and cancel all connections
-//        _heartbeat_timer.cancel();
-//        _io.stop();
+        m_acceptor.cancel();
         return;
     }
-    start_heartbeat();
-
+    p_start_heartbeat();
 }
-void HTTPServer::start_heartbeat()
+void TcpServer::p_start_heartbeat()
 {
     m_heartbeat_timer.expires_from_now(boost::posix_time::milliseconds(m_heartbeat_interval_ms));
-    auto ds = (boost::bind(&HTTPServer::on_heartbeat, this, boost::asio::placeholders::error));
+    auto ds = (boost::bind(&TcpServer::p_on_heartbeat, this, boost::asio::placeholders::error));
     m_heartbeat_timer.async_wait(ds);
 }
+} // namespace Marvin

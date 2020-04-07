@@ -28,13 +28,12 @@ add_subdirectory(test_message_reader)
 add_subdirectory(test_message_roundtrip)
 
 add_subdirectory(test_server_v3)
-
-# add_subdirectory(test_uri)
+add_subdirectory(test_proxy_manual)
+add_subdirectory(test_uri)
 
 # add_subdirectory(test_connect)
 # add_subdirectory(test_ssl)
 # add_subdirectory(test_client_request)
-# add_subdirectory(test_proxy_manual)
 
 # add_subdirectory(test_tcp)
 # add_subdirectory(test_server_setup_fixture)

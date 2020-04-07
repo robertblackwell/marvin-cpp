@@ -17,10 +17,11 @@ class RequestHandlerInterface;
 typedef std::shared_ptr<RequestHandlerInterface> RequestHandlerInterfaceSPtr;
 typedef std::unique_ptr<RequestHandlerInterface> RequestHandlerInterfaceUPtr;
 
-typedef std::function<RequestHandlerInterface*(boost::asio::io_service& io)> RequestHandlerFactory;
 typedef std::function<RequestHandlerInterfaceSPtr(boost::asio::io_service& io)> RequestHandlerSPtrFactory;
 typedef std::function<RequestHandlerInterfaceUPtr(boost::asio::io_service& io)> RequestHandlerUPtrFactory;
 typedef std::function<void()> HandlerDoneCallbackType;
+
+typedef std::function<RequestHandlerInterface*(boost::asio::io_service& io)> RequestHandlerFactory;
 
 class RequestHandlerInterface
 {

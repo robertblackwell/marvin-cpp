@@ -24,11 +24,16 @@
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/collector/collector_interface.hpp>
 #include <marvin/server_v3/adapter.hpp>
 
 namespace Marvin {
 
 enum class ConnectAction;
+class MitmApp;
+
+typedef std::shared_ptr<MitmApp> MitmAppSPtr;
+typedef std::unique_ptr<MitmApp> MitmAppUPtr;
 
 class MitmApp : public Marvin::RequestHandlerInterface
 {
@@ -37,7 +42,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         static void configSet_HttpsHosts(std::vector<std::regex> re);
         static void configSet_HttpsPorts(std::vector<int> ports);
     
-        MitmApp(boost::asio::io_service& io);
+        MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr);
         ~MitmApp();
         
         void handle(
@@ -65,7 +70,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
 
         void p_roundtrip_upstream(
             MessageReaderSPtr req,
-            std::function<void(Http::MessageBaseSPtr downstreamReplyMsg)> upstreamCb
+            std::function<void(MessageBaseSPtr downstreamReplyMsg)> upstreamCb
         );
 
         // called to signal that a tunnel has completed
@@ -110,21 +115,19 @@ class MitmApp : public Marvin::RequestHandlerInterface
         /// list of port numbers that can be https mitm'd rather than tunneled
         std::vector<int>                    m_https_ports;
 
-        std::function<void(std::string s, std::string h, MessageReaderSPtr req, Http::MessageBaseSPtr resp)> m_collect_function;
+        std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)> m_collect_function;
 
         boost::uuids::uuid                  m_uuid;
         boost::asio::io_service&            m_io;
+        ICollectorSPtr                      m_collector_sptr;
         ISocketSPtr                         m_socket_sptr;
         MessageWriterSPtr                   m_wrtr;
         MessageReaderSPtr                   m_rdr;
-        Marvin::Http::MessageBaseSPtr       m_msg;
+        MessageBaseSPtr       m_msg;
         std::string                         m_body;
         Marvin::HandlerDoneCallbackType     m_done;
         ATimerSPtr                          m_timer_sptr;
         std::function<void()>               m_done_callback;
-
-        ICollectorSPtr                      m_collector_sptr;
-
         std::string                         m_scheme;
         std::string                         m_host;
         std::string                         m_port;
@@ -132,10 +135,10 @@ class MitmApp : public Marvin::RequestHandlerInterface
         ISocketSPtr                         m_upstream_connection_sptr;
         ClientUPtr                          m_upstream_client_uptr;
         BufferChainSPtr                     m_upstream_response_body_sptr;
-        Marvin::Http::MessageBaseSPtr       m_upstream_request_sptr;
+        MessageBaseSPtr       m_upstream_request_sptr;
 
         // response to downstream client - used for each of the original request types
-        Marvin::Http::MessageBaseSPtr       m_downstream_response_sptr;
+        MessageBaseSPtr       m_downstream_response_sptr;
         // obvious - tunnel handler
         TunnelHandlerSPtr                   m_tunnel_handler_sptr;
 

@@ -30,11 +30,12 @@ void MitmApp::configSet_HttpsPorts(std::vector<int> ports)
     s_https_ports = ports;
 }
 
-MitmApp::MitmApp(boost::asio::io_service& io): m_io(io)
+MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_io(io)
 {
     LogTorTrace();
     m_https_hosts = s_https_hosts;
     m_https_ports = s_https_ports;
+    m_collector_sptr = collector_sptr;
 }
 
 
@@ -89,11 +90,12 @@ void MitmApp::p_read_another_message()
 void MitmApp::p_on_first_message()
 {   
     std::string tmp_url = m_rdr->uri();
-    http::url tmp_u = http::ParseHttpUrl(tmp_url);
-   
-    m_scheme = tmp_u.protocol;
-    m_host = tmp_u.host;
-    m_port = tmp_u.port;
+    std::string tmp_url_safe = tmp_url;
+    Uri tmp_uri = Uri(tmp_url_safe);
+
+    m_scheme = tmp_uri.scheme();
+    m_host = tmp_uri.server(); // tmp_uri.host() would have the port number on the end this is not what we want for a proxy
+    m_port = std::to_string(tmp_uri.port());
 
     HttpMethod method = m_rdr->method();
 
@@ -114,7 +116,7 @@ void MitmApp::p_on_first_message()
         };
 
     } else {
-
+        p_initiate_http_upstream_roundtrip();
     }
 
 };
@@ -127,7 +129,7 @@ void MitmApp::p_initiate_tunnel()
     m_upstream_connection_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
         if( err ) {
             LogWarn("initiateTunnel: FAILED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
-            m_downstream_response_sptr = std::make_shared<Http::MessageBase>();
+            m_downstream_response_sptr = std::make_shared<MessageBase>();
             makeResponse502Badgateway(*m_downstream_response_sptr);
 
             m_wrtr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err){
@@ -141,8 +143,8 @@ void MitmApp::p_initiate_tunnel()
             });
         } else {
             LogTrace("initiateTunnel: connection SUCCEEDED scheme:", " scheme:",this->m_scheme, " host:", this->m_host, " port:", this->m_port);
-            m_downstream_response_sptr = std::make_shared<Http::MessageBase>();
-            Http::makeResponse200OKConnected(*m_downstream_response_sptr);
+            m_downstream_response_sptr = std::make_shared<MessageBase>();
+            makeResponse200OKConnected(*m_downstream_response_sptr);
             m_wrtr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err){
                 LogInfo("");
                 if( err ) {
@@ -170,14 +172,11 @@ void MitmApp::p_initiate_http_upstream_roundtrip()
 {
    
     Marvin::Uri tmp_uri(m_rdr->uri());
-    m_host = tmp_uri.server();
-    m_port = (int)tmp_uri.port();
-    m_scheme = tmp_uri.scheme();
     assert( ! m_rdr->hasHeader("Upgrade") );
-    p_roundtrip_upstream(m_rdr, [this](Http::MessageBaseSPtr downMsg){
+    p_roundtrip_upstream(m_rdr, [this](MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_downstream_response_sptr = downMsg;
-        LogTrace("for downstream", Marvin::Http::traceMessage(*downMsg));
+        LogTrace("for downstream", traceMessage(*downMsg));
         Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
         /// perform the MITM collection
         
@@ -202,34 +201,31 @@ void MitmApp::p_initiate_http_upstream_roundtrip()
 ///
 void MitmApp::p_roundtrip_upstream(
         MessageReaderSPtr req,
-        std::function<void(Http::MessageBaseSPtr downstreamReplyMsg)> upstreamCb
+        std::function<void(MessageBaseSPtr downstreamReplyMsg)> upstreamCb
 ){
     /// a client object to manage the round trip of request and response to
-    /// the final destination
-    Marvin::Uri uri(req->uri()); /// a proxy request must have an absolute uri
-    m_scheme = uri.scheme();
-    m_host = uri.server();
-    
-    m_port = (int)uri.port();
+    /// the final destination. m_host m_scheme and m_port already setup
+
     m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_scheme, m_host, m_port));
     /// the MessageBase that will be the up stream request
-    m_upstream_request_sptr = std::make_shared<Http::MessageBase>();
+    m_upstream_request_sptr = std::make_shared<MessageBase>();
     /// format upstream msg for transmission
-    helpers::makeUpstreamRequest(m_upstream_request_sptr, req);
+    Helpers::makeUpstreamRequest(m_upstream_request_sptr, req);
     assert( ! m_rdr->hasHeader("Upgrade") );
     Marvin::BufferChainSPtr content = req->getContentBuffer();
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
         if (ec || (upstrmRdr == nullptr)) {
-            LogWarn("async write failed");
+            std::string desc = make_error_description(ec);
+            LogWarn("async write failed ", make_error_description(ec));
             p_on_upstream_roundtrip_error(ec);
             // TODO: how to handle error
         } else {
-            LogTrace("upstream rresponse", Marvin::Http::traceMessage(*(upstrmRdr.get())));
-            m_downstream_response_sptr = std::make_shared<Http::MessageBase>();
+            LogTrace("upstream rresponse", traceMessage(*(upstrmRdr.get())));
+            m_downstream_response_sptr = std::make_shared<MessageBase>();
             m_upstream_response_body_sptr = upstrmRdr->getContentBuffer();
-            helpers::makeDownstreamResponse(m_downstream_response_sptr, upstrmRdr, ec);
+            Helpers::makeDownstreamResponse(m_downstream_response_sptr, upstrmRdr, ec);
             upstreamCb(m_downstream_response_sptr);
         }
     });

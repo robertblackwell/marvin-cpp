@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <thread>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/server_v3/server.hpp>
+#include <marvin/server_v3/tcp_server.hpp>
 #if SERVER_RUNNER_STATIC
 void startTestServer(long port=9991);
 void stopTestServer();
@@ -35,19 +35,19 @@ public:
     * 
     * Does not return until the server is fully operational
     */
-    void setup(long port, RequestHandlerFactory factory);
+    void setup(long port, RequestHandlerUPtrFactory factory);
     /* terminate the http_server previously started*/
     void waitForServerToComplete();
     void terminateServer();
     void teardown();
 
     void waitForServerToStart();
-    HttpServer* 	        m_server_ptr;
-    RequestHandlerFactory   m_factory;
-    std::thread* 			m_server_thread_ptr;
-    std::mutex 				m_mutex;
-	std::condition_variable m_cond_var; 
-    bool                    m_server_ready;
+    TcpServer* 	                m_server_ptr;
+    RequestHandlerUPtrFactory   m_factory;
+    std::thread* 			    m_server_thread_ptr;
+    std::mutex 				    m_mutex;
+	std::condition_variable     m_cond_var; 
+    bool                        m_server_ready;
 
 };
 #endif

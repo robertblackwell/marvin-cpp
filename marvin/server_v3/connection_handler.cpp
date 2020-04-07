@@ -1,7 +1,7 @@
 #include <marvin/server_v3/connection_handler.hpp>
 
 #include <marvin/http/headers_v2.hpp>
-#include <marvin/server_v3/server.hpp>
+#include <marvin/server_v3/tcp_server.hpp>
 #include <marvin/server_v3/server_connection_manager.hpp>
 #include <marvin/server_v3/server_context.hpp>
 
@@ -10,9 +10,9 @@ namespace Marvin {
 
 ConnectionHandler::ConnectionHandler(
     boost::asio::io_service&    io,
-    ServerConnectionManager&  connectionManager,
+    ServerConnectionManager&    connectionManager,
     ISocketSPtr                 conn_sptr,
-    RequestHandlerFactory     factory
+    RequestHandlerUPtrFactory   factory
 ):
     m_uuid(boost::uuids::random_generator()()),
     m_io(io),
@@ -26,8 +26,8 @@ ConnectionHandler::ConnectionHandler(
     * can handle keep-alive
     */
     m_connection = conn_sptr;
-    m_requestHandlerUnPtr = std::unique_ptr<RequestHandlerInterface>(m_factory(m_io));
-    m_server_context.server_ptr = HttpServer::get_instance();
+    m_requesthandler_uptr = m_factory(m_io);
+    m_server_context.server_ptr = TcpServer::get_instance();
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
     m_server_context.connection_ptr = conn_sptr.get();
@@ -38,7 +38,7 @@ ConnectionHandler::ConnectionHandler(
 ConnectionHandler::~ConnectionHandler()
 {
     LogTrace(" ConnectionHandler destructor");
-    m_requestHandlerUnPtr = nullptr;
+    m_requesthandler_uptr = nullptr;
     m_connection = nullptr;
 }
 
@@ -60,7 +60,7 @@ std::string ConnectionHandler::uuid()
 void ConnectionHandler::serve()
 {
     LogTrace("ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
-    m_requestHandlerUnPtr->handle(m_server_context, m_connection, [this](){
+    m_requesthandler_uptr->handle(m_server_context, m_connection, [this](){
         LogTrace("ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
         m_connectionManager.deregister(this); 
     });

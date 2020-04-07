@@ -42,13 +42,14 @@ file(GLOB HEADERS
 	external_src/rb_logger/rb_logger.hpp  
 	external_src/simple_buffer/simple_buffer.h
 	
-	forwarding/forward_helpers.hpp 
-	forwarding/forwarding_handler.hpp
-	forwarding/ssl_forwarding_handler.hpp
+	# forwarding/forward_helpers.hpp 
+	# forwarding/forwarding_handler.hpp
+	# forwarding/ssl_forwarding_handler.hpp
 
 	helpers/helpers_fs.hpp
 	helpers/error.hpp
 	helpers/macros.hpp
+	helpers/mitm.hpp
 	
 	http/http_header.hpp 
 	http/headers_v2.hpp 
@@ -122,12 +123,13 @@ set(SOURCES
 	external_src/rb_logger/rb_logger.cpp
 	external_src/simple_buffer/simple_buffer.c
 
-	forwarding/forward_helpers.cpp 		
-	forwarding/forwarding_handler.cpp 	
-	forwarding/ssl_forwarding_handler.cpp 	
+	# forwarding/forward_helpers.cpp 		
+	# forwarding/forwarding_handler.cpp 	
+	# forwarding/ssl_forwarding_handler.cpp 	
 
 	helpers/helpers_fs.cpp
 	helpers/error.cpp
+	helpers/mitm.cpp
 	
 	http/http_header.cpp 		
 	http/headers_v2.cpp 		
@@ -159,7 +161,7 @@ set(SOURCES
 
 	# server_v3/adapter.cpp
 	server_v3/connection_handler.cpp 
-	server_v3/server.cpp 
+	server_v3/tcp_server.cpp 
 	server_v3/request_handler_interface.cpp
 	server_v3/server_connection_manager.cpp 
 	server_v3/server_context.cpp

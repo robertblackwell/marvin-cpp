@@ -5,13 +5,14 @@
 #include <thread>
 #include <regex>
 #include <boost/process.hpp>
-#include <marvin/forwarding/forwarding_handler.hpp>
-#include <marvin/server/http_server.hpp>
-#include <marvin/collector/pipe_collector.hpp>
-#include <marvin/collector/collector_base.hpp>
+
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest/doctest.h>
 
+#include <marvin/server_v3/tcp_server.hpp>
+#include <marvin/collector/pipe_collector.hpp>
+#include <marvin/collector/collector_base.hpp>
+#include "mitm_app.hpp"
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
@@ -43,26 +44,27 @@ RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
  */
 int main( int argc, char* argv[] )
 {
+    using namespace Marvin;
     LogTrace("hello");
     VLogDebug("hello");
     RBLogger::enableForLevel(LOG_LEVEL_WARN);
 
     std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
     std::vector<int> ports{443, 9443};
-    ForwardingHandler::configSet_HttpsPorts(ports);
-    ForwardingHandler::configSet_HttpsHosts(re);
+    MitmApp::configSet_HttpsPorts(ports);
+    MitmApp::configSet_HttpsHosts(re);
 
-    HTTPServer* server_ptr;
+    TcpServer* server_ptr;
 
-    auto proxy_func = [&server_ptr](void* param) {
-        server_ptr = new HTTPServer([](boost::asio::io_service& io) {
-            CollectorBase* pc = new CollectorBase(io, std::cout);
-            auto f = new ForwardingHandler(io, pc);
-            return f;
+    std::function<void(void*)> proxy_thread_func = [&server_ptr](void* param) {
+        server_ptr = new Marvin::TcpServer([](boost::asio::io_service& io) {
+            CollectorBaseSPtr cb_sptr = std::make_shared<CollectorBase>(io, std::cout);
+            MitmAppUPtr app_uptr = std::make_unique<MitmApp>(io, cb_sptr);
+            return app_uptr;
         });
         server_ptr->listen(9992);
     };
-    std::thread proxy_thread(proxy_func, nullptr);
+    std::thread proxy_thread(proxy_thread_func, nullptr);
 
     proxy_thread.join();
 }

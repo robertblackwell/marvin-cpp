@@ -1,8 +1,7 @@
-#include "handle_app.hpp"
-
-#include <boost/asio.hpp>
-
 #include "server_v3_runner.hpp"
+
+#include "handle_app.hpp"
+#include <boost/asio.hpp>
 
 using namespace Marvin;
 
@@ -25,7 +24,7 @@ void ServerRunner::waitForServerToStart()
     #endif
     std::cout << __PRETTY_FUNCTION__ << " server ready" << std::endl;
 }
-void ServerRunner::setup(long port, RequestHandlerFactory factory)
+void ServerRunner::setup(long port, RequestHandlerUPtrFactory factory)
 {
     this->m_factory = factory;
     this->m_server_thread_ptr = new std::thread([this, port]()
@@ -33,7 +32,7 @@ void ServerRunner::setup(long port, RequestHandlerFactory factory)
         std::cout << "Running marvin server on thread: " 
             << this->m_server_thread_ptr->get_id() << " on port: " << port << std::endl;
         
-        m_server_ptr = new HttpServer(m_factory);
+        m_server_ptr = new TcpServer(m_factory);
         // m_server_ptr = new HttpServer([port](boost::asio::io_service& io)
         // {
         //     return new Handler(io);
