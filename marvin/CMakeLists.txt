@@ -66,17 +66,17 @@ file(GLOB HEADERS
 	message/message_reader.hpp 
 	message/message_writer.hpp 
 	
-	server/connection_handler.hpp 
-	server/http_server.hpp 
-	server/request_handler_base.hpp
-	server/server_connection_manager.hpp 
-	server/server_context.hpp
+	# server/connection_handler.hpp 
+	# server/http_server.hpp 
+	# server/request_handler_base.hpp
+	# server/server_connection_manager.hpp 
+	# server/server_context.hpp
 
-	server_v2/connection_handler.hpp 
-	server_v2/http_server.hpp 
-	server_v2/request_handler_base.hpp
-	server_v2/server_connection_manager.hpp 
-	server_v2/server_context.hpp
+	# server_v2/connection_handler.hpp 
+	# server_v2/http_server.hpp 
+	# server_v2/request_handler_base.hpp
+	# server_v2/server_connection_manager.hpp 
+	# server_v2/server_context.hpp
 
 
 	server_v3/adapter.hpp 
@@ -85,6 +85,7 @@ file(GLOB HEADERS
 	server_v3/request_handler_interface.hpp
 	server_v3/server_connection_manager.hpp 
 	server_v3/server_context.hpp
+	server_v3/mitm_app.cpp
 	)
 
 set(SOURCES 
@@ -165,6 +166,7 @@ set(SOURCES
 	server_v3/request_handler_interface.cpp
 	server_v3/server_connection_manager.cpp 
 	server_v3/server_context.cpp
+	server_v3/mitm_app.cpp
 
 	)
 

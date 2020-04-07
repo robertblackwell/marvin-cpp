@@ -12,7 +12,7 @@
 #include <marvin/server_v3/tcp_server.hpp>
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/collector/collector_base.hpp>
-#include "mitm_app.hpp"
+#include <marvin/server_v3/mitm_app.hpp>
 #include <marvin/external_src/rb_logger/rb_logger.hpp>
 RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
 
