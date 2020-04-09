@@ -4,8 +4,8 @@
 #include <memory>
 #include <boost/asio/buffer.hpp>
 #include <marvin/buffer/m_buffer.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN )
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN )
 namespace {
     const std::size_t MBUFMIN=1000;
 }

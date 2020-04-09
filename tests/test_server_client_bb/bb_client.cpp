@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <json/json.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/message/message_reader.hpp>

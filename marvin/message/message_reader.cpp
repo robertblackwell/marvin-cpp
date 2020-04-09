@@ -7,9 +7,9 @@
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/connection/socket_interface.hpp>
 

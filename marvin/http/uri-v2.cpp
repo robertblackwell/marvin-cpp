@@ -5,8 +5,8 @@
 //  Created by ROBERT BLACKWELL on 1/2/18.
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/http/uri-v2.hpp>
 using namespace Marvin;
 

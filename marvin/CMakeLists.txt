@@ -17,6 +17,7 @@ file(GLOB HEADERS
 	buffer/m_buffer.hpp
 	
 	certificates/certificates.hpp
+	certificates/env_utils.hpp
 
 	client/client.hpp
 	client/request.hpp 
@@ -39,7 +40,7 @@ file(GLOB HEADERS
 	external_src/CxxUrl/url.hpp 
 	external_src/uri-parser/UriParser.hpp 
 	external_src/http-parser/http_parser.h 
-	external_src/rb_logger/rb_logger.hpp  
+	external_src/trog/trog.hpp  
 	external_src/simple_buffer/simple_buffer.h
 	
 	# forwarding/forward_helpers.hpp 
@@ -100,6 +101,7 @@ set(SOURCES
 	buffer/m_buffer.cpp				
 	
 	certificates/certificates.cpp
+	certificates/env_utils.cpp
 
 	client/client.cpp  	
 	client/request.cpp 	
@@ -125,7 +127,7 @@ set(SOURCES
 	external_src/CxxUrl/url.cpp
 	external_src/uri-parser/UriCodec.cpp
 	external_src/http-parser/http_parser.c
-	external_src/rb_logger/rb_logger.cpp
+	external_src/trog/trog.cpp
 	external_src/simple_buffer/simple_buffer.c
 
 	# forwarding/forward_helpers.cpp 		
@@ -179,7 +181,7 @@ set(SOURCES
 
 set_source_files_properties(${SOURCES} PROPERTIES LANGUAGE CXX)
 
-set(HEADER_DIRS ${PROJECT_DIR}
+set(HEADER_DIRS ${PROJECT_DIR} ${PROJECT_DIR}/marvin/external_src
 )
 	# ${PROJECT_DIR}/marvin/include
 	# ${PROJECT_DIR}/marvin/boost_ext
@@ -211,7 +213,7 @@ add_library(marvin_library STATIC ${SOURCES} ${HEADERS})
 target_include_directories(marvin_library SYSTEM PUBLIC ${HEADER_DIRS} ${VENDOR_DIR}/include)
 
 target_precompile_headers(marvin_library PUBLIC
-	<marvin/external_src/rb_logger/rb_logger.hpp>
+	<marvin/external_src/trog/trog.hpp>
   	<marvin/boost_stuff.hpp>
 	<memory>
 	<stddef.h>

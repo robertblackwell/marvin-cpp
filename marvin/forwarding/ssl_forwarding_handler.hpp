@@ -14,7 +14,7 @@
 #include <sstream>
 #include <regex>
 #include <marvin/server/request_handler_base.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/client/client.hpp>
 #include <marvin/http/message_base.hpp>

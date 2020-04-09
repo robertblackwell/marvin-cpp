@@ -15,8 +15,8 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/server_v3/adapter.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN | LOG_LEVEL_TORTRACE | LOG_LEVEL_TRACE)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN | LOG_LEVEL_TORTRACE | LOG_LEVEL_TRACE)
 
 #include <marvin/server_v3/timer.hpp>
 
@@ -98,8 +98,8 @@ TEST_CASE("pipeline_x2_roundtrip_anyresponse")
 //
 int main(int argc, char* argv[])
 {
-    RBLogger::setEnabled(true);
-    RBLogger::enableForLevel(LOG_LEVEL_WARN);
+    Trog::setEnabled(true);
+    Trog::enableForLevel(LOG_LEVEL_WARN);
     Marvin::TcpServer::configSet_NumberOfConnections(5);
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)

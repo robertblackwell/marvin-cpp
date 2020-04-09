@@ -24,8 +24,8 @@
 #include <marvin/helpers/mitm.hpp>
 #include <marvin/connection/socket_factory.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 #endif 
 #pragma mark - mock up a MessageReader
@@ -228,11 +228,11 @@ TEST_CASE("Helpers_Example")
     Marvin::Uri u("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
     CHECK(u.scheme() == "http");
     CHECK(u.server() == "somewhere.com");
-    CHECK(u.host() == "somewhere.com");
+    CHECK(u.host() == "somewhere.com:80");
     CHECK(u.port() == 80);
     CHECK(u.search() == "a=1111#fragment");
     CHECK(u.relativePath() == "/subdirpath/index.php?a=1111#fragment");
-    CHECK(u.absolutePath() == "http://somewhere.com/subdirpath/index.php?a=1111#fragment");
+    CHECK(u.absolutePath() == "http://somewhere.com:80/subdirpath/index.php?a=1111#fragment");
 }
 TEST_CASE("Uri")
 {

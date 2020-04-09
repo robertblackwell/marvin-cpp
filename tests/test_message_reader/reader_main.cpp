@@ -12,9 +12,9 @@
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 #include "repeating_timer.hpp"
 #include "mock_socket.hpp"

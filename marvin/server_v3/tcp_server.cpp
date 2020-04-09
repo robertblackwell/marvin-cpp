@@ -4,8 +4,8 @@
 
 #include <marvin/helpers/macros.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
 
 namespace Marvin {
 

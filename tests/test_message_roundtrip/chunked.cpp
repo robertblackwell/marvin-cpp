@@ -5,8 +5,8 @@
 #include <json/json.hpp>
 
 #include <marvin/buffer/buffer_chain.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_DEBUG)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_DEBUG)
 
 #include <marvin/m_log.hpp>
 

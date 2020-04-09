@@ -5,8 +5,8 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/callback_typedefs.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/connection/connection.hpp>
 namespace Marvin {
@@ -192,6 +192,8 @@ void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
     }
     m_mode = Mode::SECURE_CLIENT;
     m_certificate_store_ptr = certificate_store_ptr;
+    SSL_CTX_set_cert_store(m_ssl_ctx.native_handle(), m_certificate_store_ptr);
+    m_ssl_ctx.set_verify_mode(boost::asio::ssl::context::verify_peer);
 }
 void Connection::becomeSecureServer(Cert::Identity server_identity)
 {
@@ -200,6 +202,13 @@ void Connection::becomeSecureServer(Cert::Identity server_identity)
     }
     m_mode = Mode::SECURE_SERVER;
     m_server_identity = server_identity;
+    m_ssl_ctx.set_options(
+        ssl::context::default_workarounds | ssl::context::no_sslv2
+    );
+    SSL_CTX* ssl_ctx_ptr = m_ssl_ctx.native_handle();
+    SSL_CTX_use_certificate(ssl_ctx_ptr, server_identity.getX509());
+    SSL_CTX_use_PrivateKey(ssl_ctx_ptr, server_identity.getEVP_PKEY());
+
 }
 void Connection::asyncHandshake(std::function<void(const boost::system::error_code& err)> cb)
 {

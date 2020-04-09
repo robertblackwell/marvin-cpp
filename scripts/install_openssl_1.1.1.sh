@@ -2,9 +2,9 @@
 # https://github.com/openssl/openssl.git
 debug=
 function help() {
-	echo Install openssl_1.1.1d
+	echo Install openssl_1.1.1f
 	echo Usage:
-	echo 	stage_openssl_1.1.1d.sh [arg]
+	echo 	stage_openssl_1.1.1f.sh [arg]
 	echo
 	echo	args is either
 	echo		help 	Print this help message
@@ -73,7 +73,7 @@ project_name=$(basename $project_dir)
 vendor=${pwd}/vendor
 script_dir=$(dirname $(realpath $0))
 clone_dir=${script_dir}/cloned_repos
-openssl_name=openssl-1.1.1d
+openssl_name=openssl-1.1.1f
 echo 
 echo INSTALL ${openssl_name} beginning ========================================================
 echo

@@ -12,7 +12,7 @@
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>

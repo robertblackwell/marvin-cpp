@@ -2,8 +2,8 @@
 
 #include <unistd.h>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TORTRACE|LOG_LEVEL_TRACE)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TORTRACE|LOG_LEVEL_TRACE)
 
 namespace Marvin {
 

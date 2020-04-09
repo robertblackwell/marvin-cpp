@@ -3,11 +3,11 @@
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <exception>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 
 namespace Marvin {
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 std::string traceWriter(MessageWriter& writer)
 {

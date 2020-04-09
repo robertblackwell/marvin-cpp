@@ -23,12 +23,13 @@ public:
 
     void handle();
 private:
-
+    void p_handshake_upstream();
     void p_downstream_read_message();
     void p_initiate_upstream_roundtrip();
     void p_roundtrip_upstream(
         MessageReaderSPtr req,
         std::function<void(MessageBaseSPtr downstreamReplyMsg)> upstreamCb);
+    void p_on_upstream_connect_handshake_error(ErrorType& err);
     void p_on_request_completed();
 
     MitmApp&                    m_mitm_app;

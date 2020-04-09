@@ -16,8 +16,8 @@
 #include <boost/asio/detail/impl/strand_service.hpp>    // for strand_servic...
 #include <boost/asio/impl/io_context.hpp>               // for io_context::post
 #include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 namespace Marvin {
 

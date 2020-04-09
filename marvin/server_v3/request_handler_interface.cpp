@@ -4,8 +4,8 @@
 #include <marvin/server_v3/request_handler_interface.hpp>
 #include <marvin/server_v3/connection_handler.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace Marvin; 
 

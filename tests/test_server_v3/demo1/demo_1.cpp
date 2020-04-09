@@ -15,8 +15,8 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/server_v3/adapter.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/server_v3/timer.hpp>
 #include "../handle_app.hpp"
 #include "../server_v3_runner.hpp"

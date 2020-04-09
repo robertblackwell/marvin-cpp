@@ -10,13 +10,30 @@
 
 namespace Cert { class Builder; }
 
+#define MARVIN_DOT_MARVIN_FILE ".marvin"
+#define MARVIN_CA_CONFIG_FILE "ca_config.json"
+#define MARVIN_CERT_STORE "cert_store"
+
+
 namespace Marvin {
+
+// used mostly in getenv() calls
+extern const char* kMarvinEnvKey_MarvinHome;
+extern const std::string kMarvinDotDirectoryName;
+extern const std::string kMarvinCaConfigFileName;
+extern const std::string kMarvinCertStoreName; 
+
 class Certificates;  // lines 12-12
 typedef  std::shared_ptr<Certificates> CertificatesSPtr;
 class Certificates
 {
 public:
+
 	static Certificates& getInstance();
+	static ::Cert::Store::StoreSPtr createStore(
+		boost::filesystem::path store_path, 
+		boost::filesystem::path ca_config_file_path
+	);
 	Certificates();
 	
 	X509_STORE* getX509StorePtr();

@@ -12,6 +12,8 @@
             "test_buffers/test_buffers",
             "test_marvin_errors/test_marvin_errors",
             "test_headers/test_headers",
+            "test_certificates/test_env_utils/test_env_utils",
+            "test_certificates/test_certificates/test_certificates",
             "test_message/test_message",
             "test_message_reader/test_message_reader",
             "test_message_roundtrip/test_message_roundtrip",
@@ -19,20 +21,26 @@
             "test_server_v3/demo2/test_server_v3_demo_2",
             "test_server_v3/manual/test_server_v3_manual",
             "test_proxy_manual/test_proxy_manual",
-            "test_uri/test_uri"
+            "test_uri/test_uri",
+            "test_ssl_server/test_ssl_server"
         ],
         "default": "test_client_request"
     }],
     "configurations": [
         {
-            "name": "(gdb) App Launch",
+            "name": "(gdb) Config Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/cmake-build-debug/tests/test_doctest/test_doctest",
+            "program": "${workspaceFolder}/cmake-build-debug/apps/config/config",
             "args": ["4", "5"],
             "stopAtEntry": true,
-            "cwd": "${workspaceFolder}/cmake-build-debug",
-            "environment": [],
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "MARVIN_HOME",
+                    "value": "${workspaceFolder}"
+                }
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
@@ -69,8 +77,17 @@
             "program": "${workspaceFolder}/cmake-build-debug/tests/${input:selectTest}",
             "args": [],
             "stopAtEntry": true,
-            "cwd": "${workspaceFolder}/cmake-build-debug/tests",
-            "environment": [],
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "MARVIN_HOME",
+                    "value": "${workspaceFolder}"
+                },
+                {
+                    "name":"MARVIN_CERT_STORE_PATH", 
+                    "value":"${workspaceFolder}/config/cert_store"
+                }
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [

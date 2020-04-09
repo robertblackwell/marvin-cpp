@@ -52,6 +52,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} /usr/local/Cellar/cmake3.16.3/share/c
 set(APPS_LINK_LIBS marvin_library)
 # add_subdirectory(apps)
 add_subdirectory(marvin)
+add_subdirectory(apps)
 add_subdirectory(tests)
 
 

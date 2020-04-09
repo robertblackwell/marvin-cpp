@@ -8,8 +8,8 @@
 #include <json/json.hpp>
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>

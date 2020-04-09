@@ -15,8 +15,8 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/client/client.hpp>
 #include <marvin/forwarding//forward_helpers.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/http/uri.hpp>
 #include <marvin/http/uri_v2.hpp>
@@ -61,7 +61,7 @@ TEST_CASE("GetRequest:80")
     Uri uri("http://www.somewhere?a=1111&b=2222");
     makeRequest(*msg, HttpMethod::GET, uri);
     std::string s = msg->str();
-    std::string expected = std::string("GET /?a=1111&b=2222 HTTP/1.1\r\nHOST: www.somewhere\r\n\r\n");
+    std::string expected = std::string("GET /?a=1111&b=2222 HTTP/1.1\r\nHOST: www.somewhere:80\r\n\r\n");
     bool t = (s == expected); 
     CHECK(s == expected);
 

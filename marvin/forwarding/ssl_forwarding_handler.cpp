@@ -2,8 +2,8 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/forwarding/ssl_forwarding_handler.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 namespace Marvin {
 

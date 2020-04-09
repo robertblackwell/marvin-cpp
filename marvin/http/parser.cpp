@@ -10,10 +10,10 @@
 #include <cassert>
 #include <marvin/http/headers_v2.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 #include <marvin/http/parser.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace Marvin;
 

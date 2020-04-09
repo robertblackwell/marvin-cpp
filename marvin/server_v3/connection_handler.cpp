@@ -5,7 +5,7 @@
 #include <marvin/server_v3/server_connection_manager.hpp>
 #include <marvin/server_v3/server_context.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
+Trog_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
 namespace Marvin {
 
 ConnectionHandler::ConnectionHandler(

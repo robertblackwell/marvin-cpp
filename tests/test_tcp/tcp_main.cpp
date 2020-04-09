@@ -3,8 +3,8 @@
  
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h> 
-// #include <marvin/external_src/rb_logger/rb_logger.hpp>
-// RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+// #include <marvin/external_src/trog/trog.hpp>
+// Trog_SETLEVEL(LOG_LEVEL_WARN)
     
 TEST_CASE("subcase test")
 {

@@ -4,9 +4,9 @@
 #include <cassert>
 
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 namespace Marvin {
 using ::boost::asio::ip::tcp;

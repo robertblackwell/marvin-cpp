@@ -1,6 +1,6 @@
 
 #include "bf_testcase.hpp"
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace body_format;
 

@@ -3,10 +3,10 @@
 #include <sstream>
 #include <map>
 #include <json/json.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 #define RBLOGGER_ON
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 using json = nlohmann::json;
 std::map<std::string, std::string> parseJson(json j)

@@ -13,8 +13,8 @@
 #include <marvin/helpers/mitm.hpp>
 #include <marvin/http/message_factory.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 
 namespace Marvin {
@@ -47,12 +47,26 @@ MitmHttps::~MitmHttps()
 
 void MitmHttps::handle()
 {
+    m_upstream_socket_sptr->asyncConnect([this](ErrorType& err, ISocket* conn)
+    {
+        if(err) {
+            auto d = make_error_description(err);
+            ErrorType marvin_error = err;
+            p_on_upstream_connect_handshake_error(marvin_error);
+        } else {
+            p_handshake_upstream();
+        }
+    });
+}
+void MitmHttps::p_handshake_upstream()
+{
     Certificates& certificates = Certificates::getInstance();
     X509_STORE* x509_store_ptr = certificates.getX509StorePtr();
     m_upstream_socket_sptr->becomeSecureClient(x509_store_ptr);
     m_upstream_socket_sptr->asyncHandshake([this, &certificates](const boost::system::error_code& err)
     {
         if (err) {
+            auto d = make_error_description(err);
             ErrorType marvin_error = err;
             m_mitm_app.p_on_upstream_error(marvin_error);
         } else {
@@ -163,6 +177,21 @@ void MitmHttps::p_on_request_completed()
     }
 
 }
+void MitmHttps::p_on_upstream_connect_handshake_error(ErrorType& err)
+{
+    m_downstream_response_sptr = std::make_shared<MessageBase>();
+    makeResponse502Badgateway(*m_downstream_response_sptr);
 
+    m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err){
+        LogInfo("");
+        if( err ) {
+            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+            m_mitm_app.p_on_downstream_write_error(err);
+        } else {
+            m_mitm_app.p_connection_end();
+        }
+    });
+
+}
 
 }

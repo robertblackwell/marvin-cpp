@@ -4,10 +4,10 @@
 #include <iterator>
 #include <algorithm>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 #include <openssl/x509.h>
 #include <cert/cert_certificate.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 #include "testcase.hpp"
 
 MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): m_io(io), m_tcObj(tcObj)

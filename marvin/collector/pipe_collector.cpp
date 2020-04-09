@@ -9,8 +9,8 @@
 #include <marvin/boost_stuff.hpp>
 #include <regex>
 #include <marvin/helpers/macros.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 namespace Marvin {
 

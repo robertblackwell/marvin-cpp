@@ -2,7 +2,7 @@
 
 #include <boost/algorithm/string/trim.hpp>
 
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 namespace Marvin::Helpers {
 

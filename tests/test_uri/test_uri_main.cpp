@@ -18,8 +18,8 @@
 #include <marvin/client/client.hpp>
 #include <marvin/helpers/mitm.hpp>
 
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 #include <marvin/http/uri.hpp>
 

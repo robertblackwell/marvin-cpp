@@ -13,8 +13,8 @@
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/collector/collector_base.hpp>
 #include <marvin/server_v3/mitm_app.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 /**
  * This is the simplest possible test of the http mitm proxy. To run it needs manual intervention.
@@ -47,7 +47,7 @@ int main( int argc, char* argv[] )
     using namespace Marvin;
     LogTrace("hello");
     VLogDebug("hello");
-    RBLogger::enableForLevel(LOG_LEVEL_WARN);
+    Trog::enableForLevel(LOG_LEVEL_WARN);
 
     std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
     std::vector<int> ports{443, 9443};

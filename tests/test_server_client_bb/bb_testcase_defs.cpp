@@ -8,8 +8,8 @@
 #include <marvin/http/message_base.hpp>
 #include "bb_testcase.hpp"
 #include "bb_testcase_defs.hpp"
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 
 using namespace body_buffering;
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
+#include <marvin/external_src/trog/trog.hpp>
 namespace Marvin {
 class ATimer;
 typedef std::shared_ptr<ATimer> ATimerSPtr;

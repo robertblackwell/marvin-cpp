@@ -14,8 +14,8 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/server_v3/adapter.hpp>
-#include <marvin/external_src/rb_logger/rb_logger.hpp>
-RBLOGGER_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/external_src/trog/trog.hpp>
+Trog_SETLEVEL(LOG_LEVEL_WARN)
 #include <marvin/server_v3/timer.hpp>
 #include "../handle_app.hpp"
 #include "../server_v3_runner.hpp"
@@ -67,7 +67,7 @@ TEST_CASE("02")
 //
 int main(int argc, char* argv[])
 {
-    RBLogger::setEnabled(true);
+    Trog::setEnabled(true);
     ServerRunner  server_runner;
     server_runner.setup(9000, [](boost::asio::io_service& io)
     {
