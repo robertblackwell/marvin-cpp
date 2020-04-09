@@ -112,7 +112,6 @@ Connection::~Connection()
         LogFDTrace(nativeSocketFD());
     }
 }
-#pragma mark - public interface getters
 std::string Connection::scheme(){return m_scheme;}
 std::string Connection::server(){return m_server;}
 std::string Connection::service(){return m_port;}
@@ -121,12 +120,15 @@ long Connection::nativeSocketFD()
 {
     return m_lowest_layer_sock.native_handle();
 }
-
-#pragma mark - public interface connection management
 boost::asio::io_service& Connection::getIO()
 {
     return m_io;
 }
+boost::asio::ssl::context& Connection::getSslContext()
+{
+    return m_ssl_ctx;
+};
+
 void Connection::close()
 {
     LogFDTrace(nativeSocketFD());
@@ -420,7 +422,7 @@ void Connection::p_handle_connect(
 void Connection::p_start_handshake()
 {
     m_ssl_socket.async_handshake(
-        boost::asio::ssl::stream_base::client,
+        boost::asio::ssl::stream_base::server,
         boost::bind(&Connection::p_handle_handshake, this, boost::asio::placeholders::error)
     );
 }

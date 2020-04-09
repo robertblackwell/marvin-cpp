@@ -72,6 +72,8 @@ class ISocket //: public IReadSocket, public IWriteSocket
     // cancel current operation
     virtual void cancel() = 0;
     virtual boost::asio::io_service& getIO() = 0;
+    virtual boost::asio::ssl::context& getSslContext() = 0;
+
     #if 0
     virtual void shutdownSend() = 0;
     virtual void shutdownReceive() = 0;

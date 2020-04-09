@@ -10,7 +10,10 @@
 Trog_SETLEVEL(LOG_LEVEL_WARN)
 #include "testcase.hpp"
 
-MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): m_io(io), m_tcObj(tcObj)
+MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj)
+    : m_io(io), 
+    m_ssl_context(boost::asio::ssl::context::method::sslv23),
+    m_tcObj(tcObj)
 {
     m_index = 0;
     m_rdBuf = (char*)malloc(100000);
@@ -25,6 +28,8 @@ MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj): m_i
 long MockReadSocket::nativeSocketFD(){ return 9876; };
 
 boost::asio::io_service& MockReadSocket::getIO() {return m_io; }
+boost::asio::ssl::context& MockReadSocket::getSslContext(){return m_ssl_context;}
+
 long MockReadSocket::getReadTimeout(){return 99;}
 void MockReadSocket::cancel(){}
 void MockReadSocket::startRead(){}

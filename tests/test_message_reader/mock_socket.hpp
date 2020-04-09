@@ -52,13 +52,14 @@ public:
     void shutdown(ISocket::ShutdownType type);
     void close();
     boost::asio::io_service& getIO();
+    boost::asio::ssl::context& getSslContext();
 
     
 private:
     SingleTimer*                m_single_timer;
     RepeatingTimer*             m_repeating_timer;
     boost::asio::io_service&    m_io;
-    
+    boost::asio::ssl::context   m_ssl_context;
 //    Testcases                   _tcObjs;
     Testcase                    m_tcObj;
     int                         m_tcLineIndex;

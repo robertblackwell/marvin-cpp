@@ -2,7 +2,7 @@
 message("MarvinCertStorePath ${MARVIN_CERT_STORE_PATH}")
 set(TARGET test_ssl_server)
 add_executable(${TARGET}
-    test_ssl_server.cpp
+    test_ssl_server_v2.cpp
 )
 target_include_directories(${TARGET} PUBLIC  ${TEST_INCLUDE_DIRS})
 target_precompile_headers(${TARGET} REUSE_FROM marvin_library)

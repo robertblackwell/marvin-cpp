@@ -117,12 +117,13 @@ class Connection : public ISocket
     * Utility getter functions®
     */
     boost::asio::io_service& getIO();
+    boost::asio::ssl::context& getSslContext();
     long nativeSocketFD() override;
     std::string scheme();
     std::string server();
     std::string service();
     
-private:
+public:
     void p_handle_resolve(
         const boost::system::error_code& err,
         tcp::resolver::iterator endpoint_iterator
