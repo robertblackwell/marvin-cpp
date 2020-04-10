@@ -1,14 +1,3 @@
-
-message("MarvinCertStorePath ${MARVIN_CERT_STORE_PATH}")
-set(TARGET test_ssl_server)
-add_executable(${TARGET}
-    test_ssl_server_v2.cpp
-)
-target_include_directories(${TARGET} PUBLIC  ${TEST_INCLUDE_DIRS})
-target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
-target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
-
-add_test(${TARGET} ${TARGET})
-
-set_target_properties(${TARGET} PROPERTIES XCODE_GENERATE_SCHEME ON)
-
+add_subdirectory(boost_ssl_server_v1)
+add_subdirectory(boost_ssl_server_v2)
+add_subdirectory(marvin_ssl_server)

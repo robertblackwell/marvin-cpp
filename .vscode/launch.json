@@ -22,7 +22,9 @@
             "test_server_v3/manual/test_server_v3_manual",
             "test_proxy_manual/test_proxy_manual",
             "test_uri/test_uri",
-            "test_ssl_server/test_ssl_server"
+            "test_ssl_server/boost_ssl_server_v1/boost_ssl_server_v1",
+            "test_ssl_server/boost_ssl_server_v2/boost_ssl_server_v2",
+            "test_ssl_server/marvin_ssl_server/marvin_ssl_server"
         ],
         "default": "test_client_request"
     }],

@@ -56,13 +56,17 @@ class SslApp : public RequestHandlerInterface
                         auto x = make_error_description(err);
                         std::cout << "read failed" << x << std::endl;
                     } else {
+                        m_response_msg_sptr = std::make_shared<MessageBase>();
                         makeResponse200OKConnected(*m_response_msg_sptr);
+                        m_response_msg_sptr->setHeader(HeadersV2::Connection, "Close");
                         std::string body{"This is a legitimate response"};
+                        m_response_msg_sptr->setContent(body);
                         BufferChainSPtr buffer_sptr = BufferChain::makeSPtr(body);
-                        m_wrtr_sptr->asyncWrite(m_response_msg_sptr, buffer_sptr, [this](ErrorType& err)
+                        m_wrtr_sptr->asyncWrite(m_response_msg_sptr, body, [this](ErrorType& err)
                         {
                             if(err) {
                                 auto x = make_error_description(err);
+                                // m_downstream_socket_sptr->close();
                                 m_done_callback();
                             } else {
                                 m_done_callback();
@@ -75,18 +79,20 @@ class SslApp : public RequestHandlerInterface
     }
     void become_secure()
     {
-        ISocketSPtr sockptr = m_downstream_socket_sptr;
-        m_conn_sptr = std::dynamic_pointer_cast<Connection>(sockptr);
-        ssl::context& my_ssl_context = sockptr->getSslContext();
-        SSL_CTX* ssl_ctx_ptr = my_ssl_context.native_handle();
+        // ISocketSPtr sockptr = m_downstream_socket_sptr;
+        // m_conn_sptr = std::dynamic_pointer_cast<Connection>(sockptr);
+        // ssl::context& my_ssl_context = sockptr->getSslContext();
+        // SSL_CTX* ssl_ctx_ptr = my_ssl_context.native_handle();
         path cert_path{"/home/robert/Projects/marvin++/tests/test_ssl_server/server.pem"};
         path key_path{"/home/robert/Projects/marvin++/tests/test_ssl_server/server.pem"};
         Cert::Certificate server_cert{cert_path};
         EVP_PKEY* pkey_ptr = Cert::x509::PKey_ReadPrivateKeyFrom(key_path.string(), "test");
-        SSL_CTX_use_PrivateKey(ssl_ctx_ptr, pkey_ptr);
-        SSL_CTX_use_certificate(ssl_ctx_ptr, server_cert.native());
-        m_conn_sptr->m_mode = Connection::Mode::SECURE_SERVER;
-        m_ssl_stream_ptr = std::make_shared<stream_type>(m_io, ssl_ctx_ptr);
+        Cert::Identity identity{server_cert.native(), pkey_ptr};
+        m_downstream_socket_sptr->becomeSecureServer(identity);
+        // SSL_CTX_use_PrivateKey(ssl_ctx_ptr, pkey_ptr);
+        // SSL_CTX_use_certificate(ssl_ctx_ptr, server_cert.native());
+        // m_conn_sptr->m_mode = Connection::Mode::SECURE_SERVER;
+        // m_ssl_stream_ptr = std::make_shared<stream_type>(m_io, ssl_ctx_ptr);
     }
     void make_server_certificate()
     {

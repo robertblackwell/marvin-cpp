@@ -98,6 +98,7 @@ void MitmHttps::p_handshake_upstream()
 
 void MitmHttps::p_downstream_read_message()
 {
+    m_downstream_rdr_sptr = std::make_shared<MessageReader>(m_io, m_downstream_socket_sptr);
     m_downstream_rdr_sptr->readMessage([this](Marvin::ErrorType err) 
     {
         if (err) {
@@ -110,26 +111,42 @@ void MitmHttps::p_downstream_read_message()
 void MitmHttps::p_initiate_upstream_roundtrip()
 {
    
-    m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_scheme, m_host, m_port));
-    p_roundtrip_upstream(m_downstream_rdr_sptr, [this](MessageBaseSPtr downMsg){
-        /// get here with a message suitable for transmission to down stream client
-        m_downstream_response_sptr = downMsg;
-        LogTrace("for downstream", traceMessage(*downMsg));
-        Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
-        /// perform the MITM collection
-        
-        m_collector_sptr->collect(m_scheme, m_host, m_downstream_rdr_sptr, m_downstream_response_sptr);
-        
-        /// write response to downstream client
-        m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err) {
-            if (err) {
-                m_mitm_app.p_on_downstream_write_error(err);
-            } else {
-                p_on_request_completed();
-            }
-        });
+    m_upstream_socket_sptr = socketFactory(m_io, m_upstream_scheme, m_upstream_host, m_upstream_port);
+    
+    Certificates certificates = Certificates::getInstance();
+    m_upstream_socket_sptr->becomeSecureClient(certificates.getX509StorePtr());
 
+    m_upstream_socket_sptr->asyncConnect([this](ErrorType& err, ISocket* conn)
+    {
+        if(err) {
+            auto x = make_error_description(err);
+            ErrorType marvin_error = err;
+            m_mitm_app.p_on_upstream_roundtrip_error(marvin_error);
+        } else {
+            m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_upstream_socket_sptr));
+
+            p_roundtrip_upstream(m_downstream_rdr_sptr, [this](MessageBaseSPtr downMsg){
+                /// get here with a message suitable for transmission to down stream client
+                m_downstream_response_sptr = downMsg;
+                LogTrace("for downstream", traceMessage(*downMsg));
+                Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
+                /// perform the MITM collection
+                
+                m_collector_sptr->collect(m_scheme, m_host, m_downstream_rdr_sptr, m_downstream_response_sptr);
+                
+                /// write response to downstream client
+                m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err) {
+                    if (err) {
+                        m_mitm_app.p_on_downstream_write_error(err);
+                    } else {
+                        p_on_request_completed();
+                    }
+                });
+
+            });
+        }
     });
+
 }
 /// \brief Perform the proxy forwarding process; and produces a response suitable
 /// for downstream transmission; the result of this method is a response to send back to the client
@@ -148,7 +165,7 @@ void MitmHttps::p_roundtrip_upstream(
     /// the MessageBase that will be the up stream request
     m_upstream_request_sptr = std::make_shared<MessageBase>();
     /// format upstream msg for transmission
-    Helpers::makeUpstreamRequest(m_upstream_request_sptr, req);
+    Helpers::makeUpstreamHttpsRequest(m_upstream_request_sptr, req);
     Marvin::BufferChainSPtr content = req->getContentBuffer();
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)

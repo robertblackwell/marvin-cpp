@@ -77,6 +77,7 @@ Certificates::Certificates()
 }
 X509_STORE* Certificates::getX509StorePtr()
 {
+    X509_STORE_up_ref(m_X509_store_ptr);
     return m_X509_store_ptr;
 }
 

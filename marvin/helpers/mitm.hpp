@@ -43,6 +43,10 @@ void removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue);
 /// \brief apply proxy rules, make an upstream request from the original client request
 void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr);
 
+/// make an upstream request from a client request proxy rules are not applied as
+/// the client is assuming we are in tunnel mode
+void makeUpstreamHttpsRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr);
+
 /// \brief makes a response to send down to client from a response from the up stream server
 /// and the error_code returned from the round trip to upstream server.
 void makeDownstreamResponse(MessageBaseSPtr msg, MessageReaderSPtr resp, ErrorType& err);

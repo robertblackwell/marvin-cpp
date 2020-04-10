@@ -1,5 +1,5 @@
 #include <marvin/server_v3/mitm_app.hpp>
-
+#include <vector>
 #include <marvin/http/message_factory.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/connection/socket_factory.hpp>
@@ -324,8 +324,21 @@ ConnectAction MitmApp::p_determine_action(std::string host, std::string port)
 {
     std::vector<std::regex>  regexs = this->m_https_hosts;
     std::vector<int>         ports  = this->m_https_ports;
+    std::vector<std::string> mitm_hosts{
+        "hackernoon.com",
+        "www.youtube.com",
+        "www.geeksforgeeks.org"
+    };
+    int index;
+    bool found = false;
+    for(index = 0; index < mitm_hosts.size(); index++){
+        if (mitm_hosts[index] == host) {
+            found = true;
+            break;
+        }
+    }
     /// !!! this needs to be upgraded
-    if ((std::stoi(port) == 443) &&(host == std::string("hackernoon.com"))) {
+    if ((std::stoi(port) == 443) && found) {
         return ConnectAction::MITM;
     }
     return ConnectAction::TUNNEL;

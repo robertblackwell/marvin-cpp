@@ -159,15 +159,14 @@ public:
     boost::asio::ip::tcp::resolver  m_resolver;
 //    boost::asio::ip::tcp::socket    m_boost_socket;
 
-    /// our own copy not just a reference
-    X509_STORE*                     m_certificate_store_ptr;
-    Cert::Identity                  m_server_identity;
-    boost::asio::ssl::context       m_ssl_ctx;
-    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> m_ssl_socket;
-    boost::asio::ip::tcp::socket::lowest_layer_type& m_lowest_layer_sock;// = ssl_sock.lowest_layer();
+    std::shared_ptr<boost::asio::ssl::context>                                  m_ssl_ctx_sptr;
+    std::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>    m_ssl_stream_sptr;
+    boost::asio::ip::tcp::socket                                                m_tcp_socket;
+    
     ConnectCallbackType             m_connect_cb;
 
-    // only defined after client connection completes handshake
+    X509_STORE*                     m_certificate_store_ptr;
+    Cert::Identity                  m_server_identity;
     Cert::Certificate               m_server_certificate;
 
     bool                            m_closed_already;

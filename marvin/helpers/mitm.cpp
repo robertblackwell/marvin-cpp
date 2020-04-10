@@ -153,6 +153,63 @@ void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  req
 
 }
 
+void makeUpstreamHttpsRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr)
+{
+    MessageReaderSPtr req = requestSPtr;
+    MessageBaseSPtr result = upstreamRequest;
+    
+    result->setPath(req->getPath());
+    result->setMethod(req->method());
+    int nh = req->getHeaders().size();
+    for(int i = 0; i < nh; i++ ) {
+        auto y = req->getHeaders().atIndex(i);
+        result->setHeader(y.first, y.second);
+    }
+    auto cb = req->getContentBuffer();
+    result->setContentBuffer(cb);
+    return;
+    Marvin::Uri tmp_uri(req->uri());
+    
+    applyUriNonProxy(upstreamRequest, tmp_uri);
+//    helpers::fillRequestFromUri(*upstreamRequest, tmp_url);
+    // filter out upgrade requests
+    assert( ! req->hasHeader("Upgrade") );
+    
+    // set the method
+    result->setMethod(req->method());
+    // copy the headers
+    // should also test for manditory Host header
+    //
+    auto hdrs = req->getHeaders();
+    std::set<std::string> dontCopyList{
+        Marvin::HeadersV2::Host,
+        Marvin::HeadersV2::ProxyConnection,
+        Marvin::HeadersV2::Connection,
+        Marvin::HeadersV2::ETag,
+        Marvin::HeadersV2::TransferEncoding
+    };
+    // copy all headers except those in dontCopyList
+    HeadersV2::copyExcept(hdrs, result->getHeaders(),dontCopyList);
+    //    Headers::filterNotInList(hdrs, dontCopyList, [result]( Marvin::Headers& hdrs, std::string k, std::string v) {
+//        result->setHeader(k,v);
+//    });
+    if (req->hasHeader(Marvin::HeadersV2::Connection)) {
+        std::string cv = req->getHeader(Marvin::HeadersV2::Connection);
+        removeHopByHop(result, cv);
+    }
+    // set the uri and host header
+    // no keep alive
+    result->setHeader(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
+    result->setHeader(Marvin::HeadersV2::AcceptEncoding, "identity");
+    result->setHeader(Marvin::HeadersV2::TE, "");
+    // Http versions defaults to 1.1, so force it to the same as the request
+    result->setHttpVersMinor(req->httpVersMinor());
+    result->setContent(req->getContentBuffer());
+//    result->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(req->getBody()->size()));
+
+}
+
+
 void makeDownstreamGoodResponse(MessageBaseSPtr downstream, MessageReaderSPtr responseSPtr )
 {
     LogInfo("");

@@ -62,10 +62,7 @@ Connection::Connection(
             m_io(io_service),
             m_timeout(m_io),
             m_resolver(m_io),
-//            m_ssl_ctx(std::move(ctx)),
-            m_ssl_ctx(boost::asio::ssl::context::method::sslv23),
-            m_ssl_socket(m_io, m_ssl_ctx),
-            m_lowest_layer_sock(m_ssl_socket.lowest_layer()),
+            m_tcp_socket(m_io),
             m_scheme(scheme),
             m_server(server),
             m_port(port),
@@ -78,7 +75,6 @@ Connection::Connection(
     LogTorTrace();
     LogFDTrace(nativeSocketFD());
     auto x = nativeSocketFD();
-    boost::asio::ip::tcp::socket& ll = m_ssl_socket.next_layer();
     LogDebug("constructor:: native handle :: ", x);
 }
 
@@ -91,9 +87,7 @@ Connection::Connection(
         m_timeout(m_io),
         m_resolver(m_io), // dont really need this
 //            m_ssl_ctx(std::move(ctx)),
-        m_ssl_ctx(boost::asio::ssl::context::method::sslv23),
-        m_ssl_socket(m_io, m_ssl_ctx),
-        m_lowest_layer_sock(m_ssl_socket.lowest_layer()),
+        m_tcp_socket(m_io),
         m_connect_timeout_interval_ms(s_connect_timeout_interval_ms),
         m_read_timeout_interval_ms(s_read_timeout_interval_ms),
         m_write_timeout_interval_ms(s_write_timeout_interval_ms)
@@ -107,7 +101,7 @@ Connection::~Connection()
     LogTorTrace();
     if( ! m_closed_already) {
         LogFDTrace(nativeSocketFD());
-        m_ssl_socket.lowest_layer().close();
+        m_tcp_socket.close();
     } else {
         LogFDTrace(nativeSocketFD());
     }
@@ -118,7 +112,7 @@ std::string Connection::service(){return m_port;}
 
 long Connection::nativeSocketFD()
 {
-    return m_lowest_layer_sock.native_handle();
+    return m_tcp_socket.native_handle();
 }
 boost::asio::io_service& Connection::getIO()
 {
@@ -126,7 +120,7 @@ boost::asio::io_service& Connection::getIO()
 }
 boost::asio::ssl::context& Connection::getSslContext()
 {
-    return m_ssl_ctx;
+    return *m_ssl_ctx_sptr;
 };
 
 void Connection::close()
@@ -134,17 +128,17 @@ void Connection::close()
     LogFDTrace(nativeSocketFD());
     assert(! m_closed_already);
     m_closed_already = true;
-    m_lowest_layer_sock.cancel();
-    m_lowest_layer_sock.close();
+    m_tcp_socket.cancel();
+    m_tcp_socket.close();
 }
 void Connection::shutdown(ISocket::ShutdownType type)
 {
     assert(! m_closed_already);
-    m_lowest_layer_sock.shutdown(boost::asio::socket_base::shutdown_send);
+    m_tcp_socket.shutdown(boost::asio::socket_base::shutdown_send);
 }
 void Connection::cancel()
 {
-    m_lowest_layer_sock.cancel();
+    m_tcp_socket.cancel();
 }
 void Connection::setReadTimeout(long millisecs)
 {
@@ -160,7 +154,7 @@ void Connection::asyncAccept(
     std::function<void(const boost::system::error_code& err)> cb
 )
 {
-    acceptor.async_accept(m_lowest_layer_sock, [cb, this](const boost::system::error_code& err) {
+    acceptor.async_accept(m_tcp_socket, [cb, this](const boost::system::error_code& err) {
         LogFDTrace(this->nativeSocketFD());
         p_post_accept_cb(cb, err);
     });
@@ -173,7 +167,7 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
     tcp::resolver::query query(this->m_server, this->m_port);
 #if 1
     m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
-        m_lowest_layer_sock.cancel();
+        m_tcp_socket.cancel();
     });
     auto h = ([this](const error_code& err, tcp::resolver::iterator endpoint_iterator) {
         m_timeout.cancelTimeout([this, err, endpoint_iterator](){
@@ -192,24 +186,35 @@ void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
     if (m_mode != NOTSECURE) {
         THROW("connection already secured");
     }
+    m_ssl_ctx_sptr = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::method::sslv23);
+    m_ssl_ctx_sptr->set_options(
+        boost::asio::ssl::context::default_workarounds
+        | boost::asio::ssl::context::no_sslv2
+        | boost::asio::ssl::context::single_dh_use);
+    SSL_CTX* raw_ssl_ctx_ptr = m_ssl_ctx_sptr->native_handle();
     m_mode = Mode::SECURE_CLIENT;
     m_certificate_store_ptr = certificate_store_ptr;
-    SSL_CTX_set_cert_store(m_ssl_ctx.native_handle(), m_certificate_store_ptr);
-    m_ssl_ctx.set_verify_mode(boost::asio::ssl::context::verify_peer);
+    SSL_CTX_set_cert_store(raw_ssl_ctx_ptr, m_certificate_store_ptr);
+    m_ssl_ctx_sptr->set_verify_mode(boost::asio::ssl::context::verify_peer);
+    // now make the ssl stream using the tcp_socket and the ssl_ctx
+    m_ssl_stream_sptr = std::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(m_tcp_socket, *m_ssl_ctx_sptr);
 }
 void Connection::becomeSecureServer(Cert::Identity server_identity)
 {
     if (m_mode != NOTSECURE) {
         THROW("connection already secured");
     }
+    m_ssl_ctx_sptr = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::method::sslv23);
     m_mode = Mode::SECURE_SERVER;
     m_server_identity = server_identity;
-    m_ssl_ctx.set_options(
+    m_ssl_ctx_sptr->set_options(
         ssl::context::default_workarounds | ssl::context::no_sslv2
     );
-    SSL_CTX* ssl_ctx_ptr = m_ssl_ctx.native_handle();
-    SSL_CTX_use_certificate(ssl_ctx_ptr, server_identity.getX509());
-    SSL_CTX_use_PrivateKey(ssl_ctx_ptr, server_identity.getEVP_PKEY());
+    SSL_CTX* raw_ssl_ctx_ptr = m_ssl_ctx_sptr->native_handle();
+    SSL_CTX_use_certificate(raw_ssl_ctx_ptr, server_identity.getX509());
+    SSL_CTX_use_PrivateKey(raw_ssl_ctx_ptr, server_identity.getEVP_PKEY());
+
+    m_ssl_stream_sptr = std::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(m_tcp_socket, *m_ssl_ctx_sptr);
 
 }
 void Connection::asyncHandshake(std::function<void(const boost::system::error_code& err)> cb)
@@ -241,7 +246,7 @@ void Connection::asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncRea
     /// -   set a time out with a handler, the handler knows what to do, in this case cancel outstanding
     ///     ops on the socket
     m_timeout.setTimeout(timeout_ms, [this](){
-        m_lowest_layer_sock.cancel();
+        m_tcp_socket.cancel();
     });
     auto handler = ([this, cb, buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
@@ -255,9 +260,9 @@ void Connection::asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncRea
         });
     });
     if (m_mode == NOTSECURE) {
-        m_ssl_socket.next_layer().async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
+        m_tcp_socket.async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
     } else {
-        m_ssl_socket.async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
+        m_ssl_stream_sptr->async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
     }
 }
 /**
@@ -282,9 +287,9 @@ void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCa
         p_post_write_cb(cb, err, bytes_transfered);
     });
     if (m_mode == NOTSECURE) {
-        boost::asio::async_write((this->m_ssl_socket.next_layer()), tmp, handler);
+        boost::asio::async_write((this->m_tcp_socket), tmp, handler);
     } else {
-        boost::asio::async_write((this->m_ssl_socket), tmp, handler);
+        boost::asio::async_write((*m_ssl_stream_sptr), tmp, handler);
     }
 }
 #if 1
@@ -321,9 +326,9 @@ void Connection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
         p_post_write_cb(cb, err, bytes_transfered);
     });
     if (m_mode == NOTSECURE) {
-        boost::asio::async_write((this->m_ssl_socket.next_layer()), sb, handler);
+        boost::asio::async_write((this->m_tcp_socket), sb, handler);
     } else {
-        boost::asio::async_write((this->m_ssl_socket), sb, handler);
+        boost::asio::async_write((*m_ssl_stream_sptr), sb, handler);
     }
 }
 #endif
@@ -357,7 +362,7 @@ void Connection::p_handle_resolve(
         
 #if 1
         m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
-            m_lowest_layer_sock.cancel();
+            m_tcp_socket.cancel();
         });
         auto next_iter = ++endpoint_iterator;
         auto h = ([this, next_iter](const error_code& err) {
@@ -365,7 +370,7 @@ void Connection::p_handle_resolve(
                 p_handle_connect(err, next_iter);
             });
         });
-        m_lowest_layer_sock.async_connect(endpoint, h);
+        m_tcp_socket.async_connect(endpoint, h);
 #else
 //        auto handler = m_strand.wrap(bind(&Connection::p_handle_connect, this, _1, ++endpoint_iterator));
         /// a bit clumsy - incrementing the iterator before passing it
@@ -386,7 +391,7 @@ void Connection::p_handle_connect(
     if (!err)
     {
         LogFDTrace(nativeSocketFD());
-        m_lowest_layer_sock.non_blocking(true);
+        m_tcp_socket.non_blocking(true);
         ///
         /// now must do handshake - not return
         /// TODO - if NOTSECURE
@@ -399,10 +404,9 @@ void Connection::p_handle_connect(
     else if (endpoint_iterator != tcp::resolver::iterator())
     {
         LogDebug("try next iterator");
-        m_lowest_layer_sock.close(); /// \todo why close ??
         tcp::endpoint endpoint = *endpoint_iterator;
         m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
-            m_lowest_layer_sock.cancel();
+            m_tcp_socket.cancel();
         });
         auto next_iter = ++endpoint_iterator;
         auto h = ([this, next_iter](const error_code& err) {
@@ -410,7 +414,7 @@ void Connection::p_handle_connect(
                 p_handle_connect(err, next_iter);
             });
         });
-        m_lowest_layer_sock.async_connect(endpoint, h);
+        m_tcp_socket.async_connect(endpoint, h);
     }
     else
     {
@@ -421,16 +425,26 @@ void Connection::p_handle_connect(
 }
 void Connection::p_start_handshake()
 {
-    m_ssl_socket.async_handshake(
-        boost::asio::ssl::stream_base::server,
+    boost::asio::ssl::stream_base::handshake_type handshake_type;
+    if (m_mode == SECURE_CLIENT) {
+        handshake_type = boost::asio::ssl::stream_base::client;        
+    } else if (m_mode == SECURE_SERVER) {
+        handshake_type = boost::asio::ssl::stream_base::server;
+    } else {
+        THROW("Invalid handshake_type in p_start_handshake");
+    }
+    m_ssl_stream_sptr->async_handshake(
+        handshake_type,
         boost::bind(&Connection::p_handle_handshake, this, boost::asio::placeholders::error)
     );
 }
 void Connection::p_handle_handshake(const boost::system::error_code& err)
 {
     if(! err) {
-        X509* server_cert = SSL_get_peer_certificate(this->m_ssl_socket.native_handle());
-        m_server_certificate = Cert::Certificate(server_cert);
+        if (m_mode == SECURE_CLIENT) {
+            X509* server_cert = SSL_get_peer_certificate(this->m_ssl_stream_sptr->native_handle());
+            m_server_certificate = Cert::Certificate(server_cert);
+        }
         p_post_connect_cb(m_connect_cb, err, this);
     } else {
         p_post_connect_cb(m_connect_cb, err, this);
@@ -448,9 +462,9 @@ void Connection::p_async_write(void* data, std::size_t size, AsyncWriteCallback 
         p_post_write_cb(cb, err, bytes_transfered);
     });
     if (m_mode == NOTSECURE) {
-        boost::asio::async_write((this->m_ssl_socket.next_layer()), boost::asio::buffer(data, size), handler);
+        boost::asio::async_write((this->m_tcp_socket), boost::asio::buffer(data, size), handler);
     } else {
-        boost::asio::async_write((this->m_ssl_socket), boost::asio::buffer(data, size), handler);
+        boost::asio::async_write((*m_ssl_stream_sptr), boost::asio::buffer(data, size), handler);
     }
 }
 #pragma mark - post result of async ops through various callbacks
