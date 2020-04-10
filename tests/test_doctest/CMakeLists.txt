@@ -7,14 +7,6 @@ target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
 add_test(${TARGET} ${TARGET})
+add_test(test_2doctest ${CMAKE_CURRENT_SOURCE_DIR}/test.sh)
+# set_tests_properties(${TARGET} PROPERTIES WORKING_DIRECTORY /home/robert/Projects/marvin++/cmake-build-debug/tests)
 
-set_target_properties(test_doctest PROPERTIES XCODE_GENERATE_SCHEME ON)
-
-set_tests_properties(${TARGET}
-    PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
-
-set_target_properties(${TARGET}
-    PROPERTIES 
-    XCODE_SCHEME_ENVIRONMENT
-    "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem;MARVIN_CERT_STORE_PATH=${MARVIN_CERT_STORE_PATH}"
-    )

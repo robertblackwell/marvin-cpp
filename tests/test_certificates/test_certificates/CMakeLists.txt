@@ -6,15 +6,13 @@ target_include_directories(${TARGET} PUBLIC ./ ../ ${TEST_INCLUDE_DIRS})
 target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 
-add_test(${TARGET} ${TARGET})
-
-set_target_properties(test_certificates PROPERTIES XCODE_GENERATE_SCHEME ON)
+# add_test(
+#     ${TARGET} ${TARGET}
+#     WORKING_DIRECTORY /home/robert/marvin++
+#     )
+# wrap the test in a shell script to set the working directory
+add_test(test_certificates ${CMAKE_CURRENT_SOURCE_DIR}/test.sh ${PROJECT_DIR})
 
 set_tests_properties(${TARGET}
-    PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
-set(MARVIN_CERT_STORE_PATH ${PROJECT_DIR}/config/cert_store)
-set_target_properties(${TARGET}
     PROPERTIES 
-    XCODE_SCHEME_ENVIRONMENT
-    "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem;MARVIN_CERT_STORE_PATH=${MARVIN_CERT_STORE_PATH}"
-    )
+    ENVIRONMENT "MARVIN_HOME=${PROJECT_DIR}")

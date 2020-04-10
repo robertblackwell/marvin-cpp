@@ -12,7 +12,7 @@ target_compile_features(${TARGET} PRIVATE cxx_std_14)
 target_link_libraries(${TARGET} PUBLIC marvin_library ${TEST_LINK_LIBS})
 target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
 
-add_test(${TARGET} ${TARGET})
-SET_TESTS_PROPERTIES(${TARGET}
-    PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
+# add_test(${TARGET} ${TARGET})
+# SET_TESTS_PROPERTIES(${TARGET}
+#     PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
 

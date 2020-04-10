@@ -6,6 +6,7 @@
 #include <string>                           // for basic_string
 #include <boost/filesystem/operations.hpp>  // for is_directory
 #include <boost/filesystem/path.hpp>        // for path
+#include <boost/format.hpp>
 #include <cert/cert_authority.hpp>          // for AuthoritySPtr
 #include <cert/cert_builder.hpp>            // for Builder
 #include <cert/cert_certificate.hpp>        // for Certificate
@@ -54,12 +55,13 @@ Certificates::Certificates()
     using namespace boost::filesystem;
 
     optional<path> mh = Marvin::getEnvMarvinHome();
+    path cwd = boost::filesystem::current_path();
     if (!mh) {
-        THROW("no environment variable MARVIN_HOME not set");
+        THROW("environment variable MARVIN_HOME not set");
     } else if (!Marvin::validEnvVariables()) {
-        THROW("Marvin environment variables are invalid");
+        THROW(str(boost::format("Marvin environment variables MARVIN_HOME=%1% invalid") % mh.get().string()));
     } else if (!Marvin::validWorkingDir()) {
-        THROW("running Certificate::getInstance() from invalid working directory");
+        THROW(str(boost::format("running Certificate::getInstance() from invalid working directory cwd = %1%") % cwd.string()));
     } 
     path p = mh.get() / Marvin::kMarvinDotDirectoryName / Marvin::kMarvinCertStoreName;
     path base(p);

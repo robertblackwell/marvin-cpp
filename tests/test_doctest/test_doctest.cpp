@@ -13,11 +13,13 @@
 // }
 
 #include <cstdio>
-
+#include <unistd.h>
 int main() {
-    printf("Hello got here");
-    printf("Hello got here");
-    printf("Hello got here");
-    printf("Hello got here");
-    printf("Hello got here");
+    char buf[1000];
+    char* b = getcwd(buf, 1000);
+    printf("Hello got here cwd = %s\n", b);
+    printf("Hello got here\n");
+    printf("Hello got here\n");
+    printf("Hello got here\n");
+    printf("Hello got here\n");
 }
