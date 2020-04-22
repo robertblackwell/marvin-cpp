@@ -1,59 +1,73 @@
-Next projects:
-☐ server_v3 becomes part of mainstream without the v3 bit
+
+References for command interface:
+ ☐ https://github.com/daniele77/cli
+ ☐ https://hackernoon.com/building-reactive-terminal-interfaces-in-c-d392ce34e649
+ ☐ https://github.com/loopperfect/rxterm
+
+Next step:
+  ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
+  ☐ need to permit tunnelo requests for any port as it might be a websocket
+  ☐ should only do https_upstream if the port is 443 and even then shuld check the first message for upgrade and reject
+  ☐ default mode for both https be tunnel and the url filter should be mitm on match
+  ☐ need to log the headers in the original message before going further to detect cause of craches from headers that did not get acted upon correctly
+  ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
+  ☐ curl test should verify peer and will need to be pointed at our modified root bundle
+Next project:
+  ☐ make it into a function app - probably cli this will require deciding on parameters and how to filter by url/host
+  ☐ think about a script/app for watcing the output
+  ☐ think about a commdn interfa e to change filters while the proxy is running
+
+Tests:
 ☐ test_roundtrip and test_server_v3 should be combined and unused files deleted
-☐ handler : integrate the new isConnectionKeepAlice() isConnectionClosed() functions into this class
+☐ handler : integrate the new isConnectionKeepAlive() isConnectionClosed() functions into this class
 ☐ rename header_v2 to header
-☐ 
 ☐ remove outdated or unused test files
 ☐ determine which tests will be kept - there is currently a lot of overlap
-☐ work out how to fit ForwardingHandler into this server_v3/adapter model. The goal is to get `test_proxy` working.
-Code tidy:
-  ☐ HttpServer does not conform to the naming scheme for private methods uses camelCase rather than p_snake_case 
-Tests:
-  ☐ put timeout on subsequent reads into the handler for server v3
-  ☐ replace whiteacorn as a test server 
-  ☐ find all test that are #if out of action and get them working or remove
-  ☐ uri and uri-v2 - see below
-  ☐ test trailers on message parsing and set/get of MessageBase
-  ☐ test_buffers does no CHECK/REQUIRE anything
-  ☐ message parsing needs to be clearer and also test continuation of headers
-  ☐ proxy tunnel test required in addition to proxy_manual
-  ☐ reduntant and duplicate tests - for example test_reader and test_reader_mock are the same ; delete obsolete - unnecessary tests
- ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
+☐ find all test that are #if out of action and get them working or remove
+☐ test trailers on message parsing and set/get of MessageBase
+☐ test_buffers does no CHECK/REQUIRE anything
+☐ message parsing needs to be clearer and also test continuation of headers
+☐ reduntant and duplicate tests - for example test_reader and test_reader_mock are the same ; delete obsolete - unnecessary tests
+☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
 class property names cleanup:
-  ☐ some tests are still using the leading _varname naming scheme - fix
+☐ some tests are still using the leading _varname naming scheme - fix
 Bugs:
-  ☐ segfault in test_server_client_bb HIGH PRIORITY
-  ☐ not handling non-existence of connection header correctly when preparing upstream request
-  ☐ test_ssl seg faults
-  ☐ potential - MessageWriter does not handle incomplete writes
-  ☐ messagereader does not read trailers
-  ☐ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more.
-  ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
-  ☐ research how to test for keep-alive particulaly in regard to upper/lower case and also that more than one value can be on a line
+☐ not handling non-existence of connection header correctly when preparing upstream request
+☐ test_ssl seg faults
+☐ potential - MessageWriter does not handle incomplete writes
+☐ messagereader does not read trailers
+☐ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more.
+☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
+☐ research how to test for keep-alive particulaly in regard to upper/lower case and also that more than one value can be on a line
 Exceptions and Error checking:
-  ☐ try taking the model from x509 and importing it into this project
-Uri-UriV2:
-  ☐ compare the two implementations and resolve into a single class. Check what tests get broken.
+☐ try taking the model from x509 and importing it into this project
 throw:
-  ☐ replace all instance of throwing a string with THROW
-Forwarding Handler:
-  ☐ need to review how it handles errors - not sure what the ssl_handler should do in the case of downstream failure or upstream failure
- ☐ Issue - need test bed to work on MessageReader, MessageWrite and Client for https requests.
- ☐ Plan
-   ☐ Objective - get a working Client for https requests.
-   ☐ SecureClient : make a new client cleed SecureClient based on existing non secure Client - that is because clients dont need to change to secure after creation.
-      ☐ the Connect call will do both connect and handshake, and writes will continue to do connect/handshake if not already connected.
-      ☐ the constructor will need to take additional paramters for access to a root certificate store. Dont want to use the default as want to ensure the store is in memory
-   ☐ SecureClient Dependencies. 
-       ☐ Needs testing Connection::becomeSecureClient(X509_Store* rootbundle) - must be able to upgrade to secure at least to be a secure client. New method
-       ☐ Needs testing Connection::becomeSecureServer(Identity serverIdentity) - will not be needed by SecureClient but will be required for the proxy
-   ☐ ISocket will all need becomeSecureClient() becomeSecureServer() methods as this absract class is the interface to Connection. 
-   ☐ MessageReader MessageWriter: Probably do not need to be provided with these methods as these objects are constructed with connected ISockets.
-   ☐ Consider doing away with ISocket all together - not sure what value it adds.
-   ☐ Root certificate store, MitmBuild and X509 Identity - need a way of encapsulating and passing this info around 
+☐ replace all instance of throwing a string with THROW
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ work out how to fit ForwardingHandler into this server_v3/adapter model. The goal is to get `test_proxy` working. @done (20-04-15 09:19)
+ ✔ proxy tunnel test required in addition to proxy_manual @done (20-04-15 09:18) @project(Tests)
+ ✔ uri and uri-v2 - see below @done (20-04-15 09:17) @project(Tests)
+ ✔ replace whiteacorn as a test server @done (20-04-15 09:17) @project(Tests)
+ ✔ put timeout on subsequent reads into the handler for server v3 @done (20-04-15 09:17) @project(Tests)
+ ✔ HttpServer is obsolete HttpServer does not conform to the naming scheme for private methods uses camelCase rather than p_snake_case @done (20-04-15 09:15) @project(Code tidy)
+ ✔ the constructor will need to take additional paramters for access to a root certificate store. Dont want to use the default as want to ensure the store is in memory @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ the Connect call will do both connect and handshake, and writes will continue to do connect/handshake if not already connected. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ server_v3 becomes part of mainstream without the v3 bit @done (20-04-15 09:14)
+ ✔ obsolete segfault in test_server_client_bb HIGH PRIORITY @done (20-04-15 09:14) @project(Bugs)
+ ✔ need to review how it handles errors - not sure what the ssl_handler should do in the case of downstream failure or upstream failure @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ SecureClient Dependencies. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ SecureClient : make a new client cleed SecureClient based on existing non secure Client - that is because clients dont need to change to secure after creation. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ Root certificate store, MitmBuild and X509 Identity - need a way of encapsulating and passing this info around @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ Plan @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ Objective - get a working Client for https requests. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ Needs testing Connection::becomeSecureServer(Identity serverIdentity) - will not be needed by SecureClient but will be required for the proxy @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ Needs testing Connection::becomeSecureClient(X509_Store* rootbundle) - must be able to upgrade to secure at least to be a secure client. New method @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ MessageReader MessageWriter: Probably do not need to be provided with these methods as these objects are constructed with connected ISockets. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ Issue - need test bed to work on MessageReader, MessageWrite and Client for https requests. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ ISocket will all need becomeSecureClient() becomeSecureServer() methods as this absract class is the interface to Connection. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ Consider doing away with ISocket all together - not sure what value it adds. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ compare the two implementations and resolve into a single class. Check what tests get broken. @done (20-04-15 09:13) @project(Uri-UriV2)
  ✔ is too complicated - try using the model from the node addin @done (20-04-03 15:08) @project(Logging)
  ✔ test_message_reader - remove the stuff to do with the hack server and client @done (20-04-03 15:07)
  ✔ move the interface bit of handler in marvin++/marvin/server as part of the main source and new server @done (20-04-03 15:07)

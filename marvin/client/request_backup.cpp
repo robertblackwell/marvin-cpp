@@ -51,12 +51,6 @@ Request::Request(
 
 }
 
-//Request::Request(boost::asio::io_service& io, std::string url)
-//: _io(io), _url(url)
-//{
-//    setupUrl(url);
-//}
-
 Request::Request(
     boost::asio::io_service& io, 
     ISocketSPtr conn
@@ -492,7 +486,6 @@ void Request::close()
 }
 void Request::end()
 {
-//    _connection = nullptr;
 }
 
 MessageReaderSPtr Request::getResponse()

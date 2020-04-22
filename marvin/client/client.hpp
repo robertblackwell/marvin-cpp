@@ -275,7 +275,7 @@ public:
     /**
     * close - called to signal that connection::close has been received
     * and that the net round trip should use a different connection
-    * for the next message. This invalidates _connection, _rdr, _wrtr
+    * for the next message. This invalidates m_connection, m_rdr, m_wrtr
     *
     * @TODO - not sure we need this - just delete the client object
     */
@@ -290,7 +290,7 @@ protected:
     void internalConnect();
     void internalWrite();
 
-    void _async_write(Marvin::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
+    void p_async_write(Marvin::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     void putHeadersStuffInBuffer();
     void setContentLength();
     
@@ -303,19 +303,15 @@ protected:
     std::string m_port;
     std::string m_path;
 
-    boost::asio::io_service&                        m_io;
-    Marvin::MessageBaseSPtr                   m_current_request;
-    Marvin::MBufferSPtr                             m_body_mbuffer_sptr;
-    MessageWriterSPtr                               m_wrtr;
-    MessageReaderSPtr                               m_rdr;
-    ISocketSPtr                                     m_conn_shared_ptr;
-    ResponseHandlerCallbackType                     m_response_handler;
-    ResponseHandlerCallbackType                     m_on_headers_handler;
-    ClientDataHandlerCallbackType                   m_on_data_handler;
-//    bool        _oneTripOnly;
-//    
-//    std::string _service;   //used by boost for resolve and connnect http/https or a port number
-//    std::string _server;    // as used in boost resolve/connect WITHOUT port number
+    boost::asio::io_service&          m_io;
+    Marvin::MessageBaseSPtr           m_current_request;
+    Marvin::MBufferSPtr               m_body_mbuffer_sptr;
+    MessageWriterSPtr                 m_wrtr;
+    MessageReaderSPtr                 m_rdr;
+    ISocketSPtr                       m_conn_shared_ptr;
+    ResponseHandlerCallbackType       m_response_handler;
+    ResponseHandlerCallbackType       m_on_headers_handler;
+    ClientDataHandlerCallbackType     m_on_data_handler;
     
 };
 } // namespaace

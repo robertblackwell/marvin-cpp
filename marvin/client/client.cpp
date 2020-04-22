@@ -42,12 +42,6 @@ Client::Client(
 
 }
 
-//Client::Client(boost::asio::io_service& io, std::string url)
-//: _io(io), _url(url)
-//{
-//    setupUrl(url);
-//}
-
 Client::Client(
     boost::asio::io_service& io, 
     ISocketSPtr conn
@@ -91,24 +85,24 @@ void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr = Marvin::MBuffer::makeSPtr(body);
-    _async_write(requestMessage, cb);
+    p_async_write(requestMessage, cb);
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body, ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr = body;
-    _async_write(requestMessage, cb);
+    p_async_write(requestMessage, cb);
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr = chain_sptr->amalgamate();
-    _async_write(requestMessage, cb);
+    p_async_write(requestMessage, cb);
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr  = Marvin::MBuffer::makeSPtr(""); // no body
-    _async_write(requestMessage, cb);
+    p_async_write(requestMessage, cb);
 }
-void Client::_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
+void Client::p_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
     LogInfo("", (long)this);
     m_response_handler = cb;
@@ -179,7 +173,6 @@ void Client::close()
 }
 void Client::end()
 {
-//    _connection = nullptr;
 }
 
 void Client::setContentLength()

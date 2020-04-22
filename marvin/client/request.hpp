@@ -145,7 +145,7 @@ public:
     /**
     * close - called to signal that connection::close has been received
     * and that the net round trip should use a different connection
-    * for the next message. This invalidates _connection, _rdr, _wrtr
+    * for the next message. This invalidates m_connection, m_rdr, m_wrtr
     *
     * @TODO - not sure we need this - just delete the client object
     */
@@ -231,10 +231,6 @@ public:
     ResponseHandlerCallbackType                     m_response_handler;
     ResponseHandlerCallbackType                     m_on_headers_handler;
     RequestDataHandlerCallbackType                   m_on_data_handler;
-//    bool        _oneTripOnly;
-//    
-//    std::string _service;   //used by boost for resolve and connnect http/https or a port number
-//    std::string _server;    // as used in boost resolve/connect WITHOUT port number
     
 };
 } // namespace

@@ -78,7 +78,7 @@ ${script_dir}/install_http_parser.sh $1
 ${script_dir}/install_simple_buffer.sh $1
 ${script_dir}/install_urlparser.sh $1
 ${script_dir}/install_cxxurl.sh $1
-${script_dir}/install_trog.sh $1
+${script_dir}/install_trog2.sh $1
 ${script_dir}/install_libcert.sh $1
 
 

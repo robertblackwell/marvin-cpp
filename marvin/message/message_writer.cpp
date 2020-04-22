@@ -27,20 +27,8 @@ MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock
     m_header_buf_sptr = nullptr;
 }
 
-#if 0
-MessageWriter::MessageWriter(boost::asio::io_service& io, bool is_request):_io(io)
-{
-    LogTorTrace();
-    _isRequest = is_request;
-    // set default version
-    setHttpVersMajor(1);
-    setHttpVersMinor(1);
-
-}
-#endif
 MessageWriter::~MessageWriter()
 {
-//    delete _m_header_buf;
     LogTorTrace();
 }
 
@@ -86,7 +74,6 @@ MessageWriter::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
             p_async_write_full_body([this, cb](Marvin::ErrorType& ec2){
                 LogDebug(" cb: ", (long) &cb);
                 auto pf = std::bind(cb, ec2);
-//                _io.post(pf);
                 cb(ec2);
             });
         }
@@ -103,7 +90,6 @@ MessageWriter::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType 
         LogDebug("");
         // TODO need to check and do something about insufficient write
             auto pf = std::bind(cb, ec);
-//            _io.post(pf);
         cb(ec);
     });
 }
@@ -123,12 +109,6 @@ void MessageWriter::asyncWriteBodyData(Marvin::MBuffer& data, WriteBodyDataCallb
     });
 }
 
-//void MessageWriter::asyncWriteBodyData(FBuffer& data, WriteBodyDataCallbackType cb)
-//{
-//    _conn->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
-//        cb(err);
-//    });
-//}
 void MessageWriter::asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb)
 {
     m_write_sock->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {

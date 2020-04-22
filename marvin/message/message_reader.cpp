@@ -64,8 +64,6 @@ MessageReader::MessageReader( boost::asio::io_service& io, ISocketSPtr read_sock
 MessageReader::~MessageReader()
 {
     LogTorTrace();
-    // how to know what to get rid of
-    // delete _readBuffer;
 }
 #pragma mark -  simple public getters
 
@@ -181,7 +179,7 @@ void MessageReader::OnChunkEnd() { LogDebug(""); }
 /**
 * Called interface method readMessage to start the reading of headers and
 * followed by the reading of all body data.
-* Note the setting of _reading_full_message = true
+* Note the setting of m_reading_full_message = true
 */
 void MessageReader::p_read_message(std::function<void(Marvin::ErrorType err)> cb)
 {
@@ -193,7 +191,7 @@ void MessageReader::p_read_message(std::function<void(Marvin::ErrorType err)> cb
 /**
 * called by interface method readHeaders to start the reading of headers without
 * reading body data.
-* Note the setting of _reading_full_message = false
+* Note the setting of m_reading_full_message = false
 */
 void MessageReader::p_read_headers(std::function<void(Marvin::ErrorType err)> cb)
 {
@@ -282,7 +280,7 @@ void MessageReader::p_handle_header_read(Marvin::ErrorType er, std::size_t bytes
 */
 void MessageReader::p_read_all_body()
 {
-//    _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
+//   m_body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     p_make_new_body_buffer();
     
     p_read_some_body();
@@ -316,7 +314,7 @@ void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_t
     m_body_buffer_sptr->setSize(bytes_transfered);
     Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(bytes_transfered));
     tmp->append(m_body_buffer_sptr->data(), m_body_buffer_sptr->size());
-//    std::cout << std::endl << __FUNCTION__ << ": " << tmp->toString() << std::endl;
+
     m_raw_body_buffer_chain_sptr->push_back(tmp);
     
     Marvin::MBuffer& mb = *m_body_buffer_sptr;
@@ -330,7 +328,6 @@ void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_t
         p_post_message_cb(Marvin::make_error_ok());
     } else {
         p_make_new_body_buffer();
-//        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
         p_read_some_body();
     }
 }
@@ -347,7 +344,6 @@ void MessageReader::p_read_body_chunk()
     auto h = std::bind(&MessageReader::p_handle_body_chunk, this, std::placeholders::_1, std::placeholders::_2);
     if(m_body_buffer_sptr == nullptr) {
         p_make_new_body_buffer();
-//        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     }
     m_read_sock->asyncRead(m_body_buffer_sptr, h);
 }
@@ -384,8 +380,6 @@ void MessageReader::p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_
     } else {
         p_post_body_chunk_cb(Marvin::make_error_ok(), m_body_buffer_chain_sptr);
         p_make_new_body_buffer_chain();
-//        _make_new_body_buffer();
-//        _body_buffer_sptr = std::shared_ptr<MBuffer>(new MBuffer(_body_buffer_size));
     }
 }
 #pragma mark - buffer management
@@ -405,9 +399,9 @@ void MessageReader::p_make_new_body_buffer_chain()
 
 #pragma mark - post method for scheduling a callback to run later on the runloop
 /**
-* Schedules the execution of the _read_message_cb in the future on this instances
+* Schedules the execution of the m_read_message_cb in the future on this instances
 * io_service or runloop.
-* _read_message_cb is a property that stores the address of the
+* m_read_message_cb is a property that stores the address of the
 * callback provided to readMessage() and readHeaders() interface methods.
 */
 void MessageReader::p_post_message_cb(Marvin::ErrorType er)
@@ -416,9 +410,9 @@ void MessageReader::p_post_message_cb(Marvin::ErrorType er)
     m_io.post(pf);
 }
 /**
-* Schedules the execution of the _read_message_cb in the future on this instances
+* Schedules the execution of the m_read_message_cb in the future on this instances
 * io_service or runloop.
-* _read_body_cb is a property that stores the address of the
+* m_read_body_cb is a property that stores the address of the
 * callback provided to readBody();
 */
 void MessageReader::p_post_body_chunk_cb(Marvin::ErrorType er, Marvin::BufferChainSPtr chain_sptr)

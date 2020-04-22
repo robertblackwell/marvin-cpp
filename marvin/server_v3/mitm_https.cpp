@@ -104,6 +104,13 @@ void MitmHttps::p_downstream_read_message()
         if (err) {
             m_mitm_app.p_on_downstream_read_error(err);
         } else {
+            #if MARVIN_HANDLE_HTTPS_WEBSOCKET_UPGRADE
+            if (isWebSocketUpgrade(m_downstream_rdr_sptr)) {
+                initiate tunnel
+            } else {
+                /* code */
+            }
+            #endif
             p_initiate_upstream_roundtrip();
         }
     });

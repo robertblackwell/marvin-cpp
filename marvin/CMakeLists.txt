@@ -40,7 +40,7 @@ file(GLOB HEADERS
 	external_src/CxxUrl/url.hpp 
 	external_src/uri-parser/UriParser.hpp 
 	external_src/http-parser/http_parser.h 
-	external_src/trog/trog.hpp  
+	# external_src/trog/trog.hpp  
 	external_src/simple_buffer/simple_buffer.h
 	
 	# forwarding/forward_helpers.hpp 
@@ -127,7 +127,7 @@ set(SOURCES
 	external_src/CxxUrl/url.cpp
 	external_src/uri-parser/UriCodec.cpp
 	external_src/http-parser/http_parser.c
-	external_src/trog/trog.cpp
+	# external_src/trog/trog.cpp
 	external_src/simple_buffer/simple_buffer.c
 
 	# forwarding/forward_helpers.cpp 		

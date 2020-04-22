@@ -94,6 +94,9 @@ void MitmApp::p_on_first_message()
 
     HttpMethod method = m_rdr->method();
 
+    // important logging point - if it breaks later in processing we need to be able to find out what was requested
+    LogTrace("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", serializeHeaders(*m_rdr));
+
     if (method == HttpMethod::CONNECT) {
 
         ConnectAction action = p_determine_action(m_host, m_port);
@@ -186,7 +189,19 @@ void MitmApp::p_log_error(std::string label, Marvin::ErrorType err)
 {
 
 }
-
+/**
+ * Determine what to do about a CONNECT request. 
+ * This function will return "tunnel" as the action unless
+ * the host name one of the pattersns in the mitm_host vector
+ * AND the port is 443
+ * Connects on port 80 are possibly UPGRADE requests for a websocket connection
+ * but that wont be know for sure until the next aprt of the exchange
+ * with the server.
+ * On the other side if the Connect::443 is start of a websocket upgrade request
+ * that will be aborted (or maybe handled in a future release) by the mitm_https
+ * module and the correct reaction is to remove that target host from the mimt_host
+ * vector 
+ */
 ConnectAction MitmApp::p_determine_action(std::string host, std::string port)
 {
     std::vector<std::regex>  regexs = this->m_https_hosts;
