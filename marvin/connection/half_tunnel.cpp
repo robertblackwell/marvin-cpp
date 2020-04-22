@@ -1,7 +1,7 @@
 #include <marvin/connection/half_tunnel.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 
@@ -27,7 +27,7 @@ void HalfTunnel::p_start_read()
 void HalfTunnel::p_handle_read(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
     if( ! err ){
-        LogTrace("OK Read");
+       TROG_TRACE3("OK Read");
         auto hf = std::bind(&HalfTunnel::p_handle_write, this, std::placeholders::_1, std::placeholders::_2);
         m_write_end->asyncWrite(*m_bufferSPtr, hf);
     } else {
@@ -39,7 +39,7 @@ void HalfTunnel::p_handle_read(Marvin::ErrorType& err, std::size_t bytes_transfe
 void HalfTunnel::p_handle_write(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
     if( ! err ){
-        LogTrace("OK write");
+       TROG_TRACE3("OK write");
         m_read_end->setReadTimeout(m_subsequent_read_timeout_millisecs);
         p_start_read();
     } else {

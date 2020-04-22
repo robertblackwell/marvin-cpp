@@ -14,8 +14,10 @@
 #include <cert/cert_store.hpp>
 #include <marvin/certificates/certificates.hpp>
 #include <marvin/certificates/env_utils.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_INFO)
+
+#include <marvin/configure_trog.hpp>
+TROG_SET_GLOBAL_LEVEL(Trog::LogLevelVerbose)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 int main(int argc, const char * argv[])

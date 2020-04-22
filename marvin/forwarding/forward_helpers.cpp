@@ -2,7 +2,7 @@
 
 #include <boost/algorithm/string/trim.hpp>
 
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin::Helpers {
 
@@ -26,12 +26,12 @@ void fillRequestFromUri(MessageBase& msg, std::string uri_in, bool absolute)
     /// elements. Browser wold have already put them in the header
     std::string uri(uri_in);
     http::url us = http::ParseHttpUrl(uri);
-    LogDebug(" uri:", uri);
-    LogDebug(" scheme:", us.protocol);
-    LogDebug(" host:", us.host);
-    LogDebug(" port:", us.port);
-    LogDebug(" path:", us.path);
-    LogDebug(" search:", us.search);
+    TROG_DEBUG(" uri:", uri);
+    TROG_DEBUG(" scheme:", us.protocol);
+    TROG_DEBUG(" host:", us.host);
+    TROG_DEBUG(" port:", us.port);
+    TROG_DEBUG(" path:", us.path);
+    TROG_DEBUG(" search:", us.search);
     
     std::string host = us.host;
     std::string scheme = us.protocol;
@@ -155,7 +155,7 @@ void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  req
 
 void makeDownstreamGoodResponse(MessageBaseSPtr downstream, MessageReaderSPtr responseSPtr )
 {
-    LogInfo("");
+    TROG_INFO("");
     MessageReaderSPtr resp = responseSPtr;
     MessageBaseSPtr result = downstream;
         // copy the headers
@@ -191,7 +191,7 @@ void makeDownstreamGoodResponse(MessageBaseSPtr downstream, MessageReaderSPtr re
 
 void makeDownstreamErrorResponse(MessageBaseSPtr msg, MessageReaderSPtr resp, Marvin::ErrorType& err)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     // bad gateway 502
     msg->setStatus("Bad gateway");
     msg->setStatusCode(501);
@@ -202,7 +202,7 @@ void makeDownstreamResponse(MessageBaseSPtr msg_sptr, MessageReaderSPtr resp, Ma
 {
     if( err ){
         makeDownstreamErrorResponse(msg_sptr, resp, err);
-        LogTrace(Marvin::make_error_description(err));
+       TROG_TRACE3(Marvin::make_error_description(err));
     }else{
         makeDownstreamGoodResponse(msg_sptr, resp);
 //        makeDownstreamResponse();

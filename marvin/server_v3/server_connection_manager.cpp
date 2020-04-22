@@ -2,8 +2,8 @@
 
 #include <unistd.h>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TORTRACE|LOG_LEVEL_TRACE)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
 
 namespace Marvin {
 
@@ -23,7 +23,7 @@ ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, in
     m_maxNumberOfConnections(max_connections),
     m_currentNumberConnections(0)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     m_connection_count = 0;
     instance = this;
 }
@@ -31,9 +31,9 @@ ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, in
 void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
 {
     assert(m_allow_more_callback == nullptr);
-    LogTrace(" num conn: ", m_connections.size(), " max: ", m_maxNumberOfConnections);
+   TROG_TRACE3(" num conn: ", m_connections.size(), " max: ", m_maxNumberOfConnections);
     if( m_connections.size() >= m_maxNumberOfConnections ) {
-        LogWarn("max connections exceeded - waiting cb: ", (void*)(&cb));
+        TROG_WARN("max connections exceeded - waiting cb: ", (void*)(&cb));
         m_allow_more_callback = cb;
     } else {
         cb();
@@ -47,16 +47,16 @@ void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::Al
  */
 void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connHandler)
 {
-    LogDebug("");
+    TROG_DEBUG("");
 //    std::cout << "register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
 //    std::cout << "register: _connections.size() " << _connections.size() << " "  << std::endl;
 //    std::cout << "_register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
 //    std::cout << "_register: _connections.size() " << _connections.size() << " "  << std::endl;
 #ifdef DISABLE_SCMGR
-    LogTrace(" num conn: ", m_connection_count);
+   TROG_TRACE3(" num conn: ", m_connection_count);
     return;
 #else
-    LogTrace("registerConnectionHandler num connections: ", m_connections.size());
+   TROG_TRACE3("registerConnectionHandler num connections: ", m_connections.size());
     long fd = connHandler->nativeSocketFD();
     assert(m_fd_list.find(fd) == m_fd_list.end());
     assert(m_connections.find(connHandler) == m_connections.end()); // assert not already there
@@ -73,15 +73,15 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
  */
 void ServerConnectionManager::deregister(ConnectionHandler* ch)
 {
-    LogTrace("deregister nativeSocket:: ", ch->nativeSocketFD());
-    LogTrace("deregister num connections:: ", m_connections.size());
+   TROG_TRACE3("deregister nativeSocket:: ", ch->nativeSocketFD());
+   TROG_TRACE3("deregister num connections:: ", m_connections.size());
     #if 0
     auto pf = (std::bind(&ServerConnectionManager::p_deregister, this, ch));
     m_io.post(pf);
     #else
     p_deregister(ch);
     #endif
-    LogTrace(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
+   TROG_TRACE3(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
     return;
 }
 /**
@@ -89,7 +89,7 @@ void ServerConnectionManager::deregister(ConnectionHandler* ch)
 */
 void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
 {
-    LogDebug("");
+    TROG_DEBUG("");
 //    std::cout << "_deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
 #if 1
 #pragma clang diagnostic push
@@ -116,11 +116,11 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
     m_fd_list.erase(fd);
     long num_fds = (long)getdtablesize();
 #endif
-    LogTrace(" p_deregister num connections : ", m_connections.size() ," num FDs: ", getdtablesize(), " m_callback != null", (m_allow_more_callback != nullptr));
+   TROG_TRACE3(" p_deregister num connections : ", m_connections.size() ," num FDs: ", getdtablesize(), " m_callback != null", (m_allow_more_callback != nullptr));
     if (m_allow_more_callback && (m_connections.size() < m_maxNumberOfConnections)) {
-        LogTrace("p_deregister  allowing more connections from inside p_deregister");
+       TROG_TRACE3("p_deregister  allowing more connections from inside p_deregister");
         auto tmp = m_allow_more_callback;
-        LogTrace("releasing cb: ", (void*)(&tmp) );
+       TROG_TRACE3("releasing cb: ", (void*)(&tmp) );
         m_allow_more_callback = nullptr;
         m_io.post(tmp);
     }

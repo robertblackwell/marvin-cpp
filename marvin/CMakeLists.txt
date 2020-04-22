@@ -213,7 +213,7 @@ add_library(marvin_library STATIC ${SOURCES} ${HEADERS})
 target_include_directories(marvin_library SYSTEM PUBLIC ${HEADER_DIRS} ${VENDOR_DIR}/include)
 
 target_precompile_headers(marvin_library PUBLIC
-	<marvin/external_src/trog/trog.hpp>
+	<marvin/configure_trog.hpp>
   	<marvin/boost_stuff.hpp>
 	<memory>
 	<stddef.h>

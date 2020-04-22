@@ -13,7 +13,7 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/message/message_reader.hpp>
 #include <marvin/message/message_writer.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <trog/trog.hpp>
 
 #include <marvin/collector/collector_interface.hpp>
 //#include <marvin/forwarding/forwarding_handler.hpp>

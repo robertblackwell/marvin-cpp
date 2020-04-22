@@ -5,8 +5,8 @@
 //  Created by ROBERT BLACKWELL on 1/2/18.
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/uri.hpp>
 using namespace Marvin;
 namespace Marvin{
@@ -15,12 +15,12 @@ namespace Marvin{
         // protect the input string from being changed by ParseHttpUrl -- yuk
         std::string uri(uri_in);
         http::url us = http::ParseHttpUrl(uri);
-        LogDebug(" uri:", uri);
-        LogDebug(" scheme:", us.protocol);
-        LogDebug(" host:", us.host);
-        LogDebug(" port:", us.port);
-        LogDebug(" path:", us.path);
-        LogDebug(" search:", us.search);
+        TROG_DEBUG(" uri:", uri);
+        TROG_DEBUG(" scheme:", us.protocol);
+        TROG_DEBUG(" host:", us.host);
+        TROG_DEBUG(" port:", us.port);
+        TROG_DEBUG(" path:", us.path);
+        TROG_DEBUG(" search:", us.search);
         
         std::string host = us.host;
         std::string scheme = us.protocol;

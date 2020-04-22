@@ -8,7 +8,7 @@
 #include <vector>
 #include <marvin/boost_stuff.hpp>
 #include <doctest/doctest.h>
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 #include <marvin/http/uri.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/client/client.hpp>

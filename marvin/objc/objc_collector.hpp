@@ -8,7 +8,7 @@
 #include <string>
 #include <unistd.h>
 #include <pthread.h>
-#include <marvin/external_src/trog/trog.hpp>
+#include <trog/trog.hpp>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>

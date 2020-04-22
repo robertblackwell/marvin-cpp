@@ -2,8 +2,8 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/forwarding/ssl_forwarding_handler.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 
@@ -42,7 +42,7 @@ SSLForwardingHandler::SSLForwardingHandler(
 
 SSLForwardingHandler::~SSLForwardingHandler()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 
 #pragma mark - handle upgrade request
@@ -55,7 +55,7 @@ void ForwardingHandler::handleRequest(
         ISocketSPtr             clientConnectionPtr,
         HandlerDoneCallbackType done
 ){
-    LogTrace("from downstream", Marvin::traceMessage(*(request.get())));
+   TROG_TRACE3("from downstream", Marvin::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_response_writer_sptr = responseWriter;
     m_done_callback = done;
@@ -68,7 +68,7 @@ void ForwardingHandler::handleRequest(
     p_round_trip_upstream(request, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_response_sptr = downMsg;
-        LogTrace("for downstream", Marvin::traceMessage(*downMsg));
+       TROG_TRACE3("for downstream", Marvin::traceMessage(*downMsg));
         Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
         /// perform the MITM collection
         
@@ -76,8 +76,8 @@ void ForwardingHandler::handleRequest(
         
         /// write response to downstream client
         m_response_writer_sptr->asyncWrite(m_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err){
-//            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
-            LogTrace("after write downstream", " err:", Marvin::make_error_description(err));
+//            TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+           TROG_TRACE3("after write downstream", " err:", Marvin::make_error_description(err));
             auto pf = std::bind(m_done_callback, err, (! err) );
             m_io.post(pf);
         });
@@ -109,15 +109,15 @@ void ForwardingHandler::p_round_trip_upstream(
     assert( ! m_request_sptr->hasHeader("Upgrade") );
     Marvin::BufferChainSPtr content = req->getContentBuffer();
     
-    LogTrace("upstream request", Marvin::traceMessage(*m_upstream_request_msg_sptr));
+   TROG_TRACE3("upstream request", Marvin::traceMessage(*m_upstream_request_msg_sptr));
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
         if (ec || (upstrmRdr == nullptr)) {
-            LogWarn("async write failed");
+            TROG_WARN("async write failed");
             // TODO: how to handle error
         } else {
-            LogTrace("upstream rresponse", Marvin::traceMessage(*(upstrmRdr.get())));
+           TROG_TRACE3("upstream rresponse", Marvin::traceMessage(*(upstrmRdr.get())));
             m_downstream_msg_sptr = std::make_shared<MessageBase>();
             m_response_body_sptr = upstrmRdr->getContentBuffer();
             helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
@@ -130,7 +130,7 @@ void ForwardingHandler::p_round_trip_upstream(
 void SSLForwardingHandler::p_on_complete(Marvin::ErrorType& err)
 {
     if( err ){
-//       LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+//       TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
         // got an error sending response to downstream client - what can we do ? Nothing
         auto pf = std::bind(m_done_callback, err, false);
         m_io.post(pf);
@@ -150,7 +150,7 @@ void SSLForwardingHandler::handleSSLRequest(
         ConnectionSPtr          clientConnectionPtr,
         HandlerDoneCallbackType done
 ){
-    LogTrace("from downstream", Marvin::traceMessage(*(request.get())));
+   TROG_TRACE3("from downstream", Marvin::traceMessage(*(request.get())));
     m_request_reader_sptr = request;
     m_response_writer_sptr = responseWriter;
     m_done_callback = done;

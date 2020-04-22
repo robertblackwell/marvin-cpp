@@ -24,8 +24,8 @@
 #include <marvin/helpers/mitm.hpp>
 #include <marvin/connection/socket_factory.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #endif 
 #pragma mark - mock up a MessageReader

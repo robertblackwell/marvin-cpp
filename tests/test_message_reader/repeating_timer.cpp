@@ -2,9 +2,9 @@
 #include <functional>
 #include <memory>
 
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
-Trog_SETLEVEL(LOG_LEVEL_WARN);
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn);
 
 #include "repeating_timer.hpp"
 
@@ -14,7 +14,7 @@ SingleTimer::SingleTimer(boost::asio::io_service& io, int millSeconds): io_(io),
 }
 SingleTimer::~SingleTimer()
 {
-    LogDebug("");
+    TROG_DEBUG("");
     t_->cancel();
     delete t_;
 }

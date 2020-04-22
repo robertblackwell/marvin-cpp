@@ -7,8 +7,8 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/connection/timeout.hpp>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-// Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+// TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 class AsyncObject
 {
@@ -55,9 +55,9 @@ public:
             REQUIRE(ec == asio_op_aborted);
         }
         std::string s = Marvin::make_error_description(ec);
-        LogDebug(" err: ", s);
+        TROG_DEBUG(" err: ", s);
         m_timeout.cancelTimeout( ([this, ec, s](){
-            LogDebug(" err: ", s);
+            TROG_DEBUG(" err: ", s);
             m_op_handler(ec);
         }));
     }
@@ -80,9 +80,9 @@ public:
     {
         boost::system::error_code ec = err;
         std::string s = Marvin::make_error_description(ec);
-        LogDebug(" err: ", s);
+        TROG_DEBUG(" err: ", s);
         m_timeout.cancelTimeout([this, ec, s](){
-            LogDebug(" err: ", s);
+            TROG_DEBUG(" err: ", s);
             m_op_handler(ec);
         });
     }

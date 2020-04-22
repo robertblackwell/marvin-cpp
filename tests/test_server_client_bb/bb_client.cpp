@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <json/json.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/message/message_reader.hpp>
@@ -20,14 +20,14 @@ TClient::TClient(boost::asio::io_service& io, std::string port, Testcase tc)
 }
 void TClient::exec()
 {
-    LogDebug("");
+    TROG_DEBUG("");
     m_buffer_index = 0;
     m_test_cb = nullptr;
     connect();
 }
 void TClient::send_testcase_buffers(SysErrorCb cb)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     m_buffer_index = 0;
     m_test_cb = cb;
     connect();
@@ -35,16 +35,16 @@ void TClient::send_testcase_buffers(SysErrorCb cb)
 
 void TClient::connect()
 {
-    LogDebug("");
+    TROG_DEBUG("");
     m_conn_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn) {
-        LogDebug("connected");
+        TROG_DEBUG("connected");
         if( ! err ){
             m_rdr = std::make_shared<MessageReader>(m_io, m_conn_sptr);
             auto wbf = std::bind(&TClient::wait_before_write, this);
             m_io.post(wbf);
         } else {
             Marvin::ErrorType me = err;
-            LogError("error_value", err.value(), " message: ", err.message());
+            TROG_ERROR("error_value", err.value(), " message: ", err.message());
             m_test_cb(me);
         }
     });
@@ -52,9 +52,9 @@ void TClient::connect()
 
 void TClient::write_line()
 {
-    LogDebug("");
+    TROG_DEBUG("");
     std::string line = m_testcase.lineAt(m_buffer_index);
-    LogDebug(" line: ", line);
+    TROG_DEBUG(" line: ", line);
     if (line == "eof" ) {
         m_conn_sptr->shutdown();
         auto erok = Marvin::make_error_ok();
@@ -72,11 +72,11 @@ void TClient::write_line()
 }
 void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     if( !err) {
         m_buffer_index++;
         if(m_buffer_index >= m_testcase.buffers().size()) {
-            LogDebug("write complete start read");
+            TROG_DEBUG("write complete start read");
             read_message();
         } else {
             write_line();
@@ -88,7 +88,7 @@ void TClient::handle_write_complete(Marvin::ErrorType& err, std::size_t bytes_tr
 }
 void TClient::wait_before_write()
 {
-    LogDebug("");
+    TROG_DEBUG("");
     m_timer.expires_from_now(boost::posix_time::milliseconds(100));
     m_timer.async_wait([this](const boost::system::error_code& err) {
         write_line();
@@ -101,7 +101,7 @@ void TClient::wait_before_write()
 */
 void TClient::read_message()
 {
-    LogDebug("getting started");
+    TROG_DEBUG("getting started");
 //        makeReader();
     auto h = std::bind(&TClient::onMessage, this, std::placeholders::_1);
     m_rdr->readMessage(h);
@@ -109,7 +109,7 @@ void TClient::read_message()
 
 void TClient::onMessage(Marvin::ErrorType er)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     Marvin::ErrorType expected_err = m_testcase.result_onheaders_err();
     std::string exp_s = Marvin::make_error_description(expected_err);
     std::string ers = Marvin::make_error_description(er);
@@ -154,7 +154,7 @@ void TClient::onMessage(Marvin::ErrorType er)
 */
 void TClient::run_StreamingBodyRead()
 {
-    LogDebug("getting started");
+    TROG_DEBUG("getting started");
 //        makeReader();
     auto h = std::bind(&Testrunner::onHeaders, this, std::placeholders::_1);
     _rdr->readHeaders(h);
@@ -167,7 +167,7 @@ void TClient::run_StreamingBodyRead()
 #if 0
 void TClient::onBody(Marvin::ErrorType er, BufferChain chunk)
 {
-    LogDebug(" entry");
+    TROG_DEBUG(" entry");
     // are we done - if not hang another read
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
     bool done = (er == Marvin::make_error_eom());
@@ -186,11 +186,11 @@ void TClient::onBody(Marvin::ErrorType er, BufferChain chunk)
     }else{
         _rdr->readBody(bh);
     }
-    LogDebug("exit");
+    TROG_DEBUG("exit");
     
 }
 void Testrunner::onHeaders(Marvin::ErrorType er){
-    LogDebug("entry");
+    TROG_DEBUG("entry");
     Marvin::ErrorType expected_err = _testcase.result_onheaders_err();
     std::string ers = er.message();
     assert(er == expected_err);
@@ -206,7 +206,7 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
 //        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << tcObj.getDescription() <<std::endl;
     _rdr->readBody(bh);
-    LogDebug("exit");
+    TROG_DEBUG("exit");
 }
 
 #endif

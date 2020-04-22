@@ -5,7 +5,7 @@
 #include <marvin/server_v3/server_connection_manager.hpp>
 #include <marvin/server_v3/server_context.hpp>
 
-Trog_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
 namespace Marvin {
 
 ConnectionHandler::ConnectionHandler(
@@ -19,7 +19,7 @@ ConnectionHandler::ConnectionHandler(
     m_connectionManager(connectionManager),
     m_factory(factory)
 {
-    LogTorTrace("ConnectionHandler constructor");
+    TROG_TRACE_CTOR();
     /**
     * The connection and the request handler persist acrosss all messages served
     * by a connection handler. This is required to ensure that our MITM proxy
@@ -31,13 +31,12 @@ ConnectionHandler::ConnectionHandler(
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
     m_server_context.connection_ptr = conn_sptr.get();
-    LogFDTrace(m_connection->nativeSocketFD());
-    LogDebug("");
+   TROG_TRACE_FD(m_connection->nativeSocketFD());
 }
 
 ConnectionHandler::~ConnectionHandler()
 {
-    LogTrace(" ConnectionHandler destructor");
+   TROG_TRACE3(" ConnectionHandler destructor");
     m_requesthandler_uptr = nullptr;
     m_connection = nullptr;
 }
@@ -59,9 +58,9 @@ std::string ConnectionHandler::uuid()
 */
 void ConnectionHandler::serve()
 {
-    LogTrace("ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
+   TROG_TRACE3("ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
     m_requesthandler_uptr->handle(m_server_context, m_connection, [this](){
-        LogTrace("ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
+       TROG_TRACE3("ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
         m_connectionManager.deregister(this); 
     });
 }

@@ -8,8 +8,8 @@
 #include <marvin/http/message_base.hpp>
 #include "bb_testcase.hpp"
 #include "bb_testcase_defs.hpp"
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 using namespace body_buffering;
 

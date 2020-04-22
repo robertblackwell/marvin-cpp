@@ -4,8 +4,8 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_ERROR)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelError)
 #include "bb_testcase.hpp"
 
 using namespace body_buffering;
@@ -35,7 +35,7 @@ Testcase::Testcase(
     }
     std::string Testcase::getDescription()
     {
-        LogDebug("");
+        TROG_DEBUG("");
         return m_description;
     }
     std::string Testcase::lineAt(std::size_t ix)

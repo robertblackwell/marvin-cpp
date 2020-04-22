@@ -5,7 +5,7 @@
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socketFactory
-#include <marvin/external_src/trog/trog.hpp>  // for LogInfo, LogD...
+#include <trog/trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
@@ -14,8 +14,8 @@
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
@@ -53,13 +53,13 @@ void Request::p_check_connected_before_write_headers(WriteHeadersCallbackType wr
 }
 void Request::p_internal_connect_before_write_headers(WriteHeadersCallbackType write_headers_cb)
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
     using namespace Marvin;
     std::function<void(ErrorType& err)> h = [](ErrorType& err) {
 
     };
     asyncConnect([this, write_headers_cb](Marvin::ErrorType& ec){
-        LogDebug("cb-connect");
+        TROG_DEBUG("cb-connect");
         if(!ec) {
             p_internal_write_headers(write_headers_cb);
         } else {

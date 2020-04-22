@@ -6,8 +6,8 @@
 #include <string>
 #include <map>
 #include "testcase.hpp"
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 int

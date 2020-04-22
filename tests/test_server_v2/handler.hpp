@@ -7,7 +7,7 @@
 #include <string>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/connection/connection.hpp>
 #include <marvin/server_v2/http_server.hpp>

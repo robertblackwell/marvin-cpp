@@ -4,10 +4,10 @@
 #include <iterator>
 #include <algorithm>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 #include <openssl/x509.h>
 #include <cert/cert_certificate.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include "testcase.hpp"
 
 MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj)
@@ -22,7 +22,7 @@ MockReadSocket::MockReadSocket(boost::asio::io_service& io, Testcase tcObj)
 // MockReadSocket::~MockReadSocket()
 // {
 //     delete m_single_timer;
-//     LogDebug(""); 
+//     TROG_DEBUG(""); 
 //     free((void*)m_rdBuf);
 // }
 long MockReadSocket::nativeSocketFD(){ return 9876; };
@@ -40,7 +40,7 @@ void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncRea
 //
 void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     char* buf;
     std::size_t len;
     if( ! m_tcObj.finished() ) {
@@ -65,7 +65,7 @@ void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
             len = strlen(buf);
             std::size_t buf_max = mb->capacity();
             if( buf_max < len + 1){
-                LogError("MockReadSocket:asyncRead error buffer too small");
+                TROG_ERROR("MockReadSocket:asyncRead error buffer too small");
                 throw "MockReadSocket:asyncRead error buffer too small";
             }
             void* rawPtr = mb->data();
@@ -82,7 +82,7 @@ void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
             }else{
                 x = bb;
             }
-            LogDebug("::new buffer: [", x, "] len:", len);
+            TROG_DEBUG("::new buffer: [", x, "] len:", len);
             m_index++;
             
             // at this point we have moved len bytes into the buffer mb
@@ -99,7 +99,7 @@ void MockReadSocket::asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb)
             });
         }
     } else {
-        LogDebug("test case finished");
+        TROG_DEBUG("test case finished");
         //  we have run out of test data so simulate an end of input - read of length zero
         ((char*)mb->data())[0] = (char)0;
         auto pf = std::bind(cb, Marvin::make_error_eom(), (std::size_t) 0);

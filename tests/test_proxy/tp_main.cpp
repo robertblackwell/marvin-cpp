@@ -12,9 +12,9 @@
 #include <doctest/doctest.h>
 
 #include <marvin/collector/collector_base.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include "../test_proxy/tp_testcase.hpp"
 #include "proxy_fixture.hpp"

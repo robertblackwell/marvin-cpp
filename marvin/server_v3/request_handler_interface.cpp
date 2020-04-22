@@ -4,8 +4,8 @@
 #include <marvin/server_v3/request_handler_interface.hpp>
 #include <marvin/server_v3/connection_handler.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 using namespace Marvin; 
 
@@ -16,5 +16,5 @@ using namespace Marvin;
 
 // RequestHandlerInterface::~RequestHandlerInterface()
 // {
-//     LogDebug("");
+//     TROG_DEBUG("");
 // }

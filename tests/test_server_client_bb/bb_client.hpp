@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <marvin/boost_stuff.hpp>
 #include <pthread.h>
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 #include <marvin/connection/connection.hpp>
 #include <marvin/message/message_reader.hpp>
 #include "bb_testcase.hpp"

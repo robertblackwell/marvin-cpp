@@ -5,8 +5,8 @@
 #include <json/json.hpp>
 
 #include <marvin/buffer/buffer_chain.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_DEBUG)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelDebug)
 
 #include <marvin/m_log.hpp>
 
@@ -53,7 +53,7 @@ void Chunked::verifyResponse(ErrorType& er, MessageBaseSPtr response)
     CHECK(!cl_check);
 
     std::string tech = response->getHeader(HeadersV2::TransferEncoding);
-    LogDebug("Body of response is : ", raw_body);
+    TROG_DEBUG("Body of response is : ", raw_body);
     bool test = raw_body == "abcdefghijklmnopqrstuvwxyz1234567890ABCEDFGHIJKLMNOPQRSTUVWXYZ";
     MTRACE( __func__ << std::endl);
     return;

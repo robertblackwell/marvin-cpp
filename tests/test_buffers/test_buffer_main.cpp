@@ -12,7 +12,7 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
 using namespace Marvin;
 TEST_CASE("buffer_chain_assignment")

@@ -4,8 +4,8 @@
 
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/connection/half_tunnel.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 
@@ -76,7 +76,7 @@ void TunnelHandler::start(std::function<void(Marvin::ErrorType& err)> cb)
 }
 void TunnelHandler::tryDone()
 {
-    LogTrace("TryDone");
+   TROG_TRACE3("TryDone");
     if( m_upstream_done && m_downstream_done )
     {
         m_callback(m_first_err);

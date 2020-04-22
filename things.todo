@@ -5,17 +5,21 @@ References for command interface:
  ☐ https://github.com/loopperfect/rxterm
 
 Next step:
+  ☐ Important - remove unused or outdated source files from marvin++/marvin
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
-  ☐ need to permit tunnelo requests for any port as it might be a websocket
+  ☐ need to permit tunnel requests for any port as it might be a websocket
   ☐ should only do https_upstream if the port is 443 and even then shuld check the first message for upgrade and reject
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
-  ☐ need to log the headers in the original message before going further to detect cause of craches from headers that did not get acted upon correctly
+  ☐ need to log the headers in the original message before going further to detect cause of craches from headers that did not get acted upon correctly - same log the original headers as soon as the message arrives so we know what was requested in the event of a crash from a set of headers we cannot handle.
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
-  ☐ curl test should verify peer and will need to be pointed at our modified root bundle
+  ☐ valgrind to check for memory leaks
+  ☐ break message reader into bits - maybe
+  ☐ find all throw "of a string" and replace with THROW macro -- try taking the model from x509 and importing it into this project replace all instance of throwing a string with THROW
+
 Next project:
-  ☐ make it into a function app - probably cli this will require deciding on parameters and how to filter by url/host
+  ☐ make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host
   ☐ think about a script/app for watcing the output
-  ☐ think about a commdn interfa e to change filters while the proxy is running
+  ☐ think about a command interface to change filters while the proxy is running
 
 Tests:
 ☐ test_roundtrip and test_server_v3 should be combined and unused files deleted
@@ -33,18 +37,14 @@ class property names cleanup:
 ☐ some tests are still using the leading _varname naming scheme - fix
 Bugs:
 ☐ not handling non-existence of connection header correctly when preparing upstream request
-☐ test_ssl seg faults
 ☐ potential - MessageWriter does not handle incomplete writes
 ☐ messagereader does not read trailers
 ☐ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more.
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
-☐ research how to test for keep-alive particulaly in regard to upper/lower case and also that more than one value can be on a line
-Exceptions and Error checking:
-☐ try taking the model from x509 and importing it into this project
-throw:
-☐ replace all instance of throwing a string with THROW
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ DONE !!! curl test should verify peer and will need to be pointed at our modified root bundle @done (20-04-22 07:56) @project(Next step)
+ ✔ research how to test for keep-alive particulaly in regard to upper/lower case and also that more than one value can be on a line @done (20-04-21 19:47)
  ✔ work out how to fit ForwardingHandler into this server_v3/adapter model. The goal is to get `test_proxy` working. @done (20-04-15 09:19)
  ✔ proxy tunnel test required in addition to proxy_manual @done (20-04-15 09:18) @project(Tests)
  ✔ uri and uri-v2 - see below @done (20-04-15 09:17) @project(Tests)

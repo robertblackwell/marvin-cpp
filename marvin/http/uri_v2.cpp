@@ -1,7 +1,7 @@
 #include <marvin/http/uri_v2.hpp>
 //
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 using namespace Marvin;
 namespace Marvin {
 
@@ -9,12 +9,12 @@ namespace Marvin {
     {
         std::string uri(uri_in);
         http::url us = http::ParseHttpUrl(uri);
-        LogDebug(" uri:", uri);
-        LogDebug(" scheme:", us.protocol);
-        LogDebug(" host:", us.host);
-        LogDebug(" port:", us.port);
-        LogDebug(" path:", us.path);
-        LogDebug(" search:", us.search);
+        TROG_DEBUG(" uri:", uri);
+        TROG_DEBUG(" scheme:", us.protocol);
+        TROG_DEBUG(" host:", us.host);
+        TROG_DEBUG(" port:", us.port);
+        TROG_DEBUG(" path:", us.path);
+        TROG_DEBUG(" search:", us.search);
         
         std::string host = us.host;
         std::string scheme = us.protocol;

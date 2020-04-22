@@ -13,8 +13,8 @@
 #include <marvin/helpers/mitm.hpp>
 #include <marvin/http/message_factory.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 namespace Marvin {
@@ -49,32 +49,32 @@ void MitmTunnel::handle()
 
 void MitmTunnel::p_initiate_tunnel()
 {
-    LogTrace("scheme:", m_upstream_scheme, " host:", m_upstream_host, " port:", m_upstream_port);
+   TROG_TRACE3("scheme:", m_upstream_scheme, " host:", m_upstream_host, " port:", m_upstream_port);
 
     m_upstream_connection_sptr = socketFactory(m_io, m_upstream_scheme, m_upstream_host, m_upstream_port);
     m_upstream_connection_sptr->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
         if( err ) {
-            LogWarn("initiateTunnel: FAILED scheme:", this->m_upstream_scheme, " host:", this->m_upstream_host, " port:", this->m_upstream_port);
+            TROG_WARN("initiateTunnel: FAILED scheme:", this->m_upstream_scheme, " host:", this->m_upstream_host, " port:", this->m_upstream_port);
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             makeResponse502Badgateway(*m_downstream_response_sptr);
 
             m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err){
-                LogInfo("");
+                TROG_INFO("");
                 if( err ) {
-                    LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+                    TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
                     m_mitm_app.p_on_downstream_write_error(err);
                 } else {
                     m_mitm_app.p_on_tunnel_completed();
                 }
             });
         } else {
-            LogTrace("initiateTunnel: connection SUCCEEDED scheme:", " scheme:",this->m_upstream_scheme, " host:", this->m_upstream_host, " port:", this->m_upstream_port);
+           TROG_TRACE3("initiateTunnel: connection SUCCEEDED scheme:", " scheme:",this->m_upstream_scheme, " host:", this->m_upstream_host, " port:", this->m_upstream_port);
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             makeResponse200OKConnected(*m_downstream_response_sptr);
             m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err){
-                LogInfo("");
+                TROG_INFO("");
                 if( err ) {
-                    LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+                    TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
                     m_mitm_app.p_on_downstream_write_error(err);
                 } else {
                     m_tunnel_handler_sptr = std::make_shared<TunnelHandler>(m_io, m_downstream_socket_sptr, m_upstream_connection_sptr);

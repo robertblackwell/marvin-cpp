@@ -3,11 +3,11 @@
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <exception>
-#include <marvin/external_src/trog/trog.hpp>
+#include <trog/trog.hpp>
 
 namespace Marvin {
 
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 std::string traceWriter(MessageWriter& writer)
 {
@@ -22,14 +22,14 @@ std::string traceWriter(MessageWriter& writer)
 
 MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock):m_io(io), m_write_sock(write_sock)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     m_current_message = nullptr;
     m_header_buf_sptr = nullptr;
 }
 
 MessageWriter::~MessageWriter()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 
 #pragma mark - public methods
@@ -61,18 +61,18 @@ void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::BufferChainSPtr body
 void
 MessageWriter::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     MessageBaseSPtr tmp = msg;
     m_current_message = msg;
     asyncWriteHeaders(msg, [this, cb](Marvin::ErrorType& ec){
-        LogDebug(" cb: ", (long) &cb);
+        TROG_DEBUG(" cb: ", (long) &cb);
         // doing a full write of the message
         if( ec ){
-            LogDebug("", ec.value(), ec.category().name(), ec.category().message(ec.value()));
+            TROG_DEBUG("", ec.value(), ec.category().name(), ec.category().message(ec.value()));
             cb(ec);
         } else {
             p_async_write_full_body([this, cb](Marvin::ErrorType& ec2){
-                LogDebug(" cb: ", (long) &cb);
+                TROG_DEBUG(" cb: ", (long) &cb);
                 auto pf = std::bind(cb, ec2);
                 cb(ec2);
             });
@@ -87,7 +87,7 @@ MessageWriter::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType 
     
     m_write_sock->asyncWrite(*m_header_buf_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
 
-        LogDebug("");
+        TROG_DEBUG("");
         // TODO need to check and do something about insufficient write
             auto pf = std::bind(cb, ec);
         cb(ec);
@@ -129,14 +129,14 @@ void MessageWriter::p_put_headers_stuff_in_buffer()
     MessageBaseSPtr msg = m_current_message;
     m_header_buf_sptr = serializeHeaders(*msg);
 //    std::cout << m_header_buf.toString() << std::endl;
-    LogDebug("request size: ");
+    TROG_DEBUG("request size: ");
 }
 //
 // writes the entire body - precondition - we have the entire body already
 //
 void MessageWriter::p_async_write_full_body(WriteMessageCallbackType cb)
 {
-    LogDebug(" cb: ", (long) &cb);
+    TROG_DEBUG(" cb: ", (long) &cb);
     if( ( ! m_body_buffer_chain_sptr) || ( m_body_buffer_chain_sptr->size() == 0) ) {
         Marvin::ErrorType ee = Marvin::make_error_ok();
         auto pf = std::bind(cb, ee);

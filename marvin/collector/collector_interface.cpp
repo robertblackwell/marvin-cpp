@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 

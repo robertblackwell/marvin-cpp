@@ -4,8 +4,8 @@
 #include <memory>
 #include <boost/asio/buffer.hpp>
 #include <marvin/buffer/m_buffer.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN )
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 namespace {
     const std::size_t MBUFMIN=1000;
 }

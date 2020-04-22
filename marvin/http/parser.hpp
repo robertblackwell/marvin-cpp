@@ -7,7 +7,7 @@
 #include <marvin/external_src/http-parser/http_parser.h>
 #include <marvin/external_src/simple_buffer/simple_buffer.h>
 #include <marvin/http/message_base.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <trog/trog.hpp>
 
 #define kHEADER_STATE_NOTHING 10
 #define kHEADER_STATE_FIELD   11

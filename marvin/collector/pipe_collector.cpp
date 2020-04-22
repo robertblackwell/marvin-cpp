@@ -9,8 +9,8 @@
 #include <marvin/boost_stuff.hpp>
 #include <regex>
 #include <marvin/helpers/macros.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 
@@ -43,7 +43,7 @@ static bool testPipeReaderExists(char* pipeName)
 
     int fdw = open(pipeName, O_WRONLY | O_NONBLOCK);
     if (fdw == -1){
-        LogWarn("non-blocking open for write with no readers failed");
+        TROG_WARN("non-blocking open for write with no readers failed");
         THROW("non-blocking open for write with no readers failed");
         return false;
     }
@@ -58,7 +58,7 @@ std::string PipeCollector::s_pipe_path = "";
 
 PipeCollector::PipeCollector(boost::asio::io_service& io): m_io(io), m_my_strand(io)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     std::string& tmpPath = s_pipe_path;
     int fdw = open(s_pipe_path.c_str(), O_WRONLY | O_NONBLOCK);
     

@@ -13,8 +13,8 @@
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/collector/collector_base.hpp>
 #include <marvin/server_v3/mitm_app.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 /**
  * This is the simplest possible test of the http mitm proxy. To run it needs manual intervention.
@@ -45,9 +45,7 @@ Trog_SETLEVEL(LOG_LEVEL_WARN)
 int main( int argc, char* argv[] )
 {
     using namespace Marvin;
-    LogTrace("hello");
-    VLogDebug("hello");
-    Trog::enableForLevel(LOG_LEVEL_WARN);
+    TROG_TRACE3("hello");
 
     std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
     std::vector<int> ports{443, 9443};

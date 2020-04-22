@@ -4,7 +4,7 @@
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socketFactory
-#include <marvin/external_src/trog/trog.hpp>  // for LogInfo, LogD...
+#include <trog/trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
@@ -13,8 +13,8 @@
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
@@ -53,7 +53,7 @@ Client::Client(
 
 Client::~Client()
 {
-    LogInfo("");
+    TROG_INFO("");
 }
 
 /*!--------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ Client::~Client()
 *--------------------------------------------------------------------------------*/
 void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
 //    std::cout << "client asyncConnect " << std::hex << (long) this << std::endl;
     if (m_conn_shared_ptr != nullptr ) {
         THROW("should not have a connection at this point");
@@ -70,7 +70,7 @@ void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
 
     auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);
-        LogInfo(" conn", (long)m_conn_shared_ptr.get(), " er: ", er_s);
+        TROG_INFO(" conn", (long)m_conn_shared_ptr.get(), " er: ", er_s);
         cb(ec);
     };
     m_conn_shared_ptr->asyncConnect(f);
@@ -104,7 +104,7 @@ void Client::asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallback
 }
 void Client::p_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
     m_response_handler = cb;
     m_current_request = requestMessage;
     
@@ -119,9 +119,9 @@ void Client::p_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallb
 #endif
 void Client::internalConnect()
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
     asyncConnect([this](Marvin::ErrorType& ec){
-        LogDebug("cb-connect");
+        TROG_DEBUG("cb-connect");
         if(!ec) {
             internalWrite();
         } else {
@@ -134,7 +134,7 @@ void Client::internalConnect()
 //--------------------------------------------------------------------------------
 void Client::internalWrite()
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
 
 #ifdef RDR_WRTR_ONESHOT
     // set up the read of the response
@@ -146,12 +146,12 @@ void Client::internalWrite()
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     setContentLength();
-    LogInfo("",traceWriter(*m_wrtr));
+    TROG_INFO("",traceWriter(*m_wrtr));
     
     assert(m_body_mbuffer_sptr != nullptr);
     m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {
-            LogDebug("start read");
+            TROG_DEBUG("start read");
             this->m_rdr->readMessage([this](Marvin::ErrorType ec){
                 if (!ec) {
                     this->m_response_handler(ec, m_rdr);

@@ -3,7 +3,7 @@
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socketFactory
-#include <marvin/external_src/trog/trog.hpp>  // for LogInfo, LogD...
+#include <trog/trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
@@ -12,8 +12,8 @@
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
@@ -65,7 +65,7 @@ Request::Request(
 
 Request::~Request()
 {
-    LogInfo("");
+    TROG_INFO("");
 }
 /*!--------------------------------------------------------------------------------
 * implement set functions
@@ -127,11 +127,11 @@ void Request::setOnData(RequestDataHandlerCallbackType cb)
 *--------------------------------------------------------------------------------*/
 void Request::asyncConnect(std::function<void(Marvin::ErrorType& err)> cb)
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
 
     auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);
-        LogInfo(" conn", (long)m_conn_shared_ptr.get(), " er: ", er_s);
+        TROG_INFO(" conn", (long)m_conn_shared_ptr.get(), " er: ", er_s);
         if(!ec) {
 
         } else {
@@ -168,13 +168,13 @@ void Request::p_check_connected_before_write_headers(WriteHeadersCallbackType wr
 }
 void Request::p_internal_connect_before_write_headers(WriteHeadersCallbackType write_headers_cb)
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
     using namespace Marvin;
     std::function<void(ErrorType& err)> h = [](ErrorType& err) {
 
     };
     asyncConnect([this, write_headers_cb](Marvin::ErrorType& ec){
-        LogDebug("cb-connect");
+        TROG_DEBUG("cb-connect");
         if(!ec) {
             p_internal_write_headers(write_headers_cb);
         } else {
@@ -324,13 +324,13 @@ void Request::p_check_connected_before_internal_write_message()
 }
 void Request::p_internal_connect_before_write_message()
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
     using namespace Marvin;
     std::function<void(ErrorType& err)> h = [](ErrorType& err) {
 
     };
     asyncConnect([this](Marvin::ErrorType& ec){
-        LogDebug("cb-connect");
+        TROG_DEBUG("cb-connect");
         if(!ec) {
             p_internal_write_message();
         } else {
@@ -340,18 +340,18 @@ void Request::p_internal_connect_before_write_message()
 }
 void Request::p_internal_write_message()
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
 
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     p_set_content_length();
-    LogInfo("",traceWriter(*m_wrtr));
+    TROG_INFO("",traceWriter(*m_wrtr));
     
     assert(m_body_mbuffer_sptr != nullptr);
     auto req_str = m_current_request->str();
     m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {
-            LogDebug("start read");
+            TROG_DEBUG("start read");
             this->m_rdr->readMessage([this](Marvin::ErrorType ec2){
                 auto resp_str = m_rdr->str();
                 auto bdy_str = m_rdr->getContent()->to_string();
@@ -380,10 +380,10 @@ void Request::p_hbc_check_connected(BufferChainSPtr body_chunk_chain_sptr, Write
 }
 void Request::p_hbc_connect(::Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
     using namespace Marvin;
     this->asyncConnect([this, body_chunk_chain_sptr, cb](Marvin::ErrorType& ec){
-        LogDebug("cb-connect");
+        TROG_DEBUG("cb-connect");
         if(!ec) {
             p_hbc_write(body_chunk_chain_sptr, cb);
         } else {
@@ -432,7 +432,7 @@ void Request::p_read_response_headers()
             }
         } else {
             // call on error handler
-            LogError("error on read headers");
+            TROG_ERROR("error on read headers");
             p_response_error(ec2);
         }
     });

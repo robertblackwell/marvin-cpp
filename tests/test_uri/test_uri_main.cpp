@@ -18,8 +18,8 @@
 #include <marvin/client/client.hpp>
 #include <marvin/helpers/mitm.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/http/uri.hpp>
 

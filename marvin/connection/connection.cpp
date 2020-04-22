@@ -5,8 +5,8 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/callback_typedefs.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/connection/connection.hpp>
 namespace Marvin {
@@ -72,10 +72,10 @@ Connection::Connection(
             m_read_timeout_interval_ms(s_read_timeout_interval_ms),
             m_write_timeout_interval_ms(s_write_timeout_interval_ms)
 {
-    LogTorTrace();
-    LogFDTrace(nativeSocketFD());
+   TROG_TRACE_CTOR();
+   TROG_TRACE_FD(nativeSocketFD());
     auto x = nativeSocketFD();
-    LogDebug("constructor:: native handle :: ", x);
+    TROG_DEBUG("constructor:: native handle :: ", x);
 }
 
 
@@ -93,17 +93,17 @@ Connection::Connection(
         m_write_timeout_interval_ms(s_write_timeout_interval_ms)
 
 {
-    LogTorTrace();
-    LogFDTrace(nativeSocketFD());
+   TROG_TRACE_CTOR();
+   TROG_TRACE_FD(nativeSocketFD());
 }
 Connection::~Connection()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     if( ! m_closed_already) {
-        LogFDTrace(nativeSocketFD());
+       TROG_TRACE_FD(nativeSocketFD());
         m_tcp_socket.close();
     } else {
-        LogFDTrace(nativeSocketFD());
+       TROG_TRACE_FD(nativeSocketFD());
     }
 }
 std::string Connection::scheme(){return m_scheme;}
@@ -125,7 +125,7 @@ boost::asio::ssl::context& Connection::getSslContext()
 
 void Connection::close()
 {
-    LogFDTrace(nativeSocketFD());
+   TROG_TRACE_FD(nativeSocketFD());
     assert(! m_closed_already);
     m_closed_already = true;
     m_tcp_socket.cancel();
@@ -155,7 +155,7 @@ void Connection::asyncAccept(
 )
 {
     acceptor.async_accept(m_tcp_socket, [cb, this](const boost::system::error_code& err) {
-        LogFDTrace(this->nativeSocketFD());
+       TROG_TRACE_FD(this->nativeSocketFD());
         p_post_accept_cb(cb, err);
     });
 }
@@ -280,7 +280,7 @@ void Connection::asyncWrite(std::string& str, AsyncWriteCallback cb)
 void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb)
 {
     /// this took a while to work out - change buffer code at your peril
-    LogDebug("");
+    TROG_DEBUG("");
     auto tmp = buf_chain_sptr->asio_buffer_sequence();
     auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
@@ -296,7 +296,7 @@ void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCa
 void Connection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback cb)
 {
 #if 0
-    LogDebug("");
+    TROG_DEBUG("");
     boost::asio::async_write(
         (this->_boost_socket),
         abuf,
@@ -305,7 +305,7 @@ void Connection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback c
             std::size_t bytes_transfered
             )
         {
-        LogDebug("");
+        TROG_DEBUG("");
         if( !err ){
             Marvin::ErrorType m_err = Marvin::make_error_ok();
             p_post_write_cb(cb, m_err, bytes_transfered);
@@ -320,7 +320,7 @@ void Connection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback c
 }
 void Connection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         p_post_write_cb(cb, err, bytes_transfered);
@@ -337,15 +337,15 @@ void Connection::p_handle_resolve(
                     const error_code& err,
                     tcp::resolver::iterator endpoint_iterator)
 {
-    LogDebug("entry error: ", err.message());
+    TROG_DEBUG("entry error: ", err.message());
 
     /// iterator empty ?
     tcp::resolver::iterator end;
     auto iter_empty = (endpoint_iterator == end);
     Marvin::ErrorType ec = err;
-    LogDebug(std::string(__FUNCTION__) + " " + Marvin::make_error_description(ec) );
+    TROG_DEBUG(std::string(__FUNCTION__) + " " + Marvin::make_error_description(ec) );
     if (iter_empty && (!err)) {
-        LogDebug("empry but no error");
+        TROG_DEBUG("empry but no error");
         // empty iter but no error (unlikely)
         boost::system::error_code local_err = boost::system::errc::make_error_code(boost::system::errc::host_unreachable);
         p_post_connect_cb(m_connect_cb, local_err, this);
@@ -355,9 +355,9 @@ void Connection::p_handle_resolve(
     } else {
         // all is good
         tcp::endpoint ep = *endpoint_iterator;
-        LogDebug( ep.address().to_string());
+        TROG_DEBUG( ep.address().to_string());
         // always use the first iterator result
-        LogDebug("resolve OK","so now connect");
+        TROG_DEBUG("resolve OK","so now connect");
         tcp::endpoint endpoint = *endpoint_iterator;
         
 #if 1
@@ -377,7 +377,7 @@ void Connection::p_handle_resolve(
         auto handler = m_strand.wrap(bind(&Connection::p_handle_connect, this, _1, ++endpoint_iterator));
         m_boost_socket.async_connect(endpoint, handler);
 #endif
-        LogDebug("leaving");
+        TROG_DEBUG("leaving");
     }
 }
 
@@ -387,10 +387,10 @@ void Connection::p_handle_connect(
                     tcp::resolver::iterator endpoint_iterator)
 {
     Marvin::ErrorType  ec = err;
-    LogDebug("entry: ", Marvin::make_error_description(ec));
+    TROG_DEBUG("entry: ", Marvin::make_error_description(ec));
     if (!err)
     {
-        LogFDTrace(nativeSocketFD());
+       TROG_TRACE_FD(nativeSocketFD());
         m_tcp_socket.non_blocking(true);
         ///
         /// now must do handshake - not return
@@ -403,7 +403,7 @@ void Connection::p_handle_connect(
     }
     else if (endpoint_iterator != tcp::resolver::iterator())
     {
-        LogDebug("try next iterator");
+        TROG_DEBUG("try next iterator");
         tcp::endpoint endpoint = *endpoint_iterator;
         m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
             m_tcp_socket.cancel();
@@ -418,10 +418,10 @@ void Connection::p_handle_connect(
     }
     else
     {
-        LogError("resolve FAILED","Error: ",err.message());
+        TROG_ERROR("resolve FAILED","Error: ",err.message());
         p_post_connect_cb(m_connect_cb, err, this);
     }
-    LogDebug("leaving");
+    TROG_DEBUG("leaving");
 }
 void Connection::p_start_handshake()
 {
@@ -455,10 +455,10 @@ void Connection::p_handle_handshake(const boost::system::error_code& err)
 */
 void Connection::p_async_write(void* data, std::size_t size, AsyncWriteCallback cb)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
-        LogDebug("");
+        TROG_DEBUG("");
         p_post_write_cb(cb, err, bytes_transfered);
     });
     if (m_mode == NOTSECURE) {

@@ -23,8 +23,8 @@
 
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/client/client.hpp>
 #include <marvin/client/request.hpp>

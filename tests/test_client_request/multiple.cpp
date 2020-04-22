@@ -1,7 +1,7 @@
 #include <marvin/forwarding/forward_helpers.hpp>
 #include <doctest/doctest.h>
 #include "multiple.hpp"
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 using namespace Marvin;
 using namespace Marvin::Http;

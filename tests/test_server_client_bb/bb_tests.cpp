@@ -11,8 +11,8 @@
 #include <pthread.h>
 #include <doctest/doctest.h>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/server/http_server.hpp>
 #include <marvin/server/request_handler_base.hpp>

@@ -8,8 +8,8 @@
 #include <marvin/server_v3/mitm_http.hpp>
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 
@@ -36,7 +36,7 @@ void MitmApp::configSet_HttpsPorts(std::vector<int> ports)
 
 MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_io(io)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     m_https_hosts = s_https_hosts;
     m_https_ports = s_https_ports;
     m_collector_sptr = collector_sptr;
@@ -45,7 +45,7 @@ MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_
 
 MitmApp::~MitmApp()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 
 void MitmApp::handle(
@@ -95,7 +95,7 @@ void MitmApp::p_on_first_message()
     HttpMethod method = m_rdr->method();
 
     // important logging point - if it breaks later in processing we need to be able to find out what was requested
-    LogTrace("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", serializeHeaders(*m_rdr));
+   TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", serializeHeaders(*m_rdr));
 
     if (method == HttpMethod::CONNECT) {
 

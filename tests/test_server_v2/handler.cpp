@@ -6,8 +6,8 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <json/json.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
@@ -96,7 +96,7 @@ V2Handler::V2Handler(boost::asio::io_service& io):RequestHandlerBase(io), _timer
 }
 V2Handler::~V2Handler()
 {
-    LogDebug("");
+    TROG_DEBUG("");
 }
 
 void V2Handler::handleConnect(
@@ -105,7 +105,7 @@ void V2Handler::handleConnect(
     ISocketSPtr     connPtr,
     V2::HandlerDoneCallbackType     done)
 {
-    LogDebug("");
+    TROG_DEBUG("");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
     auto er = Marvin::make_error_ok();
@@ -115,7 +115,7 @@ void V2Handler::handleConnect(
     strm << "HTTP/1.1 200 OK\r\nContent-length:5\r\n\r\n12345" << std::endl;
     connPtr->asyncWrite(b, [this, done, &connPtr](Marvin::ErrorType& err, std::size_t bytes_transfered){
         auto er = Marvin::make_error_ok();
-        LogDebug(" callback");
+        TROG_DEBUG(" callback");
         done(er, true);
     });
 }

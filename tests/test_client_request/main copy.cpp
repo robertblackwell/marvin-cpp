@@ -21,8 +21,8 @@
 
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/client/request.hpp>
 #include <marvin/client/client.hpp>
@@ -87,7 +87,7 @@ std::shared_ptr<Request> do_get_request(std::string code, boost::asio::io_servic
             std::cout << " FAIL";
         }
         std::cout << std::endl;
-        LogDebug("");
+        TROG_DEBUG("");
     });
 #ifdef VERBOSE
     std::cout << "exit use: " << req.use_count() << std::endl;

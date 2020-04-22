@@ -1,6 +1,6 @@
 
 #include "tp_testcase.hpp"
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 using namespace tp;
 

@@ -9,8 +9,8 @@
 #include <cassert>
 #include <vector>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN )
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #pragma mark - MBuffer implementation
 

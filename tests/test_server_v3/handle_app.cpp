@@ -8,8 +8,8 @@
 #include <json/json.hpp>
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/external_src/uri-parser/UriParser.hpp>
@@ -114,7 +114,7 @@ void AppHandler::p_on_completed()
 void AppHandler::p_req_resp_cycle_complete()
 {
     // assume all connections are persistent
-    LogWarn("AppHandler::p_req_resp_cycle_complete");
+    TROG_WARN("AppHandler::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
     if (m_rdr->hasHeader(HeadersV2::Connection)) {
@@ -132,13 +132,13 @@ void AppHandler::p_req_resp_cycle_complete()
 }
 void AppHandler::p_on_read_error(ErrorType err)
 {
-    LogWarn("Adapter p_on_read_error : ", err.message());
+    TROG_WARN("Adapter p_on_read_error : ", err.message());
     // m_socket_sptr->close();
     m_done_callback();
 }
 void AppHandler::p_on_write_error(ErrorType err)
 {
-    LogWarn("Adapter p_on_write_error : ", err.message());
+    TROG_WARN("Adapter p_on_write_error : ", err.message());
     // m_socket_sptr->close();
     m_done_callback();
 }

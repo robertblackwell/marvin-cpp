@@ -10,10 +10,10 @@
 #include <cassert>
 #include <marvin/http/headers_v2.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
+#include <trog/trog.hpp>
 #include <marvin/http/parser.hpp>
 
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 using namespace Marvin;
 
@@ -92,7 +92,7 @@ void Parser::appendEOF()
     {
         nparsed = http_parser_execute(parser, parserSettings, buffer, someLength);
     }
-    LogDebug("back from parser nparsed: ", nparsed);
+    TROG_DEBUG("back from parser nparsed: ", nparsed);
 }
 
 
@@ -122,7 +122,7 @@ ParserError Parser::getError()
     erst.name = std::string(n);
     erst.description = std::string(d);
 #pragma clang diagnostic pops
-    FLogDebug(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
+    TROG_DEBUG(" errno: ", this->parser->http_errno, " name: ", n, " description: ", d);
     return erst;
 
 }
@@ -133,41 +133,42 @@ bool Parser::isError(){
     char* n = (char*)http_errno_name(x);
     char* d = (char*)http_errno_description(x);
 #pragma clang diagnostic pops
-    FLogDebug(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
+    TROG_DEBUG(" errno: ", this->parser->http_errno, " name: ", n, " description: ", d);
+    // FTROG_DEBUG(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
     return (this->parser->http_errno != 0);
 };
 
 void Parser::OnParseBegin()
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 void Parser::OnHeadersComplete(MessageInterface* msg, void* body_start, std::size_t remainder)
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 void Parser::OnMessageComplete(MessageInterface* msg)
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 void Parser::OnParseError()
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 void Parser::OnBodyData(void* buf, int len)
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 void Parser::OnChunkBegin(int chunkLength)
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 void Parser::OnChunkData(void* buf, int len)
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 void Parser::OnChunkEnd()
 {
-    LogVerbose("");
+    TROG_VERBOSE("");
 };
 
 

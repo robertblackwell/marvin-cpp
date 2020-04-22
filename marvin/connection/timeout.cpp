@@ -4,9 +4,9 @@
 #include <cassert>
 
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <trog/trog.hpp>
 
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 using ::boost::asio::ip::tcp;
@@ -22,19 +22,19 @@ Timeout::Timeout(
             m_io(io_service),
             m_timer(m_io)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     /// timeout 
     m_timer.expires_from_now(boost::posix_time::pos_infin);
 }
 
 Timeout::~Timeout()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 
 void Timeout::cancelTimeout(std::function<void()> handler)
 {
-    LogDebug(" m_active: ", m_active);
+    TROG_DEBUG(" m_active: ", m_active);
 #define XDISABLE_TIMEOUT
 #ifdef DISABLE_TIMEOUT
     m_io.post(handler);
@@ -57,7 +57,7 @@ void Timeout::cancelTimeout(std::function<void()> handler)
 }
 void Timeout::setTimeout(long interval_millisecs, std::function<void()> handler)
 {
-    LogDebug(" interval millisecs: ", interval_millisecs);
+    TROG_DEBUG(" interval millisecs: ", interval_millisecs);
 #ifdef DISABLE_TIMEOUT
 // do nothing
 #else
@@ -73,7 +73,7 @@ void Timeout::setTimeout(long interval_millisecs, std::function<void()> handler)
 void Timeout::p_handle_timeout(const boost::system::error_code& err)
 {
     boost::system::error_code ec = err;
-    LogDebug(" errc: ", Marvin::make_error_description(ec));
+    TROG_DEBUG(" errc: ", Marvin::make_error_description(ec));
     if( err == boost::asio::error::operation_aborted) {
         // timeout was cancelled - presumably by a successful i/o operation
         assert(m_active);

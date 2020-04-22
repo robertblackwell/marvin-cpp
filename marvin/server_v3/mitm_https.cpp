@@ -13,8 +13,8 @@
 #include <marvin/helpers/mitm.hpp>
 #include <marvin/http/message_factory.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 namespace Marvin {
@@ -77,7 +77,7 @@ void MitmHttps::p_handshake_upstream()
             m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err)
             {
                 if( err ) {
-                    LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+                    TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
                     m_mitm_app.p_on_downstream_write_error(err);
                 } else {
                     m_downstream_socket_sptr->becomeSecureServer(m_mitm_identity);
@@ -135,7 +135,7 @@ void MitmHttps::p_initiate_upstream_roundtrip()
             p_roundtrip_upstream(m_downstream_rdr_sptr, [this](MessageBaseSPtr downMsg){
                 /// get here with a message suitable for transmission to down stream client
                 m_downstream_response_sptr = downMsg;
-                LogTrace("for downstream", traceMessage(*downMsg));
+               TROG_TRACE3("for downstream", traceMessage(*downMsg));
                 Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
                 /// perform the MITM collection
                 
@@ -179,11 +179,11 @@ void MitmHttps::p_roundtrip_upstream(
     {
         if (ec || (upstrmRdr == nullptr)) {
             std::string desc = make_error_description(ec);
-            LogWarn("async write failed ", make_error_description(ec));
+            TROG_WARN("async write failed ", make_error_description(ec));
             m_mitm_app.p_on_upstream_roundtrip_error(ec);
             // TODO: how to handle error
         } else {
-            LogTrace("upstream response", traceMessage(*(upstrmRdr.get())));
+           TROG_TRACE3("upstream response", traceMessage(*(upstrmRdr.get())));
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             m_upstream_response_body_sptr = upstrmRdr->getContentBuffer();
             Helpers::makeDownstreamResponse(m_downstream_response_sptr, upstrmRdr, ec);
@@ -207,9 +207,9 @@ void MitmHttps::p_on_upstream_connect_handshake_error(ErrorType& err)
     makeResponse502Badgateway(*m_downstream_response_sptr);
 
     m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err){
-        LogInfo("");
+        TROG_INFO("");
         if( err ) {
-            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+            TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
             m_mitm_app.p_on_downstream_write_error(err);
         } else {
             m_mitm_app.p_connection_end();

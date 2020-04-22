@@ -1,6 +1,6 @@
 
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include "test_runner.hpp"
 
 #include <doctest/doctest.h>
@@ -25,7 +25,7 @@ Testrunner::Testrunner(boost::asio::io_service& io, Marvin::ISocketSPtr rd_sock,
     : m_io(io),
     m_tcObj(tcObj)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     m_conn = rd_sock;
     m_rdr = std::shared_ptr<Marvin::MessageReader>(new Marvin::MessageReader(m_io, m_conn));
     m_body = std::string("");
@@ -34,11 +34,11 @@ Testrunner::Testrunner(boost::asio::io_service& io, Marvin::ISocketSPtr rd_sock,
 }
 Testrunner::~Testrunner()
 {
-    LogDebug("");
+    TROG_DEBUG("");
 }
 void Testrunner::onMessage(Marvin::ErrorType er)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     Marvin::ErrorType expected_err = m_tcObj.result_onheaders_err();
     std::string exp_s = expected_err.message();
     std::string ers = er.message();
@@ -70,7 +70,7 @@ void Testrunner::onMessage(Marvin::ErrorType er)
 }
 void Testrunner::onBody(Marvin::ErrorType er, Marvin::BufferChainSPtr chunkSPtr)
 {
-    LogDebug(" entry");
+    TROG_DEBUG(" entry");
     // are we done - if not hang another read
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
     bool done = (er == Marvin::make_error_eom());
@@ -89,11 +89,11 @@ void Testrunner::onBody(Marvin::ErrorType er, Marvin::BufferChainSPtr chunkSPtr)
     }else{
         m_rdr->readBody(bh);
     }
-    LogDebug("exit");
+    TROG_DEBUG("exit");
     
 }
 void Testrunner::onHeaders(Marvin::ErrorType er){
-    LogDebug("entry");
+    TROG_DEBUG("entry");
     Marvin::ErrorType expected_err = m_tcObj.result_onheaders_err();
     std::string ers = er.message();
     assert(er == expected_err);
@@ -110,14 +110,14 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     auto bh = std::bind(&Testrunner::onBody, this, std::placeholders::_1, std::placeholders::_2);
 //        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << tcObj.getDescription() <<std::endl;
     m_rdr->readBody(bh);
-    LogDebug("exit");
+    TROG_DEBUG("exit");
 }
 /**
 * runs a test that reads reads a full message
 */
 void Testrunner::run_FullMessageRead()
 {
-    LogDebug("getting started");
+    TROG_DEBUG("getting started");
 //        makeReader();
     auto h = std::bind(&Testrunner::onMessage, this, std::placeholders::_1);
     m_rdr->readMessage(h);
@@ -127,7 +127,7 @@ void Testrunner::run_FullMessageRead()
 */
 void Testrunner::run_StreamingBodyRead()
 {
-    LogDebug("getting started");
+    TROG_DEBUG("getting started");
 //        makeReader();
     auto h = std::bind(&Testrunner::onHeaders, this, std::placeholders::_1);
    m_rdr->readHeaders(h);

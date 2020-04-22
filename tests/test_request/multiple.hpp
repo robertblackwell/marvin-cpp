@@ -9,7 +9,7 @@
 
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/external_src/trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/client/client.hpp>
 

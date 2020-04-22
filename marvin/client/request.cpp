@@ -3,7 +3,7 @@
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socketFactory
-#include <marvin/external_src/trog/trog.hpp>  // for LogInfo, LogD...
+#include <trog/trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
@@ -12,8 +12,8 @@
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
@@ -64,7 +64,7 @@ Request::Request(
 
 Request::~Request()
 {
-    LogInfo("");
+    TROG_INFO("");
 }
 /*!--------------------------------------------------------------------------------
 * implement set functions
@@ -114,11 +114,11 @@ void Request::setTrailer(std::string key, std::string value)
 *--------------------------------------------------------------------------------*/
 void Request::asyncConnect(std::function<void(Marvin::ErrorType& err)> cb)
 {
-    LogInfo("", (long)this);
+    TROG_INFO("", (long)this);
 
     auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);
-        LogInfo(" conn", (long)m_conn_shared_ptr.get(), " er: ", er_s);
+        TROG_INFO(" conn", (long)m_conn_shared_ptr.get(), " er: ", er_s);
         if(!ec) {
 
         } else {

@@ -3,8 +3,8 @@
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/forwarding/forwarding_handler.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 
@@ -62,7 +62,7 @@ ForwardingHandler::ForwardingHandler(
     ICollector* collector_ptr
 ): RequestHandlerBase(io), m_collector_ptr(collector_ptr)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     m_https_hosts = s_https_hosts;
     m_https_ports = s_https_ports;
 }
@@ -70,7 +70,7 @@ ForwardingHandler::ForwardingHandler(
 
 ForwardingHandler::~ForwardingHandler()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 
 #pragma mark - handle upgrade request
@@ -107,7 +107,7 @@ void ForwardingHandler::handleConnect(
         ISocketSPtr                 clientConnectionSPtr,// the connection to the client
         HandlerDoneCallbackType     done
 ){
-    LogTrace(traceForwardingHandler(this), Marvin::traceMessage(*(request.get())));
+   TROG_TRACE3(traceForwardingHandler(this), Marvin::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_downstream_connection  = clientConnectionSPtr;
     m_done_callback = done;
@@ -151,19 +151,19 @@ void ForwardingHandler::p_initiate_tunnel()
 //    m_response_sptr->setWriteSock(m_downstream_connection.get());
 //    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
 
-    LogTrace("scheme:", m_scheme, " host:", m_host, " port:", m_port);
+   TROG_TRACE3("scheme:", m_scheme, " host:", m_host, " port:", m_port);
 
     m_upstream_connection = socketFactory(m_io, m_scheme, m_host, std::to_string(m_port));
     m_upstream_connection->asyncConnect([this](Marvin::ErrorType& err, ISocket* conn){
         if( err ) {
-            LogWarn("initiateTunnel: FAILED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
+            TROG_WARN("initiateTunnel: FAILED scheme:", this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
             makeResponse502Badgateway(*m_response_sptr);
 
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
-                LogInfo("");
+                TROG_INFO("");
                 if( err ) {
-                    LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+                    TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
                     // got an error sending response to downstream client - what can we do ? Nothing
                     auto pf = std::bind(m_done_callback, err, false);
                     m_io.post(pf);
@@ -173,22 +173,22 @@ void ForwardingHandler::p_initiate_tunnel()
                 }
             });
         } else {
-            LogTrace("initiateTunnel: connection SUCCEEDED scheme:", traceForwardingHandler(this), " scheme:",this->m_scheme, " host:", this->m_host, " port:", this->m_port);
+           TROG_TRACE3("initiateTunnel: connection SUCCEEDED scheme:", traceForwardingHandler(this), " scheme:",this->m_scheme, " host:", this->m_host, " port:", this->m_port);
             m_response_sptr = std::make_shared<MessageBase>();
             makeResponse200OKConnected(*m_response_sptr);
             m_response_writer_sptr->asyncWrite(m_response_sptr, [this](Marvin::ErrorType& err){
-                LogInfo("");
+                TROG_INFO("");
                 if( err ) {
-                    LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+                    TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
                     // got an error sending response to downstream client - what can we do ? Nothing
                     auto pf = std::bind(m_done_callback, err, false);
                     m_io.post(pf);
                 } else {
                     m_tunnel_handler = std::make_shared<TunnelHandler>(m_io, m_downstream_connection, m_upstream_connection);
-                    LogTrace("start tunnel", traceForwardingHandler(this), traceTunnel(m_tunnel_handler));
+                   TROG_TRACE3("start tunnel", traceForwardingHandler(this), traceTunnel(m_tunnel_handler));
                     m_tunnel_handler->start([this](Marvin::ErrorType& err){
 //                        m_done_callback(err, false);
-                        LogTrace("tunnel complete OK", traceForwardingHandler(this), traceTunnel(m_tunnel_handler), " err: ", Marvin::make_error_description(err));
+                       TROG_TRACE3("tunnel complete OK", traceForwardingHandler(this), traceTunnel(m_tunnel_handler), " err: ", Marvin::make_error_description(err));
                         auto pf = std::bind(m_done_callback, err, false);
                         m_io.post(pf);
                     });
@@ -216,7 +216,7 @@ void ForwardingHandler::handleRequest(
         ISocketSPtr             clientConnectionPtr,
         HandlerDoneCallbackType done
 ){
-    LogTrace("from downstream", Marvin::traceMessage(*(request.get())));
+   TROG_TRACE3("from downstream", Marvin::traceMessage(*(request.get())));
     m_request_sptr = request;
     m_response_writer_sptr = responseWriter;
     m_done_callback = done;
@@ -229,7 +229,7 @@ void ForwardingHandler::handleRequest(
     p_round_trip_upstream(request, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_response_sptr = downMsg;
-        LogTrace("for downstream", Marvin::traceMessage(*downMsg));
+       TROG_TRACE3("for downstream", Marvin::traceMessage(*downMsg));
         Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
         /// perform the MITM collection
         
@@ -237,8 +237,8 @@ void ForwardingHandler::handleRequest(
         
         /// write response to downstream client
         m_response_writer_sptr->asyncWrite(m_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err){
-//            LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
-            LogTrace("after write downstream", " err:", Marvin::make_error_description(err));
+//            TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+           TROG_TRACE3("after write downstream", " err:", Marvin::make_error_description(err));
             auto pf = std::bind(m_done_callback, err, (! err) );
             m_io.post(pf);
         });
@@ -270,15 +270,15 @@ void ForwardingHandler::p_round_trip_upstream(
     assert( ! m_request_sptr->hasHeader("Upgrade") );
     Marvin::BufferChainSPtr content = req->getContentBuffer();
     
-    LogTrace("upstream request", Marvin::traceMessage(*m_upstream_request_msg_sptr));
+   TROG_TRACE3("upstream request", Marvin::traceMessage(*m_upstream_request_msg_sptr));
     
     m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
         if (ec || (upstrmRdr == nullptr)) {
-            LogWarn("async write failed");
+            TROG_WARN("async write failed");
             // TODO: how to handle error
         } else {
-            LogTrace("upstream rresponse", Marvin::traceMessage(*(upstrmRdr.get())));
+           TROG_TRACE3("upstream rresponse", Marvin::traceMessage(*(upstrmRdr.get())));
             m_downstream_msg_sptr = std::make_shared<MessageBase>();
             m_response_body_sptr = upstrmRdr->getContentBuffer();
             Helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
@@ -291,7 +291,7 @@ void ForwardingHandler::p_round_trip_upstream(
 void ForwardingHandler::p_on_complete(Marvin::ErrorType& err)
 {
     if( err ){
-//       LogWarn("error: ", err.value(), err.category().name(), err.category().message(err.value()));
+//       TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
         // got an error sending response to downstream client - what can we do ? Nothing
         auto pf = std::bind(m_done_callback, err, false);
         m_io.post(pf);

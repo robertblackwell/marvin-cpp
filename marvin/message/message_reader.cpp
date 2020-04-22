@@ -7,9 +7,9 @@
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
-#include <marvin/external_src/trog/trog.hpp>
+#include <trog/trog.hpp>
 
-Trog_SETLEVEL(LOG_LEVEL_WARN)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/connection/socket_interface.hpp>
 
@@ -47,7 +47,7 @@ void MessageReader::configSet_HeaderBufferSize(long bsize)
 MessageReader::MessageReader( boost::asio::io_service& io, ISocketSPtr read_sock)
 : m_io(io), m_read_sock(read_sock)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
     m_body_buffer_size   = s_bodyBufferSize;
     m_header_buffer_size = s_headerBufferSize;
     m_header_buffer_sptr = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(m_header_buffer_size));
@@ -63,7 +63,7 @@ MessageReader::MessageReader( boost::asio::io_service& io, ISocketSPtr read_sock
 */
 MessageReader::~MessageReader()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 #pragma mark -  simple public getters
 
@@ -120,9 +120,9 @@ void MessageReader::readBody(ReadBodyCallback cb)
 
 #pragma mark - Parser virtual overrides - catch parser events
 
-//void OnParserBegin(){ LogDebug("");}
+//void OnParserBegin(){ TROG_DEBUG("");}
 void MessageReader::OnMessageComplete(MessageInterface* msg){
-    LogDebug("");
+    TROG_DEBUG("");
 //    std::cout << "message complete" << std::endl;
 }
 /**
@@ -147,7 +147,7 @@ void MessageReader::OnHeadersComplete(MessageInterface* msg, void* body_start_pt
     }
     std::string s2 = m_raw_body_buffer_chain_sptr->to_string();
     auto xx = s2;
-    LogDebug("");
+    TROG_DEBUG("");
 }
 
 MessageInterface* MessageReader::currentMessage(){  return this; }
@@ -170,9 +170,9 @@ void MessageReader::OnBodyData(void* buf, int len)
     auto xx = sexit;
 }
 
-void MessageReader::OnChunkBegin(int chunkLength) { LogDebug("");}
-void MessageReader::OnChunkData(void* buf, int len){ LogDebug("");}
-void MessageReader::OnChunkEnd() { LogDebug(""); }
+void MessageReader::OnChunkBegin(int chunkLength) { TROG_DEBUG("");}
+void MessageReader::OnChunkData(void* buf, int len){ TROG_DEBUG("");}
+void MessageReader::OnChunkEnd() { TROG_DEBUG(""); }
 
 #pragma mark - methods for reading headers as part of reading an entire message or just reading the headers
 
@@ -206,7 +206,7 @@ void MessageReader::p_read_headers(std::function<void(Marvin::ErrorType err)> cb
 */
 void MessageReader::p_read_some_headers()
 {
-    LogDebug(" fd: ", m_read_sock->nativeSocketFD());
+    TROG_DEBUG(" fd: ", m_read_sock->nativeSocketFD());
     assert( m_header_buffer_sptr != nullptr );
     auto h = std::bind(&MessageReader::p_handle_header_read, this, std::placeholders::_1, std::placeholders::_2);
     m_read_sock->asyncRead(m_header_buffer_sptr, h);
@@ -217,8 +217,8 @@ void MessageReader::p_read_some_headers()
 */
 void MessageReader::p_handle_header_read(Marvin::ErrorType er, std::size_t bytes_transfered)
 {
-    LogDebug("entry fd: ", m_read_sock->nativeSocketFD());
-    LogDebug("er: ", er.message());
+    TROG_DEBUG("entry fd: ", m_read_sock->nativeSocketFD());
+    TROG_DEBUG("er: ", er.message());
     /**
     * Error processing here is a bit tricky
     *   -   if we are in the middle of processing a messages and
@@ -236,17 +236,17 @@ void MessageReader::p_handle_header_read(Marvin::ErrorType er, std::size_t bytes
     */
     if(er && (bytes_transfered > 0)) {
         p_post_message_cb(er);
-        LogError("real error condition: ", er.message());
+        TROG_ERROR("real error condition: ", er.message());
         return;
     }
     // EOF at start of new message - probably client closed connection
     if(er && (bytes_transfered == 0) && (m_total_bytes_read == 0)) {
         p_post_message_cb(er);
-        LogError("probably client closed connection: ", er.message());
+        TROG_ERROR("probably client closed connection: ", er.message());
         return;
     }
     if(er && (bytes_transfered == 0) && (m_total_bytes_read > 0)) {
-        LogError("ending message with EOF: ", er.message());
+        TROG_ERROR("ending message with EOF: ", er.message());
     }
     m_header_buffer_sptr->setSize(bytes_transfered);
 //    std::cout << *_header_buffer_sptr << std::endl;
@@ -291,7 +291,7 @@ void MessageReader::p_read_all_body()
 */
 void MessageReader::p_read_some_body()
 {
-    LogDebug(" fd: ", m_read_sock->nativeSocketFD());
+    TROG_DEBUG(" fd: ", m_read_sock->nativeSocketFD());
     auto h = std::bind(&MessageReader::p_handle_body_read, this, std::placeholders::_1, std::placeholders::_2);
     m_read_sock->asyncRead(m_body_buffer_sptr, h);
 }
@@ -301,14 +301,14 @@ void MessageReader::p_read_some_body()
 */
 void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_transfered)
 {
-    LogDebug("entry fd: ", m_read_sock->nativeSocketFD());
+    TROG_DEBUG("entry fd: ", m_read_sock->nativeSocketFD());
     /**
     * an io error with bytes_transfered == 0 is probably EOF - let the parser handle it
     * otherwise (err && (bytes_transfered > 0)) return with error
     */
     if(er && (bytes_transfered > 0)) {
         p_post_message_cb(er);
-        LogError("", er.message());
+        TROG_ERROR("", er.message());
         // TODO - should be a return ?
     }
     m_body_buffer_sptr->setSize(bytes_transfered);
@@ -340,7 +340,7 @@ void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_t
 */
 void MessageReader::p_read_body_chunk()
 {
-    LogDebug(" fd: ", m_read_sock->nativeSocketFD());
+    TROG_DEBUG(" fd: ", m_read_sock->nativeSocketFD());
     auto h = std::bind(&MessageReader::p_handle_body_chunk, this, std::placeholders::_1, std::placeholders::_2);
     if(m_body_buffer_sptr == nullptr) {
         p_make_new_body_buffer();
@@ -352,14 +352,14 @@ void MessageReader::p_read_body_chunk()
 */
 void MessageReader::p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_transfered)
 {
-    LogDebug("entry fd: ", m_read_sock->nativeSocketFD());
+    TROG_DEBUG("entry fd: ", m_read_sock->nativeSocketFD());
     /**
     * an io error with bytes_transfered == 0 is probably EOF - let the parser handle it
     * otherwise (err && (bytes_transfered > 0)) return with error
     */
     if(er && (bytes_transfered > 0)) {
         p_post_body_chunk_cb(er, m_body_buffer_chain_sptr);
-        LogError("", er.message());
+        TROG_ERROR("", er.message());
     }
     
     m_body_buffer_sptr->setSize(bytes_transfered);
@@ -424,7 +424,7 @@ void MessageReader::p_post_body_chunk_cb(Marvin::ErrorType er, Marvin::BufferCha
 bool MessageReader::p_parser_ok(int nparsed, Marvin::MBuffer& mb)
 {
     if( nparsed != (int)mb.size()) {
-        LogWarn("some next message in buffer");
+        TROG_WARN("some next message in buffer");
     }
     /**
     * if parser status is OK or if (http_parser->errno == HPE_PAUSED && isFinishedMessage())
@@ -436,7 +436,7 @@ bool MessageReader::p_parser_ok(int nparsed, Marvin::MBuffer& mb)
         // do nothing
         return true;
     } else {
-        LogError("parse error", perr.err_number, perr.description) ;
+        TROG_ERROR("parse error", perr.err_number, perr.description) ;
 //        post_message_cb(Marvin::make_error_parse());
         return false;
     }

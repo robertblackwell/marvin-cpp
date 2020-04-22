@@ -4,8 +4,8 @@
 
 #include <marvin/helpers/macros.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/external_src/trog/trog.hpp>
-Trog_SETLEVEL(LOG_LEVEL_WARN|LOG_LEVEL_TRACE|LOG_LEVEL_TORTRACE)
+#include <trog/trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
 
 namespace Marvin {
 
@@ -48,7 +48,7 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
     m_heartbeat_timer(m_io),
     m_terminate_requested(false)
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 /**
 ** init
@@ -85,16 +85,16 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
     boost::system::error_code err;
     m_acceptor.bind(endpoint, err);
     if( err) {
-        LogError("error port: ",m_port, err.message());
+        TROG_ERROR("error port: ",m_port, err.message());
         MTHROW(std::string("error binding server port ")+err.message());
     }
     p_start_heartbeat();
 
-    LogDebug(err.message());
+    TROG_DEBUG(err.message());
 }
 TcpServer::~TcpServer()
 {
-    LogTorTrace();
+   TROG_TRACE_CTOR();
 }
 void TcpServer::terminate()
 {
@@ -124,7 +124,7 @@ void TcpServer::terminate()
  void TcpServer::p_start_accept()
 {
 
-    LogTrace("");
+   TROG_TRACE3("");
     ISocketSPtr conn_sptr = socketFactory(m_io);
     
     ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
@@ -140,14 +140,14 @@ void TcpServer::terminate()
 //-------------------------------------------------------------------------------------
  void TcpServer::p_handle_accept(ConnectionHandler* connHandler, const boost::system::error_code& err)
 {
-    LogInfo("", connHandler);
+    TROG_INFO("", connHandler);
     if (! m_acceptor.is_open()){
         delete connHandler;
-        LogWarn("Accept is not open ???? WTF - lets TERM the server");
+        TROG_WARN("Accept is not open ???? WTF - lets TERM the server");
         return; // something is wrong
     }
     if (!err){
-        LogTrace("got a connection", connHandler->nativeSocketFD());
+       TROG_TRACE3("got a connection", connHandler->nativeSocketFD());
         /// at this point the native socket fd is assigned
         /// so for debug purposes we can stash it in the
         /// fd_inuse list
@@ -157,7 +157,7 @@ void TcpServer::terminate()
         // by allowAnotherConnection() we need to be sure there is still
         // an outstanding connection that will start an accept in the future.
         m_connectionManager.allowAnotherConnection([this](){
-            LogTrace("allowAnother Callback");
+           TROG_TRACE3("allowAnother Callback");
             p_start_accept();
         });
         #if 0
@@ -168,7 +168,7 @@ void TcpServer::terminate()
         #endif
     }else{
 //        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
-        LogTrace("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
+       TROG_TRACE3("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         m_io.stop();
         return;
 //        delete connHandler;
@@ -180,14 +180,14 @@ void TcpServer::terminate()
 //-------------------------------------------------------------------------------------
  void TcpServer::p_wait_for_stop()
 {
-    LogDebug("");
+    TROG_DEBUG("");
     auto hf = (std::bind(&TcpServer::p_do_stop, this, std::placeholders::_1));
 
   m_signals.async_wait(hf);
 }
  void TcpServer::p_do_stop(const Marvin::ErrorType& err)
 {
-    LogDebug("");
+    TROG_DEBUG("");
     m_io.stop();
     m_acceptor.close();
 }
