@@ -1,4 +1,4 @@
-#include <marvin/error/exception.hpp>
+#include <marvin/error_handler/exception.hpp>
 namespace Marvin {
 
 void errorHandler(std::string func, std::string file, int line, std::string msg) 

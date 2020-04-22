@@ -8,7 +8,7 @@
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
-#include <cert/error.hpp>                               // for THROW
+#include <cert/error.hpp>                               // for MARVIN_THROW
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
@@ -507,23 +507,23 @@ void Request::p_set_content_length()
 void Request::p_test_good_to_go()
 {
     if(! m_conn_shared_ptr) {
-        throw "Request::tryng to use m_conn_shared_ptr which is null";
+        MARVIN_THROW( "Request::tryng to use m_conn_shared_ptr which is null");
     }
 }
 // check all the required headers are in place and add
 // those that are done automaticaly
-// must have either content-length or chunked encoding - throw if not
+// must have either content-length or chunked encoding - MARVIN_THROW( if not
 // add host header
 void Request::p_prep_write_complete_headers()
 {
     using namespace Marvin::Http;
     if(!m_current_request->hasHeader(HeadersV2::ContentLength)) {
         if (!m_current_request->hasHeader(HeadersV2::TransferEncoding)) {
-            throw "Request::p_prep_write_complete_headers - no content length or chunked header";
+            MARVIN_THROW( "Request::p_prep_write_complete_headers - no content length or chunked header");
         } else {
             auto te = m_current_request->getHeader(HeadersV2::TransferEncoding);
             if (te != "chunked") {
-                throw "Request::p_prep_write_complete_headers - no content-length header and transfer-encoding header is not chunked";
+                MARVIN_THROW( "Request::p_prep_write_complete_headers - no content-length header and transfer-encoding header is not chunked");
             }
         }
     }

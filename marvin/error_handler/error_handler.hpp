@@ -1,5 +1,5 @@
-#ifndef marvin_helpers_error_include_hpp
-#define marvin_helpers_error_include_hpp
+#ifndef marvin_error_handler_error_handler_hpp
+#define marvin_error_handler_error_handler_hpp
 #include <string>
 #include <openssl/err.h>
 
@@ -12,7 +12,7 @@ namespace Marvin {
     *
     * must not start or end with a <<
      */
-    #define IFTRUE_THROW(value, msg) \
+    #define MARVIN_IFTRUE_MARVIN_THROW(value, msg) \
         do { \
             if(value) { \
                 std::stringstream messageStream; \
@@ -21,7 +21,7 @@ namespace Marvin {
             } \
         } while(0);
         
-    #define IFFALSE_THROW(value, msg) \
+    #define MARVIN_IFFALSE_MARVIN_THROW(value, msg) \
         do { \
             if(!(value)) { \
                 std::stringstream messageStream; \
@@ -30,14 +30,23 @@ namespace Marvin {
             } \
         } while(0);
 
-    #define THROW(msg) \
+    #define MARVIN_NOT_IMPLEMENTED() Cert::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, "function not implemented"); 
+
+    #define MARVIN_THROW(msg) \
         do { \
             std::stringstream messageStream; \
             messageStream << msg ; \
-            ::Marvin::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
+            Marvin::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, messageStream.str()); \
         } while(0);
 
-    #define NOT_IMPLEMENTED() Cert::errorHandler(__PRETTY_FUNCTION__, __FILE__, __LINE__, "function not implemented"); 
+    #define MARVIN_ASSERT(condition, message) \
+    do { \
+        if (! (condition)) { \
+            std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
+                      << " line " << __LINE__ << ": " << message << std::endl; \
+            std::terminate(); \
+        } \
+    } while (false)
 
     void errorHandler (std::string func, std::string file, int lineno, std::string msg);
     /**

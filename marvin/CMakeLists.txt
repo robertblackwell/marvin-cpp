@@ -35,7 +35,9 @@ file(GLOB HEADERS
 	connection/tunnel_handler.hpp
 
 	error/marvin_error.hpp 
-	error/exception.hpp
+
+	error_handler/exception.hpp
+	error_handler/error_handler.hpp
 	
 	external_src/CxxUrl/url.hpp 
 	external_src/uri-parser/UriParser.hpp 
@@ -43,8 +45,6 @@ file(GLOB HEADERS
 	external_src/simple_buffer/simple_buffer.h
 	
 	helpers/helpers_fs.hpp
-	helpers/error.hpp
-	helpers/macros.hpp
 	helpers/mitm.hpp
 	
 	http/headers_v2.hpp 
@@ -55,7 +55,6 @@ file(GLOB HEADERS
 	http/parser.hpp
 	http/uri.hpp 
 	http/uri_query.hpp
-	http/uri_v2.hpp
 
 	message/message_reader.hpp 
 	message/message_writer.hpp 
@@ -99,8 +98,10 @@ set(SOURCES
 	connection/timeout.cpp				
 	connection/tunnel_handler.cpp  		
 	
-	error/marvin_error.cpp 		
-	error/exception.cpp		
+	error/marvin_error.cpp 	
+
+	error_handler/exception.cpp
+	error_handler/error_handler.cpp
 
 	external_src/CxxUrl/url.cpp
 	external_src/uri-parser/UriCodec.cpp
@@ -108,7 +109,6 @@ set(SOURCES
 	external_src/simple_buffer/simple_buffer.c
 
 	helpers/helpers_fs.cpp
-	helpers/error.cpp
 	helpers/mitm.cpp
 	
 	http/headers_v2.cpp 		
@@ -117,8 +117,7 @@ set(SOURCES
 	http/message_factory.cpp 		
 	http/parser.cpp 
 	http/uri.cpp
-	http/uri_query.cpp		
-	http/uri_v2.cpp
+	http/uri_query.cpp
 	
 	message/message_reader.cpp 	
 	message/message_writer.cpp 	

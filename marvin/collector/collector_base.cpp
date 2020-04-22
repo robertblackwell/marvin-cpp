@@ -35,17 +35,6 @@ bool testPipeReaderExists(char* pipeName)
 CollectorBase::CollectorBase(boost::asio::io_service& io, std::ostream& ofstream): m_io(io), m_my_strand(io), m_output_stream(ofstream)
 {}
 
-#if 0    
-CollectorBase::CollectorBase(boost::asio::io_service& io, boost::filesystem::path file_path): m_io(io), m_my_strand(io)
-{
-    if( testPipeReaderExists((char*)"/Users/robertblackwell/marvin_collector") ){
-        m_output_stream.open(file_path.string(), std::ios_base::out);
-        if(!m_output_stream.is_open()) {
-            throw "failed to open stream for collector";
-        }
-    }
-}
-#endif
 /**
 ** This method actually implements the collect function but run on a dedicated
 ** strand. Even if this method does IO-wait operations the other thread will

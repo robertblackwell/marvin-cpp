@@ -1,9 +1,9 @@
 #ifndef marvin_helper_macros_include_hpp
 #define marvin_helper_macros_include_hpp
-#include <marvin/error/exception.hpp>
+#include <marvin/exception.hpp>
 
 #ifndef NDEBUG
-    #define MTHROW(msg) \
+    #define MARVIN_THROW(msg) \
         do { \
             std::stringstream messageStream; \
             messageStream << msg ; \

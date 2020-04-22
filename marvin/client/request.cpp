@@ -8,10 +8,11 @@
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
-#include <cert/error.hpp>                               // for THROW
+#include <cert/error.hpp>                               // for MARVIN_THROW
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
+#include <marvin/error_handler/error_handler.hpp>
 #include <trog/trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
@@ -251,21 +252,21 @@ void Request::setOnError(ErrorOnlyCallbackType cb)
 void Request::p_resp_on_error(Marvin::ErrorType& ec2)
 {
     if (!this->m_on_error_cb) {
-        throw "on_error event handler not set";
+        MARVIN_THROW("on_error event handler not set");
     }
     m_on_error_cb(ec2);
 }
 void Request::p_resp_on_headers(Marvin::ErrorType& ec2, MessageReaderSPtr msg)
 {
     if (!this->m_on_headers_complete_cb) {
-        throw "on_response_complete event handler not set";
+        MARVIN_THROW("on_response_complete event handler not set");
     }
     m_on_headers_complete_cb(ec2, msg);
 }
 void Request::p_resp_on_data(Marvin::ErrorType& err, BufferChainSPtr buf)
 {
     if (!this->m_on_rdata_cb) {
-        throw "on_response_complete event handler not set";
+        MARVIN_THROW("on_response_complete event handler not set");
     }
     Marvin::ErrorType err2 = err;
     m_on_rdata_cb(err2, buf);
@@ -273,7 +274,7 @@ void Request::p_resp_on_data(Marvin::ErrorType& err, BufferChainSPtr buf)
 void Request::p_resp_on_complete(Marvin::ErrorType& ec2, MessageReaderSPtr msg)
 {
     if (!this->m_on_response_complete_cb) {
-        throw "on_response_complete event handler not set";
+        MARVIN_THROW("on_response_complete event handler not set");
     }
     m_on_response_complete_cb(ec2, msg);
 }
@@ -314,22 +315,22 @@ void Request::p_set_content_length()
 void Request::p_test_good_to_go()
 {
     if(! m_conn_shared_ptr) {
-        throw "Request::tryng to use m_conn_shared_ptr which is null";
+        MARVIN_THROW("Request::tryng to use m_conn_shared_ptr which is null");
     }
 }
 // check all the required headers are in place and add
 // those that are done automaticaly
-// must have either content-length or chunked encoding - throw if not
+// must have either content-length or chunked encoding - MARVIN_THROW if not
 // add host header
 void Request::p_prep_write_complete_headers()
 {
     if(!m_current_request->hasHeader(HeadersV2::ContentLength)) {
         if (!m_current_request->hasHeader(HeadersV2::TransferEncoding)) {
-            throw "Request::p_prep_write_complete_headers - no content length or chunked header";
+            MARVIN_THROW("Request::p_prep_write_complete_headers - no content length or chunked header");
         } else {
             auto te = m_current_request->getHeader(HeadersV2::TransferEncoding);
             if (te != "chunked") {
-                throw "Request::p_prep_write_complete_headers - no content-length header and transfer-encoding header is not chunked";
+                MARVIN_THROW("Request::p_prep_write_complete_headers - no content-length header and transfer-encoding header is not chunked");
             }
         }
     }

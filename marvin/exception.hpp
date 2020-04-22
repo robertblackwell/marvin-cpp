@@ -1,5 +1,5 @@
-#ifndef guard_marvin_error_exception_hpp
-#define guard_marvin_error_exception_hpp
+#ifndef guard_marvin_exception_hpp
+#define guard_marvin_exception_hpp
 
 namespace Marvin {
 void errorHandler(std::string func, std::string file, int line, std::string msg);

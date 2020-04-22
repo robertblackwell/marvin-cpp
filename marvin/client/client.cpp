@@ -9,10 +9,11 @@
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
-#include <cert/error.hpp>                               // for THROW
+#include <cert/error.hpp>                               // for MARVIN_THROW
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
+#include <marvin/error_handler/error_handler.hpp>
 #include <trog/trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
@@ -64,7 +65,7 @@ void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
     TROG_INFO("", (long)this);
 //    std::cout << "client asyncConnect " << std::hex << (long) this << std::endl;
     if (m_conn_shared_ptr != nullptr ) {
-        THROW("should not have a connection at this point");
+        MARVIN_THROW("should not have a connection at this point");
     }
     m_conn_shared_ptr = socketFactory(m_io, m_scheme, m_server, m_port);
 

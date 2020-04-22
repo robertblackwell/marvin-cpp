@@ -1,10 +1,9 @@
-#include <marvin/helpers/error.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 
 #include <sstream>
 #include <exception>
 namespace Marvin {
 /**
-* Erro handler for Cert functions
 */
 void errorHandler (std::string func, std::string file, int lineno, std::string msg)
 {

@@ -19,7 +19,6 @@
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/http/uri.hpp>
-#include <marvin/http/uri_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/message_factory.hpp>
 
@@ -71,7 +70,6 @@ TEST_CASE("GetRequest:443")
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     MessageBaseSPtr msgv2 = std::make_shared<MessageBase>();
     Uri uri("https://www.somewhere?a=1111&b=2222");
-    UriV2 uriv2("https://www.somewhere?a=1111&b=2222");
     makeRequest(*msg, HttpMethod::GET, uri);
 
     std::string s = msg->str();

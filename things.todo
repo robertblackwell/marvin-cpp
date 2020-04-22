@@ -5,8 +5,6 @@ References for command interface:
  ☐ https://github.com/loopperfect/rxterm
 
 Next step:
-  ☐ uri-v2 uri_v2 - Important - remove unused or outdated source files from marvin++/marvin
-  ☐ IMPORTANT - remove unused tests
   ☐ put external source somewhere else like vendor/src
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
   ☐ need to permit tunnel requests for any port as it might be a websocket
@@ -45,6 +43,8 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ uri-v2 uri_v2 - Important - remove unused or outdated source files from marvin++/marvin @done (20-04-22 10:15) @project(Next step)
+ ✔ IMPORTANT - remove unused tests @done (20-04-22 10:15) @project(Next step)
  ✔ DONE !!! curl test should verify peer and will need to be pointed at our modified root bundle @done (20-04-22 07:56) @project(Next step)
  ✔ research how to test for keep-alive particulaly in regard to upper/lower case and also that more than one value can be on a line @done (20-04-21 19:47)
  ✔ work out how to fit ForwardingHandler into this server_v3/adapter model. The goal is to get `test_proxy` working. @done (20-04-15 09:19)

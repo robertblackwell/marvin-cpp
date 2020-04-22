@@ -5,6 +5,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/callback_typedefs.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 #include <trog/trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
@@ -74,8 +75,8 @@ Connection::Connection(
 {
    TROG_TRACE_CTOR();
    TROG_TRACE_FD(nativeSocketFD());
-    auto x = nativeSocketFD();
-    TROG_DEBUG("constructor:: native handle :: ", x);
+   auto x = nativeSocketFD();
+   TROG_DEBUG("constructor:: native handle :: ", x);
 }
 
 
@@ -184,7 +185,7 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
 void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
 {
     if (m_mode != NOTSECURE) {
-        THROW("connection already secured");
+        MARVIN_THROW("connection already secured");
     }
     m_ssl_ctx_sptr = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::method::sslv23);
     m_ssl_ctx_sptr->set_options(
@@ -202,7 +203,7 @@ void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
 void Connection::becomeSecureServer(Cert::Identity server_identity)
 {
     if (m_mode != NOTSECURE) {
-        THROW("connection already secured");
+        MARVIN_THROW("connection already secured");
     }
     m_ssl_ctx_sptr = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::method::sslv23);
     m_mode = Mode::SECURE_SERVER;
@@ -227,7 +228,7 @@ void Connection::asyncHandshake(std::function<void(const boost::system::error_co
 Cert::Certificate Connection::getServerCertificate()
 {
     if (!m_server_certificate) {
-        THROW("cannot get server certificate until after successful handshake");
+        MARVIN_THROW("cannot get server certificate until after successful handshake");
     }
     return m_server_certificate;
 }
@@ -431,7 +432,7 @@ void Connection::p_start_handshake()
     } else if (m_mode == SECURE_SERVER) {
         handshake_type = boost::asio::ssl::stream_base::server;
     } else {
-        THROW("Invalid handshake_type in p_start_handshake");
+        MARVIN_THROW("Invalid handshake_type in p_start_handshake");
     }
     m_ssl_stream_sptr->async_handshake(
         handshake_type,

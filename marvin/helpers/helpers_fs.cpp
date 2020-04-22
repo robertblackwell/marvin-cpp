@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <marvin/helpers/error.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 #include <marvin/helpers/helpers_fs.hpp>
 
 namespace Marvin::fs {
@@ -49,10 +49,10 @@ void create_dir(boost::filesystem::path path)
     if (stat(cpath, &st) == -1) {
         int e = mkdir(cpath, 0700);
         if (e == -1) {
-            THROW( __func__  << " failed errno: " << errno) ;
+            MARVIN_THROW( __func__  << " failed errno: " << errno) ;
         }
     } else {
-        THROW(" path_create_dir: failed for path " << path.string());
+        MARVIN_THROW(" path_create_dir: failed for path " << path.string());
     }
 }
 void remove_dir(boost::filesystem::path path)
@@ -67,7 +67,7 @@ void file_put_contents(std::string filename, std::string data)
 {
     std::ofstream outfile(filename);
     if (outfile.fail()) {
-        THROW("filename: [" << filename << "]  probably does not exist");
+        MARVIN_THROW("filename: [" << filename << "]  probably does not exist");
     }
     outfile << data;
     outfile.close();

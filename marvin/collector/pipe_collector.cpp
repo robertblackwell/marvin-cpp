@@ -8,7 +8,7 @@
 #include <regex>
 #include <marvin/boost_stuff.hpp>
 #include <regex>
-#include <marvin/helpers/macros.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 #include <trog/trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
@@ -44,7 +44,7 @@ static bool testPipeReaderExists(char* pipeName)
     int fdw = open(pipeName, O_WRONLY | O_NONBLOCK);
     if (fdw == -1){
         TROG_WARN("non-blocking open for write with no readers failed");
-        THROW("non-blocking open for write with no readers failed");
+        MARVIN_THROW("non-blocking open for write with no readers failed");
         return false;
     }
     close(fdw);

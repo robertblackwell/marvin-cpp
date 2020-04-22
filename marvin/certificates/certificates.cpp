@@ -12,11 +12,11 @@
 #include <cert/cert_certificate.hpp>        // for Certificate
 #include <cert/cert_identity.hpp>           // for Identity
 #include <cert/cert_store_types.hpp>        // for Path
-#include <cert/error.hpp>                   // for THROW
+#include <cert/error.hpp>                   // for MARVIN_THROW
 #include <cert/cert_store_locator.hpp>      // for Locator, LocatorSPtr
 #include <cert/cert_store_store.hpp>        // for Store, StoreSPtr
 #include <openssl/ossl_typ.h>               // for X509_STORE
-#include <marvin/helpers/macros.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 #include <marvin/certificates/env_utils.hpp>
 
 namespace Marvin {
@@ -36,7 +36,7 @@ Certificates& Certificates::getInstance()
 {
     boost::filesystem::path config_path = ca_config_file_path;
     if (! boost::filesystem::exists(config_path)) {
-        THROW("ca_config_file does not exist at given path " + config_path.string());
+        MARVIN_THROW("ca_config_file does not exist at given path " + config_path.string());
     }
     boost::filesystem::path where = store_path;
     if (boost::filesystem::exists(where)) {
@@ -57,16 +57,16 @@ Certificates::Certificates()
     optional<path> mh = Marvin::getEnvMarvinHome();
     path cwd = boost::filesystem::current_path();
     if (!mh) {
-        THROW("environment variable MARVIN_HOME not set");
+        MARVIN_THROW("environment variable MARVIN_HOME not set");
     } else if (!Marvin::validEnvVariables()) {
-        THROW(str(boost::format("Marvin environment variables MARVIN_HOME=%1% invalid") % mh.get().string()));
+        MARVIN_THROW(str(boost::format("Marvin environment variables MARVIN_HOME=%1% invalid") % mh.get().string()));
     } else if (!Marvin::validWorkingDir()) {
-        THROW(str(boost::format("running Certificate::getInstance() from invalid working directory cwd = %1%") % cwd.string()));
+        MARVIN_THROW(str(boost::format("running Certificate::getInstance() from invalid working directory cwd = %1%") % cwd.string()));
     } 
     path p = mh.get() / Marvin::kMarvinDotDirectoryName / Marvin::kMarvinCertStoreName;
     path base(p);
     if (! boost::filesystem::is_directory(base)) {
-        THROW("the base dir for certificates does not exist");
+        MARVIN_THROW("the base dir for certificates does not exist");
     }
     m_cert_store_sptr   = Cert::Store::Store::load(p);
     m_locator_sptr      = m_cert_store_sptr->getLocator();

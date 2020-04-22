@@ -2,7 +2,7 @@
 
 #include <thread>
 
-#include <marvin/helpers/macros.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <trog/trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
@@ -77,7 +77,7 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
     m_acceptor.bind(endpoint, err);
     if( err) {
         TROG_ERROR("error port: ",m_port, err.message());
-        MTHROW(std::string("error binding server port ")+err.message());
+        MARVIN_THROW(std::string("error binding server port ")+err.message());
     }
     p_start_heartbeat();
 

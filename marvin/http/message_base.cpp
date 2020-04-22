@@ -1,9 +1,11 @@
+#include <marvin/http/message_base.hpp>
+
 #include <string>
 #include <map>
 #include <sstream>
 #include <boost/algorithm/string/trim.hpp>
 #include <marvin/external_src/http-parser/http_parser.h>
-#include <marvin/http/message_base.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 
 namespace Marvin{
 
@@ -205,7 +207,7 @@ std::string MessageBase::header(std::string key)
     if(res) {
         return res.get();
     } else {
-        throw "header " + key + " does not exist";
+        MARVIN_THROW("header " + key + " does not exist");
     }
 }
 
@@ -220,7 +222,7 @@ std::string MessageBase::getHeader(std::string key)
     if(result) {
         return result.get();
     }
-    throw "trying to access non-existent header value";
+    MARVIN_THROW("trying to access non-existent header value");
     return nullptr;
 }
 Marvin::HeadersV2& MessageBase::getHeaders()
