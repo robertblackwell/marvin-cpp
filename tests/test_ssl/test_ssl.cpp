@@ -17,34 +17,30 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/message_factory.hpp>
 #include <marvin/client/client.hpp>
-#include <marvin/forwarding//forward_helpers.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
-#include <marvin/server/http_server.hpp>
-#include <marvin/server/request_handler_base.hpp>
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/certificates/certificates.hpp>
 
 using namespace Marvin;
-using namespace Marvin::Http;
 
 namespace {
 
 /// \brief makes a GET request to the url provided and expects status=200/302 and a non empty content
     MessageBaseSPtr  makeRequest(std::string request_uri) {
-        MessageBaseSPtr msg = std::shared_ptr<Marvin::Http::MessageBase>(new Marvin::Http::MessageBase());
+        MessageBaseSPtr msg = std::shared_ptr<Marvin::MessageBase>(new Marvin::MessageBase());
 #if 1
         Marvin::Uri uri(request_uri);
 #else
         Uri uri("https://www.ssllabs.com:443");
 #endif
-        ::Marvin::Http::makeRequest(*msg, HttpMethod::GET, uri);
+        ::Marvin::makeRequest(*msg, HttpMethod::GET, uri);
         msg->setHeader(HeadersV2::Host, std::string("www.ssllabs.com"));//uri.host());
-        msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
-        msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
-        msg->setHeader(Marvin::Http::HeadersV2::TE, "");
+        msg->setHeader(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
+        msg->setHeader(Marvin::HeadersV2::AcceptEncoding, "identity");
+        msg->setHeader(Marvin::HeadersV2::TE, "");
         // Http versions defaults to 1.1, so force it to the same as the request
         msg->setContent("");
         return msg;

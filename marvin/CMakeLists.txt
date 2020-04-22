@@ -40,25 +40,18 @@ file(GLOB HEADERS
 	external_src/CxxUrl/url.hpp 
 	external_src/uri-parser/UriParser.hpp 
 	external_src/http-parser/http_parser.h 
-	# external_src/trog/trog.hpp  
 	external_src/simple_buffer/simple_buffer.h
 	
-	# forwarding/forward_helpers.hpp 
-	# forwarding/forwarding_handler.hpp
-	# forwarding/ssl_forwarding_handler.hpp
-
 	helpers/helpers_fs.hpp
 	helpers/error.hpp
 	helpers/macros.hpp
 	helpers/mitm.hpp
 	
-	http/http_header.hpp 
 	http/headers_v2.hpp 
 	http/http_method.hpp 
 	http/message_base.hpp 
 	http/message_factory.hpp
 	http/message_interface.hpp 
-	http/ordered_key_value.hpp 
 	http/parser.hpp
 	http/uri.hpp 
 	http/uri_query.hpp
@@ -67,19 +60,6 @@ file(GLOB HEADERS
 	message/message_reader.hpp 
 	message/message_writer.hpp 
 	
-	# server/connection_handler.hpp 
-	# server/http_server.hpp 
-	# server/request_handler_base.hpp
-	# server/server_connection_manager.hpp 
-	# server/server_context.hpp
-
-	# server_v2/connection_handler.hpp 
-	# server_v2/http_server.hpp 
-	# server_v2/request_handler_base.hpp
-	# server_v2/server_connection_manager.hpp 
-	# server_v2/server_context.hpp
-
-
 	server_v3/adapter.hpp 
 	server_v3/connection_handler.hpp 
 	server_v3/server.hpp 
@@ -95,8 +75,6 @@ file(GLOB HEADERS
 
 set(SOURCES 
 
-	m_log.cpp
-	
 	buffer/buffer_chain.cpp			
 	buffer/m_buffer.cpp				
 	
@@ -127,24 +105,16 @@ set(SOURCES
 	external_src/CxxUrl/url.cpp
 	external_src/uri-parser/UriCodec.cpp
 	external_src/http-parser/http_parser.c
-	# external_src/trog/trog.cpp
 	external_src/simple_buffer/simple_buffer.c
-
-	# forwarding/forward_helpers.cpp 		
-	# forwarding/forwarding_handler.cpp 	
-	# forwarding/ssl_forwarding_handler.cpp 	
 
 	helpers/helpers_fs.cpp
 	helpers/error.cpp
 	helpers/mitm.cpp
 	
-	http/http_header.cpp 		
 	http/headers_v2.cpp 		
 	http/http_method.cpp 		
 	http/message_base.cpp
 	http/message_factory.cpp 		
-	http/ordered_key_value.cpp 
-	http/ordered_key_value.cpp  			
 	http/parser.cpp 
 	http/uri.cpp
 	http/uri_query.cpp		
@@ -152,21 +122,7 @@ set(SOURCES
 	
 	message/message_reader.cpp 	
 	message/message_writer.cpp 	
-	
-	# server/connection_handler.cpp 			
-	# server/request_handler_base.cpp
-	# server/http_server.cpp 					
-	# server/server_connection_manager.cpp 
-	# # leave out server_context - no functions in this file - produces library warning that is a bit obscure
-	# # server/server_context.cpp
 
-	# server_v2/connection_handler.cpp 
-	# server_v2/http_server.cpp 
-	# server_v2/request_handler_base.cpp
-	# server_v2/server_connection_manager.cpp 
-	# server_v2/server_context.cpp
-
-	# server_v3/adapter.cpp
 	server_v3/connection_handler.cpp 
 	server_v3/tcp_server.cpp 
 	server_v3/request_handler_interface.cpp

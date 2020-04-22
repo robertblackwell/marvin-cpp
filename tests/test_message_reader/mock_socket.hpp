@@ -22,8 +22,7 @@ typedef std::shared_ptr<MockReadSocket> MockReadSocketSPtr;
 class MockReadSocket : public Marvin::ISocket
 {
 public:
-//    MockReadSocket(boost::asio::io_service& io, int tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
-    MockReadSocket(boost::asio::io_service& io, Testcase tc); //: io_(io), _tc(tc), _tcObjs(Testcases()), _tcObj(_tcObjs.getCase(tc));
+    MockReadSocket(boost::asio::io_service& io, Testcase tc); 
     void startRead();
 
     void asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb);
@@ -60,7 +59,6 @@ private:
     RepeatingTimer*             m_repeating_timer;
     boost::asio::io_service&    m_io;
     boost::asio::ssl::context   m_ssl_context;
-//    Testcases                   _tcObjs;
     Testcase                    m_tcObj;
     int                         m_tcLineIndex;
     // the test case - vector of strings

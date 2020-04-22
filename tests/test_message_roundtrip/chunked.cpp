@@ -8,8 +8,6 @@
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelDebug)
 
-#include <marvin/m_log.hpp>
-
 using namespace Marvin;
 
 Chunked::Chunked(
@@ -55,7 +53,7 @@ void Chunked::verifyResponse(ErrorType& er, MessageBaseSPtr response)
     std::string tech = response->getHeader(HeadersV2::TransferEncoding);
     TROG_DEBUG("Body of response is : ", raw_body);
     bool test = raw_body == "abcdefghijklmnopqrstuvwxyz1234567890ABCEDFGHIJKLMNOPQRSTUVWXYZ";
-    MTRACE( __func__ << std::endl);
+    
     return;
 }
 BufferChainSPtr Chunked::makeBody()

@@ -5,7 +5,9 @@ References for command interface:
  ☐ https://github.com/loopperfect/rxterm
 
 Next step:
-  ☐ Important - remove unused or outdated source files from marvin++/marvin
+  ☐ uri-v2 uri_v2 - Important - remove unused or outdated source files from marvin++/marvin
+  ☐ IMPORTANT - remove unused tests
+  ☐ put external source somewhere else like vendor/src
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
   ☐ need to permit tunnel requests for any port as it might be a websocket
   ☐ should only do https_upstream if the port is 443 and even then shuld check the first message for upgrade and reject

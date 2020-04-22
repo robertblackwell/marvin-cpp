@@ -341,8 +341,8 @@ int main(int argc, char * argv[])
 {
     RBLogging::setEnabled(false);
 
-    char* _argv[2] = {argv[0], (char*)"-r junit"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
+    char* tmp_argv[2] = {argv[0], (char*)"-r junit"}; // change the filter to restrict the tests that are executed
+    int tmp_argc = 2;
     printf("Timeout\n");
     int result = Catch::Session().run( argc, argv );
     printf("Timeout\n");

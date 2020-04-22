@@ -47,7 +47,7 @@ int main( int argc, char* argv[] )
     std::thread proxy_thread(proxy_func, nullptr);
 
 
-    char* _argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
+    char* tmp_argv[2] = {argv[0], (char*)"--catch_filter=*.*"}; // change the filter to restrict the tests that are executed
     doctest::Context context;
     context.applyCommandLine(argc, argv);
     int result = context.run(); // run

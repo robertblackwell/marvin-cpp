@@ -80,18 +80,3 @@ TEST_CASE("header02","02")
 {
 
 }
-#if 0
-
-int main( int argc, char* argv[] )
-{
-    // global setup - run a server
-    RBLogging::setEnabled(false);
-    char* _argv[2] = {argv[0], (char*)"-r tap"}; // change the filter to restrict the tests that are executed
-    int _argc = 2;
-    printf("headers\n");
-    int result = Catch::Session().run( argc, argv );
-    printf("headers\n");
-    return result;
-}
-
-#endif

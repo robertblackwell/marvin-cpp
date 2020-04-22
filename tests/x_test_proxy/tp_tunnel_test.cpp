@@ -1,7 +1,5 @@
 #include <doctest/doctest.h>
-
 #include <boost/process.hpp>
-#include <boost/algorithm/string.hpp>
 #include <marvin/http/message_factory.hpp>
 #include <marvin/helpers/helpers_fs.hpp>
 #include <marvin/collector/collector_base.hpp>
@@ -147,19 +145,19 @@ namespace  {
 
         auto original_headers = m_testcase_sptr->m_msg_sptr->getHeaders();
         /// these are the headers that should be preserved - they arer [present in every test case just for convenience
-        CHECK( (echoed_headers["ACCEPT"] == original_headers.atKey("ACCEPT").get() ) );
-        CHECK( (echoed_headers["ACCEPT-CHARSET"] == original_headers.atKey("ACCEPT-CHARSET").get() ));
-        CHECK( (echoed_headers["ACCEPT-LANGUAGE"] == original_headers.atKey("ACCEPT-LANGUAGE").get() ));
-        CHECK( (echoed_headers[Marvin::Http::HeadersV2::ContentLength] == original_headers.atKey(Marvin::Http::HeadersV2::ContentLength).get()) );
-        CHECK( (echoed_headers[Marvin::Http::HeadersV2::Host] == original_headers.atKey(Marvin::Http::HeadersV2::Host).get()) );
-        CHECK( (echoed_headers["USER-AGENT"] == original_headers.atKey("USER-AGENT").get()) );
+        CHECK( (echoed_headers["ACCEPT"] == original_headers["ACCEPT"]) );
+        CHECK( (echoed_headers["ACCEPT-CHARSET"] == original_headers["ACCEPT-CHARSET"]) );
+        CHECK( (echoed_headers["ACCEPT-LANGUAGE"] == original_headers["ACCEPT-LANGUAGE"]) );
+        CHECK( (echoed_headers[Marvin::Http::HeadersV2::ContentLength] == original_headers[Marvin::Http::HeadersV2::ContentLength]) );
+        CHECK( (echoed_headers[Marvin::Http::HeadersV2::Host] == original_headers[Marvin::Http::HeadersV2::Host]) );
+        CHECK( (echoed_headers["USER-AGENT"] == original_headers["USER-AGENT"]) );
         /// these headers should be present but changed
         CHECK(echoed_headers.has(Marvin::Http::HeadersV2::Connection));
         /// the proxy only allows connection close
-        std::string sc = boost::to_upper_copy(echoed_headers.atKey(Marvin::Http::HeadersV2::Connection).get());
-        CHECK(boost::to_upper_copy(echoed_headers.get(Marvin::Http::HeadersV2::Connection)) == Marvin::Http::HeadersV2::ConnectionClose);
+        CHECK(echoed_headers.get(Marvin::Http::HeadersV2::Connection) == Marvin::Http::HeadersV2::ConnectionClose);
 
         CHECK(echoed_headers.has(Marvin::Http::HeadersV2::AcceptEncoding));
+        CHECK(echoed_headers.has(Marvin::Http::HeadersV2::TE));
 
         /// check body
         std::string echoedBody = j["req"]["body"];
@@ -171,29 +169,19 @@ namespace  {
             m_client_sptr = nullptr;
         }
 
-    //    std::cout << "PostTest::" << _testcase._description << std::endl;
     }
     void ProxyRequestor::exec()
     {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         m_client_sptr = std::shared_ptr<Client>(new Client(m_io, m_scheme, m_proxy_host, m_proxy_port));
-
         auto f = std::bind(&ProxyRequestor::handler, this, std::placeholders::_1, std::placeholders::_2);
-
-        /// generate a random string and use it as the message content
-    #if 0
-        boost::uuids::uuid tmp_uuid = boost::uuids::random_generator()();
-    std::string tmps = boost::uuids::to_string(tmp_uuid);
-    m_msg_sptr->setContent(tmps);
-    m_testcase_sptr->m_msg_sptr->setContent(tmps);
-    #endif
         auto buf = m_testcase_sptr->m_msg_sptr->getContentBuffer();
         m_client_sptr->asyncWrite(m_msg_sptr, buf, f);
 
     }
 
 
-    tp::TestcaseSPtr makePostRequestTestcase(
+    tp::TestcaseSPtr makeTunnelRequestTestcase(
             std::string uriString,
             std::string proxyScheme,
             std::string proxyHost,
@@ -236,8 +224,7 @@ namespace  {
     }
 
     void removeVolatileValues(boost::filesystem::path inFile, boost::filesystem::path outFile) {
-        auto retcode = std::system( (std::string("sed -e '/X-FORWARDED-FOR/d' -e '/^DATE/d' -e '/junk/d' -e '/body/d' ") + inFile.string() + " > " + outFile.string()).c_str() );
-        REQUIRE_MESSAGE(retcode == 0, "SED command failed removing volatile data from whiteacorn.com received");
+        std::system( (std::string("/usr/bin/sed -e '/^DATE/d' -e '/junk/d' -e '/body/d' ") + inFile.string() + " > " + outFile.string()).c_str() );
     }
 
 
@@ -253,7 +240,7 @@ TEST_CASE_FIXTURE(ProxyFixture, "whiteacorn_post")
     boost::asio::io_service io;
     // get a testcase
     tp::TestcaseSPtr  tcSPtr = makePostRequestTestcase(
-            std::string("http://whiteacorn.com/utests/echo/index.php"),
+            std::string("http://whiteacorn/utests/echo/index.php"),
             this->m_proxy_scheme,
             this->m_proxy_host,
             std::to_string(this->m_proxy_port)

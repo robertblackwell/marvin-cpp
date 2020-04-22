@@ -48,10 +48,6 @@ void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::Al
 void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connHandler)
 {
     TROG_DEBUG("");
-//    std::cout << "register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
-//    std::cout << "register: _connections.size() " << _connections.size() << " "  << std::endl;
-//    std::cout << "_register: fd_list.size() " << _fd_list.size() << " "  << std::endl;
-//    std::cout << "_register: _connections.size() " << _connections.size() << " "  << std::endl;
 #ifdef DISABLE_SCMGR
    TROG_TRACE3(" num conn: ", m_connection_count);
     return;
@@ -128,8 +124,6 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
 
 void ServerConnectionManager::stop_all()
 {
-//    for (auto c: _connections)
-//        c->stop();
-//    _connections.clear();
+
 }
 } // namespace Marvin

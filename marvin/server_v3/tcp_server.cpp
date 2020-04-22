@@ -68,15 +68,6 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
     m_signals.add(SIGQUIT);
     #endif // defined(SIGQUIT)
     s_instance = this;
-#if 0
-    auto handler = [this]( const boost::system::error_code& error, int signal_number)
-    {
-//      std::cout << "Handler Got signal " << signal_number << "; "
-//                   "stopping io_service." << std::endl;
-      this->_io.stop();
-    };
-    _signals.async_wait(handler);
-#endif
     
     p_wait_for_stop();
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), m_port);
@@ -110,7 +101,6 @@ void TcpServer::terminate()
     p_initialize();
     m_acceptor.listen();
     
-    // start the accept process on the _serverStrand
     auto hf = std::bind(&TcpServer::p_start_accept, this);
     m_io.post(hf);
     if (ready_cb != nullptr) {
@@ -131,12 +121,10 @@ void TcpServer::terminate()
 
     auto hf = (std::bind(&TcpServer::p_handle_accept, this, connectionHandler, std::placeholders::_1));
     conn_sptr->asyncAccept(m_acceptor, hf);
-//    _acceptor.async_accept(_boost_socket, hf);
-
 }
 
 //-------------------------------------------------------------------------------------
-// handleAccept - called on _strand to handle a new client connection
+// handleAccept
 //-------------------------------------------------------------------------------------
  void TcpServer::p_handle_accept(ConnectionHandler* connHandler, const boost::system::error_code& err)
 {
@@ -167,11 +155,9 @@ void TcpServer::terminate()
         connHandler->serve();
         #endif
     }else{
-//        std::cout << __FUNCTION__ << " error : " << err.message() << std::endl;
        TROG_TRACE3("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         m_io.stop();
         return;
-//        delete connHandler;
     }
 }
 

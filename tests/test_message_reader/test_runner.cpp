@@ -45,8 +45,6 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     if( er != expected_err){
         std::cout << "bad" << std::endl;
     }
-//        assert(er == expected_err);
-//    assert(rdr_->statusCode() == _tcObj.result_status_code());
     REQUIRE(m_rdr->statusCode() == m_tcObj.result_status_code());
     auto h1 = m_tcObj.result_headers();
     auto h2 = m_rdr->getHeaders();
@@ -60,13 +58,9 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     
     auto b1 = m_tcObj.result_body();
     auto b2 = m_rdr->getContentBuffer();
-//    auto b3 = rdr_->get_raw_body_chain();
     auto s2 = b2->to_string();
-//    auto s3 = chain_to_string(b3);
-//    assert(b1 == s2);
     REQUIRE(b1 == s2);
     auto desc = m_tcObj.getDescription();
-//    std::cout << "TestRunner::readMessage Success for testcase " << _tcObj.getDescription() <<std::endl;
 }
 void Testrunner::onBody(Marvin::ErrorType er, Marvin::BufferChainSPtr chunkSPtr)
 {
@@ -79,12 +73,9 @@ void Testrunner::onBody(Marvin::ErrorType er, Marvin::BufferChainSPtr chunkSPtr)
     {
         std::string expectedBody = m_tcObj.result_body();
         bool vb = m_tcObj.verify_body(m_body_accumulator);
-//        assert(vb);
-//        assert(er == Marvin::make_error_eom());
         REQUIRE(vb);
         REQUIRE(er == Marvin::make_error_eom());
         auto desc = m_tcObj.getDescription();
-//        std::cout << "TestRunner::run_StreamingBodyRead Success testcase " << _tcObj.getDescription() <<std::endl;
 
     }else{
         m_rdr->readBody(bh);
@@ -97,7 +88,6 @@ void Testrunner::onHeaders(Marvin::ErrorType er){
     Marvin::ErrorType expected_err = m_tcObj.result_onheaders_err();
     std::string ers = er.message();
     assert(er == expected_err);
-    //assert(rdr_->statusCode() == _tcObj.result_status_code());
     REQUIRE(er == expected_err);
     REQUIRE(m_rdr->statusCode() == m_tcObj.result_status_code());
     auto h1 = m_tcObj.result_headers();
