@@ -3,4 +3,4 @@ certificatestest_dir=$(realpath ./)
 project_dir=${1} #/home/robert/Projects/marvin++
 cd ${project_dir}
 echo "From inside test.sh parameter 1 = $1"
-${certificatestest_dir}/test_certificates
+MARVIN_HOME=${project_dir} ${certificatestest_dir}/test_certificates

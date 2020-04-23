@@ -12,24 +12,15 @@ namespace Marvin{
 std::string traceMessage(MessageBase& msg)
 {
     std::stringstream ss;
-    ss << "MSG[" << std::hex << &msg << std::dec << "]: ";
+    ss << std::endl << "MSG[" << std::hex << &msg << std::dec << "]: ";
     
     if( msg.isRequest() ){
-        ss << "|REQ|" << msg.getMethodAsString() << " [" << msg.uri() << "] HTTP/1." << msg.httpVersMinor();
+        ss << msg.getMethodAsString() << " " << msg.uri() << " HTTP/1." << msg.httpVersMinor();
     }else{
-        ss << "|RESP|"<< "HTTP/1." << msg.httpVersMinor() << " " << msg.statusCode() << "[" << msg.status()<< "] ";
+        ss << "HTTP/1." << msg.httpVersMinor() << " " << msg.statusCode() << " " << msg.status()<< " ";
     }
     
-    if( msg.hasHeader(Marvin::HeadersV2::Host) ){
-        ss << "Host[" << msg.getHeader(Marvin::HeadersV2::Host) << "]";
-    }else{
-        ss << "Host[]";
-    }
-    if( msg.hasHeader(Marvin::HeadersV2::ContentLength) ){
-        ss << "Len[" << msg.getHeader(Marvin::HeadersV2::ContentLength) << "]";
-    }else{
-        ss << "Len[]";
-    }
+    ss << (msg.getHeaders().str());
     std::string s = ss.str();
     return ss.str();
 }

@@ -14,7 +14,7 @@
 #include <marvin/http/message_factory.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
 
 
 namespace Marvin {
@@ -71,7 +71,14 @@ void MitmHttps::p_handshake_upstream()
             m_mitm_app.p_on_upstream_error(marvin_error);
         } else {
             m_server_certificate = m_upstream_socket_sptr->getServerCertificate();
+            std::string cert_s_original = Cert::x509::Cert_PrintToString(m_server_certificate.native());
+            TROG_TRACE3("original certificate", cert_s_original);
+            
             m_mitm_identity = certificates.buildServerMitmCertificate(m_server_certificate);
+            
+            std::string cert_s_built = Cert::x509::Cert_PrintToString(m_mitm_identity.getX509());
+            TROG_TRACE3("built certificate", cert_s_original);
+
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             makeResponse200OKConnected(*m_downstream_response_sptr);
             m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err)

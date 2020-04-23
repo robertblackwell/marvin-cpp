@@ -11,6 +11,7 @@
             "test_doctest/test_doctest",
             "test_buffers/test_buffers",
             "test_marvin_errors/test_marvin_errors",
+            "test_ssl/test_ssl",
             "test_headers/test_headers",
             "test_certificates/test_env_utils/test_env_utils",
             "test_certificates/test_certificates/test_certificates",

@@ -140,6 +140,8 @@ class HeadersV2
         Iterator find(std::string k);
         Iterator begin();
         Iterator end();
+        std::string str();
+        friend std::ostream &operator<< (std::ostream &os, HeadersV2 &headers);
 
     private:
         void eraseAtIndex(std::size_t position);

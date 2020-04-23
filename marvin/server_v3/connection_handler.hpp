@@ -3,7 +3,7 @@
 #define marvin_server_v3_connection_handler_hpp
 
 // #include <cstdio>
-
+#include <string>
 #include <marvin/boost_stuff.hpp>
 
 #include <marvin/connection/socket_interface.hpp>
@@ -40,6 +40,7 @@ class ConnectionHandler
         void p_handle_connect_complete(bool hijack);
         
         boost::uuids::uuid                      m_uuid;
+        std::string                             m_uuid_str;
         boost::asio::io_service&                m_io;
         ServerConnectionManager&                m_connectionManager;
         RequestHandlerInterfaceUPtr             m_requesthandler_uptr;

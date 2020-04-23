@@ -32,7 +32,7 @@ add_subdirectory(test_run_shell) # demonstrates how to use a shell script as the
 # add_subdirectory(test_server_cleanup_fixture)
 
 add_subdirectory(test_server_v3)
-add_subdirectory(test_ssl)		# not sure this one will stay
+# add_subdirectory(test_ssl)		# not sure this one will stay
 add_subdirectory(test_timeout)
 add_subdirectory(test_uri)
 if (OFF)

@@ -1,5 +1,6 @@
 #include <set>
 #include <regex>
+#include <sstream>
 #include <boost/algorithm/string.hpp>
 #include <marvin/http/headers_v2.hpp>
 
@@ -69,6 +70,21 @@ bool isConnectionClose(Marvin::HeadersV2& h)
 }
 
 
+std::ostream &operator<< (std::ostream &os, HeadersV2& headers)
+{
+    int num = headers.size();
+    for(int i = 0; i < num; i++) {
+        auto p = headers.atIndex(i);
+        os << " " << p.first << ": " << p.second;
+    }
+}
+
+std::string HeadersV2::str()
+{
+    std::ostringstream os;
+    os << (*this);
+    return os.str();
+}
 void HeadersV2::copyExcept(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList)
 {
     for(auto it = source.begin(); it != source.end(); it++) {

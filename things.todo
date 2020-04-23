@@ -5,11 +5,11 @@ References for command interface:
  ☐ https://github.com/loopperfect/rxterm
 
 Next step:
+  ☐ decide about uuid in the mitm_app currently not initialized
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
   ☐ need to permit tunnel requests for any port as it might be a websocket
   ☐ should only do https_upstream if the port is 443 and even then shuld check the first message for upgrade and reject
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
-  ☐ need to log the headers in the original message before going further to detect cause of craches from headers that did not get acted upon correctly - same log the original headers as soon as the message arrives so we know what was requested in the event of a crash from a set of headers we cannot handle.
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
   ☐ valgrind to check for memory leaks
   ☐ break message reader into bits - maybe
@@ -22,10 +22,6 @@ Next project:
   ☐ think about a command interface to change filters while the proxy is running
 
 Tests:
-  ☐ test_ssl fails fix or discard test
-☐ test_roundtrip and test_server_v3 should be combined and unused files deleted
-☐ handler : integrate the new isConnectionKeepAlive() isConnectionClosed() functions into this class
-☐ rename header_v2 to header
 ☐ find all test that are #if out of action and get them working or remove
 ☐ test trailers on message parsing and set/get of MessageBase
 ☐ test_buffers does no CHECK/REQUIRE anything
@@ -41,6 +37,8 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ test_ssl fails fix or discard test -DISCARD @done (20-04-23 15:30) @project(Tests)
+ ✔ need to log the headers in the original message before going further to detect cause of craches from headers that did not get acted upon correctly - same log the original headers as soon as the message arrives so we know what was requested in the event of a crash from a set of headers we cannot handle. @done (20-04-23 15:30) @project(Next step)
  ✔ start node server automatically before roundtrip tests and place nodejs server in a more prominant place. @done (20-04-23 08:34)
  ✔ put external source somewhere else like vendor/src @done (20-04-23 08:33) @project(Next step)
  ✔ IMPORTANT - the CMakeList.txt files are a mess - tidy up @done (20-04-23 08:33) @project(Next step)

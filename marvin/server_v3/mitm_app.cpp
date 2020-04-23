@@ -9,7 +9,7 @@
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
 
 namespace Marvin {
 
@@ -93,9 +93,9 @@ void MitmApp::p_on_first_message()
     m_port = std::to_string(tmp_uri.port());
 
     HttpMethod method = m_rdr->method();
-
+    auto sss = traceMessage(*m_rdr);
     // important logging point - if it breaks later in processing we need to be able to find out what was requested
-   TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", serializeHeaders(*m_rdr));
+    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", traceMessage(*m_rdr) );
 
     if (method == HttpMethod::CONNECT) {
 
@@ -157,6 +157,7 @@ void MitmApp::p_on_tunnel_completed()
 }
 void MitmApp::p_connection_end()
 {
+    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD());
     p_on_completed(); // comes from the adapter
 }
 
@@ -187,7 +188,7 @@ void MitmApp::p_on_tunnel_error(Marvin::ErrorType& err)
 }
 void MitmApp::p_log_error(std::string label, Marvin::ErrorType err)
 {
-
+    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD());
 }
 /**
  * Determine what to do about a CONNECT request. 

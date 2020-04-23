@@ -14,11 +14,11 @@ target_precompile_headers(${TARGET}
 target_link_libraries(${TARGET} 
 	PUBLIC marvin_library ${MARVIN_LINK_LIBRARIES})
 
-add_test(${TARGET} ${TARGET})
+add_test(${TARGET} /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/test.sh ${MARVIN_PROJECT_DIR})
 SET_TESTS_PROPERTIES(${TARGET}
     PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
 
 
 set_tests_properties(${TARGET}
     PROPERTIES 
-    ENVIRONMENT "MARVIN_HOME=${PROJECT_DIR}")
+    ENVIRONMENT "MARVIN_HOME=${MARVIN_PROJECT_DIR}")

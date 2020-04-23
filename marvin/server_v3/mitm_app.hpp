@@ -122,6 +122,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         // std::function<void(std::string s, std::string h, MessageReaderSPtr req, MessageBaseSPtr resp)> m_collect_function;
 
         boost::uuids::uuid                  m_uuid;
+        std::string                         m_uuid_str;
         boost::asio::io_service&            m_io;
         ICollectorSPtr                      m_collector_sptr;
         ISocketSPtr                         m_socket_sptr;

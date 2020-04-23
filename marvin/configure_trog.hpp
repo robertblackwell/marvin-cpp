@@ -65,7 +65,7 @@ namespace Trog {
     ///    using Trogger = Collector<Formatter, SinkDefault, Thread::Writer>;
     ///
 
-    using Trogger = Collector<Formatter, SinkDefault, Simple::Writer>;
+    using Trogger = Collector<Formatter, Sinkstdout, Simple::Writer>;
 
     /// Formatter
     /// =========

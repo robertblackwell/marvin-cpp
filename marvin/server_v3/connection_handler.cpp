@@ -15,6 +15,7 @@ ConnectionHandler::ConnectionHandler(
     RequestHandlerUPtrFactory   factory
 ):
     m_uuid(boost::uuids::random_generator()()),
+    m_uuid_str(boost::uuids::to_string(m_uuid)),
     m_io(io),
     m_connectionManager(connectionManager),
     m_factory(factory)
@@ -58,7 +59,7 @@ std::string ConnectionHandler::uuid()
 */
 void ConnectionHandler::serve()
 {
-   TROG_TRACE3("ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
+    TROG_TRACE3("ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
     m_requesthandler_uptr->handle(m_server_context, m_connection, [this](){
        TROG_TRACE3("ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
         m_connectionManager.deregister(this); 

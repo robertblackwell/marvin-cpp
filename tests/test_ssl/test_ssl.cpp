@@ -129,7 +129,6 @@ TEST_CASE("new_connection")
     });
     io.run();
 }
-#endif
 TEST_CASE("new_connection_connect")
 // test can go secure BEFORE connect
 {
@@ -156,6 +155,7 @@ TEST_CASE("new_connection_connect")
     io.run();
 
 }
+#endif
 
 TEST_CASE("new_connection_GET")
 // test can go secure BEFORE connect

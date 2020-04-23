@@ -7,7 +7,7 @@
 #include <marvin/callback_typedefs.hpp>
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
 
 #include <marvin/connection/connection.hpp>
 namespace Marvin {
@@ -444,6 +444,15 @@ void Connection::p_handle_handshake(const boost::system::error_code& err)
     if(! err) {
         if (m_mode == SECURE_CLIENT) {
             X509* server_cert = SSL_get_peer_certificate(this->m_ssl_stream_sptr->native_handle());
+            STACK_OF(X509*) st = SSL_get_peer_cert_chain(this->m_ssl_stream_sptr->native_handle());
+            auto n = sk_X509_num(st);
+            std::vector<std::string> sx;
+            for(int i = 0; i < n; i++) {
+                X509* cert = sk_X509_value(st, i);
+                std::string s = Cert_PrintToString(cert);
+                TROG_TRACE3("Server Chain index: ", i , s);
+                sx.push_back(s);
+            }
             m_server_certificate = Cert::Certificate(server_cert);
         }
         p_post_connect_cb(m_connect_cb, err, this);
