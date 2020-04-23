@@ -8,7 +8,7 @@
 #include <marvin/server_v3/mitm_http.hpp>
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {

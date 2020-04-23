@@ -1,7 +1,6 @@
 #ifndef marvin_error_handler_error_handler_hpp
 #define marvin_error_handler_error_handler_hpp
 #include <string>
-#include <openssl/err.h>
 
 namespace Marvin {
 

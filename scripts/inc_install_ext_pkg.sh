@@ -73,16 +73,23 @@ if [ "$1" == "help" ] ; then help ; fi
 pwd=`pwd`
 if [ "$debug" != "" ] ; then echo $pwd; fi
 vendor=${pwd}/vendor
+vendor_dir=${vendor}
+
+echo vendor: ${vendor} vendor_dir : ${vendor_dir}
+echo
 
 project_dir=$pwd
 project_name=$(basename $project_dir)
 source_dir=${project_dir}/marvin
-external_src=${source_dir}/external_src
+# external_src=${source_dir}/external_src
+external_src=${vendor_dir}/src
 script_dir=$(dirname $(realpath $0))
 clone_dir=${script_dir}/cloned_repos
 stage_dir=${script_dir}/stage
 package_stage_dir=${script_dir}/stage/external_src/${package_name}
 
+echo In cwd=${pwd} installing ${package_name} into ${package_stage_dir} then into ${external_src}
+echo 
 if [ "$1" == "stage" ] || [ "$1" == "install" ] || [ "$1" == "" ] ; then
 	verify_project_name ${project_name} "marvin"
 	get_package_into ${clone_dir}

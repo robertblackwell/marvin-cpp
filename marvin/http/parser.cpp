@@ -10,7 +10,7 @@
 #include <cassert>
 #include <marvin/http/headers_v2.hpp>
 
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 #include <marvin/http/parser.hpp>
 
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)

@@ -4,7 +4,7 @@
 #include <cassert>
 
 #include <marvin/error/marvin_error.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 

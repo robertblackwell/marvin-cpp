@@ -3,7 +3,7 @@
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socketFactory
-#include <trog/trog.hpp>  // for LogInfo, LogD...
+#include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
@@ -12,7 +12,7 @@
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace boost { namespace asio { namespace ip { class tcp; } } }

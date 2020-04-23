@@ -4,10 +4,10 @@
 
 #include <map>
 #include <iostream>
-#include <marvin/external_src/http-parser/http_parser.h>
-#include <marvin/external_src/simple_buffer/simple_buffer.h>
+#include<http-parser/http_parser.h>
+#include<simple_buffer/simple_buffer.h>
 #include <marvin/http/message_base.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
 #define kHEADER_STATE_NOTHING 10
 #define kHEADER_STATE_FIELD   11

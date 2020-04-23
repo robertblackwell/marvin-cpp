@@ -35,7 +35,8 @@ add_subdirectory(test_server_v3)
 add_subdirectory(test_ssl)		# not sure this one will stay
 add_subdirectory(test_timeout)
 add_subdirectory(test_uri)
-
+if (OFF)
+endif()
 # these are not really 'test' in most cases they are experiments to try out an idea 
 # or practice using a facility - such as json or strand
 # x_test_request 		# same comment as test_x_client_request - not sure which one will survive

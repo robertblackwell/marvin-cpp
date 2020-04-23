@@ -2,7 +2,7 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/forwarding/ssl_forwarding_handler.hpp>
 #include <marvin/forwarding/forward_helpers.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {

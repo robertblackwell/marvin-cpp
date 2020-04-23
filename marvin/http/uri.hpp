@@ -10,7 +10,8 @@
 #define marvin_uri_hpp
 #include <string>
 #include <cassert>
-#include <marvin/external_src/uri-parser/UriParser.hpp>
+#include <memory>
+#include<uri-parser/UriParser.hpp>
 namespace Marvin{
     class Uri;
     using UriSPtr = std::shared_ptr<Uri>;

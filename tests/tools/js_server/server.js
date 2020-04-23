@@ -1,5 +1,6 @@
 var http = require('http');
 var router = require('./router');
+var process = require("process")
 
 router.register('/', function(req, res) {
 	res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -128,6 +129,15 @@ router.register('/ping', function(req, resp) {
 	res.writeHead(200, {'Content-Type': 'text/plain'});
 	res.write('Hello World this is a ping');
 	res.end()
+})
+router.register('/stop', function(req, resp) {
+	resp.writeHead(200, {'Content-Type': 'text/plain'});
+	resp.write('Roger -- gone');
+	resp.end()
+	let timer = setInterval(()=>{
+		clearInterval(timer)
+		process.exit(0)
+	},2000)
 })
 
 // We need a server which relies on our router

@@ -2,7 +2,7 @@
 
 #include <unistd.h>
 
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
 
 namespace Marvin {

@@ -9,7 +9,7 @@
 #include <cassert>
 #include <vector>
 #include <marvin/buffer/buffer.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #pragma mark - MBuffer implementation

@@ -5,7 +5,6 @@ References for command interface:
  ☐ https://github.com/loopperfect/rxterm
 
 Next step:
-  ☐ put external source somewhere else like vendor/src
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
   ☐ need to permit tunnel requests for any port as it might be a websocket
   ☐ should only do https_upstream if the port is 443 and even then shuld check the first message for upgrade and reject
@@ -14,7 +13,8 @@ Next step:
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
   ☐ valgrind to check for memory leaks
   ☐ break message reader into bits - maybe
-  ☐ find all throw "of a string" and replace with THROW macro -- try taking the model from x509 and importing it into this project replace all instance of throwing a string with THROW
+  ☐ research restructuring messagereader so as not to be a mix of 3 other classes
+  ☐ simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
 
 Next project:
   ☐ make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host
@@ -22,16 +22,14 @@ Next project:
   ☐ think about a command interface to change filters while the proxy is running
 
 Tests:
+  ☐ test_ssl fails fix or discard test
 ☐ test_roundtrip and test_server_v3 should be combined and unused files deleted
 ☐ handler : integrate the new isConnectionKeepAlive() isConnectionClosed() functions into this class
 ☐ rename header_v2 to header
-☐ remove outdated or unused test files
-☐ determine which tests will be kept - there is currently a lot of overlap
 ☐ find all test that are #if out of action and get them working or remove
 ☐ test trailers on message parsing and set/get of MessageBase
 ☐ test_buffers does no CHECK/REQUIRE anything
 ☐ message parsing needs to be clearer and also test continuation of headers
-☐ reduntant and duplicate tests - for example test_reader and test_reader_mock are the same ; delete obsolete - unnecessary tests
 ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
 class property names cleanup:
 ☐ some tests are still using the leading _varname naming scheme - fix
@@ -43,6 +41,13 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ start node server automatically before roundtrip tests and place nodejs server in a more prominant place. @done (20-04-23 08:34)
+ ✔ put external source somewhere else like vendor/src @done (20-04-23 08:33) @project(Next step)
+ ✔ IMPORTANT - the CMakeList.txt files are a mess - tidy up @done (20-04-23 08:33) @project(Next step)
+ ✔ reduntant and duplicate tests - for example test_reader and test_reader_mock are the same ; delete obsolete - unnecessary tests @done (20-04-22 11:16)
+ ✔ remove outdated or unused test files @done (20-04-22 11:02)
+ ✔ find all throw "of a string" and replace with THROW macro -- try taking the model from x509 and importing it into this project replace all instance of throwing a string with THROW @done (20-04-22 11:02) @project(Next step)
+ ✔ determine which tests will be kept - there is currently a lot of overlap @done (20-04-22 11:02)
  ✔ uri-v2 uri_v2 - Important - remove unused or outdated source files from marvin++/marvin @done (20-04-22 10:15) @project(Next step)
  ✔ IMPORTANT - remove unused tests @done (20-04-22 10:15) @project(Next step)
  ✔ DONE !!! curl test should verify peer and will need to be pointed at our modified root bundle @done (20-04-22 07:56) @project(Next step)

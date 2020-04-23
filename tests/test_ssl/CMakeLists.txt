@@ -4,9 +4,17 @@ set(TARGET test_ssl)
 add_executable(test_ssl
     test_ssl.cpp
 )
-target_include_directories(test_ssl PUBLIC ./ ../test_helpers ../test_server_client ${TEST_INCLUDE_DIRS})
-target_precompile_headers(${TARGET} REUSE_FROM marvin_library)
-target_link_libraries(test_ssl PUBLIC marvin_library ${TEST_LINK_LIBS})
+target_include_directories(${TARGET} 
+    PUBLIC 
+        ../test_helpers ../test_server_client 
+        ${MARVIN_INCLUDE_PATHS})
+
+target_precompile_headers(${TARGET} 
+    REUSE_FROM 
+    marvin_library)
+
+target_link_libraries(${TARGET} 
+    PUBLIC marvin_library ${MARVIN_LINK_LIBRARIES})
 
 add_test(test_ssl test_ssl)
 

@@ -3,7 +3,7 @@
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <exception>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
 namespace Marvin {
 

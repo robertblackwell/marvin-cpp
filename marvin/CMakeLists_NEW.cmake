@@ -1,11 +1,18 @@
+
 ##
-## marvin/CMakeLists.txt
+## marvin/CMakeList.txt 
 ##
-## this directory exports marvin_library
+## this directory exports a library target - marvin_library
 ##
-## Note includes 4 files from vendor/src
-##
-set(EXTSRC ${MARVIN_VENDOR_SRCDIR})
+
+
+# message("Marvin_SOURCE_DIR: ${Marvin_SOURCE_DIR}")
+# message("Vendir Dir: ${VENDOR_DIR}")
+# set(PROJECT_DIR ${Marvin_SOURCE_DIR})
+set(EXT_SRC ${MARVIN_VENDOR_SRCDIR})
+
+# # Optionally glob, but only for CMake 3.12 or later:
+file(GLOB HEADER_LIST CONFIGURE_DEPENDS include/*.hpp)
 
 set(MARVIN_LIBRARY_HEADER_FILES 
 	boost_stuff.hpp 
@@ -35,13 +42,12 @@ set(MARVIN_LIBRARY_HEADER_FILES
 
 	error/marvin_error.hpp 
 
-	error_handler/exception.hpp
 	error_handler/error_handler.hpp
 	
-	${EXTSRC}/CxxUrl/url.hpp 
-	${EXTSRC}/uri-parser/UriParser.hpp 
-	${EXTSRC}/http-parser/http_parser.h 
-	${EXTSRC}/simple_buffer/simple_buffer.h
+	${EXT_SRC}/CxxUrl/url.hpp
+	${EXT_SRC}/uri-parser/UriParser.hpp 
+	${EXT_SRC}/http-parser/http_parser.h 
+	${EXT_SRC}/simple_buffer/simple_buffer.h
 	
 	helpers/helpers_fs.hpp
 	helpers/mitm.hpp
@@ -68,22 +74,13 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	server_v3/mitm_https.hpp
 	server_v3/mitm_http.hpp
 	server_v3/mitm_tunnel.hpp
-
 	)
 
 set(MARVIN_LIBRARY_SOURCE_FILES 
-
-	${EXTSRC}/CxxUrl/url.cpp
-	${EXTSRC}/uri-parser/UriCodec.cpp
-	${EXTSRC}/http-parser/http_parser.c
-	${EXTSRC}/simple_buffer/simple_buffer.c
-
 	buffer/buffer_chain.cpp			
 	buffer/m_buffer.cpp				
-	
-	certificates/certificates.cpp
+ 	certificates/certificates.cpp
 	certificates/env_utils.cpp
-
 	client/client.cpp  	
 	client/request.cpp 	
 	client/request_headers.cpp 			
@@ -103,9 +100,13 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	connection/tunnel_handler.cpp  		
 	
 	error/marvin_error.cpp 	
-
-	error_handler/exception.cpp
 	error_handler/error_handler.cpp
+
+	${EXT_SRC}/CxxUrl/url.cpp
+	${EXT_SRC}/uri-parser/UriCodec.cpp
+
+	${EXT_SRC}/http-parser/http_parser.c 
+	${EXT_SRC}/simple_buffer/simple_buffer.c
 
 	helpers/helpers_fs.cpp
 	helpers/mitm.cpp
@@ -133,17 +134,44 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 
 	)
 
-set_source_files_properties(${MARVIN_LIBRARY_SOURCE_FILES} PROPERTIES LANGUAGE CXX)
+message("MARVIN_LIBRARY_SOURCE_FILES               ${MARVIN_LIBRARY_SOURCE_FILES}")
+# message("MARVIN_LIBRARY_HEADER_FILES               ${MARVIN_LIBRARY_HEADER_FILES}")
+if(OFF)
+set_source_files_properties(${EXT_SRC}/http_parser/http_parser.c PROPERTIES LANGUAGE CXX)
+set_source_files_properties(${EXT_SRC}/simple_buffer/simple_buffer.c PROPERTIES LANGUAGE CXX)
 
-add_library(marvin_library 
+add_library(marvin_c_library
 	STATIC 
-		${MARVIN_LIBRARY_SOURCE_FILES} 
+		external_src/simple_buffer/simple_buffer.c
+		external_src/simple_buffer/simple_buffer.h
+		external_src/http-parser/http_parser.c
+		external_src/http-parser/http_parser.h
+	)
+# set_target_properties(marvin_c_library PROPERTIES LINKER_LANGUAGE CXX)
+target_include_directories(marvin_c_library 
+	SYSTEM PUBLIC
+		${MARVIN_INCLUDE_PATHS} 
+		# ${MARVIN_PROJECT_DIR}
+		# ${MARVIN_VENDOR_INCLUDEDIR}
+		# ${MARVIN_VENDOR_SRCDIR}
+)
+endif()
+if (ON)
+add_library(marvin_library 
+	STATIC  
+		${MARVIN_LIBRARY_SOURCE_FILES}
 		${MARVIN_LIBRARY_HEADER_FILES}
 )
+set_target_properties(marvin_library PROPERTIES LINKER_LANGUAGE CXX)
+# set_property(TARGET marvin_library PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+# We need this directory, and users of our library will need it too
 
 target_include_directories(marvin_library 
-	SYSTEM PUBLIC 
-	${MARVIN_INCLUDE_PATHS}
+	SYSTEM PUBLIC
+		${MARVIN_INCLUDE_PATHS} 
+		# ${MARVIN_PROJECT_DIR}
+		# ${MARVIN_VENDOR_INCLUDEDIR}
+		# ${MARVIN_VENDOR_SRCDIR}
 )
 
 target_precompile_headers(marvin_library PUBLIC
@@ -176,4 +204,16 @@ target_precompile_headers(marvin_library PUBLIC
 	<boost/unordered_set.hpp>	
 	<marvin/error/marvin_error.hpp>
 	<boost/process.hpp>
-	)
+)
+endif()
+
+# This depends on (header only) boost
+# target_link_libraries(cert_library PRIVATE Boost::boost)
+
+# All users of this library will need at least C++11
+# target_compile_features(marvin_library PUBLIC cxx_std_11)
+
+# IDEs should put the headers in a nice place
+# source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})
+# source_group(headers FILES ${HEADER_LIST})
+# source_group(headers REGULAR_EXPRESSION include/cert/*.hpp})

@@ -6,7 +6,7 @@
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/callback_typedefs.hpp>
 #include <marvin/error_handler/error_handler.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/connection/connection.hpp>

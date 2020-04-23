@@ -9,7 +9,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <regex>
 #include <marvin/error_handler/error_handler.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {

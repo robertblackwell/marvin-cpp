@@ -13,7 +13,7 @@
 ///   
 ///
 
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
 namespace Trog {
 

@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.16)
 
 ##
@@ -23,9 +24,6 @@ project(Marvin VERSION 0.1.0 LANGUAGES CXX C)
 ##
 ##
 find_package(Threads REQUIRED)
-find_program(BASH_PROG bash)
-message("BASH_PROG-NOTFOUND       ${BASH_PROG-NOTFOUND}")
-message("BASH_PROG                ${BASH_PROG}")
 ## not sure any of these work for the moment so turn them OFF
 if(OFF)
 find_package(boost)
@@ -44,29 +42,6 @@ option(MARVIN_Verbose "Print a lot of diagnostic stuff" ON)
 option(MARVIN_DebugBuild "Perform build as type Debug" ON)
 
 
-
-## ============================================================================
-## The stuff below - I am not sure about ======================================
-##
-
-# this is a fix for a problem with boost libraries see https://github.com/Microsoft/vcpkg/issues/4497
-# also a hack and breaks "best practices" as per Damiel Pfeiffer's presentation https://www.youtube.com/watch?v=rLopVhns4Zs&feature=youtu.be
-set(other_flags "${other_flags} -frtti -fvisibility-inlines-hidden")
-set(other_flags "${other_flags} -fvisibility=hidden")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${other_flags} -pthread")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-set(CTEST_CUSTOM_PRE_TEST "echo THIS IS PRE TEST")
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-
-# Let's nicely support folders in IDE's
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-# allow scheme porperties in xcode - particularly environment variables
-set_property(GLOBAL PROPERTY XCODE_GENERATE_SCHEME ON)
-set(XCODE_GENERATE_SCHEME ON)
-##
-## The stuff below - I am not sure about ====================================
-## ==========================================================================
-
 ##
 ##
 ## Configuration
@@ -82,6 +57,16 @@ set(CMAKE_CXX_STANDARD 14)
 if(DEFINED CMAKE_DL_LIBS)
     set(MARVIN_DL_LIB_SO libdl.so)
 endif()
+
+
+set(other_flags "${other_flags} -frtti -fvisibility-inlines-hidden")
+set(other_flags "${other_flags} -fvisibility=hidden")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${other_flags} -pthread")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+set(CTEST_CUSTOM_PRE_TEST "echo THIS IS PRE TEST")
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+# Let's nicely support folders in IDE's
+
 
 set(MARVIN_PROJECT_DIR     ${Marvin_SOURCE_DIR})
 ## location of project header and source files
@@ -122,10 +107,13 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY XCODE_GENERATE_SCHEME ON)
 
 if (MARVIN_Verbose)
+
 	message("Project Name                      ${CMAKE_PROJECT_NAME}")
+
 	message("Build Type                        ${CMAKE_BUILD_TYPE}")
 	message("CMAKE_CXX_STANDARD                ${CMAKE_CXX_STANDARD}")
 	message("CMAKE_DL_LIBS                     ${CMAKE_DL_LIBS}")
+
 	message("MARVIN_PROJECT_DIR                ${MARVIN_PROJECT_DIR}")
 	message("MARVIN_SOURCE_DIR                 ${MARVIN_SOURCE_DIR}")
 	message("MARVIN_INCLUDE_DIR                ${MARVIN_INCLUDE_DIR}")
@@ -138,9 +126,11 @@ if (MARVIN_Verbose)
 	message("MARVIN_DL_LIB_SO                  ${MARVIN_DL_LIB_SO}")
 	message("MARVIN_INCLUDE_PATHS              ${MARVIN_INCLUDE_PATHS}")
 	message("MARVIN_LINK_LIBRARIES             ${MARVIN_LINK_LIBRARIES}")
+
 	message("CMAKE_INSTALL_PREFIX              ${CMAKE_INSTALL_PREFIX}")
 	message("CMAKE_INSTALL_FULL_INCLUDEDIR     ${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 	message("CMAKE_INSTALL_INCLUDEDIR          ${CMAKE_INSTALL_INCLUDEDIR}")
+
 endif()
 
 ##
@@ -151,8 +141,8 @@ enable_testing()
 
 add_subdirectory(marvin)
 
-add_subdirectory(apps)
-add_subdirectory(tests)
+# add_subdirectory(apps)
+# add_subdirectory(tests)
 
 
 # set(CMAKE_INSTALL_PREFIX ${PROJECT_DIR})

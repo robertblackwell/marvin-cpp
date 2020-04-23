@@ -16,7 +16,7 @@
 #include <boost/asio/detail/impl/strand_service.hpp>    // for strand_servic...
 #include <boost/asio/impl/io_context.hpp>               // for io_context::post
 #include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {

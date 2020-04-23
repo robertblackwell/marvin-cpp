@@ -5,7 +5,7 @@
 //  Created by ROBERT BLACKWELL on 1/2/18.
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/uri.hpp>
 using namespace Marvin;

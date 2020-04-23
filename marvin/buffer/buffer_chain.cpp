@@ -2,7 +2,7 @@
 #include <boost/asio/buffer.hpp>
 #include <marvin/buffer/m_buffer.hpp>
 #include <marvin/buffer/buffer_chain.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 using namespace Marvin;

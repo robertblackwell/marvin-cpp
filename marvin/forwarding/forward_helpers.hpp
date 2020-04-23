@@ -14,8 +14,8 @@
 #include <sstream>
 #include <regex>
 // #include <marvin/server/request_handler_base.hpp>
-// #include <trog/trog.hpp>
-// #include <marvin/external_src/uri-parser/UriParser.hpp>
+// #include <marvin/configure_trog.hpp>
+// #include<uri-parser/UriParser.hpp>
 // #include <marvin/client/client.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/http/headers_v2.hpp>

@@ -1,5 +1,6 @@
 #include <marvin/error_handler/error_handler.hpp>
 
+#include <string>
 #include <sstream>
 #include <exception>
 namespace Marvin {

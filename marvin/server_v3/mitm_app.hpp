@@ -12,8 +12,8 @@
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
 
-#include <trog/trog.hpp>
-#include <marvin/external_src/uri-parser/UriParser.hpp>
+#include <marvin/configure_trog.hpp>
+#include<uri-parser/UriParser.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/server_v3/request_handler_interface.hpp>

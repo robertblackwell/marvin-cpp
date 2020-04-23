@@ -7,7 +7,7 @@
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 

@@ -6,12 +6,12 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <json/json.hpp>
-#include <trog/trog.hpp>
+#include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/external_src/uri-parser/UriParser.hpp>
-#include <marvin/external_src/CxxUrl/url.hpp>
+#include<uri-parser/UriParser.hpp>
+#include<CxxUrl/url.hpp>
 #include <marvin/http/uri_query.hpp>
 
 #include <marvin/server_v3/http_server.hpp>
