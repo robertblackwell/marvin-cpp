@@ -32,6 +32,7 @@ ConnectionHandler::ConnectionHandler(
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
     m_server_context.connection_ptr = conn_sptr.get();
+    m_server_context.uuid = m_uuid;
    TROG_TRACE_FD(m_connection->nativeSocketFD());
 }
 

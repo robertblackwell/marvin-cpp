@@ -16,6 +16,7 @@ namespace Cert { class Builder; }
 
 
 namespace Marvin {
+void displayX509(Cert::Certificate cert);
 
 // used mostly in getenv() calls
 extern const char* kMarvinEnvKey_MarvinHome;
@@ -38,7 +39,7 @@ public:
 	
 	X509_STORE* getX509StorePtr();
 
-	Cert::Identity buildServerMitmCertificate(Cert::Certificate original_cert);
+	Cert::Identity buildServerMitmCertificate(std::string host, Cert::Certificate original_cert);
 
 private:
 	X509_STORE*                     m_X509_store_ptr;

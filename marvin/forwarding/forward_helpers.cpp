@@ -19,64 +19,7 @@ http::url decodeUri(MessageReaderSPtr requestSPtr)
     http::url tmp_u = http::ParseHttpUrl(tmp_url);
     return tmp_u;
 }
-#if 0
-void fillRequestFromUri(MessageBase& msg, std::string uri_in, bool absolute)
-{
-    /// \note do nothing with user name and password. A proxy would not expect to see a uri with those
-    /// elements. Browser wold have already put them in the header
-    std::string uri(uri_in);
-    http::url us = http::ParseHttpUrl(uri);
-    TROG_DEBUG(" uri:", uri);
-    TROG_DEBUG(" scheme:", us.protocol);
-    TROG_DEBUG(" host:", us.host);
-    TROG_DEBUG(" port:", us.port);
-    TROG_DEBUG(" path:", us.path);
-    TROG_DEBUG(" search:", us.search);
-    
-    std::string host = us.host;
-    std::string scheme = us.protocol;
-    
-    int port_int = us.port;
-    if(us.port == 0) {
-        if( us.protocol == "https")
-            port_int = 443;
-        else if( us.protocol == "http")
-            port_int = 80;
-        else
-            assert(false);
-    }
-    assert(port_int != 0);
-    std::string host_header = us.host+":"+std::to_string(port_int);
-    std::string path_value;
-    if( (us.path == "") && (us.search == "")) {
-        path_value = "/";
-    }else if( us.path == "") {
-        path_value = "/?" + us.search;
-    } else {
-        path_value = us.path +"?"+ us.search;
-    }
-    if (absolute) {
-        path_value = us.protocol+"://"+host_header+path_value;
-    }
-    msg.setHeader(Marvin::HeadersV2::Host, host_header);
-    msg.setUri(path_value);
-    std::string auth_header = "";
-    if(us.user != "") {
-        auth_header = us.user;
-        if(us.password != "") {
-            auth_header += ": " + us.password;
-        }
-    }
-    if (auth_header != "")
-        msg.setHeader(Marvin::HeadersV2::Authorization, base64Encode(auth_header));
-}
 
-void applyUri(MessageBaseSPtr msg, std::string uri)
-{
-    assert(false);
-    http::url u = http::ParseHttpUrl(uri);
-}
-#endif
 void applyUri(MessageBaseSPtr msg, Uri& uri, bool proxy)
 {
     if(proxy)

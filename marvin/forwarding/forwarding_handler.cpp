@@ -145,7 +145,6 @@ void ForwardingHandler::handleConnect(
 
 void ForwardingHandler::p_initiate_tunnel()
 {
-#if 1
     // first lets try and connect to the upstream host
     // to do that we need an upstream connection
 //    m_response_sptr->setWriteSock(m_downstream_connection.get());
@@ -196,7 +195,6 @@ void ForwardingHandler::p_initiate_tunnel()
             });
         }
     });
-#endif
 }
 #pragma mark - handle a "normal" request
 ///

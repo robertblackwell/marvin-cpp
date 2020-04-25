@@ -12,13 +12,10 @@ target_precompile_headers(${TARGET}
 	marvin_library)
 
 target_link_libraries(${TARGET} 
-	PUBLIC marvin_library ${MARVIN_LINK_LIBRARIES})
+	PUBLIC ${MARVIN_LINK_LIBRARIES})
+
+get_target_property(TLL ${TARGET} LINK_LIBRARIES)
+message("test_certificates MARVIN_LINK_LIRARIES                                   ${MARVIN_LINK_LIBRARIES}")
+message("test_certificates TARGET_LINK_LIRARIES                                   ${TLL}")
 
 add_test(${TARGET} /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/test.sh ${MARVIN_PROJECT_DIR})
-SET_TESTS_PROPERTIES(${TARGET}
-    PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
-
-
-set_tests_properties(${TARGET}
-    PROPERTIES 
-    ENVIRONMENT "MARVIN_HOME=${MARVIN_PROJECT_DIR}")

@@ -5,10 +5,12 @@ References for command interface:
  ☐ https://github.com/loopperfect/rxterm
 
 Next step:
+  ☐ cleanup all the stuff that tries to turn objects into strngs - its a mess
   ☐ decide about uuid in the mitm_app currently not initialized
+  ☐ mitm_app - FD seems to be printing the wrong number
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
   ☐ need to permit tunnel requests for any port as it might be a websocket
-  ☐ should only do https_upstream if the port is 443 and even then shuld check the first message for upgrade and reject
+  ☐ should only do https_upstream if the port is 443 and even then should check the first message for upgrade and reject
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
   ☐ valgrind to check for memory leaks
@@ -22,13 +24,10 @@ Next project:
   ☐ think about a command interface to change filters while the proxy is running
 
 Tests:
-☐ find all test that are #if out of action and get them working or remove
 ☐ test trailers on message parsing and set/get of MessageBase
 ☐ test_buffers does no CHECK/REQUIRE anything
 ☐ message parsing needs to be clearer and also test continuation of headers
 ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
-class property names cleanup:
-☐ some tests are still using the leading _varname naming scheme - fix
 Bugs:
 ☐ not handling non-existence of connection header correctly when preparing upstream request
 ☐ potential - MessageWriter does not handle incomplete writes
@@ -37,6 +36,8 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ find all test that are #if out of action and get them working or remove @done (20-04-23 16:22)
+ ✔ some tests are still using the leading _varname naming scheme - fix @done (20-04-23 15:48)
  ✔ test_ssl fails fix or discard test -DISCARD @done (20-04-23 15:30) @project(Tests)
  ✔ need to log the headers in the original message before going further to detect cause of craches from headers that did not get acted upon correctly - same log the original headers as soon as the message arrives so we know what was requested in the event of a crash from a set of headers we cannot handle. @done (20-04-23 15:30) @project(Next step)
  ✔ start node server automatically before roundtrip tests and place nodejs server in a more prominant place. @done (20-04-23 08:34)

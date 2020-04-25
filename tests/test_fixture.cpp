@@ -323,7 +323,7 @@ void TestFixture::setup() {
         m_locator_sptr   = m_store_sptr->getLocator();
         m_authority_sptr = m_store_sptr->getAuthority();
     } else {
-#if 0
+#ifdef MARVIN_TEST_FIXTURE_COPY_EXISTING_CA
             /**
             * Initialize the fixtures dir with the already existing CA data .. only
             * for when testing on my private development machine

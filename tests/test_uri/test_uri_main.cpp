@@ -26,7 +26,7 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 using namespace Marvin;
 using namespace std;
 
-#if 0
+#ifdef MARVIN_TEST_URI_VIRTUAL
 
 namespace NotVirtual {
 bool base_destructor_called = false;

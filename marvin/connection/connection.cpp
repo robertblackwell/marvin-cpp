@@ -7,7 +7,7 @@
 #include <marvin/callback_typedefs.hpp>
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace|Trog::LogLevelFDTrace)
 
 #include <marvin/connection/connection.hpp>
 namespace Marvin {
@@ -101,10 +101,11 @@ Connection::~Connection()
 {
    TROG_TRACE_CTOR();
     if( ! m_closed_already) {
-       TROG_TRACE_FD(nativeSocketFD());
+        TROG_TRACE3("close fd: ", nativeSocketFD());
+        TROG_TRACE_FD(nativeSocketFD());
         m_tcp_socket.close();
     } else {
-       TROG_TRACE_FD(nativeSocketFD());
+        TROG_TRACE_FD(nativeSocketFD());
     }
 }
 std::string Connection::scheme(){return m_scheme;}
@@ -166,7 +167,7 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
     m_connect_cb = connect_cb; // save the connect callback
 
     tcp::resolver::query query(this->m_server, this->m_port);
-#if 1
+
     m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
         m_tcp_socket.cancel();
     });
@@ -176,10 +177,6 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
         });
     });
     m_resolver.async_resolve(query, h);
-#else
-    auto handler = (std::bind(&Connection::p_handle_resolve,this, std::placeholders::_1, std::placeholders::_2));
-    m_resolver.async_resolve(query, handler);
-#endif
 }
 
 void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
@@ -196,9 +193,21 @@ void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
     m_mode = Mode::SECURE_CLIENT;
     m_certificate_store_ptr = certificate_store_ptr;
     SSL_CTX_set_cert_store(raw_ssl_ctx_ptr, m_certificate_store_ptr);
-    m_ssl_ctx_sptr->set_verify_mode(boost::asio::ssl::context::verify_peer);
+    // m_ssl_ctx_sptr->set_verify_mode(boost::asio::ssl::context::verify_peer);
+    m_ssl_ctx_sptr->set_verify_mode(boost::asio::ssl::verify_peer);
+    /// setup openssl to verify host name
+    #if 0
+    X509_VERIFY_PARAM *param;
+    param = X509_VERIFY_PARAM_new();
+    X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+    X509_VERIFY_PARAM_set1_host(param, m_server.c_str(), m_server.size());
+    SSL_CTX_set1_param(m_ssl_ctx_sptr->native_handle(), param);
+    X509_VERIFY_PARAM_free(param);
+    #endif
     // now make the ssl stream using the tcp_socket and the ssl_ctx
     m_ssl_stream_sptr = std::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(m_tcp_socket, *m_ssl_ctx_sptr);
+    /// set the host/server name for SNI by the server
+    SSL_set_tlsext_host_name(m_ssl_stream_sptr->native_handle(), m_server.c_str());
 }
 void Connection::becomeSecureServer(Cert::Identity server_identity)
 {
@@ -293,9 +302,9 @@ void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCa
         boost::asio::async_write((*m_ssl_stream_sptr), tmp, handler);
     }
 }
-#if 1
 void Connection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback cb)
 {
+    MARVIN_THROW("this function not implemented");
 #if 0
     TROG_DEBUG("");
     boost::asio::async_write(
@@ -332,7 +341,7 @@ void Connection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
         boost::asio::async_write((*m_ssl_stream_sptr), sb, handler);
     }
 }
-#endif
+
 #pragma mark - internal methods
 void Connection::p_handle_resolve(
                     const error_code& err,
@@ -361,7 +370,6 @@ void Connection::p_handle_resolve(
         TROG_DEBUG("resolve OK","so now connect");
         tcp::endpoint endpoint = *endpoint_iterator;
         
-#if 1
         m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
             m_tcp_socket.cancel();
         });
@@ -372,12 +380,6 @@ void Connection::p_handle_resolve(
             });
         });
         m_tcp_socket.async_connect(endpoint, h);
-#else
-//        auto handler = m_strand.wrap(bind(&Connection::p_handle_connect, this, _1, ++endpoint_iterator));
-        /// a bit clumsy - incrementing the iterator before passing it
-        auto handler = m_strand.wrap(bind(&Connection::p_handle_connect, this, _1, ++endpoint_iterator));
-        m_boost_socket.async_connect(endpoint, handler);
-#endif
         TROG_DEBUG("leaving");
     }
 }
@@ -444,16 +446,37 @@ void Connection::p_handle_handshake(const boost::system::error_code& err)
     if(! err) {
         if (m_mode == SECURE_CLIENT) {
             X509* server_cert = SSL_get_peer_certificate(this->m_ssl_stream_sptr->native_handle());
+            m_server_certificate = Cert::Certificate(server_cert);
+
+            #ifdef MARVIN_HTTPS_TRACE
             STACK_OF(X509*) st = SSL_get_peer_cert_chain(this->m_ssl_stream_sptr->native_handle());
             auto n = sk_X509_num(st);
-            std::vector<std::string> sx;
+            TROG_TRACE3("SERVER CERTIFICATE CHAIN:");
             for(int i = 0; i < n; i++) {
                 X509* cert = sk_X509_value(st, i);
-                std::string s = Cert_PrintToString(cert);
-                TROG_TRACE3("Server Chain index: ", i , s);
-                sx.push_back(s);
+                TROG_TRACE3("Server Chain index: ", i );
+                Cert::Certificate cc{cert};
+                std::string ssm1 = cc.getIssuerNameAsOneLine();
+                std::string ssm2 = cc.getSubjectNameAsOneLine(); 
+                if( i == 0) {
+                    std::string ssm3 = cc.getSubjectAlternativeNamesAsString();
+                    TROG_TRACE3("    subjectname: ", ssm2);
+                    TROG_TRACE3("    certificate issuer     : ", ssm1);
+                    TROG_TRACE3("    certificate altnames   : ", ssm3);
+                } else {
+                    TROG_TRACE3("    subjectname: ", ssm2);
+                    TROG_TRACE3("    certificate issuer     : ", ssm1);
+                }
             }
-            m_server_certificate = Cert::Certificate(server_cert);
+            TROG_TRACE3("SERVER CERTIFICATE :");
+            Cert::Certificate cc{server_cert};
+            std::string ssm1 = cc.getIssuerNameAsOneLine();
+            std::string ssm2 = cc.getSubjectNameAsOneLine(); 
+            std::string ssm3 = cc.getSubjectAlternativeNamesAsString();
+            TROG_TRACE3("subjectname: ", ssm2);
+            TROG_TRACE3("issuer     : ", ssm1);
+            TROG_TRACE3("altnames   : ", ssm3);
+            #endif
         }
         p_post_connect_cb(m_connect_cb, err, this);
     } else {

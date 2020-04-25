@@ -71,14 +71,31 @@ void MitmHttps::p_handshake_upstream()
             m_mitm_app.p_on_upstream_error(marvin_error);
         } else {
             m_server_certificate = m_upstream_socket_sptr->getServerCertificate();
-            std::string cert_s_original = Cert::x509::Cert_PrintToString(m_server_certificate.native());
-            TROG_TRACE3("original certificate", cert_s_original);
-            
-            m_mitm_identity = certificates.buildServerMitmCertificate(m_server_certificate);
-            
-            std::string cert_s_built = Cert::x509::Cert_PrintToString(m_mitm_identity.getX509());
-            TROG_TRACE3("built certificate", cert_s_original);
+            #ifdef MARVIN_HTTPS_TRACE
+            /// examine the original certificate
+            std::string ss1 = m_server_certificate.getIssuerNameAsOneLine();
+            std::string ss2 = m_server_certificate.getSubjectNameAsOneLine(); 
+            std::string ss3 = m_server_certificate.getSubjectAlternativeNamesAsString();
+            TROG_TRACE3("scheme: ", m_upstream_scheme);
+            TROG_TRACE3("host: ", m_upstream_host);
+            TROG_TRACE3("port: ", m_upstream_port);
+            TROG_TRACE3("original certificate subjectname: ", ss2);
+            TROG_TRACE3("original certificate issuer     : ", ss1);
+            TROG_TRACE3("original certificate altnames   : ", ss3);
+            #endif 
 
+            m_mitm_identity = certificates.buildServerMitmCertificate(m_upstream_host, m_server_certificate);
+
+            #ifdef MARVIN_HTTPS_TRACE
+            Cert::Certificate cc{m_mitm_identity.getX509()};
+            std::string ssm1 = cc.getIssuerNameAsOneLine();
+            std::string ssm2 = cc.getSubjectNameAsOneLine(); 
+            std::string ssm3 = cc.getSubjectAlternativeNamesAsString();
+            TROG_TRACE3("mitm certificate subjectname: ", ssm2);
+            TROG_TRACE3("mitm certificate issuer     : ", ssm1);
+            TROG_TRACE3("mitm certificate altnames   : ", ssm3);
+            #endif
+            
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             makeResponse200OKConnected(*m_downstream_response_sptr);
             m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err)

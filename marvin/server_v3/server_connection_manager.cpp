@@ -48,11 +48,7 @@ void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::Al
 void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connHandler)
 {
     TROG_DEBUG("");
-#ifdef DISABLE_SCMGR
-   TROG_TRACE3(" num conn: ", m_connection_count);
-    return;
-#else
-   TROG_TRACE3("registerConnectionHandler num connections: ", m_connections.size());
+    TROG_TRACE3("registerConnectionHandler num connections: ", m_connections.size());
     long fd = connHandler->nativeSocketFD();
     assert(m_fd_list.find(fd) == m_fd_list.end());
     assert(m_connections.find(connHandler) == m_connections.end()); // assert not already there
@@ -60,7 +56,6 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
     m_connections[connHandler] = std::unique_ptr<ConnectionHandler>(connHandler);
     m_fd_list[fd] = fd;
     assert(verify());
-#endif
 }
 
 /**
@@ -69,15 +64,10 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
  */
 void ServerConnectionManager::deregister(ConnectionHandler* ch)
 {
-   TROG_TRACE3("deregister nativeSocket:: ", ch->nativeSocketFD());
-   TROG_TRACE3("deregister num connections:: ", m_connections.size());
-    #if 0
-    auto pf = (std::bind(&ServerConnectionManager::p_deregister, this, ch));
-    m_io.post(pf);
-    #else
+    TROG_TRACE3("deregister nativeSocket:: ", ch->nativeSocketFD());
+    TROG_TRACE3("deregister num connections:: ", m_connections.size());
     p_deregister(ch);
-    #endif
-   TROG_TRACE3(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
+    TROG_TRACE3(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
     return;
 }
 /**
@@ -87,7 +77,7 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
 {
     TROG_DEBUG("");
 //    std::cout << "_deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
-#if 1
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
     long fd = ch->nativeSocketFD();
@@ -103,16 +93,16 @@ void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
 #pragma clang diagnostic pop
         assert(m_fd_list.find(fd) != m_fd_list.end());
     }
-#endif
+
     assert(m_connections.find(ch) != m_connections.end()); // assert is there
     assert(verify());
     
     m_connections.erase(ch);
-#if 1
+
     m_fd_list.erase(fd);
     long num_fds = (long)getdtablesize();
-#endif
-   TROG_TRACE3(" p_deregister num connections : ", m_connections.size() ," num FDs: ", getdtablesize(), " m_callback != null", (m_allow_more_callback != nullptr));
+
+    TROG_TRACE3(" p_deregister num connections : ", m_connections.size() ," num FDs: ", getdtablesize(), " m_callback != null", (m_allow_more_callback != nullptr));
     if (m_allow_more_callback && (m_connections.size() < m_maxNumberOfConnections)) {
        TROG_TRACE3("p_deregister  allowing more connections from inside p_deregister");
         auto tmp = m_allow_more_callback;

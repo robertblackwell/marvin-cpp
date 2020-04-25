@@ -73,29 +73,5 @@ namespace {
         msg.setContent(n);
 
     }
-#if 0
-void ForwardingHandler::response403Forbidden(MessageWriter& writer)
-{
-    writer.setStatus("Forbidden");
-    writer.setStatusCode(403);
-    std::string n("");
-    writer.setContent(n);
-}
 
-void ForwardingHandler::response200OKConnected(MessageWriter& writer)
-{
-    writer.setStatus("OK");
-    writer.setStatusCode(200);
-    std::string n("");
-    writer.setContent(n);
-}
-
-void ForwardingHandler::response502Badgateway(MessageWriter& writer)
-{
-    writer.setStatus("BAD GATEWAY");
-    writer.setStatusCode(503);
-    std::string n("");
-    writer.setContent(n);
-}
-#endif
 } // namespace Marvin

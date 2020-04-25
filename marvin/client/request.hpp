@@ -106,7 +106,7 @@ public:
     void setOnData(RequestDataHandlerCallbackType cb);
     void setOnError(ErrorOnlyCallbackType cb);
 
-#if 0 // these are not yet implemented
+#if MARVIN_REQUEST_NOT_IMPLEMENTED // these are not yet implemented
     /**
     * Sets a handler to be called when all body data has been received
     *

@@ -53,7 +53,7 @@ public:
     }
 };
 
-#define MESSAGE_ROUNDTRIP_DISABLE
+#define XMESSAGE_ROUNDTRIP_DISABLE
 #ifndef MESSAGE_ROUNDTRIP_DISABLE
 // make a round trip to a local nodejs server which echos back the request headers and body in a json response
 // the verify parses the json and tests a varierty of header fields
@@ -172,7 +172,7 @@ TEST_CASE("N chunked")
     io.run();
     std::cout << "N requests" << std::endl; 
 }
-#if 0 
+#ifndef ENABLE_WHITEACORN  
 
 TEST_CASE("whiteacorn.com_utests_echo/")
 {

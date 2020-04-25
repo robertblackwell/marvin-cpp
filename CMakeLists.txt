@@ -108,11 +108,11 @@ set(MARVIN_LINK_LIBRARIES
 	marvin_library 
 	Threads::Threads 
 	${CMAKE_DL_LIBS}
-	${MARVIN_VENDOR_LIBDIR}/libcrypto.a 
-	${MARVIN_VENDOR_LIBDIR}/libssl.a 
+	${MARVIN_VENDOR_LIBDIR}/libcert_library.a
 	${MARVIN_VENDOR_LIBDIR}/libboost_filesystem.a 
 	${MARVIN_VENDOR_LIBDIR}/libboost_system.a
-	${MARVIN_VENDOR_LIBDIR}/libcert_library.a
+	${MARVIN_VENDOR_LIBDIR}/libssl.a 
+	${MARVIN_VENDOR_LIBDIR}/libcrypto.a 
 	${CMAKE_DL_LIBS}
 	${DL_LIB_SO}
 	)

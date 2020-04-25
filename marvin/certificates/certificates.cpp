@@ -7,6 +7,7 @@
 #include <boost/filesystem/operations.hpp>  // for is_directory
 #include <boost/filesystem/path.hpp>        // for path
 #include <boost/format.hpp>
+#include <boost/optional.hpp>
 #include <cert/cert_authority.hpp>          // for AuthoritySPtr
 #include <cert/cert_builder.hpp>            // for Builder
 #include <cert/cert_certificate.hpp>        // for Certificate
@@ -15,6 +16,13 @@
 #include <cert/error.hpp>                   // for MARVIN_THROW
 #include <cert/cert_store_locator.hpp>      // for Locator, LocatorSPtr
 #include <cert/cert_store_store.hpp>        // for Store, StoreSPtr
+
+#include <cert/x509.hpp>
+#include <cert/x509_cert_impl.hpp>
+#include <cert/cert_builder.hpp>
+#include <cert/cert_certificate.hpp>
+#include <cert/cert_authority.hpp>
+
 #include <openssl/ossl_typ.h>               // for X509_STORE
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/certificates/env_utils.hpp>
@@ -26,7 +34,24 @@ const std::string kMarvinDotDirectoryName = ".marvin";
 const std::string kMarvinCaConfigFileName = "ca_config.json";
 const std::string kMarvinCertStoreName = "cert_store"; 
 
+void displayX509(Cert::Certificate cert)
+{
+    X509* x509_original_cert = cert.native();
+    x509::NameSpecification  subject_name_spec = cert.getSubjectNameAsSpec();
+    boost::optional<std::string> sss = cert.getSubjectAlternativeNamesAsString();
+    std::string san = "NOVALUE";
+    if(sss) {
+        san = sss.get();
+    }
+    boost::optional<X509_EXTENSION*> subj_altname_ext = Cert::x509::Cert_GetSubjectAltName(x509_original_cert);
+    std::string subject_alt_names_string = "NOVALUE";
+    if(subj_altname_ext) {
+        subject_alt_names_string = Cert::x509::Extension_ValueAsString(subj_altname_ext.get());
+    }
+    auto san_dns = Cert::x509::Cert_GetSubjectAlternativeDNSNames(x509_original_cert);
+    auto ssan = Cert::x509::Cert_extensionsAsDescription(x509_original_cert);
 
+}
 Certificates& Certificates::getInstance()
 {
     static Certificates instance{};
@@ -83,9 +108,9 @@ X509_STORE* Certificates::getX509StorePtr()
     return m_X509_store_ptr;
 }
 
-Cert::Identity Certificates::buildServerMitmCertificate(Cert::Certificate original_certificate)
+Cert::Identity Certificates::buildServerMitmCertificate(std::string host, Cert::Certificate original_certificate)
 {
-    Cert::Identity tmp = m_builder_sptr->buildMitmIdentity(original_certificate);
+    Cert::Identity tmp = m_builder_sptr->buildMitmIdentity(host, original_certificate);
     return tmp;
 }
 } // namespace Marvin

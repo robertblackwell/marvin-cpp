@@ -74,7 +74,7 @@ class ISocket //: public IReadSocket, public IWriteSocket
     virtual boost::asio::io_service& getIO() = 0;
     virtual boost::asio::ssl::context& getSslContext() = 0;
 
-    #if 0
+    #ifdef MARVIN_ISOCKET_DEFINE_SHUTDOWN
     virtual void shutdownSend() = 0;
     virtual void shutdownReceive() = 0;
     #endif

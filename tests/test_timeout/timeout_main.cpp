@@ -25,10 +25,7 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include "async_compound.hpp"
 #include "async_object.hpp"
   
-/// test timing out an async operation
-//TEST_CASE("TimeoutcomposedOpOTO2")
-#if 0
-TEST_CASE("TimeoutcomposedOpOTO2", "[]")
+TEST_CASE("TimeoutcomposedOpOTO2")
 {
     printf("TimeoutcomposedOpOTO2\n");
     boost::asio::io_service io;
@@ -43,7 +40,7 @@ TEST_CASE("TimeoutcomposedOpOTO2", "[]")
     obj.async_composed_op([](std::string result, const boost::system::error_code err) {
         boost::system::error_code ec = err;
         auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << " result: "<< result<< std::endl;
         std::cout << err.message() << std::endl;
@@ -57,11 +54,7 @@ TEST_CASE("TimeoutcomposedOpOTO2", "[]")
     });
     io.run();
 }
-#endif
-/// test timing out an async operation
-//TEST_CASE("TimeoutcomposedOpOTO1")
-#if 0
-TEST_CASE("TimeoutcomposedOpOTO1", "[]")
+TEST_CASE("TimeoutcomposedOpOTO1")
 {
     printf("TimeoutcomposedOpOTO1\n");
     boost::asio::io_service io;
@@ -76,7 +69,7 @@ TEST_CASE("TimeoutcomposedOpOTO1", "[]")
     obj.async_composed_op([](std::string result, const boost::system::error_code err) {
         boost::system::error_code ec = err;
         auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << " result: "<< result<< std::endl;
         std::cout << err.message() << std::endl;
@@ -90,11 +83,7 @@ TEST_CASE("TimeoutcomposedOpOTO1", "[]")
     });
     io.run();
 }
-#endif
-
-//TEST_CASE("TimeoutcomposedOpOOK2")
-#if 0
-TEST_CASE("TimeoutcomposedOpOOK2","[]")
+TEST_CASE("TimeoutcomposedOpOOK2")
 {
     printf("TimeoutcomposedOpOOK2\n");
     boost::asio::io_service io;
@@ -109,7 +98,7 @@ TEST_CASE("TimeoutcomposedOpOOK2","[]")
     obj.async_composed_op([](std::string result, const boost::system::error_code err) {
         boost::system::error_code ec = err;
         auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << " result: "<< result<< std::endl;
         std::cout << err.message() << std::endl;
@@ -123,12 +112,7 @@ TEST_CASE("TimeoutcomposedOpOOK2","[]")
     });
     io.run();
 }
-#endif
-
-#if 0
-/// test timing out an async operation
-//TEST_CASE("Timeouttimedout")
-TEST_CASE("Timeouttimedout", "[]")
+TEST_CASE("Timeouttimedout")
 {
     printf("Timeouttimedout\n");
     boost::asio::io_service io;
@@ -140,7 +124,7 @@ TEST_CASE("Timeouttimedout", "[]")
     obj_sptr->async_operation(2, 1, [cb](const boost::system::error_code err){
         boost::system::error_code ec = err;
         auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << std::endl;
         std::cout << err.message() << std::endl;
@@ -154,10 +138,6 @@ TEST_CASE("Timeouttimedout", "[]")
     });
     io.run();
 }
-#endif
-#if 1
-/// test timing out an async operation
-//TEST_CASE("Timeouttimedout")
 TEST_CASE("Timeout_success")
 {
     printf("Timeout_success\n");
@@ -170,7 +150,7 @@ TEST_CASE("Timeout_success")
     obj_sptr->async_operation(1, 2, [cb](const boost::system::error_code err){
         boost::system::error_code ec = err;
         auto asio_op_ok = Marvin::make_error_ok();
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << std::endl;
         std::cout << err.message() << std::endl;
@@ -184,13 +164,7 @@ TEST_CASE("Timeout_success")
     });
     io.run();
 }
-#endif
-
-
-#if 0
-/// test timing out an async operation
-//TEST_CASE("Timeouttimedout")
-TEST_CASE("Timeout_donothing", "[]")
+TEST_CASE("Timeout_donothing")
 {
     printf("Timeout_donothing\n");
     boost::asio::io_service io;
@@ -199,13 +173,7 @@ TEST_CASE("Timeout_donothing", "[]")
     obj_sptr = nullptr;
     std::cout << "after io.run()" << std::endl;
 }
-
-
-#endif
-#if 0
-/// test an async operation completing successfully and cancelling a timeout
-//TEST_CASE("Timeoutexpired")
-TEST_CASE("Timeoutexpired","[]")
+TEST_CASE("Timeoutexpired")
 {
     printf("Timeoutexpired\n");
    boost::asio::io_service io;
@@ -213,7 +181,7 @@ TEST_CASE("Timeoutexpired","[]")
     /// op interval 1 sec timeout 2 secs op will complete successfully
     obj.async_operation(1, 2, [](const boost::system::error_code err){
         boost::system::error_code ec = err;
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << std::endl;
         auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
@@ -227,11 +195,7 @@ TEST_CASE("Timeoutexpired","[]")
     });
     io.run();
 }
-#endif
-#if 0
-/// test an async op that should fail but iit gets tiimed out
-//TEST_CASE("TimeoutFailedOpTimedout")
-TEST_CASE("TimeoutFailedOpTimedout","[]")
+TEST_CASE("TimeoutFailedOpTimedout")
 {
     printf("TimeoutFailedOpTimedout\n");
     boost::asio::io_service io;
@@ -240,7 +204,7 @@ TEST_CASE("TimeoutFailedOpTimedout","[]")
     obj.async_fail_operation(2, 1, [](const boost::system::error_code err){
         boost::system::error_code ec = err;
         auto asio_op_aborted = boost::asio::error::make_error_code(boost::asio::error::operation_aborted);
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << std::endl;
         std::cout << err.message() << std::endl;
@@ -253,11 +217,7 @@ TEST_CASE("TimeoutFailedOpTimedout","[]")
     });
     io.run();
 }
-#endif
-#if 0
-/// test an async operation that fails with a broken pipe error before a timeout expires
-//TEST_CASE("TimeoutfailedOpTimeoutExpired")
-TEST_CASE("TimeoutfailedOpTimeoutExpired","[]")
+TEST_CASE("TimeoutfailedOpTimeoutExpired")
 {
     printf("TimeoutfailedOpTimeoutExpired\n");
     boost::asio::io_service io;
@@ -266,7 +226,7 @@ TEST_CASE("TimeoutfailedOpTimeoutExpired","[]")
     obj.async_fail_operation(1, 2, [](const boost::system::error_code err){
         boost::system::error_code ec = err;
         auto asio_op_broken_pipe = boost::asio::error::make_error_code(boost::asio::error::broken_pipe);
-#if 0
+#ifdef MARVIN_TIMEOUT_VERBOSE
         std::string s = Marvin::make_error_description(ec);
         std::cout << "main line handler " << s << std::endl;
         std::cout << err.message() << std::endl;
@@ -281,36 +241,6 @@ TEST_CASE("TimeoutfailedOpTimeoutExpired","[]")
     io.run();
 }
 
-#endif
-#if 0
-int main(int argc, char** argv) {
-    doctest::Context context;
-
-    // !!! THIS IS JUST AN EXAMPLE SHOWING HOW DEFAULTS/OVERRIDES ARE SET !!!
-
-    // defaults
-    context.addFilter("test-case-exclude", "*math*"); // exclude test cases with "math" in their name
-    context.setOption("abort-after", 5);              // stop test execution after 5 failed assertions
-    context.setOption("order-by", "name");            // sort the test cases by their name
-
-    context.applyCommandLine(argc, argv);
-
-    // overrides
-    context.setOption("no-breaks", true);             // don't break in the debugger when assertions fail
-
-    int res = context.run(); // run
-
-    if(context.shouldExit()) // important - query flags (and --exit) rely on the user doing this
-        return res;          // propagate the result of the tests
-    
-    int client_stuff_return_code = 0;
-    // your program - if the testing framework is integrated in your production code
-    
-    return res + client_stuff_return_code; // the result from doctest is propagated here as well
-}
-#else
-#define USE_DOCTEST
-#ifdef USE_DOCTEST
 int main(int argc, char** argv) {
     doctest::Context context;
 
@@ -336,17 +266,3 @@ int main(int argc, char** argv) {
     
     return res + client_stuff_return_code; // the result from doctest is propagated here as well
 }
-#else
-int main(int argc, char * argv[])
-{
-    RBLogging::setEnabled(false);
-
-    char* tmp_argv[2] = {argv[0], (char*)"-r junit"}; // change the filter to restrict the tests that are executed
-    int tmp_argc = 2;
-    printf("Timeout\n");
-    int result = Catch::Session().run( argc, argv );
-    printf("Timeout\n");
-    return result;
-}
-#endif
-#endif

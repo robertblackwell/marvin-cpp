@@ -13,7 +13,7 @@ cacerts=${project_dir}/.marvin/cert_store/root_certs/mozilla_ext.pem
 # the curl request fail
 # cacerts=${project_dir}/.marvin/cert_store/root_certs/mozilla.pem
 
-insecure=-k
+insecure=
 
 echo the project_dir: ${project_dir}
 echo the cacerts: ${cacerts}
@@ -22,4 +22,4 @@ ls -al ${cacerts}
 
 echo performing GET $1
 
-MARVIN_HOME= curl --cacert ${cacerts} ${insecure} --raw -x localhost:9992 $1
+MARVIN_HOME= curl --cacert ${cacerts} ${insecure} --max-redirs 0 -i --raw -x localhost:9992 $1

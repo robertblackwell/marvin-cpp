@@ -77,8 +77,6 @@ void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
     m_conn_shared_ptr->asyncConnect(f);
 }
 
-
-#if 1
 //--------------------------------------------------------------------------------
 // asyncWrite - the whole request message but first check all the header fields are
 // ok
@@ -117,7 +115,6 @@ void Client::p_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallb
         internalWrite();
     }
 }
-#endif
 void Client::internalConnect()
 {
     TROG_INFO("", (long)this);

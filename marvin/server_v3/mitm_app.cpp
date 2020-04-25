@@ -11,6 +11,8 @@
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
 
+
+
 namespace Marvin {
 
 enum class ConnectAction{
@@ -57,6 +59,8 @@ void MitmApp::handle(
     m_socket_sptr = socket_sptr;
     m_rdr = std::make_shared<MessageReader>(m_io, socket_sptr);
     m_wrtr = std::make_shared<MessageWriter>(m_io, socket_sptr);
+    m_uuid = server_context.uuid;
+    m_uuid_str = boost::uuids::to_string(m_uuid);
     m_done_callback = done;
     // Adapterequest(m_socket_sptr, m_wrtr, m_rdr);
     handleRequest();
@@ -95,7 +99,7 @@ void MitmApp::p_on_first_message()
     HttpMethod method = m_rdr->method();
     auto sss = traceMessage(*m_rdr);
     // important logging point - if it breaks later in processing we need to be able to find out what was requested
-    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", traceMessage(*m_rdr) );
+    TROG_TRACE3("UUID: ", m_uuid_str, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", traceMessage(*m_rdr) );
 
     if (method == HttpMethod::CONNECT) {
 
@@ -210,7 +214,12 @@ ConnectAction MitmApp::p_determine_action(std::string host, std::string port)
     std::vector<std::string> mitm_hosts{
         "hackernoon.com",
         "www.youtube.com",
-        "www.geeksforgeeks.org"
+        "geeksforgeeks.org",
+        "www.geeksforgeeks.org",
+        "www.bankofamerica.com",
+        "bankofamerica.com",
+        "www.github.com",
+        "github.com"
     };
     int index;
     bool found = false;

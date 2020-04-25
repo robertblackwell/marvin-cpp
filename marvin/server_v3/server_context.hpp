@@ -16,6 +16,7 @@ struct ServerContext
     ServerConnectionManager*    server_connection_manager_ptr;
     ConnectionHandler*          connection_handler_ptr;
     ISocket*        			connection_ptr;
+    boost::uuids::uuid          uuid;
 };
 } // namespace Marvin
 #endif /* server_context_hpp */

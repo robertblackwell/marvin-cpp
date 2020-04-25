@@ -148,12 +148,7 @@ void TcpServer::terminate()
            TROG_TRACE3("allowAnother Callback");
             p_start_accept();
         });
-        #if 0
-        auto hf = std::bind(&ConnectionHandler::serve, connHandler);
-        m_io.post(hf);
-        #else
         connHandler->serve();
-        #endif
     }else{
        TROG_TRACE3("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
         m_io.stop();

@@ -163,40 +163,6 @@ public:
     */
     void setOnData(ClientDataHandlerCallbackType cb);
 
-#if 0 // these are not yet implemented
-    /**
-    * Sets a handler to be called when all body data has been received
-    *
-    * optional
-    */
-    void setOnComplete(ErrorOnlyCallbackType cb);
-    /**
-    * Sets a handler for errors during the roundtrip
-    *
-    */
-    void setOnError(ErrorOnlyCallbackType cb);
-#endif
-#pragma mark - request details set methods
-#if 0 // these are not yet implemented
-    void setMethod(HttpMethod method);
-    void setVersion(std::string major, std::string minor);
-    void setHeaders(Http::Headers headers);
-    void setHeader(std::string key, std::string value);
-    void setTrailers(HttpHeaders trailers);
-    void setTrailer(std::string key, std::string value);
-#pragma mark - additional io routines whe MessageBase is internal
-    void asyncWriteHeaders(WriteHeadersCallbackType cb);
-    void asyncWriteTrailers(WriteHeadersCallbackType cb);
-#endif
-#pragma mark - Https requirements
-#if 0 // not yet implemented
-    /**
-    * Sets certificates bundle for https connections. Required if scheme is https
-    */
-    void setCertBundle(Certificates certs);
-#endif
-#pragma mark - io methods
- 
     /**
     * Connects to the target host. If the scheme is https also includes a handshake.
     * If the ISocket is not already connected this method will becalled when the first write call is issued
