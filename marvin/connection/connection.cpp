@@ -99,7 +99,8 @@ Connection::Connection(
 }
 Connection::~Connection()
 {
-   TROG_TRACE_CTOR();
+    std::cout << __PRETTY_FUNCTION__ << "FD: " << nativeSocketFD() << " already_closed: " << (int)m_closed_already << std::endl;
+    TROG_TRACE_CTOR();
     if( ! m_closed_already) {
         TROG_TRACE3("close fd: ", nativeSocketFD());
         TROG_TRACE_FD(nativeSocketFD());
@@ -167,14 +168,19 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
     m_connect_cb = connect_cb; // save the connect callback
 
     tcp::resolver::query query(this->m_server, this->m_port);
-
+    #ifdef TIMEOUT_ON_RESOLVE
     m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
         m_tcp_socket.cancel();
     });
+    #endif
     auto h = ([this](const error_code& err, tcp::resolver::iterator endpoint_iterator) {
+        #ifdef TIMEOUT_ON_RESOLVE
         m_timeout.cancelTimeout([this, err, endpoint_iterator](){
             p_handle_resolve(err, endpoint_iterator);
         });
+        #else
+            p_handle_resolve(err, endpoint_iterator);
+        #endif
     });
     m_resolver.async_resolve(query, h);
 }
@@ -196,19 +202,20 @@ void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
     // m_ssl_ctx_sptr->set_verify_mode(boost::asio::ssl::context::verify_peer);
     m_ssl_ctx_sptr->set_verify_mode(boost::asio::ssl::verify_peer);
     /// setup openssl to verify host name
-    #if 0
+    // now make the ssl stream using the tcp_socket and the ssl_ctx
+    m_ssl_stream_sptr = std::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(m_tcp_socket, *m_ssl_ctx_sptr);
+    /// set the host/server name for SNI by the server
+    /// must be done before setting VERIFY_PARAM
+    SSL_set_tlsext_host_name(m_ssl_stream_sptr->native_handle(), m_server.c_str());    
+ 
     X509_VERIFY_PARAM *param;
     param = X509_VERIFY_PARAM_new();
     X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
     X509_VERIFY_PARAM_set1_host(param, m_server.c_str(), m_server.size());
     SSL_CTX_set1_param(m_ssl_ctx_sptr->native_handle(), param);
     X509_VERIFY_PARAM_free(param);
-    #endif
-    // now make the ssl stream using the tcp_socket and the ssl_ctx
-    m_ssl_stream_sptr = std::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(m_tcp_socket, *m_ssl_ctx_sptr);
-    /// set the host/server name for SNI by the server
-    SSL_set_tlsext_host_name(m_ssl_stream_sptr->native_handle(), m_server.c_str());
-}
+ 
+ }
 void Connection::becomeSecureServer(Cert::Identity server_identity)
 {
     if (m_mode != NOTSECURE) {

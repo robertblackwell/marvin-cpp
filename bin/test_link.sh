@@ -21,10 +21,11 @@
 project_dir=/home/robert/Projects/marvin++
 /usr/bin/c++ \
     -frtti -fvisibility-inlines-hidden -fvisibility=hidden -pthread -g   \
-    cmake-build-debug/tests/test_certificates/test_certificates/CMakeFiles/test_certificates.dir/test_certificates.cpp.o  \
+    cmake-build-debug/apps/handshake/CMakeFiles/handshake.dir/handshake.cpp.o  \
     -o test_certificates  \
     ${project_dir}/cmake-build-debug/marvin/libmarvin_library.a \
     -lpthread \
+    ${project_dir}/vendor/lib/libboost_program_options.a \
     ${project_dir}/vendor/lib/libboost_filesystem.a \
     ${project_dir}/vendor/lib/libboost_system.a \
     ${project_dir}/vendor/lib/libcert_library.a \

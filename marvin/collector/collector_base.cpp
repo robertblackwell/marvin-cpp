@@ -66,12 +66,12 @@ void CollectorBase::postedCollect(
     temp << resp->statusCode() << " " << resp->status() << std::endl;
     auto respHeaders = resp->getHeaders();
     resp->dumpHeaders(temp);
-    if (resp->getContentBuffer() != nullptr) {
-        auto s = resp->getContentBuffer()->to_string();
-        temp << (resp->getContentBuffer())->to_string() << std::endl;
-    } else {
-        temp << "[]" << std::endl;
-    }
+    // if (resp->getContentBuffer() != nullptr) {
+    //     auto s = resp->getContentBuffer()->to_string();
+    //     temp << (resp->getContentBuffer())->to_string() << std::endl;
+    // } else {
+    //     temp << "[]" << std::endl;
+    // }
 
     temp << "------------------------------------------------" << std::endl;
     m_output_stream << temp.str();

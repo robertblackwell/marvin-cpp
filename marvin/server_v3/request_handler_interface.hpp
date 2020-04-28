@@ -35,6 +35,10 @@ public:
         ISocketSPtr                 clientConnectionSPtr,
         HandlerDoneCallbackType   done
     ) = 0;
+    virtual ~RequestHandlerInterface()
+    {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+    }
 };
 
 } // namespace Marvin

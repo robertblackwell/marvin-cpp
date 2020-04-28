@@ -64,6 +64,11 @@ Parser::~Parser()
     free(parserSettings);
     parser = NULL;
     parserSettings = NULL;
+    if (url_buf != NULL) sb_free(url_buf);
+    if (status_buf != NULL) sb_free(status_buf);
+    if (name_buf != NULL) sb_free(name_buf);
+    if (value_buf != NULL) sb_free(value_buf);
+
 }
 
 void Parser::pause()

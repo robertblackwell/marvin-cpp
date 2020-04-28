@@ -9,7 +9,7 @@
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
 
 
 
@@ -38,6 +38,7 @@ void MitmApp::configSet_HttpsPorts(std::vector<int> ports)
 
 MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_io(io)
 {
+   TROG_INFO("constructor");
    TROG_TRACE_CTOR();
     m_https_hosts = s_https_hosts;
     m_https_ports = s_https_ports;
@@ -48,6 +49,7 @@ MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_
 MitmApp::~MitmApp()
 {
    TROG_TRACE_CTOR();
+   TROG_INFO("destructor");
 }
 
 void MitmApp::handle(
@@ -209,6 +211,7 @@ void MitmApp::p_log_error(std::string label, Marvin::ErrorType err)
  */
 ConnectAction MitmApp::p_determine_action(std::string host, std::string port)
 {
+    return ConnectAction::MITM;
     std::vector<std::regex>  regexs = this->m_https_hosts;
     std::vector<int>         ports  = this->m_https_ports;
     std::vector<std::string> mitm_hosts{

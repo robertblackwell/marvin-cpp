@@ -68,6 +68,7 @@ void MitmHttps::p_handshake_upstream()
         if (err) {
             auto d = make_error_description(err);
             ErrorType marvin_error = err;
+            TROG_ERROR("upstream handshake err: ", d);
             m_mitm_app.p_on_upstream_error(marvin_error);
         } else {
             m_server_certificate = m_upstream_socket_sptr->getServerCertificate();

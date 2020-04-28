@@ -55,6 +55,30 @@
             ]
         },
         {
+            "name": "(gdb) handshake Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/apps/handshake/handshake",
+            "args": ["--file", "data/list_top_500.data"],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "MARVIN_HOME",
+                    "value": "${workspaceFolder}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                }
+            ]
+        },
+        {
             "name": "Test Debug Launch",
             "type": "cppdbg",
             "request": "launch",

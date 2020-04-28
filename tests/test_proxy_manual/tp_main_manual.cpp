@@ -61,9 +61,11 @@ int main( int argc, char* argv[] )
             return app_uptr;
         });
         server_ptr->listen(9992);
+        std::cout << "Returned from listen" << std::endl;
     };
     std::thread proxy_thread(proxy_thread_func, nullptr);
 
     proxy_thread.join();
+    delete server_ptr;
 }
 

@@ -111,6 +111,7 @@ set(MARVIN_LINK_LIBRARIES
 	${MARVIN_VENDOR_LIBDIR}/libcert_library.a
 	${MARVIN_VENDOR_LIBDIR}/libboost_filesystem.a 
 	${MARVIN_VENDOR_LIBDIR}/libboost_system.a
+	${MARVIN_VENDOR_LIBDIR}/libboost_program_options.a
 	${MARVIN_VENDOR_LIBDIR}/libssl.a 
 	${MARVIN_VENDOR_LIBDIR}/libcrypto.a 
 	${CMAKE_DL_LIBS}
