@@ -24,18 +24,27 @@ extern const std::string kMarvinDotDirectoryName;
 extern const std::string kMarvinCaConfigFileName;
 extern const std::string kMarvinCertStoreName; 
 
+#undef MARVIN_CERTIFICATES_MEYERS_SINGLTON
+
 class Certificates;  // lines 12-12
 typedef  std::shared_ptr<Certificates> CertificatesSPtr;
 class Certificates
 {
 public:
+	
+	#ifndef MARVIN_CERTIFICATES_MEYERS_SINGLTON
 
+	static std::unique_ptr<Certificates> s_instance_uptr;
+	static void init(boost::filesystem::path marvin_home);
+
+	#endif
 	static Certificates& getInstance();
 	static ::Cert::Store::StoreSPtr createStore(
 		boost::filesystem::path store_path, 
 		boost::filesystem::path ca_config_file_path
 	);
 	Certificates();
+	Certificates(boost::filesystem::path marvin_home);
 	~Certificates();
 	
 	X509_STORE* getX509StorePtr();

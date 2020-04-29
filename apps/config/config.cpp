@@ -80,7 +80,7 @@ int main(int argc, const char * argv[])
     store_sptr->loadCertAuth();
 
     // Cert::Store::StoreSPtr store_sptr = Cert::Store::Store::makeWithCA(where, config_path);
-    std::cout << "marvin config utility - builds a cdertificate authority" << std::endl;
+    std::cout << "marvin config utility - builds a certificate authority" << std::endl;
     
     return 0;
 }

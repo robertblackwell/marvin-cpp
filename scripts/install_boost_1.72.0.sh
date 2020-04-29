@@ -60,13 +60,13 @@ function help() {
 
 debug=
 
-boost_release=1.72.0
-boost_name=boost_1_72_0
+boost_release=1.71.0
+boost_name=boost_1_71_0
 
 if [ "$1" == "help" ] ; then help; fi
 
-boost_url=https://dl.bintray.com/boostorg/release/${boost_release}/source/boost_1_72_0.tar.gz
-boost_targz_file=boost_1_72_0.tar.gz
+boost_url=https://dl.bintray.com/boostorg/release/${boost_release}/source/boost_1_71_0.tar.gz
+boost_targz_file=boost_1_71_0.tar.gz
 pwd=`pwd`
 vendor=${pwd}/vendor
 project_dir=$pwd

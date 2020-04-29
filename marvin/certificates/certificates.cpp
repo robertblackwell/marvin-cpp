@@ -37,6 +37,8 @@ const std::string kMarvinDotDirectoryName = ".marvin";
 const std::string kMarvinCaConfigFileName = "ca_config.json";
 const std::string kMarvinCertStoreName = "cert_store"; 
 
+
+
 void displayX509(Cert::Certificate cert)
 {
     X509* x509_original_cert = cert.native();
@@ -55,11 +57,30 @@ void displayX509(Cert::Certificate cert)
     auto ssan = Cert::x509::Cert_extensionsAsDescription(x509_original_cert);
 
 }
+#ifndef MARVIN_CERTIFICATES_MEYERS_SINGLTON
+/// single thread not Meyers singleton
+std::unique_ptr<Certificates> Certificates::s_instance_uptr;
+
+void Certificates::init(boost::filesystem::path marvin_home)
+{
+        s_instance_uptr = std::make_unique<Certificates>(marvin_home);
+}
+Certificates& Certificates::getInstance()
+{
+    if ( ! s_instance_uptr) {
+        /// if you have not called Certificates::init try using default constructor
+        s_instance_uptr = std::make_unique<Certificates>();
+    }
+    return *s_instance_uptr;
+} 
+#else
+/// Meyers singlton
 Certificates& Certificates::getInstance()
 {
     static Certificates instance{};
     return instance;
 }
+#endif
 ::Cert::Store::StoreSPtr Certificates::createStore(boost::filesystem::path store_path, boost::filesystem::path ca_config_file_path)
 {
     boost::filesystem::path config_path = ca_config_file_path;
@@ -76,6 +97,25 @@ Certificates& Certificates::getInstance()
     store_sptr->loadConfig();
     store_sptr->loadCertAuth();
     return store_sptr;
+}
+Certificates::Certificates(boost::filesystem::path marvin_home)
+{
+    using namespace boost;
+    using namespace boost::filesystem;
+    path p = marvin_home / Marvin::kMarvinDotDirectoryName / Marvin::kMarvinCertStoreName;
+    path base(p);
+    if (! boost::filesystem::is_directory(base)) {
+        MARVIN_THROW("the base dir for certificates does not exist");
+    }
+    m_cert_store_sptr   = Cert::Store::Store::load(p);
+    m_locator_sptr      = m_cert_store_sptr->getLocator();
+    m_authority_sptr    = m_cert_store_sptr->getAuthority();
+    m_builder_sptr      = std::make_shared<Cert::Builder>(*m_authority_sptr);
+    auto bundle_path = m_locator_sptr->mozilla_root_certs.string();
+    m_X509_store_ptr = X509_STORE_new();
+    X509_STORE_load_locations(m_X509_store_ptr, (const char*)bundle_path.c_str(), NULL);
+    X509_STORE_up_ref(m_X509_store_ptr);    
+
 }
 Certificates::Certificates()
 {
@@ -110,6 +150,7 @@ Certificates::Certificates()
 Certificates::~Certificates()
 {
     TROG_TRACE_CTOR();
+
     // X509_STORE_free(m_X509_store_ptr);
 }
 X509_STORE* Certificates::getX509StorePtr()

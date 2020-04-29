@@ -28,17 +28,15 @@ class MitmThread
         MitmApp::configSet_HttpsPorts(ports);
         MitmApp::configSet_HttpsHosts(re);
 
-        TcpServer* server_ptr;
 
-        std::function<void(void*)> proxy_thread_func = [&server_ptr, port](void* param) {
-            server_ptr = new Marvin::TcpServer([](boost::asio::io_service& io) {
+        std::function<void(void*)> proxy_thread_func = [this, port](void* param) {
+            m_server_uptr = std::make_unique<Marvin::TcpServer>([](boost::asio::io_service& io) {
                 CollectorBaseSPtr cb_sptr = std::make_shared<CollectorBase>(io, std::cout);
                 MitmAppUPtr app_uptr = std::make_unique<MitmApp>(io, cb_sptr);
                 return app_uptr;
             });
-            server_ptr->listen(port);
+            m_server_uptr->listen(port);
             std::cout << "Returned from listen" << std::endl;
-            delete server_ptr;
         };
         m_thread_uptr = std::make_unique<std::thread>(proxy_thread_func, nullptr);
 
@@ -54,9 +52,22 @@ class MitmThread
     {
 
     }
-    std::thread& getThread() { return *m_thread_uptr; }
+    
+    void post(std::function<void()> f) {
 
+    }
+
+    void join() { 
+        m_thread_uptr->join();
+    }
+
+    void terminate() {
+        m_server_uptr->terminate();
+    }
+
+    std::unique_ptr<TcpServer>   m_server_uptr;
     std::unique_ptr<std::thread> m_thread_uptr;
+
 };
 }
 

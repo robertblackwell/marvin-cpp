@@ -9,6 +9,8 @@
         "description": "Select the test to debug",
         "options": [
             "test_doctest/test_doctest",
+            "test_pipe/test_pipe",
+            "test_pipe/test_pipe_writer",
             "test_buffers/test_buffers",
             "test_marvin_errors/test_marvin_errors",
             "test_ssl/test_ssl",

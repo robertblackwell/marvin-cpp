@@ -86,16 +86,16 @@ int main(int argc, const char * argv[])
         https_ports
     );
 
-    boost::optional<std::string> ctl_path;
+    std::string ctl_path;
     if(vm.count("ctl-pipe-path")) {
         ctl_path = vm["ctl-pipe-path"].as<std::string>();
     } else {
-        ctl_path = boost::none;
+        ctl_path = "/home/robert/Projects/marvin++/.marvin/marvin_ctl";
     }
 
     Marvin::CtlThread ctl_thread(ctl_path);
 
-    ctl_thread.getThread().join();
-    mitm_thread.getThread().join();
+    ctl_thread.join();
+    mitm_thread.join();
 
 }

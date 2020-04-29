@@ -35,6 +35,8 @@ add_subdirectory(test_server_v3)
 # add_subdirectory(test_ssl)		# not sure this one will stay
 add_subdirectory(test_timeout)
 add_subdirectory(test_uri)
+add_subdirectory(test_pipe)
+
 if (OFF)
 endif()
 # these are not really 'test' in most cases they are experiments to try out an idea 
