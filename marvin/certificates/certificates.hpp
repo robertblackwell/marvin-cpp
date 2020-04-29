@@ -36,6 +36,7 @@ public:
 		boost::filesystem::path ca_config_file_path
 	);
 	Certificates();
+	~Certificates();
 	
 	X509_STORE* getX509StorePtr();
 

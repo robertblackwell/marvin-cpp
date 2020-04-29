@@ -40,7 +40,7 @@ class ServerConnectionManager
         * a single threaded manner.
         */
         ServerConnectionManager(boost::asio::io_service& io, int max_connections);
-    
+        ~ServerConnectionManager();
         /**
         * Called by server to verify that another accept is permitted
         * within the context of the ConnectionManager's rescource allocation scheme.

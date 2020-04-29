@@ -31,6 +31,30 @@
     }],
     "configurations": [
         {
+            "name": "(gdb) simple-proxy",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/apps/simple_proxy/simple_proxy",
+            "args": ["--marvin-home", "thisismarvinhome"],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "MARVIN_HOME",
+                    "value": "${workspaceFolder}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                }
+            ]
+        },
+        {
             "name": "(gdb) Config Launch",
             "type": "cppdbg",
             "request": "launch",

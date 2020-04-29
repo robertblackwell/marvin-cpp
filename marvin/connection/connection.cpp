@@ -158,7 +158,9 @@ void Connection::asyncAccept(
 )
 {
     acceptor.async_accept(m_tcp_socket, [cb, this](const boost::system::error_code& err) {
-       TROG_TRACE_FD(this->nativeSocketFD());
+        TROG_WARN("before");
+        TROG_TRACE_FD(nativeSocketFD());
+        TROG_WARN("after");
         p_post_accept_cb(cb, err);
     });
 }
@@ -228,8 +230,15 @@ void Connection::becomeSecureServer(Cert::Identity server_identity)
         ssl::context::default_workarounds | ssl::context::no_sslv2
     );
     SSL_CTX* raw_ssl_ctx_ptr = m_ssl_ctx_sptr->native_handle();
-    SSL_CTX_use_certificate(raw_ssl_ctx_ptr, server_identity.getX509());
-    SSL_CTX_use_PrivateKey(raw_ssl_ctx_ptr, server_identity.getEVP_PKEY());
+
+    X509* tmp_x509 = server_identity.getX509();
+    EVP_PKEY* tmp_evp_pkey = server_identity.getEVP_PKEY();
+
+    SSL_CTX_use_certificate(raw_ssl_ctx_ptr, tmp_x509);
+    SSL_CTX_use_PrivateKey(raw_ssl_ctx_ptr, tmp_evp_pkey);
+
+    // X509_free(tmp_x509);
+    // EVP_PKEY_free(tmp_evp_pkey);
 
     m_ssl_stream_sptr = std::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(m_tcp_socket, *m_ssl_ctx_sptr);
 

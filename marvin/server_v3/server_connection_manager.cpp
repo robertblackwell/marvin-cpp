@@ -27,7 +27,11 @@ ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, in
     m_connection_count = 0;
     instance = this;
 }
-
+ServerConnectionManager::~ServerConnectionManager()
+{
+    TROG_TRACE_CTOR();
+    TROG_WARN("num connections: ", m_connections.size());
+}
 void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
 {
     assert(m_allow_more_callback == nullptr);
@@ -67,7 +71,7 @@ void ServerConnectionManager::deregister(ConnectionHandler* ch)
     TROG_TRACE3("deregister nativeSocket:: ", ch->nativeSocketFD());
     TROG_TRACE3("deregister num connections:: ", m_connections.size());
     p_deregister(ch);
-    TROG_TRACE3(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
+    // TROG_TRACE3(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
     return;
 }
 /**

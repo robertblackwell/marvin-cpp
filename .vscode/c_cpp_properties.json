@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/apps/**",
+                "${workspaceFolder}/marvin/**",
+                "${workspaceFolder}/tests/**",
+                "${workspaceFolder}/vendor/include/**",
+                "${workspaceFolder}/vendor/src/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

@@ -14,7 +14,8 @@
 #include <marvin/collector/collector_base.hpp>
 #include <marvin/server_v3/mitm_app.hpp>
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn);
 
 /**
  * This is the simplest possible test of the http mitm proxy. To run it needs manual intervention.

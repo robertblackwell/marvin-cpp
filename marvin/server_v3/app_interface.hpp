@@ -1,7 +1,6 @@
 #ifndef marvin_server_v3_app_interface_hpp
 #define marvin_server_v3_app_interface_hpp
 
-#include <doctest/doctest.h>
 #include <iostream>
 #include <sstream>
 #include <string>

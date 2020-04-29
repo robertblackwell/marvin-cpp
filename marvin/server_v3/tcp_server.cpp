@@ -117,30 +117,32 @@ void TcpServer::terminate()
    TROG_TRACE3("");
     ISocketSPtr conn_sptr = socketFactory(m_io);
     
-    ConnectionHandler* connectionHandler = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
+    ConnectionHandler* waiting_conn_handler_ptr = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
 
-    auto hf = (std::bind(&TcpServer::p_handle_accept, this, connectionHandler, std::placeholders::_1));
-    conn_sptr->asyncAccept(m_acceptor, hf);
+    conn_sptr->asyncAccept(m_acceptor, [this, waiting_conn_handler_ptr](const boost::system::error_code& err)
+    {
+        p_handle_accept(waiting_conn_handler_ptr, err);
+    });
 }
 
 //-------------------------------------------------------------------------------------
 // handleAccept
 //-------------------------------------------------------------------------------------
- void TcpServer::p_handle_accept(ConnectionHandler* connHandler, const boost::system::error_code& err)
+ void TcpServer::p_handle_accept(ConnectionHandler* waiting_conn_handler_ptr, const boost::system::error_code& err)
 {
-    TROG_INFO("", connHandler);
+    TROG_INFO("", waiting_conn_handler_ptr);
     if (! m_acceptor.is_open()){
-        delete connHandler;
+        delete waiting_conn_handler_ptr;
         TROG_WARN("Accept is not open ???? WTF - lets TERM the server");
         return; // something is wrong
     }
     if (!err){
-       TROG_TRACE3("got a connection", connHandler->nativeSocketFD());
+       TROG_TRACE3("got a connection", waiting_conn_handler_ptr->nativeSocketFD());
         /// at this point the native socket fd is assigned
         /// so for debug purposes we can stash it in the
         /// fd_inuse list
        
-        m_connectionManager.registerConnectionHandler(connHandler);
+        m_connectionManager.registerConnectionHandler(waiting_conn_handler_ptr);
         // important sequence - if a call to p_start_accept() is defered
         // by allowAnotherConnection() we need to be sure there is still
         // an outstanding connection that will start an accept in the future.
@@ -148,9 +150,10 @@ void TcpServer::terminate()
            TROG_TRACE3("allowAnother Callback");
             p_start_accept();
         });
-        connHandler->serve();
+        waiting_conn_handler_ptr->serve();
     }else{
-       TROG_TRACE3("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
+        TROG_WARN("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());
+        delete waiting_conn_handler_ptr;
         m_io.stop();
         return;
     }
@@ -169,8 +172,11 @@ void TcpServer::terminate()
  void TcpServer::p_do_stop(const Marvin::ErrorType& err)
 {
     TROG_DEBUG("");
-    m_io.stop();
+    m_terminate_requested = true;
+    m_heartbeat_timer.cancel();
+    return;
     m_acceptor.close();
+    m_io.stop();
 }
 void TcpServer::p_on_heartbeat(const boost::system::error_code& ec)
 {

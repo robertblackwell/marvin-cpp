@@ -1,13 +1,12 @@
-add_executable(handshake 
-	handshake.cpp
-	marvin_handshaker.cpp
-	cert_handshaker.cpp
+add_executable(simple_proxy 
+	simple_proxy.cpp
+
 )
 
-target_include_directories(handshake 
+target_include_directories(simple_proxy 
 	PUBLIC SYSTEM ${MARVIN_INCLUDE_PATHS})
 
-target_link_libraries(handshake PUBLIC ${MARVIN_LINK_LIBRARIES})
+target_link_libraries(simple_proxy PUBLIC ${MARVIN_LINK_LIBRARIES})
 
 # target_precompile_headers(${TARGET} 
 # 	REUSE_FROM 

@@ -101,7 +101,7 @@ private:
     **          completed accept call.
     ** @param err a boost errorcide that described any error condition
     */
-    void p_handle_accept(ConnectionHandler* handler, const boost::system::error_code& err);
+    void p_handle_accept(ConnectionHandler* conn_handler_ptr, const boost::system::error_code& err);
 
     /**
     ** @brief sets up a signal callback
@@ -126,6 +126,7 @@ private:
     RequestHandlerUPtrFactory                       m_factory;
     boost::asio::deadline_timer                     m_heartbeat_timer;
     bool                                            m_terminate_requested; // heartbeat will terminate server if this is set
+    ConnectionHandler*                              m_waiting_conn_handler_ptr;
 };
 } // Marvin
 

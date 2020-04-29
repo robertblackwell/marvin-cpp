@@ -14,7 +14,7 @@
 #include <marvin/http/message_factory.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelCTorTrace)
 
 
 namespace Marvin {
@@ -31,6 +31,7 @@ MitmHttps::MitmHttps(
 
 ) : m_mitm_app(mitm_app), m_io(socket_sptr->getIO())
 {
+    TROG_TRACE_CTOR();
     m_downstream_rdr_sptr = rdr;
     m_downstream_socket_sptr = socket_sptr;
     m_downstream_wrtr_sptr = wrtr;
@@ -42,7 +43,7 @@ MitmHttps::MitmHttps(
 }
 MitmHttps::~MitmHttps()
 {
-
+    TROG_TRACE_CTOR();
 }
 
 void MitmHttps::handle()

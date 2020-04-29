@@ -8,6 +8,9 @@
 #include <boost/filesystem/path.hpp>        // for path
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
+#include <marvin/configure_trog.hpp>
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace|Trog::LogLevelFDTrace)
+
 #include <cert/cert_authority.hpp>          // for AuthoritySPtr
 #include <cert/cert_builder.hpp>            // for Builder
 #include <cert/cert_certificate.hpp>        // for Certificate
@@ -79,6 +82,8 @@ Certificates::Certificates()
     using namespace boost;
     using namespace boost::filesystem;
 
+    TROG_TRACE_CTOR();
+
     optional<path> mh = Marvin::getEnvMarvinHome();
     path cwd = boost::filesystem::current_path();
     if (!mh) {
@@ -101,6 +106,11 @@ Certificates::Certificates()
     m_X509_store_ptr = X509_STORE_new();
     X509_STORE_load_locations(m_X509_store_ptr, (const char*)bundle_path.c_str(), NULL);
     X509_STORE_up_ref(m_X509_store_ptr);
+}
+Certificates::~Certificates()
+{
+    TROG_TRACE_CTOR();
+    // X509_STORE_free(m_X509_store_ptr);
 }
 X509_STORE* Certificates::getX509StorePtr()
 {

@@ -5,18 +5,21 @@ References for command interface:
  ☐ https://github.com/loopperfect/rxterm
 
 Next step:
-  ☐ cleanup all the stuff that tries to turn objects into strngs - its a mess
-  ☐ decide about uuid in the mitm_app currently not initialized
-  ☐ mitm_app - FD seems to be printing the wrong number
+  ☐ OPENSSL initialization - simple_proxy
+  ☐ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
+  ☐ make the ctl thread for simple_proxy and will require an app to send commands to the ctl thread. Start with a single "stop" command
+  ☐ find a way of initializing Certificates before the single instance is created - probably have to change the way singleton is done. Backward compatibility - either initialized with a path or uses env variable.
+  ☐ remove the signal handling stuff from tcp_server and make available to simple_proxy to use for all threads.
+  ☐ add SSL initialization to simple_proxy
+  ☐ remove raw pointer to connection handler from tcp_server - this is a related issue decide about uuid in the mitm_app currently not initialized
+  ☐ cleanup all the stuff that tries to turn objects into strings - its a mess
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
   ☐ need to permit tunnel requests for any port as it might be a websocket
   ☐ should only do https_upstream if the port is 443 and even then should check the first message for upgrade and reject
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
-  ☐ valgrind to check for memory leaks
   ☐ break message reader into bits - maybe
   ☐ research restructuring messagereader so as not to be a mix of 3 other classes
-  ☐ simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
 
 Next project:
   ☐ make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host
@@ -36,6 +39,8 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ mitm_app - FD seems to be printing the wrong number - NO @done (20-04-28 19:35) @project(Next step)
+ ✔ valgrind to check for memory leaks - done as far as I can go @done (20-04-28 19:33) @project(Next step)
  ✔ find all test that are #if out of action and get them working or remove @done (20-04-23 16:22)
  ✔ some tests are still using the leading _varname naming scheme - fix @done (20-04-23 15:48)
  ✔ test_ssl fails fix or discard test -DISCARD @done (20-04-23 15:30) @project(Tests)
