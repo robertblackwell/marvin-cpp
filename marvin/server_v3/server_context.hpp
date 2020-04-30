@@ -17,6 +17,12 @@ struct ServerContext
     ConnectionHandler*          connection_handler_ptr;
     ISocket*        			connection_ptr;
     boost::uuids::uuid          uuid;
+
+    ~ServerContext()
+    {
+        // do nothing - these pointers are not owned by this class
+    }
+
 };
 } // namespace Marvin
 #endif /* server_context_hpp */

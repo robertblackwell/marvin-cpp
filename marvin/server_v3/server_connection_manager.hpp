@@ -28,8 +28,6 @@ class ServerConnectionManager
     public:
         typedef std::function<void()> AllowAnotherCallback;
     
-        static ServerConnectionManager* instance;
-        static ServerConnectionManager* get_instance();
         static bool verify();
         
         ServerConnectionManager(const ServerConnectionManager&) = delete;
@@ -39,7 +37,7 @@ class ServerConnectionManager
         * Construct a connection manager. The connection handler must operate in
         * a single threaded manner.
         */
-        ServerConnectionManager(boost::asio::io_service& io, int max_connections);
+        ServerConnectionManager(boost::asio::io_service& io, TcpServer* tcp_server_ptr, int max_connections);
         ~ServerConnectionManager();
         /**
         * Called by server to verify that another accept is permitted
@@ -68,6 +66,8 @@ class ServerConnectionManager
         */
         void deregister(ConnectionHandler* ch);
 
+        TcpServer* getTcpServerPtr();
+
         /**
         ** Stop all connections.
         */
@@ -75,20 +75,20 @@ class ServerConnectionManager
 
     private:
         /**
-        * THese methods actually perform the register, deregister functions
-        * and are posted to the serverStrand
+        * These methods perform the register, deregister functions
         */
         void p_register(ConnectionHandler* ch);
         void p_deregister(ConnectionHandler* ch);
-        int    m_connection_count;
 
+        TcpServer*                  m_parent_server_ptr;
+        int                         m_connection_count;
         boost::asio::io_service&    m_io;
         int                         m_maxNumberOfConnections;
         int                         m_currentNumberConnections;
         AllowAnotherCallback        m_allow_more_callback;
         
         std::map<ConnectionHandler*, std::unique_ptr<ConnectionHandler>> m_connections;
-        std::map<long, long>  m_fd_list;
+        std::map<long, long>        m_fd_list;
 };
 } // namespace Marvin
 #endif // HTTP_SERVER_CONNECTION_MANAGER_HPP

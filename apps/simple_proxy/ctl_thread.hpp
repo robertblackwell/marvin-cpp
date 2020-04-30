@@ -25,7 +25,7 @@ class CtlThread
                 return app_uptr;
             });
             m_server_uptr->listen(port);
-            std::cout << "Returned from listen" << std::endl;
+            std::cout << "CtlThread Returned from listen" << std::endl;
         };
         m_thread_uptr = std::make_unique<std::thread>(proxy_thread_func, nullptr);
 

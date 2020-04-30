@@ -32,7 +32,7 @@ public:
     
     virtual void handle(
         ServerContext&            server_context,
-        ISocketSPtr                 clientConnectionSPtr,
+        ISocketSPtr               clientConnectionSPtr,
         HandlerDoneCallbackType   done
     ) = 0;
     virtual ~RequestHandlerInterface()

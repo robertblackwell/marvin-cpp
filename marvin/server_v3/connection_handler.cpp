@@ -28,7 +28,7 @@ ConnectionHandler::ConnectionHandler(
     */
     m_connection = conn_sptr;
     m_requesthandler_uptr = m_factory(m_io);
-    m_server_context.server_ptr = TcpServer::get_instance();
+    m_server_context.server_ptr = connectionManager.getTcpServerPtr();
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
     m_server_context.connection_ptr = conn_sptr.get();

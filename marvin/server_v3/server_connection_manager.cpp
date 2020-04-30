@@ -7,25 +7,20 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTr
 
 namespace Marvin {
 
-ServerConnectionManager* ServerConnectionManager::instance;
-
-ServerConnectionManager* ServerConnectionManager::get_instance()
-{
-    return instance;
-}
 bool ServerConnectionManager::verify()
 {
     return true;
 }
 
-ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, int max_connections)
+ServerConnectionManager::ServerConnectionManager(boost::asio::io_service& io, TcpServer* tcp_server_ptr, int max_connections)
     : m_io(io),
     m_maxNumberOfConnections(max_connections),
-    m_currentNumberConnections(0)
+    m_currentNumberConnections(0),
+    m_parent_server_ptr(tcp_server_ptr)
 {
    TROG_TRACE_CTOR();
     m_connection_count = 0;
-    instance = this;
+    // instance = this;
 }
 ServerConnectionManager::~ServerConnectionManager()
 {
@@ -44,6 +39,10 @@ void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::Al
     }
 }
 
+TcpServer* ServerConnectionManager::getTcpServerPtr()
+{
+    return m_parent_server_ptr;
+}
 
 /**
  * This method is ALWAYS called from the server strand so do not have to post

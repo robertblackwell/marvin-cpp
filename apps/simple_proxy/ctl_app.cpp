@@ -100,6 +100,8 @@ void CtlApp::p_internal_handle()
                 p_handle_smart_echo();
             } else if (path_01 == "delay") {
                 p_handle_delay(bits);
+            } else if (path_01 == "stop") {
+                p_handle_stop(bits);
             } else {
                 p_invalid_request();
             }
@@ -163,6 +165,20 @@ void CtlApp::p_invalid_request()
 void CtlApp::p_handle_echo()
 {
     std::string body = "THIS IS A RESPONSE BODY";
+    MessageBaseSPtr response_msg = make_200_response(body);
+    auto s = response_msg->str();
+    m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
+    {
+        if (err) {
+            p_on_write_error(err);
+        } else {
+            p_req_resp_cycle_complete();
+        }
+    });    
+}
+void CtlApp::p_handle_stop(std::vector<std::string>& bits)
+{
+    std::string body = "stop not yet implemented";
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->str();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 

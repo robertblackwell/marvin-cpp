@@ -9,20 +9,9 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTr
 
 namespace Marvin {
 
-int TcpServer::s_numberOfThreads = 4;
 int TcpServer::s_numberOfConnections = 35;
 int TcpServer::s_heartbeat_interval_ms = 1000;
 
-TcpServer* TcpServer::s_instance = nullptr;
-
-TcpServer* TcpServer::get_instance()
-{
-    return s_instance;
-}
-void TcpServer::configSet_NumberOfThreads(int n)
-{
-    s_numberOfThreads = n;
-}
 void TcpServer::configSet_NumberOfConnections(int n)
 {
     s_numberOfConnections = n;
@@ -38,12 +27,11 @@ bool TcpServer::verify()
 
 TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
     m_heartbeat_interval_ms(s_heartbeat_interval_ms),
-    m_numberOfThreads(s_numberOfThreads),
     m_numberOfConnections(s_numberOfConnections),
     m_io(1),
     m_signals(m_io),
     m_acceptor(m_io),
-    m_connectionManager(m_io, m_numberOfConnections),
+    m_connectionManager(m_io, this, m_numberOfConnections),
     m_factory(factory),
     m_heartbeat_timer(m_io),
     m_terminate_requested(false)
@@ -55,10 +43,6 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
 */
  void TcpServer::p_initialize()
 {
-    ///
-    /// !! make sure this is big enough to handle the components with dedicated strands
-    ///
-    m_numberOfThreads = s_numberOfThreads;
     // Register to handle the signals that indicate when the Server should exit.
     // It is safe to register for the same signal multiple times in a program,
     // provided all registration for the specified signal is made through Asio.
@@ -67,7 +51,7 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
     #if defined(SIGQUIT)
     m_signals.add(SIGQUIT);
     #endif // defined(SIGQUIT)
-    s_instance = this;
+    // s_instance = this;
     
     p_wait_for_stop();
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), m_port);

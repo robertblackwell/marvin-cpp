@@ -80,10 +80,10 @@ public:
     void terminate();
 private:
 
-    static int s_numberOfThreads;
+    // static int s_numberOfThreads;
     static int s_numberOfConnections;
     static int s_heartbeat_interval_ms;
-    static TcpServer* s_instance;
+    // static TcpServer* s_instance;
 
     /**
     ** @brief just as it says - init the server ready to list
@@ -116,7 +116,6 @@ private:
     void p_on_heartbeat(const boost::system::error_code& ec);
     
     int                                             m_heartbeat_interval_ms;
-    int                                             m_numberOfThreads;
     int                                             m_numberOfConnections;
     long                                            m_port;
     boost::asio::io_service                         m_io;
