@@ -90,7 +90,7 @@ int main(int argc, const char * argv[])
         ctl_port = 9993;
     }
 
-    Marvin::CtlThread ctl_thread(ctl_port);
+    Marvin::CtlThread ctl_thread(ctl_port, mitm_thread);
 
     ctl_thread.join();
     mitm_thread.join();

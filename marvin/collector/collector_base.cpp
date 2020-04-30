@@ -33,7 +33,9 @@ bool testPipeReaderExists(char* pipeName)
     return true;
 }
 CollectorBase::CollectorBase(boost::asio::io_service& io, std::ostream& ofstream): m_io(io), m_my_strand(io), m_output_stream(ofstream)
-{}
+{
+    TROG_WARN("collector")
+}
 
 /**
 ** This method actually implements the collect function but run on a dedicated

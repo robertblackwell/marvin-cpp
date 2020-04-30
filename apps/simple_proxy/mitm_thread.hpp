@@ -1,5 +1,5 @@
-#ifndef marvin_mitm_thread_hpp
-#define marvin_mitm_thread_hpp
+#ifndef marvin_simple_proxy_mitm_thread_hpp
+#define marvin_simple_proxy_mitm_thread_hpp
 
 #include <string>
 #include <vector>
@@ -23,10 +23,10 @@ class MitmThread
     {
         long port = (proxy_port) ? proxy_port.get() : 9992;
 
-        std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
+        std::vector<std::string> re_strs{std::string("^ssllabs(.)*$")};
         std::vector<int> ports{443, 9443};
         MitmApp::configSet_HttpsPorts(ports);
-        MitmApp::configSet_HttpsHosts(re);
+        MitmApp::configSet_HttpsHosts(re_strs);
 
 
         std::function<void(void*)> proxy_thread_func = [this, port](void* param) {
@@ -36,17 +36,9 @@ class MitmThread
                 return app_uptr;
             });
             m_server_uptr->listen(port);
-            std::cout << "Returned from listen" << std::endl;
+            std::cout << "Mitm Server returned from listen" << std::endl;
         };
         m_thread_uptr = std::make_unique<std::thread>(proxy_thread_func, nullptr);
-
-        // m_thread_uptr = std::make_unique<std::thread>([this]()
-        // {
-        //     while (true) {
-        //         sleep(1);
-        //         std::cout << __func__ << std::endl;
-        //     }
-        // });
     }
     ~MitmThread()
     {
@@ -60,7 +52,13 @@ class MitmThread
     void join() { 
         m_thread_uptr->join();
     }
-
+    std::vector<std::string>& get_https_hosts() {
+        return MitmApp::configGet_HttpsHosts();
+    }
+    std::vector<int>& get_https_ports()
+    {
+        return MitmApp::configGet_HttpsPorts();
+    }
     void terminate() {
         m_server_uptr->terminate();
     }

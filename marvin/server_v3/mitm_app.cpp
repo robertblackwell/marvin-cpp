@@ -23,19 +23,35 @@ enum class ConnectAction{
 
 
 std::vector<std::regex> MitmApp::s_https_hosts = std::vector<std::regex>();
+std::vector<std::string> MitmApp::s_https_host_strings = std::vector<std::string>();
 std::vector<int> MitmApp::s_https_ports = std::vector<int>();
 
 void MitmApp::configSet_HttpsHosts(std::vector<std::regex> re)
 {
     s_https_hosts = re;
 }
-
+void MitmApp::configSet_HttpsHosts(std::vector<std::string> re_strings)
+{
+    s_https_host_strings = re_strings;
+    std::vector<std::regex> regexes;
+    for( auto s: re_strings) {
+        regexes.push_back(std::regex(s));
+    }
+    s_https_hosts = regexes;
+}
+std::vector<std::string>& MitmApp::configGet_HttpsHosts()
+{
+    return s_https_host_strings;
+}
 
 void MitmApp::configSet_HttpsPorts(std::vector<int> ports)
 {
     s_https_ports = ports;
 }
-
+std::vector<int>& MitmApp::configGet_HttpsPorts()
+{
+    return s_https_ports;
+} 
 MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_io(io)
 {
    TROG_INFO("constructor");

@@ -55,7 +55,7 @@ public:
     static void configSet_NumberOfConnections(int num);
     static void configSet_NumberOfThreads(int num);
     static void configSet_HeartbeatInterval(int millisecs);
-    static TcpServer* get_instance();
+    // static TcpServer* get_instance();
     
     TcpServer(const TcpServer&) = delete;
     TcpServer& operator=(const TcpServer&) = delete;

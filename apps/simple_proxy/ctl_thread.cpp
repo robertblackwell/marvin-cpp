@@ -1,5 +1,6 @@
 
-#include "ctl_app.hpp"
+#include "ctl_thread.hpp"
+#include "mitm_thread.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -58,9 +59,42 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->setHeader(HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }
-CtlApp::CtlApp(boost::asio::io_service& io): m_io(io)
+CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThread* ctl_thread_ptr)
+: m_io(io), m_mitm_thread_ref(mitm_thread_ref), m_ctl_thread_ptr(ctl_thread_ptr)
 {
+    m_dispatch_table.add(std::regex("/stop"),[this](MessageReaderSPtr rdr) 
+    {
+        std::string path = rdr->getPath();
+        std::vector<std::string> bits;
+        boost::split(bits, path, [](char c){return c == '/';});
+        if (bits.size() < 2) {
+            bits[1] = "";
+        }
+        p_handle_stop(bits);
 
+    });
+    m_dispatch_table.add(std::regex("/list.*"),[this](MessageReaderSPtr rdr) 
+    {
+        std::string path = rdr->getPath();
+        std::vector<std::string> bits;
+        boost::split(bits, path, [](char c){return c == '/';});
+        if (bits.size() < 2) {
+            bits[1] = "";
+        }
+        p_handle_list_filters(bits);
+
+    });
+    m_dispatch_table.add(std::regex("/echo"),[this](MessageReaderSPtr rdr) 
+    {
+        std::string path = rdr->getPath();
+        std::vector<std::string> bits;
+        boost::split(bits, path, [](char c){return c == '/';});
+        if (bits.size() < 2) {
+            bits[1] = "";
+        }
+        p_handle_echo();
+
+    });
 }
 CtlApp::~CtlApp()
 {
@@ -87,6 +121,14 @@ void CtlApp::p_internal_handle()
             p_on_read_error(err);
         } else {
             std::string path = m_rdr->getPath();
+            boost::optional<HttpRequestHandler> h = m_dispatch_table.find(path);
+            if (h) {
+                h.get()(m_rdr);
+            } else {
+                p_invalid_request();
+            }
+#if DIABLED
+            return;
             std::vector<std::string> bits;
             boost::split(bits, path, [](char c){return c == '/';});
             if (bits.size() < 2) {
@@ -102,9 +144,12 @@ void CtlApp::p_internal_handle()
                 p_handle_delay(bits);
             } else if (path_01 == "stop") {
                 p_handle_stop(bits);
+            } else if (path_01 == "list_filters") {
+                p_handle_list_filters(bits);
             } else {
                 p_invalid_request();
             }
+#endif
         }
     });
 }
@@ -179,6 +224,36 @@ void CtlApp::p_handle_echo()
 void CtlApp::p_handle_stop(std::vector<std::string>& bits)
 {
     std::string body = "stop not yet implemented";
+    MessageBaseSPtr response_msg = make_200_response(body);
+    auto s = response_msg->str();
+    m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
+    {
+        if (err) {
+            p_on_write_error(err);
+        } else {
+            m_mitm_thread_ref.terminate();
+            m_ctl_thread_ptr->terminate();
+            p_req_resp_cycle_complete();
+        }
+    });    
+}
+void CtlApp::p_handle_list_filters(std::vector<std::string>& bits)
+{
+    std::string body = "stop not yet implemented";
+    std::ostringstream os;
+    std::vector<int>& ports = m_mitm_thread_ref.get_https_ports();
+    std::vector<std::string>& hosts = m_mitm_thread_ref.get_https_hosts();
+    os << "Https ports: " << std::endl;
+    for(int i = 0; i < ports.size(); i++) {
+        os << "port: " << ports[i] << std::endl; 
+    }
+    os << "complete -------" << std::endl;
+    os << std::endl << "Https hosts: " << std::endl;
+    for(int i = 0; i < hosts.size(); i++) {
+        os << "host regex: " << hosts[i] << std::endl; 
+    }
+    os << "complete ------" << std::endl;
+    body = os.str();
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->str();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 

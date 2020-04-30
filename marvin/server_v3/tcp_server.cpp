@@ -74,6 +74,7 @@ TcpServer::~TcpServer()
 void TcpServer::terminate()
 {
     m_terminate_requested = true;
+    m_heartbeat_timer.cancel();
 }
 #pragma mark - listen, accept processing
 //-------------------------------------------------------------------------------------
@@ -150,8 +151,7 @@ void TcpServer::terminate()
 {
     TROG_DEBUG("");
     auto hf = (std::bind(&TcpServer::p_do_stop, this, std::placeholders::_1));
-
-  m_signals.async_wait(hf);
+    m_signals.async_wait(hf);
 }
  void TcpServer::p_do_stop(const Marvin::ErrorType& err)
 {

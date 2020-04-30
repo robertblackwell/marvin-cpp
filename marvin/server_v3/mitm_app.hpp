@@ -35,8 +35,11 @@ class MitmApp : public Marvin::RequestHandlerInterface
 {
     public:
         // these are configuration settings
+        static void configSet_HttpsHosts(std::vector<std::string> re_string);
         static void configSet_HttpsHosts(std::vector<std::regex> re);
         static void configSet_HttpsPorts(std::vector<int> ports);
+        static std::vector<std::string>& configGet_HttpsHosts(); 
+        static std::vector<int>& configGet_HttpsPorts(); 
     
         MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr);
         ~MitmApp();
@@ -112,6 +115,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         // void p_response200OKConnected(MessageWriter& writer);
         // void p_response502Badgateway(MessageWriter& writer);
 
+        static std::vector<std::string>     s_https_host_strings;
         static std::vector<std::regex>      s_https_hosts;
         static std::vector<int>             s_https_ports;
         /// regexs to define hosts that require mitm not tunnel
