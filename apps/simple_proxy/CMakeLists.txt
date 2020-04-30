@@ -1,5 +1,6 @@
 add_executable(simple_proxy 
 	simple_proxy.cpp
+	ctl_app.cpp
 
 )
 

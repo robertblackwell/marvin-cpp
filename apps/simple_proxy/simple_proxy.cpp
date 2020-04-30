@@ -1,7 +1,3 @@
-//
-// The main entry point for Marvin - a mitm proxy for http/https 
-//
-
 
 #include <iostream>
 #include <fstream>
@@ -14,6 +10,7 @@
 #include <regex>
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+
 #include "ctl_thread.hpp"
 #include "mitm_thread.hpp"
 
@@ -35,7 +32,7 @@ int main(int argc, const char * argv[])
         ("https-mitm-ports", po::value<std::vector<std::string>>(), "ports that will be considered for mitm processing of https requests. Defaults to 447 ")
 
         ("config-file,C", po::value<std::string>(),  "config file path - not implemented")
-        ("ctl-pipe-path,P", po::value<std::string>(), "path name for the control interface named pipe. If none no control interface")
+        ("ctl-port", po::value<long>(), "port for the http control interface default 9993")
     ;
 
     po::variables_map vm;
@@ -86,14 +83,14 @@ int main(int argc, const char * argv[])
         https_ports
     );
 
-    std::string ctl_path;
-    if(vm.count("ctl-pipe-path")) {
-        ctl_path = vm["ctl-pipe-path"].as<std::string>();
+    long ctl_port;
+    if(vm.count("ctl-pport")) {
+        ctl_port = vm["ctl-port"].as<long>();
     } else {
-        ctl_path = "/home/robert/Projects/marvin++/.marvin/marvin_ctl";
+        ctl_port = 9993;
     }
 
-    Marvin::CtlThread ctl_thread(ctl_path);
+    Marvin::CtlThread ctl_thread(ctl_port);
 
     ctl_thread.join();
     mitm_thread.join();
