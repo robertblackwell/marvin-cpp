@@ -1,5 +1,5 @@
 ## So what is this ?
-The __MarvinCpp__ (or __marvin-cpp__ as it will soon be called) project provides a man-in-the-middle proxy that can examine __http__ and __https__ traffic between a http(s) client and an http(s) server. It is a bit like the __Charles__  app that is wellknown to web developers.
+The __marvin-cpp__ project provides a man-in-the-middle proxy that can examine __http__ and __https__ traffic between a http(s) client and an http(s) server. It is a bit like the __Charles__  app that is wellknown to web developers.
 
 Unlike my project __marvin__ (https://github.com/robertblackwell/marvin.git  which is an earlier effort at a mitm proxy in node-js), this one is more ambitious, written in C++ using Boost/Asio.
 
