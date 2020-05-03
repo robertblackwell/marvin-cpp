@@ -3,14 +3,17 @@ References for command interface:
  ☐ https://github.com/daniele77/cli
  ☐ https://hackernoon.com/building-reactive-terminal-interfaces-in-c-d392ce34e649
  ☐ https://github.com/loopperfect/rxterm
-
+Polishing:
+  ☐ need a documentation build step and start putting in comments
+  ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
+  ☐ Need a good readme
 Next step:
-  ☐ OPENSSL initialization - simple_proxy
+  ☐ implement https hosts update on the fly - and ensure that MitmApp uses the info - maybe add an all/none flag to prevent unnecessary regex matches
+  ☐ make logging level a cli option for simple_proxy this means fix the global filter in Trog
+  ☐ Certificate initialization - not quite complete - uconsider env variable
   ☐ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
-  ☐ make the ctl thread for simple_proxy and will require an app to send commands to the ctl thread. Start with a single "stop" command
-  ☐ find a way of initializing Certificates before the single instance is created - probably have to change the way singleton is done. Backward compatibility - either initialized with a path or uses env variable.
+  ☐  generally do a rebiew for unnecessary copying of data
   ☐ remove the signal handling stuff from tcp_server and make available to simple_proxy to use for all threads.
-  ☐ add SSL initialization to simple_proxy
   ☐ remove raw pointer to connection handler from tcp_server - this is a related issue decide about uuid in the mitm_app currently not initialized
   ☐ cleanup all the stuff that tries to turn objects into strings - its a mess
   ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
@@ -22,7 +25,10 @@ Next step:
   ☐ research restructuring messagereader so as not to be a mix of 3 other classes
 
 Next project:
-  ☐ make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host
+  ☐ consider a websocket interface for collected data
+  ☐ more than 1 thread for the mitm with a separate io_context for each thread - that seems to be the recommended way for performance
+  ☐ Collector - run in another thread so that can spend time doing filtering and formatting
+  ☐ Underway - make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host
   ☐ think about a script/app for watcing the output
   ☐ think about a command interface to change filters while the proxy is running
 
@@ -32,6 +38,8 @@ Tests:
 ☐ message parsing needs to be clearer and also test continuation of headers
 ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
 Bugs:
+  ☐ investigate buffering what happens if a header line is split over two buffers and the buffers are not adjacent in memory
+  ☐ maybe still dont have headers correct as maybe the same header key canbe present a number of times
 ☐ not handling non-existence of connection header correctly when preparing upstream request
 ☐ potential - MessageWriter does not handle incomplete writes
 ☐ messagereader does not read trailers
@@ -39,6 +47,10 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ find a way of initializing Certificates before the single instance is created - probably have to change the way singleton is done. Backward compatibility - either initialized with a path or uses env variable. @done (20-04-30 21:04) @project(Next step)
+ ✔ add SSL initialization to simple_proxy @done (20-04-30 21:04) @project(Next step)
+ ✔ OPENSSL initialization - simple_proxy @done (20-04-30 21:04) @project(Next step)
+ ✔ make the ctl thread for simple_proxy and will require an app to send commands to the ctl thread. Start with a single "stop" command @done (20-04-30 20:57) @project(Next step)
  ✔ mitm_app - FD seems to be printing the wrong number - NO @done (20-04-28 19:35) @project(Next step)
  ✔ valgrind to check for memory leaks - done as far as I can go @done (20-04-28 19:33) @project(Next step)
  ✔ find all test that are #if out of action and get them working or remove @done (20-04-23 16:22)

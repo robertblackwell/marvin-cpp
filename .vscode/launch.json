@@ -9,6 +9,8 @@
         "description": "Select the test to debug",
         "options": [
             "test_doctest/test_doctest",
+            "test_streambuf/test_streambuf",
+            "test_subcommands/test_subcommands",
             "test_pipe/test_pipe",
             "test_pipe/test_pipe_writer",
             "test_buffers/test_buffers",
@@ -37,7 +39,55 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/cmake-build-debug/apps/simple_proxy/simple_proxy",
-            "args": ["--marvin-home", "thisismarvinhome"],
+            "args": ["--marvin-home", "${workspaceFolder}", "--proxy-port", "9992"],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "MARVIN_HOME",
+                    "value": "${workspaceFolder}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                }
+            ]
+        },
+        {
+            "name": "(gdb) simple proxy cli",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/apps/simple_proxy/simple_proxy_cli",
+            "args": ["stop", "-c"],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "MARVIN_HOME",
+                    "value": "${workspaceFolder}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                }
+            ]
+        },
+        {
+            "name": "(gdb) subcommand",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/tests/test_subcommands/test_subcommands",
+            "args": ["stop", "-c"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [

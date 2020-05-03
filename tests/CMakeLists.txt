@@ -35,7 +35,7 @@ add_subdirectory(test_server_v3)
 # add_subdirectory(test_ssl)		# not sure this one will stay
 add_subdirectory(test_timeout)
 add_subdirectory(test_uri)
-add_subdirectory(test_pipe)
+add_subdirectory(test_subcommands)
 
 if (OFF)
 endif()

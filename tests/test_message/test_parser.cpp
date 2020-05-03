@@ -88,11 +88,13 @@ TEST_CASE("simple good message ") {
 TEST_CASE("test streaming - two or more messages back to back") {
     // to test this our concrete Parser will need to acquire some extra capability
     // specifically the ability to tell someone that the message has arrived
+    // also test header line can be spread over non contiguous buffers
     char* str[] = {
-        (char*) "HTTP/1.1 200 OK 11Reason Phrase\r\n",
+        (char*) "HTTP/1.1 200 OK 11Reason Phrase\r\n\0        ",
         (char*) "Host: ahost\r\n",
         (char*) "Connection: keep-alive\r\n",
-        (char*) "Proxy-Connection: keep-alive\r\n",
+        (char*) "Proxy-Connection: keep\0    ",
+        (char*) "-alive\r\n\0    ",
         (char*) "Content-length: 10\r\n\r\n",
         (char*) "1234567890",
         (char*) "HTTP/1.1 201 OK 22Reason Phrase\r\n",
@@ -101,7 +103,7 @@ TEST_CASE("test streaming - two or more messages back to back") {
         (char*) "Proxy-Connection: keep-alive\r\n",
         (char*) "Content-length: 11\r\n",
         (char*) "\r\n",
-        (char*) "ABCDEFGHIJK",
+        (char*) "ABCDEFGHIJK\0      ",
         NULL
     };
     Marvin::ConcreteParser parser;
@@ -111,8 +113,12 @@ TEST_CASE("test streaming - two or more messages back to back") {
     {
         char* buf = str[i];
         int len = (int)strlen(buf);
-        int nparsed = parser.appendBytes((void*) buf, len);
-        std::cout << "nparsed: " << nparsed  << "len: " << len << std::endl;
+        char* b = (char*)malloc(len+10);
+        memcpy(b, buf, len);
+        std::cout << "b : " << std::hex << (long)b << " b_end: " << (long)&(b[len-1]) << std::dec << "len: " << len << " content: " << buf <<  std::endl;
+        int nparsed = parser.appendBytes((void*) b, len);
+        std::cout << "nparsed: " << nparsed  << "len: " << len << " content: " << buf <<  std::endl;
+        free(b);
         if (parser.isFinishedMessage()) {
             messages.push_back(parser.currentMessage());
             parser.setUpParserCallbacks();
@@ -157,7 +163,8 @@ TEST_CASE("test chunked message ") {
         (char*) "0a\r\n1234567890\r\n",
         (char*) "0a\r\n1234567890\r\n",
         (char*) "0a\r\n1234567890\r\n",
-        (char*) "0f\r\n1234567890XXXXX\r\n",
+        (char*) "0f\r\n1234567",
+        (char*) "890XXXXX\r\n",
         (char*) "0f\r\n1234567890YYYYY\r\n",
         (char*) "0a\r\n1234567890\r\n",
         (char*) "0a\r\n1234567890\r\n",
@@ -173,8 +180,12 @@ TEST_CASE("test chunked message ") {
     {
         char* buf = str[i];
         int len = (int)strlen(buf);
-        int nparsed = parser.appendBytes((void*) buf, len);
+        // put next chunk of incoming data into a buffer, make it oversize so the next one
+        // cannot be contiguous
+        char* b = (char*)malloc(len+10);
+        memcpy(b, buf, len);
         
+        int nparsed = parser.appendBytes((void*) b, len);
         CHECK(nparsed == len);
     }
     Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(parser.currentMessage());

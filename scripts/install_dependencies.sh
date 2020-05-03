@@ -69,19 +69,17 @@ else
 	mkdir -p ${stage_dir}
 fi
 
-${script_dir}/install_doctest.sh $1
-${script_dir}/install_catch2.sh $1
-${script_dir}/install_nlohmann_json_3.7.3.sh $1
-# the following are external_src packages
-${script_dir}/install_boost_1.72.0.sh $1
-${script_dir}/install_openssl_1.1.1.sh $1
-${script_dir}/install_http_parser.sh $1
-${script_dir}/install_simple_buffer.sh $1
-${script_dir}/install_urlparser.sh $1
-${script_dir}/install_cxxurl.sh $1
-${script_dir}/install_trog2.sh $1
-${script_dir}/install_libcert.sh $1
-
+bash ${script_dir}/doctest_2.3.7.sh $1
+bash ${script_dir}/catch2_v2.11.1.sh $1
+bash ${script_dir}/nlohmann_json_3.7.3.sh $1
+# bash ${script_dir}/boost_1.72.0.sh $1
+# bash ${script_dir}/openssl_1.1.1.sh $1
+bash ${script_dir}/http_parser.sh $1
+bash ${script_dir}/simple_buffer.sh $1
+bash ${script_dir}/urlparser.sh $1
+bash ${script_dir}/cxxurl.sh $1
+bash ${script_dir}/trog.sh $1
+# bash ${script_dir}/libcert.sh $1
 
 if [ "$1" == "install"  ] || [ "$1" == "install_only" ] ; then
 	${script_dir}/install_openssl_default_cert_file.sh

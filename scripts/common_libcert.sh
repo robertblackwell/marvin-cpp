@@ -1,13 +1,33 @@
-#!/bin/bash
+# 
+# requires
+# 	vendor_dir
+# 	vendor_include_dir	-	hard coded
+#	vendor_lib_dir		-	hard coded
+# 	stage_dir
+# 	stage_include_dir	-	hard coded
+# 	stage_lib_dir		- 	hard coded
+# 	package_repo_name 	- 	hard coded
+# 	package_name 		- 	hard coded
+# 	package_name
+# 	libcert-cmake-build-debug
+# 	libsert name
+
+verify_print_variables \
+	clone_dir \
+ 	vendor_dir \
+ 	stage_dir \
+ 	package_name \
+ 	project_dir_name 
+
 
 function install_package {
-	mkdir -p ${vendor}/include/cert
-	mkdir -p ${vendor}/lib
-	rm -rfv ${vendor}/include/cert/*
-	rm -rfv ${vendor}/lib/libcert*
-	cp -rv ${script_dir}/stage/include/cert/* ${vendor}/include/cert
+	mkdir -p ${vendor_dir}/include/cert
+	mkdir -p ${vendor_dir}/lib
+	rm -rfv ${vendor_dir}/include/cert/*
+	rm -rfv ${vendor_dir}/lib/libcert*
+	cp -rv ${stage_dir}/include/cert/* ${vendor_dir}/include/cert
 
-	cp -rv ${script_dir}/stage/lib/libcert*.a ${vendor}/lib/
+	cp -rv ${stage_dir}/lib/libcert*.a ${vendor}/lib/
 	echo 
 	echo INSTALL $package complete ========================================================
 	echo
@@ -40,7 +60,7 @@ function stage_package {
 }
 
 function verify_package_name() {
-	if [ $project_name != "marvin++" ] ; then
+	if [ $project_name != ${project_dir_name} ] ; then
 		echo "You are in the wrong directory : [" ${project_name} "] should be at project root "
 		exit 1
 	fi
@@ -60,37 +80,4 @@ function help() {
 	echo 	to a temporary "stage" directory or to the final location		
 	exit 0
 }
-
-debug=
-
-package_name=libcert
-
-if [ "$1" == "help" ] ; then help; fi
-
-
-pwd=`pwd`
-vendor=${pwd}/vendor
-project_dir=$pwd
-project_name=$(basename $project_dir)
-script_dir=$(dirname $(realpath $0))
-clone_dir=${script_dir}/cloned_repos
-git_clone="git clone https://github.com/robertblackwell/x509_certificate_library.git ${release} ${clone_dir}/${package_name}"
-
-echo 
-echo INSTALL $package_name begin ========================================================
-echo
-
-if [ "$1" == "stage" ] || [ "$1" == "install" ] || [ "$1" == "" ] ; then
-	verify_package_name
-	get_package
-	stage_package
-fi
-
-if [ "$1" == "install" ] || [ "$1" == "install_only" ] ; then
-	install_package
-	echo 
-	echo INSTALL ${package_name} complete ========================================================
-	echo
-fi
-
-
+source ${basedir}/common_run.sh

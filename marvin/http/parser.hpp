@@ -37,7 +37,8 @@ struct ParserError {
  *  buffers.
  *
  *  setStreamingOption - configures the parser to parse either a single message or a (continuous) stream
- *  of messages. The default is a single message. STREAMING has not been tested
+ *  of messages without any guarenteed break between one message and the next. 
+ *  The default is a single message. STREAMING has not been tested
  *
  *  Generally the parser can detect the end of a http messages as most messages formats have
  *  message length information in the message itself, or each "chunk" has a chunk length. 
@@ -55,7 +56,7 @@ struct ParserError {
  *
  *  -   it has processed all the bytes that it was given, or
  *	-	the message had an UPGRADE method,
- *  -   on of the virtual call back overrides returns 1 to pause the parser
+ *  -   one of the virtual call-backs overrides returns 1 to pause the parser
  *  -   it encountered a parse error
  *
  *  - IT DOES NOT RETURN ON COMPLETION OF PARSING A FULL MESSAGE

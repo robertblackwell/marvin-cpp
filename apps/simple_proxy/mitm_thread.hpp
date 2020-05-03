@@ -14,14 +14,18 @@ namespace Marvin {
 class MitmThread
 {
     public:
+    MitmThread()
+    {
+
+    }
     MitmThread(
-        boost::optional<long> proxy_port,
-        boost::optional<std::string> marvin_home,
+        long                proxy_port,
+        std::string         marvin_home,
         boost::optional<std::vector<std::string>> https_regex,
-        boost::optional<std::vector<std::string>> https_ports
+        boost::optional<std::vector<long>> https_ports
     )
     {
-        long port = (proxy_port) ? proxy_port.get() : 9992;
+        long port = proxy_port;
 
         std::vector<std::string> re_strs{std::string("^ssllabs(.)*$")};
         std::vector<int> ports{443, 9443};

@@ -20,5 +20,8 @@ source_cp_pattern=http_parser.c
 
 
 basedir=$(dirname "$0")
-source ${basedir}/inc_install_ext_pkg.sh
+source ${basedir}/common_helpers.sh
+source ${basedir}/common_project.sh
+source ${basedir}/common_external_src_pkg.sh
+source ${basedir}/common_run.sh
 
