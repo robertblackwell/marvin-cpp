@@ -1,13 +1,84 @@
 ## So what is this ?
-MarvinCpp (or marvin++ as it will soon be called) is a project that is aimed at being a man-in-the-middle proxy; that is another attempt at a __Charles__ equivalent.
+The __MarvinCpp__ (or __marvin-cpp__ as it will soon be called) project provides a man-in-the-middle proxy that can examine __http__ and __https__ traffic between a http(s) client and an http(s) server. It is a bit like the __Charles__  app that is wellknown to web developers.
 
-Unlike my project called __marvin__ (https://github.com/robertblackwell/marvin.git  which is an earlier effort at a mitm proxy iin node-js), this one is more ambitious, written in C++ using Boost/Asio.
-
-__Note__ in recent months i have moved the wortk on this project from Osx to Ubuntu and so now I am considering how I would deploy it on Linux.
+Unlike my project __marvin__ (https://github.com/robertblackwell/marvin.git  which is an earlier effort at a mitm proxy in node-js), this one is more ambitious, written in C++ using Boost/Asio.
 
 ## Status
 
-The CORVID-19 lockdown of 2020 has given me the opportunity to invest some time in this project and as of April 2020 the basic structure of the Mitm Proxy is now in place and is able to intercept and view __HTTP__ and __HTTPS__ traffic.
+The CORVID-19 lockdown of 2020 has given me the opportunity to invest some time in this project and as of May 2020 the basic structure of the Mitm Proxy is now in place and there is a cli app that is able to intercept and view __HTTP__ and __HTTPS__ traffic. 
 
-However it is still not a deployable app.
+## Installation
+
+Currently there is no provision within the project for installing a marvin-cpp app into some `bin/` directory for use as a general tool.
+
+However if the goal is to try it out and look at the code; then do the following:
+
+```
+git clone git@github.com:robertblackwell/marvin-cpp.git
+cd marvin-cpp
+./scripts/smpl_install install
+cd cmake-build-debug
+cmake ..
+make -j 8
+ctest
+```
+
+## Dependencies
+The project depends on:
+
+| package | comment |
+|--------------|--------------------|
+| boost | v1.72 asio, filesystem, optional |
+| openssl | 1.1.1f |
+| CLI11 | v1.9.0 cli option parsing|
+| nlohmann_json | v3.7.3 |
+| doctest | v2.3.7 |
+| http_parser | - a private fork of github.com:nodejs/http-parser.git|
+|url_parser |- clones from somewhere on github - reference required|
+|cxx_url |- clones from somewhere on github - reference required|
+|simple_buffer |- expandable buffer in 'C' on my github acc|
+|trog |- personal logging library on github|
+|libcert |- personal library for manipulating openssl certificates|
+
+These dependecies need to be installed within the project in a directories named
+
+```
+vendor/include
+vendor/lib
+vendor/src
+```
+The `./scripts` directory contains a small suite of shell scripts that will pull down, and install the required dependencies. Thats the 3rd line in the install recipe.
+
+## simple_proxy cli app
+
+From the project root directory executing
+```
+./bin/simple_proxy
+```
+will start a proxy listening on port 9992 (and will __not__ return to a command prompt untill the proxy terminates).
+
+You can test it by running some of the following shell scripts in the project __bin__ directory, from a different/second terminal.
+
+```
+./bin/curl_ssl_host.sh https://google.com
+./bin/curl_ssl_geeksforgeeks.sh
+./bin/curl_ssl_hackernoon.sh
+./bin/curl_ssl_data.sh ./data/list_top_500.data
+```
+The last one will get a page from each of 500 https sites in turn. Be warned it will run for a good while.
+
+simple_proxy can handle a https request either by __tunnel__ or by __mitm__.
+
+Tunnel is when simple_proxy connects the client and server by back to back tcp cnnections and just passes anonymous data. In this mode the content of the exchange is not visible.
+
+Mitm is when simple_proxy intercepts the traffic. To achieve this the app must create a X509 certificate for communicating with the client that allows simple_proxy to appear, to the client, to be the intended host. This certificate is signed by a local Certificate Authority embedded within simple_proxy. For this to work the client must use a root certificate bundle the includes simple_proxy's internal CA. You can observe this by looking into the various bash scripts to observe `curl --cacerts=` where curl is give a special set of root certificates. The "magic" that does this is in the __libcert__ library; the new certificate is built on the fly in code (no use of openssl cli command) by the certlib. 
+
+Observing the traffic in __mitm__. By default simple_proxy is configured to intercept all https traffic (that is it is in mitm mode for all https urls,
+and all http urls for that matter). 
+
+The intercepted traffic is displayed on stdout, that is the terminal where simple_proxy was originally started. For demo purposes the body of the intercepted messages are not displayed only the headers. So for each exchange you will find a request header followed by a response header in the output from simple_proxy. This is enough to verify (prove) that https traffic is being intercepted.
+
+
+
+
 
