@@ -53,7 +53,7 @@ SMPL_HELP_TEXT_HDOC
 }
 
 function print_varables() {
-    w=-1
+    local w=-1
     for var in "$@"
     do
         if [ ${#var} -gt ${w} ]
@@ -62,9 +62,9 @@ function print_varables() {
         fi
     done
     let w=w+1
-    echo max length is : ${w}
+    # echo max length is : ${w}
     fmt="YYYYY  %-${w}s %s\n"
-    echo fmt : ${fmt}
+    # echo fmt : ${fmt}
     filler=........................................................................................
     for var in "$@" 
     do

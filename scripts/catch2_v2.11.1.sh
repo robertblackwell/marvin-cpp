@@ -12,6 +12,7 @@ git_clone="git clone https://github.com/catchorg/Catch2.git --branch ${catch_rel
 header_cp_pattern=single_include/catch2/*
 
 basedir=$(dirname "$0")
+source ${basedir}/common_helpers.sh
 source ${basedir}/common_project.sh
 source ${basedir}/common_header_only_pkg.sh
 source ${basedir}/common_run.sh

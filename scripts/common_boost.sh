@@ -24,39 +24,6 @@
 # 	boost_targz_file
 # 	boost_url
 # 	boost_dir_name
-
-function check_expected_varables() {
-	w=-1
-	for var in "$@"
-	do
-		if [ ${#var} -gt ${w} ]
-		then
-			w=${#var}
-		fi
-	done
-	let w=w+1
-	echo max length is : ${w}
-	fmt="YYYYY  %-${w}s %s\n"
-	echo fmt : ${fmt}
-	filler=.............................
-	for var in "$@" 
-	do
-		tmp=${var}${filler}
-		tmp2=${tmp:0:w+5}
-		printf "%-${w}s %s\n" ${tmp2} ${!var}
-		if [ -z "${!var}" ] 
-		then
-			echo WARNING: variable ${var} is empty
-			echo from function ${FUNCNAME[0]}
-			echo called from line number : ${BASH_LINENO[1]} in file ${BASH_SOURCE[1]}
-			echo terminating 
-			exit 1
-		fi
-		# printf ${fmt} $var${filler:${#var}} ${!var}
-		# printf "ZZZZZ  %-${w}s  %s\n" ${var} ${!var}
-	done
-}
-
 # this will print the variables provided and terminate if any are 
 # not defined
 verify_print_variables \
@@ -67,28 +34,8 @@ verify_print_variables \
 	vendor_dir \
 	project_name \
 	boost_targz_file \
-	boost_url \
+	boost_url
 	rooster
-
-exit 1
-
-
-# [ -z "${project_name}" ] && echo WARNING[$ME]: variable project_name is empty  && exit 1
-# [ -z "${project_dir_name}" ] && echo WARNING[$ME]: variable project_dir_name is empty  && exit 1
-# [ -z "${clone_dir}" ] && echo WARNING[$ME]: variable clone_dir is empty   && exit 1
-# [ -z "${stage_dir}" ] && echo WARNING[$ME]: variable stage_dir is empty   && exit 1
-# [ -z "${vendor_dir}" ] && echo WARNING[$ME]: variable vendor_dir is empty  && exit 1
-# [ -z "${boost_name}" ] && echo WARNING[$ME]: variable boost_name is empty  && exit 1
-# [ -z "${boost_targz_file}" ] && echo WARNING[$ME]: variable boost_targz_file is empty  && exit 1
-# [ -z "${boost_url}" ] && echo WARNING[$ME]: variable boost_url is empty  && exit 1
-
-# echo project_name......................	${project_name}
-# echo clone_dir.........................	${clone_dir}
-# echo stage_dir.........................	${stage_dir}
-# echo vendor_dir........................ ${vendor_dir}
-# echo boost_name........................	${project_name}
-# echo boost_targz_file..................	${boost_targz_file}
-# echo boost_url.........................	${boost_url}
 
 # 
 # required 

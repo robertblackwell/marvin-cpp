@@ -2,17 +2,18 @@
 
 basedir=$(dirname "$0")
 source ${basedir}/common_helpers.sh
-
+source ${basedir}/smpl_install.sh
 
 smpl_clean() {
 	echo clean $1
 }
-smpl_install (){
+smpl_installx (){
 	echo install $1
 }
 smpl_install_only() {
 	echo install_only $1
 }
+
 
 if [ "$1" == "help" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
@@ -36,8 +37,8 @@ then
 	smpl_clean $@
 elif [ "$1" == "install" ]
 then
-	shift  
-	smpl_install $@
+	shift 
+	smpl_install "install" $@
 elif [ "$1" == "install_only" ]
 then
 	shift 

@@ -27,7 +27,7 @@ function install_package {
 	rm -rfv ${vendor_dir}/lib/libcert*
 	cp -rv ${stage_dir}/include/cert/* ${vendor_dir}/include/cert
 
-	cp -rv ${stage_dir}/lib/libcert*.a ${vendor}/lib/
+	cp -rv ${stage_dir}/lib/libcert*.a ${vendor_dir}/lib/
 	echo 
 	echo INSTALL $package complete ========================================================
 	echo

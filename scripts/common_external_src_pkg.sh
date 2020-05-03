@@ -16,15 +16,6 @@
 # 	external_src
 # 
 
-# [ -z "${package_name}" ] && echo WARNING: variable package_name is empty  $0 && exit 1
-# [ -z "${project_dir_name}" ] && echo WARNING: variable project_dir_name is empty  $0 && exit 1
-# [ -z "${clone_dir}" ] && echo WARNING: variable clone_dir is empty  $0 && exit 1
-# [ -z "${package_stage_dir}" ] && echo WARNING: variable package_stage_dir is empty  $0 && exit 1
-# [ -z "${clone_dir_stem_name}" ] && echo WARNING: variable clone_dir_stem_name is empty  $0 && exit 1
-# [ -z "${header_cp_pattern}" ] && echo WARNING: variable header_cp_pattern is empty  $0 && exit 1
-# [ -z "${source_cp_pattern}" ] && echo WARNING: variable source_cp_pattern is empty  $0 && exit 1
-# [ -z "${external_src}" ] && echo WARNING: variable external_src is empty  $0 && exit 1
-
 verify_print_variables \
 	package_name \
 	project_dir_name \
@@ -35,22 +26,6 @@ verify_print_variables \
 	source_cp_pattern \
 	external_src
 
-
-function help() {
-	echo Install ${package_name}
-	echo Usage:
-	echo 	install_${package_name} [arg]
-	echo
-	echo	args is either
-	echo		help 	Print this help message
-	echo		install After build copy include and libs to final destination
-	echo
-	echo 	The required package is downloaded into a temp dir inside the scripts dir
-	echo	If required the package is built and the headers and libs copied either
-	echo 	to a temporary "stage" directory or to the final location		
-	exit 0
-
-}
 # 
 # requires 
 # 	package_name

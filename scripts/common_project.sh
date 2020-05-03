@@ -88,7 +88,6 @@ vendor_lib_dir=${project_dir}/${project_vendor_lib_dir_rel_path}
 vendor_src_dir=${project_dir}/${project_vendor_src_dir_rel_path}
 
 package_stage_dir=${stage_src_dir}/{package_name}
-}
  
 # echo project_dir_name......................	${project_dir_name}
 # echo project_src_dir_rel_path..............	${project_src_dir_rel_path}
