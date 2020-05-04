@@ -22,7 +22,13 @@ typedef std::function<RequestHandlerInterfaceUPtr(boost::asio::io_service& io)> 
 typedef std::function<void()> HandlerDoneCallbackType;
 
 typedef std::function<RequestHandlerInterface*(boost::asio::io_service& io)> RequestHandlerFactory;
-
+/**
+* /ingroup tcpserver
+* Interface definition for classes used to handle requests in server_v3.
+*
+* Any class that is to act as the "handler" for http(s) requests passed from an instance
+* of TcpServer must conform to this interface.
+*/
 class RequestHandlerInterface
 {
 public:

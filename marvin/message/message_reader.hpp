@@ -19,6 +19,7 @@ typedef std::shared_ptr<MessageReader> MessageReaderSPtr;
 typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
 
 /**
+* \ingroup http
 * \brief Knows how to read http messages in the form of MessageBase instances; note this class
 *  is derived from MessageBase so the message read is bound to this reader as a subclass instance.
 *
@@ -198,7 +199,7 @@ protected:
     std::size_t                     m_header_buffer_size;
     
     /// used to collect body data when doing a full message read
-    std::string                 m_body;
+    std::string                     m_body;
 };
 } // namespcae
 #endif

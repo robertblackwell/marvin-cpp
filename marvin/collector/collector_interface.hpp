@@ -10,9 +10,13 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/message/message_reader.hpp>
-
 namespace Marvin {
 
+/**
+* \ingroup collector
+* \brief The common interface that all collectors are required to implement.
+*
+*
 class ICollector
 {
     public:

@@ -31,6 +31,34 @@ class MitmApp;
 typedef std::shared_ptr<MitmApp> MitmAppSPtr;
 typedef std::unique_ptr<MitmApp> MitmAppUPtr;
 
+/**
+* \defgroup mitmapp MitmProxy
+* \brief This is the group of classes that combine implement the MitmProxy application.
+*/
+/*
+* \ingroup mitmapp
+* This class is the primary interface between the TcpServer and its related objects and
+* the man-in-the-middle http/https proxy server application.
+*
+* In order to interface to the TcpServer complex of objects this class is required to 
+* implement the RequestHandlerInterface.
+*
+* There is one instance of this class for each open client connection being served.
+* 
+* In order to satisfies the clients request instances of this class (or its subordinates)
+* will open a connection to the intended server and pass on the clinets requests,
+* typically with some modifications to the headers of the request. These modifications
+* are typical for a proxy and the details can be found in the relevant standard for proxies.
+*
+* A given request may be handled in one of 3 ways, __http__,  __https tunnel__, __https mitm__.
+* Each different treatment is handled by a separate class that is closely coupled to
+* the instance of MitmApp. These classes are  :
+*   -   MitmHttp
+*   -   MitmTunnel
+*   -   MitmHttps
+*
+* the close coupling is implemented by making the subordinate classes friends of MitmApp. 
+*/
 class MitmApp : public Marvin::RequestHandlerInterface
 {
     public:

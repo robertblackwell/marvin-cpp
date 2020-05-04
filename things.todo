@@ -3,11 +3,24 @@ References for command interface:
  ☐ https://github.com/daniele77/cli
  ☐ https://hackernoon.com/building-reactive-terminal-interfaces-in-c-d392ce34e649
  ☐ https://github.com/loopperfect/rxterm
+Overall plan for the remainder of the projec:
+  Get a working cli app:
+    ☐ a sensible means of observing the traffic
+    ☐ a minimal command interface - stop hosts regexes
+    ☐ easily controll the level of logging
+  Professional presentation:
+    ☐ this involves all of the other components particularly libcert
+    ☐ good quality cmake build and install scripts
+    ☐ documentation 
+    ☐ coding standards
+
 Polishing:
   ☐ need a documentation build step and start putting in comments
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
+  ☐ command interface to simple_mitm - finish up the first phase of this - its close
+  ☐ make timeouts effective in the top 500 some sites dont respond and mitm looses an FD - this needs to be terminated .
   ☐ implement https hosts update on the fly - and ensure that MitmApp uses the info - maybe add an all/none flag to prevent unnecessary regex matches
   ☐ make logging level a cli option for simple_proxy this means fix the global filter in Trog
   ☐ Certificate initialization - not quite complete - uconsider env variable
@@ -26,11 +39,9 @@ Next step:
 
 Next project:
   ☐ consider a websocket interface for collected data
-  ☐ more than 1 thread for the mitm with a separate io_context for each thread - that seems to be the recommended way for performance
+  ☐ more than 1 thread for the mitm with a separate io_context for each thread - that seems to be the recommended way for performance - boost has cpp3 example of a io_service pool.
   ☐ Collector - run in another thread so that can spend time doing filtering and formatting
-  ☐ Underway - make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host
   ☐ think about a script/app for watcing the output
-  ☐ think about a command interface to change filters while the proxy is running
 
 Tests:
 ☐ test trailers on message parsing and set/get of MessageBase
@@ -38,7 +49,6 @@ Tests:
 ☐ message parsing needs to be clearer and also test continuation of headers
 ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
 Bugs:
-  ☐ investigate buffering what happens if a header line is split over two buffers and the buffers are not adjacent in memory
   ☐ maybe still dont have headers correct as maybe the same header key canbe present a number of times
 ☐ not handling non-existence of connection header correctly when preparing upstream request
 ☐ potential - MessageWriter does not handle incomplete writes
@@ -47,6 +57,9 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ NOT a problem chaged some tests to try thisinvestigate buffering what happens if a header line is split over two buffers and the buffers are not adjacent in memory @done (20-05-03 17:32) @project(Bugs)
+ ✔ think about a command interface to change filters while the proxy is running @done (20-05-03 17:31) @project(Next project)
+ ✔ Underway - make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host @done (20-05-03 17:31) @project(Next project)
  ✔ find a way of initializing Certificates before the single instance is created - probably have to change the way singleton is done. Backward compatibility - either initialized with a path or uses env variable. @done (20-04-30 21:04) @project(Next step)
  ✔ add SSL initialization to simple_proxy @done (20-04-30 21:04) @project(Next step)
  ✔ OPENSSL initialization - simple_proxy @done (20-04-30 21:04) @project(Next step)

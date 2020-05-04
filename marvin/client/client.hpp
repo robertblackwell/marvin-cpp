@@ -28,21 +28,24 @@ namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }  // lines 19-19
 
 namespace Marvin {
-
+/**
+* \defgroup Client
+* \brief A class to act as an http or https client./
+*/
 class Client;  // lines 21-21
 
 using ::boost::asio::ip::tcp;
 using ClientSPtr = std::shared_ptr<Client>;
 using ClientUPtr = std::unique_ptr<Client>;
 /**
-* \ingroup Client
+* \ingroup client
 * \brief This is the type signature of callbacks that receive a fully or partially complete
 * response
 */
 using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)>;
 
 /**
-* \ingroup Client
+* \ingroup client
 * \brief This is the type signature of callbacks that receive chunks of body data
 */
 using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err, Marvin::BufferChain buf_chain)>;
@@ -54,7 +57,7 @@ using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err,
 #define RDR_WRTR_ONESHOT 1
 
 /**
-* \ingroup Client
+* \ingroup client
 * \brief This class implements an http client that can send a request message and wait for a response;
 *  and can manage one or more such `round trips` to a server.
 *

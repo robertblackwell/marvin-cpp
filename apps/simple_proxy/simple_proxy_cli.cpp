@@ -51,7 +51,7 @@ ControlResponse send_request(ControlRequest req)
 
     //we just use the same pipe, so the 
     std::vector<std::string> cmd_list;
-    std::string url = "http://localhost:9992"+req;
+    std::string url = "http://localhost:9993"+req;
     // url = "http://whiteacorn.com";
 
     bp::child curl(bp::search_path("curl"), "-sS", "--raw", url, bp::std_out > is);

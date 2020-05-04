@@ -41,7 +41,8 @@ using RequestDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err
 #define REQUEST_RDR_WRTR_ONESHOT 1
 
 /**
-This class implements an http client that can send a request message and wait for a response;
+* \ingroup client
+* \brief This class implements an http client that can send a request message and wait for a response;
 *  and can manage one or more such `round trips` to a server.
 *
 * This class connects to a server, then

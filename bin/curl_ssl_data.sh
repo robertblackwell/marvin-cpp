@@ -20,15 +20,17 @@ echo the cacerts: ${cacerts}
 
 # ls -al ${cacerts}
 comment=//
+count=1
 while IFS= read -r line
 do
 	if [[ $line == //* ]]
 	then
 		echo This is a comment line : $line
 	else
-		echo Server : ${line}
-		MARVIN_HOME= curl --silent --show-error --cacert ${cacerts} ${insecure} --raw -x localhost:9992 https://${line} > /dev/null
-		echo Server : ${line}
+		echo Server : ${count} ${line}
+		MARVIN_HOME= curl --silent --show-error -L --cacert ${cacerts} ${insecure} --raw -x localhost:9992 https://${line} > /dev/null
+		echo Server : ${count} ${line}
+		let count=count+1
 	fi
 done < $1
 

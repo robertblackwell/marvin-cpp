@@ -19,6 +19,10 @@
 #include <marvin/http/uri.hpp>
 
 namespace Marvin {
+/**
+* \ingroup mitmapp
+*
+*/
 namespace Helpers {
 std::string base64Encode(std::string& source);
 

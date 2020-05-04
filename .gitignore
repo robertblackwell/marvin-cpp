@@ -23,6 +23,8 @@ deps/include/
 deps/include
 deps/lib/
 deps/lib
+docs/html
+docs/latex
 
 packages/
 

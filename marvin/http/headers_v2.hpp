@@ -27,7 +27,9 @@ bool isConnectionClose(Marvin::HeadersV2& h);
 
 
 /**
- * A class that represents http headers in request and response messages.
+ * \ingroup http
+ * \brief A class that represents http headers in request and response messages.
+ *
  * Maintains an ordered list of std::pair<std::string, std::string>
  * To represent the header lines of an http message.
  * They are maintained in the order they are added.
@@ -36,7 +38,7 @@ bool isConnectionClose(Marvin::HeadersV2& h);
  * whenever used or stored.
  * 
  * Values are case sensitive, or at least this class does not mess with the case except
- * in regard to keep-alive/close  and chunked. In those circumstances all possible case 
+ * in regard to keep-alive/close. chunked and upgrade. In those circumstances all possible case 
  * variations are considered.  
  * 
  */

@@ -15,7 +15,7 @@
 
 namespace Marvin {
 
-/// \ingroup HttpMessage
+/// \ingroup http
 struct ParserError {
     std::string         name;
     std::string         description;
@@ -23,7 +23,7 @@ struct ParserError {
 };
 
 /**
-* \ingroup HttpMessage
+* \ingroup http
 * \brief This ABSTRACT class parses streams of data into http Message objects 
  *  (or at least the first line + headers - message body is a little more complicated).
  *

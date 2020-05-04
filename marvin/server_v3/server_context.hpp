@@ -10,6 +10,10 @@ class TcpServer;
 class ServerConnectionManager;
 class ConnectionHandler;
 
+/**
+* \ingroup tcpserver
+*
+*/
 struct ServerContext
 {
     TcpServer*                  server_ptr;

@@ -17,7 +17,10 @@
 #include <marvin/server_v3/timer.hpp>
 namespace Marvin {
 /**
-* INterface definition for classes used to handle requests in server_v3
+* Interface definition for classes used to handle requests in server_v3.
+*
+* Any class that is act as the "handler" for http(s) requests passed from an instance
+* of TcpServer must conform to this interface.
 */
 class AppInterface : public Marvin::RequestHandlerInterface
 {

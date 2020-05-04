@@ -6,14 +6,10 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include<http-parser/http_parser.h>
-// #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_interface.hpp>
 namespace Marvin {
 
-/**
-* Defines an interface that all representations of a Http Message should conform to.
-*/
 using MessageInterface = IMessage;
 class MessageBase;
 
@@ -21,6 +17,10 @@ using MessageBaseSPtr = std::shared_ptr<MessageBase>;
 std::string traceMessage(MessageBase& msg);
 void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
 Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
+/**
+* \defgroup http Http Message 
+* \brief Classes that collectively implement details of the http message format.
+*/
 ///
 /// KeepAlive is true if:
 ///     there is a connection header that contains the string "[ ,]keep-alive[ ,]" case independent
@@ -37,9 +37,9 @@ Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
 bool isConnectionKeepAlive(Marvin::MessageBase& msg);
 bool isKeepConnectionAlive(MessageBaseSPtr msg_sptr);
 
-/// HttpMessage
-/// A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
-class MessageBase : public MessageInterface
+/**
+* \brief A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
+*/class MessageBase : public MessageInterface
 {
 public:
     MessageBase();

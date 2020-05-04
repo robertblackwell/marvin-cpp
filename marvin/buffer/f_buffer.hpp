@@ -1,14 +1,9 @@
 #ifndef mock_buffer_v2_hpp
 #define mock_buffer_v2_hpp
-/*!
-* \brief header file for buffer module
-*/
 #include <iostream>
 #include <iterator>
 #include <algorithm>
 #include <marvin/boost_stuff.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/date_time/posix_time/posix_time.hpp>
 #include <cassert>
 #include <vector>
 class MBuffer;

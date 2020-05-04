@@ -8,7 +8,7 @@
 #include <marvin/server_v3/connection_handler.hpp>
 
 /**
-* \ingroup Server
+* \ingroup tcpserver
 * \brief Manages open connection handlers so as to limit the number of simultanious requests that are active
 * and to ensure that all request connections can be closed when thes erver shuts down.
 */
@@ -22,7 +22,12 @@ typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerSPtr conHandl
 /// \ingroup Server
 typedef std::function<void(Marvin::ErrorType err, ConnectionHandlerSPtr conHandler_sptr)> AllowAnotherCallback;
 
-/// \ingroup Server
+/**
+* Each instance of TcpServer has one instance of ServerConnectionManager to do the bookkeeping
+* related to outstanding open clientconnections.
+*
+*
+*/
 class ServerConnectionManager
 {
     public:

@@ -17,16 +17,23 @@
 #include <marvin/server_v3/server_connection_manager.hpp>
 
 namespace Marvin {
+/**
+* \defgroup tcpserver TcpServer 
+* \brief These classes provide the infrastructure for all server applications.
+*/
 
 /**
-* @brief Http server class.
-* @discussion TRequestHandler is a template argument that must conform to RequestHandlerBase
-* for a class that will handle an http request and send the necessary response.
+* \ingroup tcpserver
+* @brief TcpServer class is the basic shell for constructing an application to handle client requests
+* originating on a tcp connection.
 *
-* Discussion of structure
+* One instance of TcpServer can, in principle, handle any number of client connections. 
 *
-*   TRequestHandler is a "user" provided class instance that actually handles a one or more request
-*   on a single connection.
+* TcpServer has limited function, it provides the framework of a thread and io_context for a 
+* server application but itself only undertakes listening on a connection, and accepting new connections.
+* all other functions are performed by subordinate objects, see ServerConnectionManager, ConnectionHandler.
+*
+* ### Discussion of structure
 *
 *   connection_handler (ConnectionHandler) wraps a single instance of TRequestHandler and manages
 *   the life cycle of that TRequestHandler instance, and thus represents the life time of a single client

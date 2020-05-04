@@ -16,9 +16,13 @@ class ServerConnectionManager;
 class ConnectionHandler;
 using ConnectionHandlerSPtr = std::shared_ptr<ConnectionHandler>;
 
-/// An instance of this class is created by the server for every open client connection;
-/// this instance manages the life time and invocation of the request handler that actually services the
-/// incoming messages along a single connection. This class is protocol agnostic.
+/**
+* \ingroup tcpserver 
+*  An instance of this class is created by the TcpServer for every open client connection.
+*
+*   Such an instance manages the life time and invocation of the necessary request handler 
+*   that actually services the incoming messages. This class is protocol agnostic.
+*/
 class ConnectionHandler
 {
     public:

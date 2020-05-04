@@ -4,7 +4,13 @@
 #include <marvin/server_v3/mitm_app.hpp>
 
 namespace Marvin {
-/** A helper class which handles much of the the processing of a https request in the mitm_app*/
+/**
+* \ingroup mitmapp
+*
+* \brief Implements the http (no s) element of the mitm application. 
+*
+* A helper class which handles much of the the processing of a https request in the mitm_app
+*/
 class MitmHttp
 {
 public:

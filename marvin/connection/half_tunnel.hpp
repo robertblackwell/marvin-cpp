@@ -14,7 +14,7 @@ class HalfTunnel;
  using HalfTunnelUPtr = std::unique_ptr<HalfTunnel>;
 
 /**
-* \ingroup SocketIO
+* \ingroup connection
 * \brief Provides a single direction pipe between two sockets and streams data until eof; meant to be used in
 * pairs to provide bi-dirctional streaming between two socket endpoints
 */

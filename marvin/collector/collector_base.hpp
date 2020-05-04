@@ -7,9 +7,21 @@
 #include <boost/asio/io_service.hpp>                 // for io_service
 #include <marvin/http/message_base.hpp>              // for MessageBaseSPtr
 #include <marvin/message/message_reader.hpp>         // for MessageReaderSPtr
-
 namespace Marvin {
+/**
+* \defgroup collector Collectors
+* \brief Provides a number of classes for collecting and distributing traffic captured by a mitm proxy.
+*/
 
+/**
+* \ingroup collector
+* \brief The base class, and simplest type of collector.
+*
+* Collectors are a group of classes with a common interface that collect,
+* format and dispatch the traffic intercepted by a mitm application.
+*
+* This class dispatches the formatted traffic to stdout.
+*/
 class CollectorBase: public ICollector
 {
     public:

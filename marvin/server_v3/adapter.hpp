@@ -17,7 +17,9 @@
 #include <marvin/server_v3/timer.hpp>
 namespace Marvin {
 /**
-* Class used to handle requests in the test server for both the bb abd bf
+* \brief Brief description of Adapter.
+*
+* Obsolete Class used to handle requests in the test server for both the bb abd bf
 * set of tests. This handler:
 *   -   json encodes the full request (headers and body)
 *   -   json encodes the uuid for the connection handler and the request handler

@@ -30,6 +30,12 @@ class Connection;
 using ConnectionSPtr = std::shared_ptr<Connection>;
 using ConnectionUPtr = std::unique_ptr<Connection>;
 /**
+* \defgroup connection Connection
+* \brief This module contains classes that provide an interface to boost sockets
+* for the purposes of transfereing data.
+*/
+/**
+* \ingroup connection
 * This class represents a tcp connection that can operate in:
 *
 * non secure mode - as a plain tcp socket

@@ -11,7 +11,7 @@
 
 namespace Marvin {
 /**
-* \ingroup HttpMessage
+* \ingroup http
 * \brief Defines an interface that all representations of a Http Message should conform to.
 */
 class IMessage

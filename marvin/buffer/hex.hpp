@@ -1,4 +1,8 @@
 #include <string>
 namespace Marvin {
-std::string intToHexTring(int num);
+/**
+* \ingroup buffers
+* \brief utility functions for implementing chunked encoding.
+*/
+std::string intToHexString(int num);
 } // namespace

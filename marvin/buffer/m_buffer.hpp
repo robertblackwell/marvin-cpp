@@ -5,28 +5,24 @@
 #include <iostream>
 #include <iterator>
 #include <boost/asio/buffer.hpp>
-/**
-* \ingroup Buffer
-*/
 
 namespace Marvin {
 
 class MBuffer;
-/// \ingroup Buffer
 using MBufferSPtr =  std::shared_ptr<MBuffer>;
-/// \ingroup Buffer
 using MBufferUPtr =  std::unique_ptr<MBuffer>;
 
 #pragma mark - MBuffer class
 
-/*!
-* \ingroup Buffer
+/**
+*
+* \ingroup buffers
 * \brief MBuffer provides a contiguous expanding buffer
- *
- * MBuffer class wraps a contigous buffer and provides manipulation methods.
- * Once constructed the Mbuffer instance "own" the raw memory.
- * MBuffer destructor releases the raw memory.
- */
+*
+* MBuffer class wraps a contigous buffer and provides manipulation methods.
+* Once constructed the Mbuffer instance "own" the raw memory.
+* MBuffer destructor releases the raw memory.
+*/
 class MBuffer {
 public:
     static MBufferSPtr makeSPtr(std::size_t capacity);

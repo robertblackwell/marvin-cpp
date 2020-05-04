@@ -14,6 +14,7 @@ typedef std::shared_ptr<MessageWriter> MessageWriterSPtr;
 typedef std::unique_ptr<MessageWriter> MessageWriterUPtr;
 
 /**
+* \ingroup http
 * \brief MessageWriter knows how to write a http message in the form of a MessageBase instance.
 *
 * Two modes of operation are provided:

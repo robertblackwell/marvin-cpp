@@ -4,8 +4,12 @@
 #include <marvin/server_v3/mitm_app.hpp>
 
 namespace Marvin {
-/** A helper class which handles much of the the processing of a https request in the mitm_app*/
-class MitmTunnel
+/** 
+* \ingroup mitmapp
+*
+* \brief Implements the https tunnel function.
+*/
+    class MitmTunnel
 {
 public:
 

@@ -17,22 +17,20 @@ using namespace ::boost;
 using namespace ::boost::system;
 using namespace ::boost::asio;
 
-/// \ingroup SocketIO
 using AsyncReadCallback = std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>;
-/// \ingroup SocketIO
 using AsyncWriteCallback = std::function<void(Marvin::ErrorType& er, std::size_t bytes_transfered)>;
 class ISocket;
 
-/// \ingroup SocketIO
 using ISocketSPtr = std::shared_ptr<ISocket>;
-/// \ingroup SocketIO
 using ISocketUPtr = std::unique_ptr<ISocket>;
 
 
 
 /**
-* \ingroup SocketIO
-* \brief Interface defines all the methods read, write, connect, accept, shutdown, close common to tcp and ssl sockets
+* \ingroup connection
+* \brief ISocket interface defines all the methods read, write, connect, accept, shutdown, close 
+* that are common to tcp and ssl sockets. This is obsolete as there is only one type of
+* connection and it can be both plain and ssl.
 */
 class ISocket //: public IReadSocket, public IWriteSocket
 {

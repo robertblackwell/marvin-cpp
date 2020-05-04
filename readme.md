@@ -54,7 +54,7 @@ The `./scripts` directory contains a small suite of shell scripts that will pull
 
 From the project root directory executing
 ```
-./bin/simple_proxy
+./bin/simple_proxy.shw
 ```
 will start a proxy listening on port 9992 (and will __not__ return to a command prompt untill the proxy terminates).
 
@@ -70,14 +70,14 @@ The last one will get a page from each of 500 https sites in turn. Be warned it 
 
 simple_proxy can handle a https request either by __tunnel__ or by __mitm__.
 
-Tunnel is when simple_proxy connects the client and server by back to back tcp cnnections and just passes anonymous data. In this mode the content of the exchange is not visible.
+__Tunnel__ is when simple_proxy connects the client and server by back to back tcp connections and just passes anonymous data. In this mode the content of the exchange is not visible.
 
-Mitm is when simple_proxy intercepts the traffic. To achieve this the app must create a X509 certificate for communicating with the client that allows simple_proxy to appear, to the client, to be the intended host. This certificate is signed by a local Certificate Authority embedded within simple_proxy. For this to work the client must use a root certificate bundle the includes simple_proxy's internal CA. You can observe this by looking into the various bash scripts to observe `curl --cacerts=` where curl is give a special set of root certificates. The "magic" that does this is in the __libcert__ library; the new certificate is built on the fly in code (no use of openssl cli command) by the certlib. 
+__Mitm__ is when simple_proxy intercepts the traffic. To achieve this the app must create a X509 certificate for communicating with the client that allows simple_proxy to appear, to the client, to be the intended host. This certificate is signed by a local Certificate Authority embedded within simple_proxy. For this to work the client must use a root certificate bundle that includes simple_proxy's internal CA. You can observe this by looking into the various bash scripts to observe `curl --cacerts=` where curl is give a special set of root certificates. The "magic" that does this is in the __libcert__ library; the new certificate is built on the fly in code (no use of openssl cli command) by the certlib. 
 
 Observing the traffic in __mitm__. By default simple_proxy is configured to intercept all https traffic (that is it is in mitm mode for all https urls,
 and all http urls for that matter). 
 
-The intercepted traffic is displayed on stdout, that is the terminal where simple_proxy was originally started. For demo purposes the body of the intercepted messages are not displayed only the headers. So for each exchange you will find a request header followed by a response header in the output from simple_proxy. This is enough to verify (prove) that https traffic is being intercepted.
+The intercepted traffic is displayed on stdout, that is the terminal where simple_proxy was originally started. For demo purposes the body of the intercepted messages are not displayed only the headers. So for each exchange you will find a request header followed by a response header in the output from simple_proxy. This is enough to verify (prove) that https traffic is being intercepted as under https headers are part of the encrypted envelope..
 
 
 

@@ -17,8 +17,8 @@ using TunnelHandlerUPtr = std::unique_ptr<TunnelHandler>;
 std::string traceTunnel(TunnelHandlerUPtr);
 std::string traceTunnel(TunnelHandlerSPtr);
 /**
-* \ingroup SocketIO
-* \brief Cmbines two HalfTunnel objects to provide bi directional pipe between two end points.
+* \ingroup connection
+* \brief Combines two HalfTunnel objects to provide bi directional pipe between two end points.
 */
 class TunnelHandler
 {

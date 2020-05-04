@@ -14,7 +14,9 @@ using namespace ::boost::asio;
 using ip::tcp;
 using system::error_code;
 /**
-* Factory function to construct a new TCP Connection and prime it with a server name and port.
+* \ingroup connection
+*
+* \brief Factory function to construct a new TCP Connection and prime it with a server name and port.
 * The TCP Connection class can be any combination of  HTTP/HTTPS or Server/Client the distinction is made
 * after creation.
 * Currently the factory function produces http connections only and the user is responsible

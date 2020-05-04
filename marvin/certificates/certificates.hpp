@@ -7,7 +7,10 @@
 #include <cert/cert_store_locator.hpp>  // for LocatorSPtr
 #include <cert/cert_store_store.hpp>    // for StoreSPtr
 #include <openssl/ossl_typ.h>           // for X509_STORE
-
+/**
+* \defgroup certificates X509_Certificates
+* \brief Access to Certificate Authority, root certificate bundles and certificate builing mechanism.
+*/
 namespace Cert { class Builder; }
 
 #define MARVIN_DOT_MARVIN_FILE ".marvin"
@@ -28,6 +31,12 @@ extern const std::string kMarvinCertStoreName;
 
 class Certificates;  // lines 12-12
 typedef  std::shared_ptr<Certificates> CertificatesSPtr;
+/**
+* \ingroup certificates
+* \brief This class provides an access point for the Certificate Authority,
+* root certificate bundle and certificate building mechanism required
+* for a mitm application to intercept https traffic.
+*/
 class Certificates
 {
 public:

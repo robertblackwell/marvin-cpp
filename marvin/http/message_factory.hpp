@@ -14,7 +14,10 @@
 #include <marvin/http/http_method.hpp>
 #include <marvin/http/uri.hpp>
 namespace Marvin {
-
+	/**
+	* \ingroup http
+	* \brief construct http messages of various types.
+	*/
     void makeRequest(MessageBase& msg, HttpMethod method, Marvin::Uri& uri);
     void makeProxyRequest(MessageBase& msg, HttpMethod method,  Marvin::Uri& uri);
     void makeProxyConnectRequest(MessageBase& msg, std::string server, std::string port);
