@@ -23,25 +23,18 @@ struct ParserError {
 };
 
 /**
-* \ingroup http
-* \brief This ABSTRACT class parses streams of data into http Message objects 
- *  (or at least the first line + headers - message body is a little more complicated).
- *
- *  This class is ABSTRACT and the expectation is that this class will be used as a base class
- *  for a more complicated object such as an incoming Request object or an incoming Response object.
- *
- *  In homage to nodejs we could have used the name IncomingMessage - maybe we will in the future
+ *  \ingroup http
+ *  \brief An instance of this class will parse a stream of bytes into a http message container.
  *
  *  The data stream is provided to the parser using the appendBytes method. Data can be provided
  *  "all at once" - that is a complete message in one lump or "piece meal" a sequence of arbitarily sized
  *  buffers.
  *
- *  setStreamingOption - configures the parser to parse either a single message or a (continuous) stream
- *  of messages without any guarenteed break between one message and the next. 
- *  The default is a single message. STREAMING has not been tested
- *
- *  Generally the parser can detect the end of a http messages as most messages formats have
- *  message length information in the message itself, or each "chunk" has a chunk length. 
+ *  An instance of a parser can only parse a single message. For subsequent messages on the same stream
+ *  a new parser should be created.
+ *  In the event that the start of a second message is in the same buffer as the end of the previous
+ *  one the first parser will not process bytes for the second message. The caller 
+ *  must retain the buffer and present it to the new parser as the first buffer to be processed.
  *
  *  However it is possible for a "server"
  *  to signal the end of a message by simple closing the connection. Hence in some cases the parser
@@ -52,60 +45,99 @@ struct ParserError {
  *  an explicit end of data condition. There is no danger in calling appendEOF even when the message
  *  contains length infomation and the parser can self-detect the end of message.
  *
- *  A call to parser.appendBytes will only return when:
- *
- *  -   it has processed all the bytes that it was given, or
- *	-	the message had an UPGRADE method,
- *  -   one of the virtual call-backs overrides returns 1 to pause the parser
- *  -   it encountered a parse error
- *
- *  - IT DOES NOT RETURN ON COMPLETION OF PARSING A FULL MESSAGE
- *  BUT WE HAVE FORCE THIS BY HAVING OUR MESSAGE COMPLETE CALLBACK
- *  EXPLICITLY PAUSE THE PARSER.
- *
- *  The parser as we use it will not support reading multiple messages from the
- *  the same buffer. Each message on a connection requires an new Parser.
- *
- *  The following "callbacks" are provided in the form of virtual methods - NOT PURE
- *  and they MAY be overridden by a derived class to capture the corresponding event
- *
- *          virtual void OnParseBegin()
- *          virtual void OnHeadersComplete(MessageInterface* msg)
- *          virtual void OnMessageComplete(MessageInterface* msg)
- *          virtual void OnParseError()
- *          virtual void OnBodyData(void* buf, int len)
- *          virtual void OnChunkBegin(int chunkLength)
- *          virtual void OnChunkData(void* buf, int len)
- *          virtual void OnChunkEnd()
- *
- *  The OnMessageComplete and OnHeadersComplete methods may terminate parsing by returning "true" or 1.
- *
- * WARNING - DO NOT PERFORM ANY IO OR RELINGUISH THE RUNLOOP/IO_SERVICE INSIDE THESE CALLBACKS
- *
- * PURE VIRTUAL Abstract class
- *
- *  Derived class must implement pure virual method
- *
- *          MessageInterface* currentMessage()
  */
 class  Parser
 {
 public:
 
-    
-    Parser();
+    using SPtr = std::shared_ptr<Parser>;
+    Parser(MessageBase* current_message_ptr);
     ~Parser();
     
-	/**
-	 * Sets the message streaming option - to the value of streamOption
-	 */
-	void setStreamingOption(bool  streamingOption);
+    /**
+     * \brief  Value returned by parse when processing data.
+     */
+    enum class ReturnCode {
+        error,          /// got a parse error
+        end_of_header,  /// encountered enf of header
+        end_of_message, /// encountered end of message
+        end_of_data     /// processed all the data given
+    };
+    struct ReturnValue {
+        ReturnCode  return_code;
+        std::size_t bytes_remaining;
+    };
 
 	/**
-	 * send data to the parser for consumption
+	 * \brief Send data to the parser for consumption, see details. 
+     * 
+     * This function will return under one of the following circumstances:
+     * 
+     * -    it consumed the entire buffer, Indicated by a return value equal to the length parameter.
+     * 
+     * -    a message was completed. This will be indicated by isFinished() returning true. IN this case
+     *      the return value will be < or = length. 
+     * 
+     *      If return value == length the entire buffer was consumed completing the message.
+     * 
+     *      If however the return value is < length then some bytes in the buffer (length - return value)
+     *      were not processed and are part of the next message.
+     * 
+     *      The caller should retain the buffer and provide it to a different parser object at the start
+     *      of parsing of the next next message.
+     * 
+     * -    A parsing error is encountered. This will be indicated by isError() returning true. In such a case
+     *      getError() will give details of the error. A Parse error is unrecoverable. The connection should
+     *      be closed.
+     * 
+     * -    This function signals completin of parsing of the message header by setting a header complete flag,
+     *      which can be tested by a call to isFinishedHeaders()
+     * 
+     * -    Sometimes a message will be sent that does not contain a content-length nor a chunked-encoding header.
+     *      the peer is expecting to signal end of message by closing the connection and as a sign of EOF. The
+     *      parser can be informed of this by appending a buffer of zero length or calling appendEOF(). 
+     *      The parse may recognize this situation and ask for a terminating eof by setting need_eof tru, this can
+     *      be tested by calling needsEOF() after the function returns having consumed all of the buffer.
 	 */
 	int appendBytes(void* buffer,  unsigned length);
 
+    /**
+     * These functions will consume bytes in the given buffer and return
+     * -    on error
+     * -    on processing all the data
+     * -    on end of message even if all the data was not processed
+     * -    and if requested by the second argument once all header fields have been
+     *      processed even if more data remains in the buffer.
+     * 
+     * To continue and process the body of a message after having received and processed the header
+     * call any of these functions with the default value of the second parameter on 
+     * 
+     * Note: if a call to a function returns with unprocessed data without end of message
+     * being indicated the remaining data in the buffer will need to be passed to consume()
+     * before new data can be presented.
+     * 
+     * Note: if data remains in the buffer when returning from consume() with end_of_message
+     * code, that data belongs to the next message and the data needs to be retained
+     * and presented to a different instance of the parser at the commencement of parsing the
+     * next mesage. 
+     */
+    ReturnValue consume(boost::asio::streambuf& streambuffer, bool only_header = false);
+    ReturnValue consume(boost::asio::const_buffer const_buffer, bool only_header = false);
+    ReturnValue consume(boost::asio::mutable_buffer mutable_buffer, bool only_header = false);
+    ReturnValue consume(const void* buffer, const std::size_t length, const bool only_header = false);
+#if 0
+    template <typename B>
+    ReturnValue parseMessage(B b)
+    {
+        consume(b, true)
+    }
+
+    template <typename B>
+    ReturnValue parseHeader(B b)
+    {
+        consume(b, false)
+    } 
+#endif    
 	/**
 	 * Signal end of data to the parser. Required in some cases as there are message formats that do not
 	 * contain message length information.
@@ -117,7 +149,7 @@ public:
      */
     void pause();
     void unPause();
-    bool isPaused() { return( HTTP_PARSER_ERRNO(parser) ==  HPE_PAUSED); }
+    bool isPaused() { return( HTTP_PARSER_ERRNO(m_http_parser_ptr) ==  HPE_PAUSED); }
     
 	/**
 	 * return true if parsing of the header fields of the current message is finished.
@@ -140,7 +172,7 @@ public:
 	 * Returns the the Message currently being parsed. When operating in non streaming mode
 	 * this also returns the most recently parsed message.
 	 */
-    virtual MessageInterface* currentMessage() = 0;
+    MessageBase* currentMessage();
 	
     
     /*
@@ -151,53 +183,66 @@ public:
      *  -   parse error
      *
      */
-    
+#if 0    
     virtual void OnParseBegin();
-    virtual void OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
+    virtual void OnHeadersComplete(MessageInterface* msg);
     virtual void OnMessageComplete(MessageInterface* msg);
     virtual void OnParseError();
     virtual void OnBodyData(void* buf, int len);
     virtual void OnChunkBegin(int chunkLength);
     virtual void OnChunkData(void* buf, int len);
     virtual void OnChunkEnd();
-    
-    void setUpParserCallbacks();
-    void setUpNextMessage();
-    
-    
+#endif    
     //
     // Utility functions that interface the C parser with the C++ Parser class
     //
     friend void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value);
     friend Parser* getParser(http_parser* parser);
-    friend void setParser(http_parser* c_parser, Parser* cpp_parser);
+    friend void link_to_http_parser(http_parser* c_parser, Parser* cpp_parser);
     
-    //
-    // C parser class back functions
-    //
+    /**
+    * C parser class callback functions that interface with the C language parser
+    * http-parser from nodejs
+    */
     friend int message_begin_cb(http_parser* parser);
-
     friend int url_data_cb(http_parser* parser, const char* at, size_t length);
     friend int status_data_cb(http_parser* parser, const char* at, size_t length);
     friend int header_field_data_cb(http_parser* parser, const char* at, size_t length);
     friend int header_value_data_cb(http_parser* parser, const char* at, size_t length);
-    friend int headers_complete_cb(http_parser* parser, const char* aptr, size_t remainder);
-
-    friend int chunk_size_start(http_parser* parser, const char* at, size_t length);
+    friend int headers_complete_cb(http_parser* parser);
     friend int chunk_header_cb(http_parser* parser);
     friend int body_data_cb(http_parser* parser, const char* at, size_t length);
     friend int chunk_complete_cb(http_parser* parser);
     friend int message_complete_cb(http_parser* parser);
 
 protected:
+    void setUpParserCallbacks();
+    void setUpNextMessage();
+
+    /**
+     * member function callbacks  
+     */
+    void p_save_name_value_pair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value);
+    int p_on_message_begin(http_parser* parser);
+    int p_on_url_data(http_parser* parser, const char* at, size_t length);
+    int p_on_status_data(http_parser* parser, const char* at, size_t length);
+    int p_on_header_field_data(http_parser* parser, const char* at, size_t length);
+    int p_on_header_value_data(http_parser* parser, const char* at, size_t length);
+    int p_on_headers_complete(http_parser* parser);
+    int p_on_chunk_header(http_parser* parser);
+    int p_on_body_data(http_parser* parser, const char* at, size_t length);
+    int p_on_chunk_complete(http_parser* parser);
+    int p_on_message_complete(http_parser* parser);
+
     /*
      * These are required to run the parser
      */
-    http_parser*            parser;
-    http_parser_settings*   parserSettings;
+    http_parser*            m_http_parser_ptr;
+    http_parser_settings*   m_http_parser_settings_ptr;
     bool                    headersCompleteFlag;
     bool                    messageCompleteFlag;
     std::string             messageData;
+    MessageBase*            m_current_message_ptr;
     
     ///////////////////////////////////////////////////////////////////////////////////
     //
@@ -217,9 +262,6 @@ protected:
     simple_buffer_t*   value_buf;
     Marvin::HeadersV2  headers;
     ////////////////////////////////////////////////////////////////////
-    
-    
-	
 };
 
 } // namespace Marvin

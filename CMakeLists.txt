@@ -152,7 +152,7 @@ enable_testing()
 
 add_subdirectory(marvin)
 
-add_subdirectory(apps)
+# add_subdirectory(apps)
 add_subdirectory(tests)
 
 

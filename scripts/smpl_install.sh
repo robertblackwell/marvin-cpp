@@ -73,7 +73,11 @@ function smpl_install() {
 	smpl_run_one ${script_dir}/nlohmann_json_3.7.3.sh $@
 	smpl_run_one ${script_dir}/boost_1.71.0.sh $@
 	smpl_run_one ${script_dir}/openssl_1.1.1.sh $@
-	smpl_run_one ${script_dir}/http_parser.sh $@
+
+	smpl_run_one ${script_dir}/node_http_parser.sh $@
+
+	# smpl_run_one ${script_dir}/http_parser.sh $@
+
 	smpl_run_one ${script_dir}/simple_buffer.sh $@
 	smpl_run_one ${script_dir}/urlparser.sh $@
 	smpl_run_one ${script_dir}/cxxurl.sh $@

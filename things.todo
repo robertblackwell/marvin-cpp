@@ -19,6 +19,7 @@ Polishing:
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
+  ☐ parsing needs to test parse errors
   ☐ command interface to simple_mitm - finish up the first phase of this - its close
   ☐ make timeouts effective in the top 500 some sites dont respond and mitm looses an FD - this needs to be terminated .
   ☐ implement https hosts update on the fly - and ensure that MitmApp uses the info - maybe add an all/none flag to prevent unnecessary regex matches

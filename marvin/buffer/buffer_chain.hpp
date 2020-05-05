@@ -33,6 +33,7 @@ class BufferChain
         static BufferChainSPtr makeSPtr(MBufferSPtr mb_sptr);
     
         BufferChain();
+        void            append(void* buf, std::size_t len);
         void            push_back(MBufferSPtr mb);
         void            clear();
         std::vector<boost::asio::mutable_buffer> asio_buffer_sequence();

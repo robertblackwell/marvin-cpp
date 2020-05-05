@@ -20,6 +20,7 @@
             "test_certificates/test_env_utils/test_env_utils",
             "test_certificates/test_certificates/test_certificates",
             "test_message/test_message",
+            "test_message/test_new_parser",
             "test_message_reader/test_message_reader",
             "test_message_roundtrip/test_message_roundtrip",
             "test_server_v3/demo1/test_server_v3_demo_1",

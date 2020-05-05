@@ -136,15 +136,16 @@ void MessageReader::OnMessageComplete(MessageInterface* msg){
 * If remander is  NOT zero then some body data (maybe only chunk header)
 * was in the buffer with the last of the header data.
 */
-void MessageReader::OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder)
+// void MessageReader::OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder)
+void MessageReader::OnHeadersComplete(MessageInterface* msg) //, void* body_start_ptr, std::size_t remainder)
 {
     std::string s1 = m_raw_body_buffer_chain_sptr->to_string();
-    if (remainder > 0) {
-        std::string tt((char*)body_start_ptr, remainder);
-        Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(remainder));
-        tmp->append(body_start_ptr, remainder);
-        m_raw_body_buffer_chain_sptr->push_back(tmp);
-    }
+    // if (remainder > 0) {
+    //     std::string tt((char*)body_start_ptr, remainder);
+    //     Marvin::MBufferSPtr tmp = std::shared_ptr<Marvin::MBuffer>(new Marvin::MBuffer(remainder));
+    //     tmp->append(body_start_ptr, remainder);
+    //     m_raw_body_buffer_chain_sptr->push_back(tmp);
+    // }
     std::string s2 = m_raw_body_buffer_chain_sptr->to_string();
     auto xx = s2;
     TROG_DEBUG("");
@@ -255,22 +256,22 @@ void MessageReader::p_handle_header_read(Marvin::ErrorType er, std::size_t bytes
     char* charptr = (char*)(mbsptr->data());
     int buf_length = (int) (mbsptr->size());
     std::string tmp = mbsptr->toString();
-    int  nparsed = this->appendBytes(bufptr, buf_length);
+    int  nparsed = m_parser_sptr->appendBytes(bufptr, buf_length);
     if( ! p_parser_ok(nparsed, *mbsptr)) {
         p_post_message_cb(Marvin::make_error_parse());
         return;
     }
     
 
-    if( isFinishedMessage() ) {
+    if( m_parser_sptr->isFinishedMessage() ) {
         p_post_message_cb(Marvin::make_error_ok());
-    } else if( isFinishedHeaders()& (! isFinishedMessage())) {
+    } else if( m_parser_sptr->isFinishedHeaders()& (! m_parser_sptr->isFinishedMessage())) {
         if( m_reading_full_message ) {
             p_read_all_body();
         } else {
             p_post_message_cb(Marvin::make_error_ok());
         }
-    } else if( ! isFinishedHeaders() ) {
+    } else if( ! m_parser_sptr->isFinishedHeaders() ) {
         p_read_some_headers();
     }
 }
@@ -318,13 +319,13 @@ void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_t
     m_raw_body_buffer_chain_sptr->push_back(tmp);
     
     Marvin::MBuffer& mb = *m_body_buffer_sptr;
-    int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
+    int  nparsed = this->m_parser_sptr->appendBytes((void*)mb.data(), (int)mb.size());
     if( ! p_parser_ok(nparsed, mb)) {
         p_post_message_cb(Marvin::make_error_parse());
         return;
     }
     
-    if( isFinishedMessage()) {
+    if( m_parser_sptr->isFinishedMessage()) {
         p_post_message_cb(Marvin::make_error_ok());
     } else {
         p_make_new_body_buffer();
@@ -367,14 +368,14 @@ void MessageReader::p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_
     m_raw_body_buffer_chain_sptr->push_back(tmp);
     
     Marvin::MBuffer& mb = *m_body_buffer_sptr;
-    int  nparsed = this->appendBytes((void*)mb.data(), (int)mb.size());
+    int  nparsed = this->m_parser_sptr->appendBytes((void*)mb.data(), (int)mb.size());
     if( ! p_parser_ok(nparsed, mb)) {
         p_post_body_chunk_cb(Marvin::make_error_parse(), m_body_buffer_chain_sptr);
         return;
     }
     
 
-    if( isFinishedMessage()) {
+    if( m_parser_sptr->isFinishedMessage()) {
         p_post_body_chunk_cb(Marvin::make_error_eom(), m_body_buffer_chain_sptr);
         p_make_new_body_buffer_chain();
     } else {
@@ -431,8 +432,8 @@ bool MessageReader::p_parser_ok(int nparsed, Marvin::MBuffer& mb)
     * then we are OK with this message - parsing is paused on EOM
     * otherwise parser errors should be returned as errors
     */
-    ParserError perr = this->getError();
-    if( (perr.err_number == HPE_OK) || (perr.err_number == HPE_PAUSED && isFinishedMessage())) {
+    ParserError perr = m_parser_sptr->getError();
+    if( (perr.err_number == HPE_OK) || (perr.err_number == HPE_PAUSED && m_parser_sptr->isFinishedMessage())) {
         // do nothing
         return true;
     } else {

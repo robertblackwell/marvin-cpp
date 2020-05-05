@@ -69,7 +69,7 @@ typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
  *      sequence for i/o.
  *
  */
-class MessageReader : public Marvin::Parser, public Marvin::MessageBase
+class MessageReader : public Marvin::MessageBase
 {
 public:
 
@@ -161,7 +161,9 @@ protected:
     *  These methods are override for virtual methods in Parser
     */
     Marvin::MessageInterface* currentMessage();
-    void OnHeadersComplete(Marvin::MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
+    // void OnHeadersComplete(Marvin::MessageInterface* msg, void* body_start_ptr, std::size_t remainder);
+    void OnHeadersComplete(Marvin::MessageInterface* msg);
+
     void OnMessageComplete(Marvin::MessageInterface* msg);
     void OnBodyData(void* buf, int len);
     void OnChunkBegin(int chunkLength);
@@ -179,9 +181,9 @@ protected:
     ISocketSPtr                  m_read_sock;
     boost::asio::io_service&     m_io;
 
-    bool m_reading_full_message;
-    bool m_reading_body;
-    
+    bool                         m_reading_full_message;
+    bool                         m_reading_body;
+    Parser::SPtr                 m_parser_sptr;
 //    std::function<void(Marvin::ErrorType err)> m_read_message_cb;
     ReadMessageCallback m_read_message_cb;
 

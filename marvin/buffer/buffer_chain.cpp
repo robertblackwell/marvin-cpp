@@ -49,6 +49,18 @@ BufferChain::BufferChain()
     m_chain = std::vector<MBufferSPtr>();
     m_size = 0;
 }
+void BufferChain::append(void* buf, std::size_t len)
+{
+    if (m_chain.size() > 0) {
+        MBufferSPtr last_mb = m_chain.at(m_chain.size()-1);
+        if ((last_mb->capacity() - last_mb->size()) >= len) {
+            last_mb->append(buf, len);
+            return;
+        }
+    }
+    MBufferSPtr new_mb = MBuffer::makeSPtr(10000);
+    this->push_back(new_mb);
+}
 void BufferChain::push_back(MBufferSPtr mb)
 {
     m_size += mb->size();

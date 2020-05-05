@@ -16,7 +16,7 @@ namespace Marvin {
 * \ingroup collector
 * \brief The common interface that all collectors are required to implement.
 *
-*
+*/
 class ICollector
 {
     public:
