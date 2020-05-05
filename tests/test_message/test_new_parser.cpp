@@ -3,8 +3,6 @@
 #include <iterator>
 #include <algorithm>
 #include <boost/asio.hpp>
-#include <boost/beast/core/multi_buffer.hpp>
-using multi_buffer = boost::beast::basic_multi_buffer<std::allocator<char>>;
 #include <boost/asio/basic_streambuf.hpp>
 #include <doctest/doctest.h>
 #include <marvin/http/message_base.hpp>
@@ -75,7 +73,7 @@ public:
 
 };
 } // namespace
-
+namespace {
 std::vector<char*>& test_data()
 {
     static std::vector<char*> lines = {
@@ -119,8 +117,43 @@ void verify_result(std::vector<Marvin::MessageInterface*> messages)
     auto b1 = m1->getContentBuffer()->to_string();
     CHECK(m1->getContent()->to_string() == "ABCDEFGHIJK");
 }
+} // anonymous namespace
+
 TEST_CASE("new parsing interface")
 {
+    ///
+    /// This is a composte test that demonstrates a number of
+    /// import topics.
+    ///
+    /// Using a single data set these tests demonstrate using all overloads of the 
+    ///  
+    /// Marvin::Parser::consume() method
+    ///
+    /// and demonstrate how to use these overloads in oder to correctly 
+    /// process incoming data where:
+    ///
+    /// -   a buffer contains both the last piece of a message header as well as the firs
+    ///     piece of a message body.
+    ///
+    /// -   part of a second message is included in the last buffer of the first
+    ///     message 
+    ///
+    /// In both these cases the secret to handling this data correctly is to ensure that
+    /// any buffer not FULLY processed by a call to Parser::consume() is passed to the next
+    /// call to Parser::consume() so that the "left over" data can be processed before any new data.
+    ///
+    /// The easiest way to achiev this is by usiing boost::asio::streambuf as the container for
+    /// data presented to Parser::consume();
+    ///
+    /// This is illustrated below in the various tests.
+    ///
+    /// The first three subcases deal with both situations 
+    /// (overlap between header and body, overlap between consecutive messages)
+    ///  while parsing an entire message.
+    ///
+    /// Subcase 4 splits the parsing so as to get the header first and hence has
+    /// to provide a two step process in order to get the body after the header
+    ///
     SUBCASE("parsing1 - lowest level") 
     {
         Marvin::ConcreteParser* concrete_parser_ptr = new Marvin::ConcreteParser();
@@ -149,12 +182,18 @@ TEST_CASE("new parsing interface")
             /// the streambuffer get area is empty
             ///
             while (streambuffer.data().size() > 0) {
+                ///
+                /// a lot of messing arounbd to get a raw c-style buffer from a stream buf
+                ///
                 boost::asio::const_buffer get_buf = streambuffer.data();
                 char* get_b = (char*)get_buf.data();
                 int get_sz = get_buf.size();
                 char* b = get_b;
                 len = get_sz;
                 Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume((void*) b, len);
+                ///
+                /// keep track of data comsumed
+                ///
                 streambuffer.consume(len - ret.bytes_remaining);
                 switch(ret.return_code) {
                     case Marvin::Parser::ReturnCode::error:
@@ -206,8 +245,14 @@ TEST_CASE("new parsing interface")
             /// the streambuffer get area is empty
             ///
             while (streambuffer.data().size() > 0) {
+                ///
+                /// this is a lot simpler as streambuffer knows how to deliver a boost::asio::const_buffer
+                ///
                 boost::asio::const_buffer get_buf = streambuffer.data();
                 Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume(get_buf);
+                ///
+                /// still have to do our own book keeping re data consumed
+                ///
                 streambuffer.consume(len - ret.bytes_remaining);
                 switch(ret.return_code) {
                     case Marvin::Parser::ReturnCode::error:
@@ -244,8 +289,9 @@ TEST_CASE("new parsing interface")
             /// streambuffer put are
             ///
             boost::asio::mutable_buffer put_mb = streambuffer.prepare(len+10);
-            char*put_b = (char*)put_mb.data();
-            memcpy(put_b, buf, len);
+            ///
+            /// no messing around we will simple pass the streambuffer
+            ///
             ///
             /// read is complete so commit the data read
             ///
@@ -256,6 +302,9 @@ TEST_CASE("new parsing interface")
             ///
             while (streambuffer.data().size() > 0) {
                 Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume(streambuffer);
+                ///
+                /// also note now consume() takes care of the book keeping re data consumed
+                ///
                 switch(ret.return_code) {
                     case Marvin::Parser::ReturnCode::error:
                         REQUIRE(false);
@@ -328,6 +377,14 @@ TEST_CASE("new parsing interface")
                     break;
                 }
             }
+            ///
+            /// NOTE when transitioning from header to body 
+            /// ====
+            ///     streambuffer.data().size() MAY not be zero  
+            ///     ==========================================
+            ///
+            ///     in which case the following loop will process that buffer
+            ///     before any others
             ///
             /// now lets do the remainder of the message - note the false in the call
             /// to consume
