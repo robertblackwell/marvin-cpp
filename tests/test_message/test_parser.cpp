@@ -60,7 +60,7 @@ public:
     bool messageComplete() 
     {
         std::cout << __func__ << std::endl;
-        return isFinishedMessage();
+        return message_done();
     }
     
     int consume(boost::asio::streambuf& streambuf)
@@ -134,7 +134,7 @@ TEST_CASE("test streaming - two or more messages back to back") {
         int nparsed = parser.appendBytes((void*) b, len);
         // std::cout << "nparsed: " << nparsed  << "len: " << len << " content: " << buf <<  std::endl;
         free(b);
-        if (parser.isFinishedMessage()) {
+        if (parser.message_done()) {
             messages.push_back(parser.currentMessage());
             parser.setUpParserCallbacks();
             parser.setUpNextMessage();
@@ -198,7 +198,7 @@ TEST_CASE("test streaming - fragmented buffer - two or more messages back to bac
             char ch = b[j];
             int nparsed = parser_ptr->appendBytes((void*) &(b[j]), 1);
             std::cout << "nparsed: " << nparsed << " is error ? :: " << (int)parser_ptr->isError() << std::endl;
-            if (parser_ptr->isFinishedMessage()) {
+            if (parser_ptr->message_done()) {
                 messages.push_back((*parser_ptr).currentMessage());
                 parser_ptr = new Marvin::ConcreteParser();
                 // parser_ptr->setUpParserCallbacks();

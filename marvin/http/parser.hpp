@@ -24,26 +24,31 @@ struct ParserError {
 
 /**
  *  \ingroup http
- *  \brief An instance of this class will parse a stream of bytes into a http message container.
+ *  \brief An instance of this class will parse a stream of bytes into an http message container.
  *
- *  The data stream is provided to the parser using the appendBytes method. Data can be provided
+ *  The data stream is provided to the parser using the "consume" methods. Data can be provided
  *  "all at once" - that is a complete message in one lump or "piece meal" a sequence of arbitarily sized
  *  buffers.
  *
- *  An instance of a parser can only parse a single message. For subsequent messages on the same stream
- *  a new parser should be created.
- *  In the event that the start of a second message is in the same buffer as the end of the previous
- *  one the first parser will not process bytes for the second message. The caller 
- *  must retain the buffer and present it to the new parser as the first buffer to be processed.
+ *  An instance of a parser can parse multiple messages one after the other,
+ *  however some internal state needs to be reset between messages and a new container
+ *  needs to be provided for the next message.  Both are achieved by a call to Parser::begin()
+ *  
+ *  It is possible for data from a second message may be present at the end of 
+ *  the last buffer from the previous message. The Parser::consume() methods will
+ *  return that data without processing after message_done on the first message.
+ *  
+ *  The caller must retain the returned data (buffer) and present it to 
+ *  the a new parser, or after another call to begin() to the same parser,
+ *  as the first buffer to be processed for the next message.
  *
- *  However it is possible for a "server"
- *  to signal the end of a message by simple closing the connection. Hence in some cases the parser
+ *  It is possible for a "server" to signal the end of a message by simple closing the
+ *  connection (rather than include a Content-length header or a Transfer-encoding: chunked header). 
+ *  Hence in some cases the parser
  *  will only know that end-of-message has arrived when it is is told.  The way to tell the parse that
- *  the end of data has been hit is to call the method appendEOF.
- *
- *  It is therefore good practice to call appendEOF whenever the code using HTTPParser is able to detect
- *  an explicit end of data condition. There is no danger in calling appendEOF even when the message
- *  contains length infomation and the parser can self-detect the end of message.
+ *  the end of data has been hit is to call the method Parser::end(). As a matter of good practice
+ *  Parser::end() should be called whever the receiving connection is closed by the sender during
+ *  a parsing operation.
  *
  */
 class  Parser
@@ -91,7 +96,7 @@ public:
      *      be closed.
      * 
      * -    This function signals completin of parsing of the message header by setting a header complete flag,
-     *      which can be tested by a call to isFinishedHeaders()
+     *      which can be tested by a call to header_done()
      * 
      * -    Sometimes a message will be sent that does not contain a content-length nor a chunked-encoding header.
      *      the peer is expecting to signal end of message by closing the connection and as a sign of EOF. The
@@ -101,16 +106,17 @@ public:
 	 */
 	int appendBytes(void* buffer,  unsigned length);
 
+    void begin(MessageBase& msg);
+    void begin(MessageBase* msg_ptr);
     /**
-     * These functions will consume bytes in the given buffer and return
-     * -    on error
-     * -    on processing all the data
-     * -    on end of message even if all the data was not processed
-     * -    and if requested by the second argument once all header fields have been
-     *      processed even if more data remains in the buffer.
+     * These functions will consume bytes in the given buffer and return an instance of ReturnValue
+     * to indicate the state of the parsing process.
+     * There are two processing modes:
+     * -    process until a complete message has been parsed
+     * -    process until the message header has been completed
      * 
-     * To continue and process the body of a message after having received and processed the header
-     * call any of these functions with the default value of the second parameter on 
+     * To continue and process the body of a message, after having received and processed the header,
+     * simply call any of these functions with the default value of the second parameter on 
      * 
      * Note: if a call to a function returns with unprocessed data without end of message
      * being indicated the remaining data in the buffer will need to be passed to consume()
@@ -118,13 +124,13 @@ public:
      * 
      * Note: if data remains in the buffer when returning from consume() with end_of_message
      * code, that data belongs to the next message and the data needs to be retained
-     * and presented to a different instance of the parser at the commencement of parsing the
-     * next mesage. 
+     * and presented as the first buffer once parsing of the new message is underway.
      */
     ReturnValue consume(boost::asio::streambuf& streambuffer, bool only_header = false);
     ReturnValue consume(boost::asio::const_buffer const_buffer, bool only_header = false);
     ReturnValue consume(boost::asio::mutable_buffer mutable_buffer, bool only_header = false);
     ReturnValue consume(const void* buffer, const std::size_t length, const bool only_header = false);
+    ReturnValue end();
 #if 0
     template <typename B>
     ReturnValue parseMessage(B b)
@@ -143,62 +149,31 @@ public:
 	 * contain message length information.
 	 */
 	void appendEOF();
-
     /**
      * Pause and/or unpause the parser
      */
-    void pause();
-    void unPause();
-    bool isPaused() { return( HTTP_PARSER_ERRNO(m_http_parser_ptr) ==  HPE_PAUSED); }
+    // void pause();
+    // void unPause();
+    // bool isPaused() { return( HTTP_PARSER_ERRNO(m_http_parser_ptr) ==  HPE_PAUSED); }
     
 	/**
-	 * return true if parsing of the header fields of the current message is finished.
-	 * In which case the header fields can be obtained thru the headers property of
-	 * the HTTPMessage returned from * getCurrentMessage
+	 * is true if parsing of the header fields of the current message is finished.
 	 */
-	bool isFinishedHeaders();
+	bool header_done;
     
 	/**
-	 * return true if parsing of current message is finished, in which case the message
-	 * can be obtained via the getCurrentMessage method
+	 * is true if parsing of current message is finished
 	 */
-	bool isFinishedMessage();
+	bool message_done;
     
     bool            isError();
     enum http_errno getErrno();
     ParserError     getError();
     
 	/** 
-	 * Returns the the Message currently being parsed. When operating in non streaming mode
-	 * this also returns the most recently parsed message.
+	 * Returns the the Message currently being parsed or just parsed. 
 	 */
     MessageBase* currentMessage();
-	
-    
-    /*
-     * Three "call backs" for 
-     *  -   headers complete
-     *  -   message complete
-     *  -   body data after de-chunking
-     *  -   parse error
-     *
-     */
-#if 0    
-    virtual void OnParseBegin();
-    virtual void OnHeadersComplete(MessageInterface* msg);
-    virtual void OnMessageComplete(MessageInterface* msg);
-    virtual void OnParseError();
-    virtual void OnBodyData(void* buf, int len);
-    virtual void OnChunkBegin(int chunkLength);
-    virtual void OnChunkData(void* buf, int len);
-    virtual void OnChunkEnd();
-#endif    
-    //
-    // Utility functions that interface the C parser with the C++ Parser class
-    //
-    friend void saveNameValuePair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value);
-    friend Parser* getParser(http_parser* parser);
-    friend void link_to_http_parser(http_parser* c_parser, Parser* cpp_parser);
     
     /**
     * C parser class callback functions that interface with the C language parser
@@ -216,8 +191,8 @@ public:
     friend int message_complete_cb(http_parser* parser);
 
 protected:
-    void setUpParserCallbacks();
-    void setUpNextMessage();
+    void p_setup_callbacks();
+    void p_setup_next_message();
 
     /**
      * member function callbacks  
@@ -239,9 +214,6 @@ protected:
      */
     http_parser*            m_http_parser_ptr;
     http_parser_settings*   m_http_parser_settings_ptr;
-    bool                    headersCompleteFlag;
-    bool                    messageCompleteFlag;
-    std::string             messageData;
     MessageBase*            m_current_message_ptr;
     
     ///////////////////////////////////////////////////////////////////////////////////
@@ -251,16 +223,16 @@ protected:
     //
     ///////////////////////////////////////////////////////////////////////////////////
 
-    int				header_state;
+    int				        header_state;
     ///////////////////////////////////////////////////////////////////////////////////
     // These are C structures and must be allocated and freed explicitly with SBFree()
     // They are also temporary working variables used only during the parsing process
     ///////////////////////////////////////////////////////////////////////////////////
-    simple_buffer_t*   url_buf;
-    simple_buffer_t*   status_buf;
-    simple_buffer_t*   name_buf;
-    simple_buffer_t*   value_buf;
-    Marvin::HeadersV2  headers;
+    simple_buffer_t*        url_buf;
+    simple_buffer_t*        status_buf;
+    simple_buffer_t*        name_buf;
+    simple_buffer_t*        value_buf;
+    // Marvin::HeadersV2  headers;
     ////////////////////////////////////////////////////////////////////
 };
 

@@ -263,15 +263,15 @@ void MessageReader::p_handle_header_read(Marvin::ErrorType er, std::size_t bytes
     }
     
 
-    if( m_parser_sptr->isFinishedMessage() ) {
+    if( m_parser_sptr->message_done ) {
         p_post_message_cb(Marvin::make_error_ok());
-    } else if( m_parser_sptr->isFinishedHeaders()& (! m_parser_sptr->isFinishedMessage())) {
+    } else if( m_parser_sptr->header_done& (! m_parser_sptr->message_done)) {
         if( m_reading_full_message ) {
             p_read_all_body();
         } else {
             p_post_message_cb(Marvin::make_error_ok());
         }
-    } else if( ! m_parser_sptr->isFinishedHeaders() ) {
+    } else if( ! m_parser_sptr->header_done ) {
         p_read_some_headers();
     }
 }
@@ -325,7 +325,7 @@ void MessageReader::p_handle_body_read(Marvin::ErrorType er, std::size_t bytes_t
         return;
     }
     
-    if( m_parser_sptr->isFinishedMessage()) {
+    if( m_parser_sptr->message_done) {
         p_post_message_cb(Marvin::make_error_ok());
     } else {
         p_make_new_body_buffer();
@@ -375,7 +375,7 @@ void MessageReader::p_handle_body_chunk(Marvin::ErrorType er, std::size_t bytes_
     }
     
 
-    if( m_parser_sptr->isFinishedMessage()) {
+    if( m_parser_sptr->message_done) {
         p_post_body_chunk_cb(Marvin::make_error_eom(), m_body_buffer_chain_sptr);
         p_make_new_body_buffer_chain();
     } else {
@@ -428,12 +428,12 @@ bool MessageReader::p_parser_ok(int nparsed, Marvin::MBuffer& mb)
         TROG_WARN("some next message in buffer");
     }
     /**
-    * if parser status is OK or if (http_parser->errno == HPE_PAUSED && isFinishedMessage())
+    * if parser status is OK or if (http_parser->errno == HPE_PAUSED && message_done())
     * then we are OK with this message - parsing is paused on EOM
     * otherwise parser errors should be returned as errors
     */
     ParserError perr = m_parser_sptr->getError();
-    if( (perr.err_number == HPE_OK) || (perr.err_number == HPE_PAUSED && m_parser_sptr->isFinishedMessage())) {
+    if( (perr.err_number == HPE_OK) || (perr.err_number == HPE_PAUSED && m_parser_sptr->message_done)) {
         // do nothing
         return true;
     } else {
