@@ -8,71 +8,42 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 
-namespace Marvin {
 
+namespace {
 
-/**
-* A simple implementation of a concrete working http parser. Required to test the abstract Parser class.
- */
-class ConcreteParser
-{
-public:
-    Parser*  m_parser_ptr;
-    MessageBase* m_message_ptr;
-    ConcreteParser()
+struct LineSource {
+    int m_line_count;
+    std::vector<char*> m_lines;
+    LineSource(std::vector<char*> lines)
     {
-        m_message_ptr = new MessageBase();
-        m_parser_ptr = new Parser(m_message_ptr);
+        m_line_count = 0;
+        m_lines = lines;
     }
-    void OnParseBegin() 
+    std::size_t read_data(void* buffer, std::size_t length)
     {
-        std::cout << __func__ << std::endl;
-    }
-    void OnHeadersComplete(MessageInterface* msg, void* body_start_ptr, std::size_t remainder) 
-    {
-        std::cout << __func__ << std::endl;
-    }
-    void OnMessageComplete(MessageInterface* msg) {
-    }
-    void OnParseError() 
-    {
-        std::cout << __func__ << std::endl;
-    }
-    void OnBodyData(void* buf, int len) 
-    {
-        std::cout << __func__ << std::endl;
-    }
-    void OnChunkBegin(int chunkLength) 
-    {
-        std::cout << __func__ << std::endl;
-    }
-    void OnChunkData(void* buf, int len) 
-    {
-        MBufferSPtr mb_sptr = Marvin::MBuffer::makeSPtr(buf, len);
-        BufferChainSPtr chain_sptr = m_message_ptr->getContentBuffer();
-        if (chain_sptr == nullptr) {
-            chain_sptr = BufferChain::makeSPtr(mb_sptr);
-            m_message_ptr->setContentBuffer(chain_sptr);
-        } else {
-            chain_sptr->push_back(mb_sptr);
+        char* line = m_lines[m_line_count];
+        if (line == NULL) {
+            return 0;
         }
+        m_line_count++;
+        int line_len = strlen(line);
+        memcpy((void*)buffer, line, line_len);
+        return line_len;
     }
-    void OnChunkEnd() 
+    std::size_t read_data(boost::asio::mutable_buffer& mutablebuffer)
     {
-        std::cout << __func__ << std::endl;
+        void* p = mutablebuffer.data();
+        std::size_t size = mutablebuffer.size();
+        return read_data(p, size);
     }
-    bool messageComplete() 
+    std::size_t read_data(boost::asio::streambuf& streambuffer)
     {
-        std::cout << __func__ << std::endl;
-        return m_parser_ptr->message_done;
-    }
-    int consume(boost::asio::streambuf& streambuf)
-    {
-
+        boost::asio::mutable_buffer mb = streambuffer.prepare(100);
+        std::size_t bytes_read = read_data(mb);
+        streambuffer.commit(bytes_read);
+        return bytes_read;
     }
 };
-} // namespace
-namespace {
 std::vector<char*>& test_data()
 {
     static std::vector<char*> lines = {
@@ -92,7 +63,7 @@ std::vector<char*>& test_data()
         (char*) "\r\n",
         (char*) "ABCDEFGHIJK\0      ",
         NULL
-    };
+        };
     return lines;
 }
 std::vector<char*>& test_eof_data()
@@ -112,7 +83,9 @@ std::vector<char*>& test_eof_data()
 
 void verify_result(std::vector<Marvin::MessageInterface*> messages)
 {
+    REQUIRE(messages.size() > 0);
     Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+    REQUIRE(m0 != nullptr);
     CHECK(m0->httpVersMajor() == 1);
     CHECK(m0->httpVersMinor() == 1);
     CHECK(m0->statusCode() == 200);
@@ -122,6 +95,7 @@ void verify_result(std::vector<Marvin::MessageInterface*> messages)
     auto b0 = m0->getContentBuffer()->to_string();
     CHECK(m0->getContent()->to_string() == "1234567890");
     Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
+    REQUIRE(m1 != nullptr);
     CHECK(m1->httpVersMajor() == 1);
     CHECK(m1->httpVersMinor() == 1);
     CHECK(m1->statusCode() == 201);
@@ -145,7 +119,7 @@ void verify_eof_test(std::vector<Marvin::MessageInterface*> messages)
 }
 } // anonymous namespace
 
-TEST_CASE("new parsing interface")
+TEST_CASE("two messages")
 {
     ///
     /// This is test that demonstrates a number of import topics.
@@ -184,43 +158,31 @@ TEST_CASE("new parsing interface")
     /// will signal end of message by closing the connection which the parser expects 
     /// to see as EOF (a zero length buffer presented for parsing)
     ///
-    SUBCASE("parsing1 - lowest level") 
+    SUBCASE("raw-buffers") 
     {
-        Marvin::ConcreteParser* concrete_parser_ptr = new Marvin::ConcreteParser();
+        using namespace Marvin;
+        Parser* parser_ptr = new Parser();
         std::vector<Marvin::MessageInterface*> messages;
         
         boost::asio::streambuf streambuffer(2000);
-        std::vector<char*>& lines = test_data();
-        for(int i = 0; lines[i] != NULL  ;i++)
-        {
-            char* buf = lines[i];
-            int len = (int)strlen(buf);
-            int len_saved = len;
-            ///
-            /// this is the prep for a make-believe read that adds data to the 
-            /// streambuffer put are
-            ///
-            boost::asio::mutable_buffer put_mb = streambuffer.prepare(len+10);
-            char*put_b = (char*)put_mb.data();
-            memcpy(put_b, buf, len);
-            ///
-            /// read is complete so commit the data read
-            ///
-            streambuffer.commit(len);
-            ///
-            /// back from read - get ready to process the data until
-            /// the streambuffer get area is empty
-            ///
+        LineSource line_source(test_data());
+        Marvin::MessageBase* message_ptr = new Marvin::MessageBase();
+        parser_ptr->begin(message_ptr);
+        int bytes_read;
+        while(true) {
+            bytes_read = line_source.read_data(streambuffer);
+            if (bytes_read == 0) {
+                /// eof processing should be here - but not relevant to this test
+                /// just signals end of test data
+                break;
+            }
             while (streambuffer.data().size() > 0) {
-                ///
-                /// a lot of messing arounbd to get a raw c-style buffer from a stream buf
-                ///
                 boost::asio::const_buffer get_buf = streambuffer.data();
                 char* get_b = (char*)get_buf.data();
                 int get_sz = get_buf.size();
                 char* b = get_b;
-                len = get_sz;
-                Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume((void*) b, len);
+                int len = get_sz;
+                Marvin::Parser::ReturnValue ret = parser_ptr->consume((void*) b, len);
                 ///
                 /// keep track of data comsumed
                 ///
@@ -234,25 +196,30 @@ TEST_CASE("new parsing interface")
                     case Marvin::Parser::ReturnCode::end_of_header:
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((concrete_parser_ptr->m_parser_ptr->currentMessage()));
-                        concrete_parser_ptr = new Marvin::ConcreteParser();
+                        /// save the just parsed message
+                        messages.push_back(message_ptr);
+                        /// get ready for the next one
+                        /// notice we keep processing the same buffer even with a 
+                        /// new message
+                        message_ptr = new MessageBase();
+                        parser_ptr->begin(message_ptr);
                     break;
-
                 }
                 auto z = streambuffer.data().data();
                 char* z_p = (char*)z;
                 auto z_sz = streambuffer.data().size();
-                std::cout << "z: " << z << " content: " << buf <<  std::endl;
+                std::cout << "z: " << z << " content: " << get_b <<  std::endl;
             }
         }
         verify_result(messages);
     }
-    SUBCASE("boost::asio::const_buffer") 
+    SUBCASE("boost_buffers") 
     {
-        Marvin::ConcreteParser* concrete_parser_ptr = new Marvin::ConcreteParser();
+        Marvin::Parser* parser_ptr = new Marvin::Parser();
         std::vector<Marvin::MessageInterface*> messages;
         
         boost::asio::streambuf streambuffer(2000);
+        parser_ptr->begin(new Marvin::MessageBase());
         std::vector<char*>& lines = test_data();
         for(int i = 0; lines[i] != NULL  ;i++)
             {
@@ -279,7 +246,7 @@ TEST_CASE("new parsing interface")
                 /// this is a lot simpler as streambuffer knows how to deliver a boost::asio::const_buffer
                 ///
                 boost::asio::const_buffer get_buf = streambuffer.data();
-                Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume(get_buf);
+                Marvin::Parser::ReturnValue ret = parser_ptr->consume(get_buf);
                 ///
                 /// still have to do our own book keeping re data consumed
                 ///
@@ -293,20 +260,21 @@ TEST_CASE("new parsing interface")
                     case Marvin::Parser::ReturnCode::end_of_header:
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((concrete_parser_ptr->m_parser_ptr->currentMessage()));
-                        concrete_parser_ptr = new Marvin::ConcreteParser();
+                        messages.push_back((parser_ptr->currentMessage()));
+                        parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
             }
         }
         verify_result(messages);
     }
-    SUBCASE("parsing1 - boost::asio::streambuf") 
+    SUBCASE("boost_streambuf") 
     {
-        Marvin::ConcreteParser* concrete_parser_ptr = new Marvin::ConcreteParser();
+        Marvin::Parser* parser_ptr = new Marvin::Parser();
         std::vector<Marvin::MessageInterface*> messages;
         
         boost::asio::streambuf streambuffer(2000);
+        parser_ptr->begin(new Marvin::MessageBase());
 
         std::vector<char*>& lines = test_data();
         for(int i = 0; lines[i] != NULL  ;i++)
@@ -334,7 +302,7 @@ TEST_CASE("new parsing interface")
                 ///
                 /// no messing around we will simple pass the streambuffer
                 ///
-                Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume(streambuffer);
+                Marvin::Parser::ReturnValue ret = parser_ptr->consume(streambuffer);
                 ///
                 /// also note now consume() takes care of the book keeping re data consumed
                 ///
@@ -347,8 +315,8 @@ TEST_CASE("new parsing interface")
                     case Marvin::Parser::ReturnCode::end_of_header:
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((concrete_parser_ptr->m_parser_ptr->currentMessage()));
-                        concrete_parser_ptr = new Marvin::ConcreteParser();
+                        messages.push_back((parser_ptr->currentMessage()));
+                        parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
                 auto z = streambuffer.data().data();
@@ -361,10 +329,11 @@ TEST_CASE("new parsing interface")
     }
     SUBCASE("parsing header then body - boost::asio::streambuf") 
     {
-        Marvin::ConcreteParser* concrete_parser_ptr = new Marvin::ConcreteParser();
+        Marvin::Parser* parser_ptr = new Marvin::Parser();
         std::vector<Marvin::MessageInterface*> messages;
         
         boost::asio::streambuf streambuffer(2000);
+        parser_ptr->begin(new Marvin::MessageBase());
 
         std::vector<char*>& lines = test_data();
         for(int i = 0; lines[i] != NULL  ;i++)
@@ -394,7 +363,7 @@ TEST_CASE("new parsing interface")
             /// and then processes no more
             ///
             while ((!headers_done)&&(streambuffer.data().size() > 0)) {
-                Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume(streambuffer, true);
+                Marvin::Parser::ReturnValue ret = parser_ptr->consume(streambuffer, true);
                 switch(ret.return_code) {
                     case Marvin::Parser::ReturnCode::error:
                         REQUIRE(false);
@@ -405,8 +374,8 @@ TEST_CASE("new parsing interface")
                         headers_done = true;
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((concrete_parser_ptr->m_parser_ptr->currentMessage()));
-                        concrete_parser_ptr = new Marvin::ConcreteParser();
+                        messages.push_back((parser_ptr->currentMessage()));
+                        parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
             }
@@ -429,7 +398,7 @@ TEST_CASE("new parsing interface")
                 int get_sz = get_buf.size();
                 char* b = get_b;
                 len = get_sz;
-                Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume(streambuffer, false);
+                Marvin::Parser::ReturnValue ret = parser_ptr->consume(streambuffer, false);
                 switch(ret.return_code) {
                     case Marvin::Parser::ReturnCode::error:
                         REQUIRE(false);
@@ -440,54 +409,55 @@ TEST_CASE("new parsing interface")
                         headers_done = true;
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((concrete_parser_ptr->m_parser_ptr->currentMessage()));
-                        concrete_parser_ptr = new Marvin::ConcreteParser();
+                        messages.push_back((parser_ptr->currentMessage()));
+                        parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
             }
         }
         verify_result(messages);
     }
-} // end etstcase
-TEST_CASE("test eof")
+} // end testcase
+
+TEST_CASE("eof")
 {
-    SUBCASE("eof - lowest level") 
+    SUBCASE("eof 1") 
     {
-        Marvin::ConcreteParser* concrete_parser_ptr = new Marvin::ConcreteParser();
+        using namespace Marvin;
+        Parser* parser_ptr = new Parser();
         std::vector<Marvin::MessageInterface*> messages;
         
         boost::asio::streambuf streambuffer(2000);
-        std::vector<char*>& lines = test_eof_data();
-        for(int i = 0; lines[i] != NULL  ;i++)
-        {
-            char* buf = lines[i];
-            int len = (int)strlen(buf);
-            int len_saved = len;
-            ///
-            /// this is the prep for a make-believe read that adds data to the 
-            /// streambuffer put are
-            ///
-            boost::asio::mutable_buffer put_mb = streambuffer.prepare(len+10);
-            char*put_b = (char*)put_mb.data();
-            memcpy(put_b, buf, len);
-            ///
-            /// read is complete so commit the data read
-            ///
-            streambuffer.commit(len);
-            ///
-            /// back from read - get ready to process the data until
-            /// the streambuffer get area is empty
-            ///
+        LineSource line_source(test_eof_data());
+        Marvin::MessageBase* message_ptr = new Marvin::MessageBase();
+        parser_ptr->begin(message_ptr);
+        int bytes_read;
+        while(true) {
+            bytes_read = line_source.read_data(streambuffer);
+            if (bytes_read == 0) {
+                /// example of eof processing
+                Marvin::Parser::ReturnValue ret = parser_ptr->end();
+                switch(ret.return_code) {
+                    case Marvin::Parser::ReturnCode::error:
+                    case Marvin::Parser::ReturnCode::end_of_data:
+                        REQUIRE(false);
+                    break;
+                    case Marvin::Parser::ReturnCode::end_of_header:
+                    break;
+                    case Marvin::Parser::ReturnCode::end_of_message:
+                        messages.push_back((parser_ptr->currentMessage()));
+                        parser_ptr->begin(new Marvin::MessageBase());
+                    break;
+                }
+                break;
+            }
             while (streambuffer.data().size() > 0) {
-                ///
-                /// a lot of messing arounbd to get a raw c-style buffer from a stream buf
-                ///
                 boost::asio::const_buffer get_buf = streambuffer.data();
                 char* get_b = (char*)get_buf.data();
                 int get_sz = get_buf.size();
                 char* b = get_b;
-                len = get_sz;
-                Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume((void*) b, len);
+                int len = get_sz;
+                Marvin::Parser::ReturnValue ret = parser_ptr->consume((void*) b, len);
                 ///
                 /// keep track of data comsumed
                 ///
@@ -497,40 +467,25 @@ TEST_CASE("test eof")
                         REQUIRE(false);
                     break;
                     case Marvin::Parser::ReturnCode::end_of_data:
-                    break;
                     case Marvin::Parser::ReturnCode::end_of_header:
-                        std::cout << "end of header" << std::endl;
+                        /// not of interest as we want to parse an entire message
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((concrete_parser_ptr->m_parser_ptr->currentMessage()));
-                        concrete_parser_ptr = new Marvin::ConcreteParser();
+                        /// save the just parsed message
+                        messages.push_back(message_ptr);
+                        /// get ready for the next one
+                        /// notice we keep processing the same buffer even with a 
+                        /// new message
+                        message_ptr = new MessageBase();
+                        parser_ptr->begin(message_ptr);
                     break;
-
                 }
                 auto z = streambuffer.data().data();
                 char* z_p = (char*)z;
                 auto z_sz = streambuffer.data().size();
-                std::cout << "z: " << z << " content: " << buf <<  std::endl;
+                std::cout << "z: " << z << " content: " << get_b <<  std::endl;
             }
         }
-        char empty[10];
-        int len = 0;
-        Marvin::Parser::ReturnValue ret = concrete_parser_ptr->m_parser_ptr->consume(empty, len);
-        switch(ret.return_code) {
-            case Marvin::Parser::ReturnCode::error:
-                REQUIRE(false);
-            break;
-            case Marvin::Parser::ReturnCode::end_of_data:
-            break;
-            case Marvin::Parser::ReturnCode::end_of_header:
-            break;
-            case Marvin::Parser::ReturnCode::end_of_message:
-                messages.push_back((concrete_parser_ptr->m_parser_ptr->currentMessage()));
-                concrete_parser_ptr = new Marvin::ConcreteParser();
-            break;
-
-        }
-    
         verify_eof_test(messages);
     }
 }

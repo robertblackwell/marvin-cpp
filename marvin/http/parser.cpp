@@ -25,44 +25,32 @@ int headers_complete_cb(http_parser* parser);//, const char* aptr, size_t remain
 int body_data_cb(http_parser* parser, const char* at, size_t length);
 int message_complete_cb(http_parser* parser);
 
-Parser::Parser(MessageBase* current_message_ptr): m_current_message_ptr(current_message_ptr)
+Parser::Parser()
 {
     message_done = false;
     header_done = false;
-    
+    m_http_parser_ptr = NULL;
+    m_http_parser_settings_ptr = NULL;
     url_buf = NULL;
     status_buf = NULL;
     name_buf = NULL;
     value_buf = NULL;
     header_state = kHEADER_STATE_NOTHING;
-    p_setup_callbacks();
 }
 
 Parser::~Parser()
 {
-    free(m_http_parser_ptr);
-    free(m_http_parser_settings_ptr);
-    m_http_parser_ptr = NULL;
-    m_http_parser_settings_ptr = NULL;
-    if (url_buf != NULL) sb_free(url_buf);
-    if (status_buf != NULL) sb_free(status_buf);
-    if (name_buf != NULL) sb_free(name_buf);
-    if (value_buf != NULL) sb_free(value_buf);
+    if (m_http_parser_ptr != NULL) {free(m_http_parser_ptr);m_http_parser_ptr = NULL;}
+    if (m_http_parser_ptr != NULL) {free(m_http_parser_settings_ptr); m_http_parser_settings_ptr = NULL;}
+    if (url_buf != NULL) {sb_free(url_buf); url_buf = NULL;}
+    if (status_buf != NULL) {sb_free(status_buf); status_buf = NULL;}
+    if (name_buf != NULL) {sb_free(name_buf); name_buf = NULL;}
+    if (value_buf != NULL) {sb_free(value_buf);value_buf = NULL;}
 }
-
 MessageBase* Parser::currentMessage()
 {
     return m_current_message_ptr;
 }
-// void Parser::pause()
-// {
-//     http_parser_pause(m_http_parser_ptr, 1);
-// }
-// void Parser::unPause()
-// {
-//     http_parser_pause(m_http_parser_ptr, 0);
-// }
-
 int Parser::appendBytes(void *buffer, unsigned length)
 {
     std::string tmp = std::string((char*)buffer, length);
@@ -71,10 +59,12 @@ int Parser::appendBytes(void *buffer, unsigned length)
 }
 void Parser::begin(MessageBase& message_ref)
 {
+    p_initialize();
     this->m_current_message_ptr = std::addressof<MessageBase>(message_ref);
 }
 void Parser::begin(MessageBase* message_ptr)
 {
+    p_initialize();
     this->m_current_message_ptr = message_ptr;
 }
 Parser::ReturnValue Parser::consume(boost::asio::streambuf& streambuffer, bool only_header)
@@ -117,25 +107,6 @@ Parser::ReturnValue Parser::consume(const void* buf, std::size_t length, bool on
 {
     ReturnValue rv{.return_code = ReturnCode::end_of_data, .bytes_remaining = length};
     char* b = (char*) buf;
-    // if (length == 0) {
-    //     this->appendEOF();
-    //     if (this->isError()) {
-    //         rv.return_code = ReturnCode::error;
-    //         auto x = getError();
-    //         return rv;
-    //     } else if (this->message_done) {
-    //         rv.return_code = ReturnCode::end_of_message;
-    //         return rv;
-    //     } else if (this->header_done) {
-    //         rv.return_code = ReturnCode::end_of_header;
-    //         if (only_header) {
-    //             return rv;
-    //         }
-    //     } else {
-    //         std::cout << "should not be here" << std::endl;
-    //     return rv;
-    //     }
-    // }
     std::size_t total_parsed = 0;
     while (total_parsed < length) {
         char* b_start_ptr = &(b[total_parsed]);
@@ -379,18 +350,27 @@ int Parser::p_on_message_complete(http_parser* parser)
      */
     return 0;
 }
-
-/*
- **************************************************************************************************
- */
-
-#pragma mark - private methods
-
-void Parser::p_setup_next_message()
+void Parser::p_initialize()
 {
+    header_state = kHEADER_STATE_NOTHING;
+
     message_done = false;
     header_done = false;
-    
+    m_current_message_ptr = nullptr;
+    if (m_http_parser_ptr != NULL) {
+        free(m_http_parser_ptr);
+    }
+    m_http_parser_ptr = (http_parser*)malloc(sizeof(http_parser));
+    http_parser_init( m_http_parser_ptr, HTTP_BOTH );
+    /** a link back from the C parser to this class*/
+    m_http_parser_ptr->data = (void*) this;
+
+    if (m_http_parser_settings_ptr != NULL) {
+        free(m_http_parser_settings_ptr);
+    }
+    http_parser_settings* settings = (http_parser_settings*)malloc(sizeof(http_parser_settings));
+    m_http_parser_settings_ptr = settings;
+     
     if(url_buf != NULL){
         sb_free(url_buf);
         url_buf = NULL;
@@ -407,29 +387,16 @@ void Parser::p_setup_next_message()
         sb_free(value_buf);
         value_buf = NULL;
     }
-}
-
-void Parser::p_setup_callbacks()
-{
-    m_http_parser_ptr = (http_parser*)malloc(sizeof(http_parser));
-    http_parser_init( m_http_parser_ptr, HTTP_BOTH );
-    /** a link back from the C parser to this class*/
-    m_http_parser_ptr->data = (void*) this;
-
-    http_parser_settings* settings = (http_parser_settings*)malloc(sizeof(http_parser_settings));
-    m_http_parser_settings_ptr = settings;
-    
-    /* Now set up the call back functions that hook into http_parser*/
-    settings->on_message_begin = message_begin_cb;
-    settings->on_url = url_data_cb;
-    settings->on_status = status_data_cb;
-    settings->on_header_field = header_field_data_cb;
-    settings->on_header_value = header_value_data_cb;
-    settings->on_headers_complete = headers_complete_cb;
-    settings->on_body = body_data_cb;
-    settings->on_message_complete = message_complete_cb;
-    settings->on_chunk_header = chunk_header_cb;
-    settings->on_chunk_complete = chunk_complete_cb;
+    m_http_parser_settings_ptr->on_message_begin = message_begin_cb;
+    m_http_parser_settings_ptr->on_url = url_data_cb;
+    m_http_parser_settings_ptr->on_status = status_data_cb;
+    m_http_parser_settings_ptr->on_header_field = header_field_data_cb;
+    m_http_parser_settings_ptr->on_header_value = header_value_data_cb;
+    m_http_parser_settings_ptr->on_headers_complete = headers_complete_cb;
+    m_http_parser_settings_ptr->on_body = body_data_cb;
+    m_http_parser_settings_ptr->on_message_complete = message_complete_cb;
+    m_http_parser_settings_ptr->on_chunk_header = chunk_header_cb;
+    m_http_parser_settings_ptr->on_chunk_complete = chunk_complete_cb;
 }
 #pragma mark - c-language call back functions implementation
 Parser* xgetParser(http_parser* parser)

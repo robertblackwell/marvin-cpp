@@ -56,7 +56,7 @@ class  Parser
 public:
 
     using SPtr = std::shared_ptr<Parser>;
-    Parser(MessageBase* current_message_ptr);
+    Parser();
     ~Parser();
     
     /**
@@ -191,9 +191,7 @@ public:
     friend int message_complete_cb(http_parser* parser);
 
 protected:
-    void p_setup_callbacks();
-    void p_setup_next_message();
-
+    void p_initialize();
     /**
      * member function callbacks  
      */
