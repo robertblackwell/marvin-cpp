@@ -69,6 +69,7 @@ void Parser::begin(MessageBase* message_ptr)
 }
 Parser::ReturnValue Parser::consume(boost::asio::streambuf& streambuffer, bool only_header)
 {
+    started = true;
     namespace ba = boost::asio;
     ReturnValue rv{};
     while (streambuffer.data().size() > 0) {
@@ -105,6 +106,7 @@ Parser::ReturnValue Parser::consume(boost::asio::mutable_buffer mutable_buffer, 
 
 Parser::ReturnValue Parser::consume(const void* buf, std::size_t length, bool only_header)
 {
+    started = true;
     ReturnValue rv{.return_code = ReturnCode::end_of_data, .bytes_remaining = length};
     char* b = (char*) buf;
     std::size_t total_parsed = 0;
@@ -112,7 +114,7 @@ Parser::ReturnValue Parser::consume(const void* buf, std::size_t length, bool on
         char* b_start_ptr = &(b[total_parsed]);
         int nparsed = this->appendBytes((void*) b_start_ptr, length - total_parsed);
         total_parsed = total_parsed + nparsed;
-        std::cout << "nparsed: " << nparsed  << "len: " << length - total_parsed << " content: " << buf <<  std::endl;
+        // std::cout << "nparsed: " << nparsed  << "len: " << length - total_parsed << " content: " << buf <<  std::endl;
         rv.bytes_remaining = length - nparsed;
         if (this->isError()) {
             rv.return_code = ReturnCode::error;
@@ -139,7 +141,9 @@ Parser::ReturnValue Parser::end()
     size_t nparsed;
     int someLength = 0;
     if( ! message_done ) {
-        nparsed = http_parser_execute(m_http_parser_ptr, m_http_parser_settings_ptr, buffer, someLength);
+        if (started) {
+            nparsed = http_parser_execute(m_http_parser_ptr, m_http_parser_settings_ptr, buffer, someLength);
+        }
         if (this->isError()) {
             rv.return_code = ReturnCode::error;
             auto x = getError();
@@ -151,7 +155,7 @@ Parser::ReturnValue Parser::end()
             rv.return_code = ReturnCode::end_of_header;
         } else {
             std::cout << "should not be here" << std::endl;
-            MARVIN_THROW("dont think we should get here");
+            // MARVIN_THROW("dont think we should get here");
             return rv;
         }
     }
@@ -198,7 +202,6 @@ bool Parser::isError(){
     // FTROG_DEBUG(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
     return (this->m_http_parser_ptr->http_errno != 0) && (this->m_http_parser_ptr->http_errno != HPE_PAUSED);
 };
-
 void Parser::p_save_name_value_pair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value)
 {
     Parser* p = this;//(Parser*)(parser->data);
@@ -353,7 +356,7 @@ int Parser::p_on_message_complete(http_parser* parser)
 void Parser::p_initialize()
 {
     header_state = kHEADER_STATE_NOTHING;
-
+    started = false;
     message_done = false;
     header_done = false;
     m_current_message_ptr = nullptr;

@@ -156,6 +156,11 @@ public:
     // void unPause();
     // bool isPaused() { return( HTTP_PARSER_ERRNO(m_http_parser_ptr) ==  HPE_PAUSED); }
     
+    /**
+    * Is true if the parser has been given some data to parse.
+    * Set false by begin() and true by any consume() 
+    */
+    bool started;
 	/**
 	 * is true if parsing of the header fields of the current message is finished.
 	 */

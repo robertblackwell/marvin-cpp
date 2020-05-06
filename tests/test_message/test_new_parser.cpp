@@ -11,6 +11,13 @@
 
 namespace {
 
+
+
+
+/**
+ * Purpose of this class is to demo use of the parser in a situation
+ * that simulates synchronously reading from some source of bytes
+ */
 struct LineSource {
     int m_line_count;
     std::vector<char*> m_lines;
@@ -42,6 +49,83 @@ struct LineSource {
         std::size_t bytes_read = read_data(mb);
         streambuffer.commit(bytes_read);
         return bytes_read;
+    }
+};
+/**
+ * As can be seen below using the Marvin::Parser directly requires
+ * a good deal of boiler plate code which was OK while developing the parser
+ * and to illustrate how to use it with differnt kinds fo buffers
+ * but it is tedious.
+ * This class will wrap a complete parser test to make it easier to run
+ * the sme test on different test data.
+ * 
+ * WrappedParser test supports test data consisting of multiple back to back messages
+ * and also correctly handles messages that require EOF to signal end-of-message
+ */
+struct WrappedParserTest
+{
+    using MsgList = std::vector<Marvin::MessageBase*>;
+    using VerifyFunctionType = std::function<void(MsgList msg_list)>;
+    
+    Marvin::Parser&     m_parser;
+    LineSource&         m_line_source;
+    VerifyFunctionType  m_verify_func;
+    MsgList             m_messages;
+
+    WrappedParserTest(Marvin::Parser& parser, LineSource& line_source, VerifyFunctionType verify_func)
+    : m_parser(parser), m_line_source(line_source), m_verify_func(verify_func)
+    {}
+    void operator()()
+    {
+        using namespace Marvin;
+        
+        boost::asio::streambuf streambuffer(2000);
+        Marvin::MessageBase* message_ptr = new Marvin::MessageBase();
+        m_parser.begin(message_ptr);
+        int bytes_read;
+        while(true) {
+            bytes_read = m_line_source.read_data(streambuffer);
+            if (bytes_read == 0) {
+                /// eof processing should be here - but not relevant to this test
+                /// just signals end of test data
+                break;
+            }
+            while (streambuffer.data().size() > 0) {
+                boost::asio::const_buffer get_buf = streambuffer.data();
+                char* get_b = (char*)get_buf.data();
+                int get_sz = get_buf.size();
+                char* b = get_b;
+                int len = get_sz;
+                Marvin::Parser::ReturnValue ret = m_parser.consume((void*) b, len);
+                ///
+                /// keep track of data comsumed
+                ///
+                streambuffer.consume(len - ret.bytes_remaining);
+                switch(ret.return_code) {
+                    case Marvin::Parser::ReturnCode::error:
+                        REQUIRE(false);
+                    break;
+                    case Marvin::Parser::ReturnCode::end_of_data:
+                    break;
+                    case Marvin::Parser::ReturnCode::end_of_header:
+                    break;
+                    case Marvin::Parser::ReturnCode::end_of_message:
+                        /// save the just parsed message
+                        m_messages.push_back(message_ptr);
+                        /// get ready for the next one
+                        /// notice we keep processing the same buffer even with a 
+                        /// new message
+                        message_ptr = new MessageBase();
+                        m_parser.begin(message_ptr);
+                    break;
+                }
+                auto z = streambuffer.data().data();
+                char* z_p = (char*)z;
+                auto z_sz = streambuffer.data().size();
+                std::cout << "z: " << z << " content: " << get_b <<  std::endl;
+            }
+        }
+        m_verify_func(m_messages);
     }
 };
 std::vector<char*>& test_data()
@@ -81,7 +165,7 @@ std::vector<char*>& test_eof_data()
     return lines;
 }
 
-void verify_result(std::vector<Marvin::MessageInterface*> messages)
+void verify_result(std::vector<Marvin::MessageBase*> messages)
 {
     REQUIRE(messages.size() > 0);
     Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
@@ -105,7 +189,7 @@ void verify_result(std::vector<Marvin::MessageInterface*> messages)
     auto b1 = m1->getContentBuffer()->to_string();
     CHECK(m1->getContent()->to_string() == "ABCDEFGHIJK");
 }
-void verify_eof_test(std::vector<Marvin::MessageInterface*> messages)
+void verify_eof_test(std::vector<Marvin::MessageBase*> messages)
 {
     Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
     CHECK(m0->httpVersMajor() == 1);
@@ -118,7 +202,14 @@ void verify_eof_test(std::vector<Marvin::MessageInterface*> messages)
 
 }
 } // anonymous namespace
-
+TEST_CASE("wrappedparser")
+{
+    using namespace Marvin;
+    Parser parser;
+    LineSource line_source{test_data()};
+    WrappedParserTest test{parser, line_source, verify_result};
+    test();
+}
 TEST_CASE("two messages")
 {
     ///
@@ -162,7 +253,7 @@ TEST_CASE("two messages")
     {
         using namespace Marvin;
         Parser* parser_ptr = new Parser();
-        std::vector<Marvin::MessageInterface*> messages;
+        std::vector<Marvin::MessageBase*> messages;
         
         boost::asio::streambuf streambuffer(2000);
         LineSource line_source(test_data());
@@ -216,7 +307,7 @@ TEST_CASE("two messages")
     SUBCASE("boost_buffers") 
     {
         Marvin::Parser* parser_ptr = new Marvin::Parser();
-        std::vector<Marvin::MessageInterface*> messages;
+        std::vector<Marvin::MessageBase*> messages;
         
         boost::asio::streambuf streambuffer(2000);
         parser_ptr->begin(new Marvin::MessageBase());
@@ -271,7 +362,7 @@ TEST_CASE("two messages")
     SUBCASE("boost_streambuf") 
     {
         Marvin::Parser* parser_ptr = new Marvin::Parser();
-        std::vector<Marvin::MessageInterface*> messages;
+        std::vector<Marvin::MessageBase*> messages;
         
         boost::asio::streambuf streambuffer(2000);
         parser_ptr->begin(new Marvin::MessageBase());
@@ -330,7 +421,7 @@ TEST_CASE("two messages")
     SUBCASE("parsing header then body - boost::asio::streambuf") 
     {
         Marvin::Parser* parser_ptr = new Marvin::Parser();
-        std::vector<Marvin::MessageInterface*> messages;
+        std::vector<Marvin::MessageBase*> messages;
         
         boost::asio::streambuf streambuffer(2000);
         parser_ptr->begin(new Marvin::MessageBase());
@@ -425,7 +516,7 @@ TEST_CASE("eof")
     {
         using namespace Marvin;
         Parser* parser_ptr = new Parser();
-        std::vector<Marvin::MessageInterface*> messages;
+        std::vector<Marvin::MessageBase*> messages;
         
         boost::asio::streambuf streambuffer(2000);
         LineSource line_source(test_eof_data());
