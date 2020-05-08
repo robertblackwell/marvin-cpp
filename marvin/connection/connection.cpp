@@ -257,16 +257,43 @@ Cert::Certificate Connection::getServerCertificate()
     }
     return m_server_certificate;
 }
+/*
+* Read interface 
+*/
 
+/** not implemented*/
+void Connection::asyncRead(boost::asio::streambuf& streambuffer, AsyncReadCallbackType cb)
+{
+    MARVIN_THROW("not implemented yet");
+}
+/** read some into a Marvin MBuffer  and update the size property*/
 void Connection::asyncRead(Marvin::MBufferSPtr buffer, AsyncReadCallbackType cb)
 {
     asyncRead(buffer, m_read_timeout_interval_ms, cb);
 }
-
-/**
- * read
- */
-void Connection::asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb)
+/** read some into a boost::asio::mutable buffer*/
+void Connection::asyncRead(boost::asio::mutable_buffer buffer, AsyncReadCallbackType cb)
+{
+    asyncRead(buffer.data(), buffer.size(), cb);
+}
+/** read some into a buffer .egnth pair */
+void Connection::asyncRead(void* buffer, std::size_t length, AsyncReadCallbackType cb)
+{
+    asyncRead(buffer, length, m_read_timeout_interval_ms, cb);
+}
+/** read some with explicit timeout into a Marvin MBuffer and update its size property*/
+void Connection::asyncRead(Marvin::MBufferSPtr mbuffer, long timeout_ms, AsyncReadCallbackType cb)
+{
+    asyncRead(mbuffer->data(), mbuffer->capacity(), timeout_ms, 
+    [this, mbuffer, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    {
+        Marvin::ErrorType m_err = err;
+        mbuffer->setSize(bytes_transfered);
+        p_post_read_cb(cb, m_err, bytes_transfered);
+    });
+}
+/** the heavy lifting - read with explicit timeout into a pointer length pair */
+void Connection::asyncRead(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb)
 {
     /// a bit of explanation -
     /// -   set a time out with a handler, the handler knows what to do, in this case cancel outstanding
@@ -281,27 +308,19 @@ void Connection::asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncRea
         /// our processing knowing that both the IO and tineout are both done
         m_timeout.cancelTimeout([this, cb, buffer, err, bytes_transfered](){
             Marvin::ErrorType m_err = err;
-            buffer->setSize(bytes_transfered);
             p_post_read_cb(cb, m_err, bytes_transfered);
         });
     });
     if (m_mode == NOTSECURE) {
-        m_tcp_socket.async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
+        m_tcp_socket.async_read_some(boost::asio::buffer(buffer, buffer_length), handler);
     } else {
-        m_ssl_stream_sptr->async_read_some(boost::asio::buffer(buffer->data(), buffer->capacity()), handler);
+        m_ssl_stream_sptr->async_read_some(boost::asio::buffer(buffer, buffer_length), handler);
     }
 }
+
 /**
  * write
  */
-void Connection::asyncWrite(Marvin::MBuffer& buf, AsyncWriteCallbackType cb)
-{
-    p_async_write((void*)buf.data(), buf.size(), cb);
-}
-void Connection::asyncWrite(std::string& str, AsyncWriteCallback cb)
-{
-    p_async_write( (void*)str.c_str(), str.size(), cb);
-}
 
 void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb)
 {
@@ -318,36 +337,19 @@ void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCa
         boost::asio::async_write((*m_ssl_stream_sptr), tmp, handler);
     }
 }
-void Connection::asyncWrite(boost::asio::const_buffer abuf, AsyncWriteCallback cb)
+
+void Connection::asyncWrite(Marvin::MBuffer& buf, AsyncWriteCallbackType cb)
 {
-    MARVIN_THROW("this function not implemented");
-#if 0
-    TROG_DEBUG("");
-    boost::asio::async_write(
-        (this->_boost_socket),
-        abuf,
-        [this, cb](
-            const Marvin::ErrorType& err,
-            std::size_t bytes_transfered
-            )
-        {
-        TROG_DEBUG("");
-        if( !err ){
-            Marvin::ErrorType m_err = Marvin::make_error_ok();
-            p_post_write_cb(cb, m_err, bytes_transfered);
-//            cb(m_err, bytes_transfered);
-        }else{
-            Marvin::ErrorType m_err = err;
-            p_post_write_cb(cb, m_err, bytes_transfered);
-//            cb(m_err, bytes_transfered);
-        }
-    });
-#endif
+    p_async_write((void*)buf.data(), buf.size(), cb);
+}
+void Connection::asyncWrite(std::string& str, AsyncWriteCallback cb)
+{
+    p_async_write( (void*)str.c_str(), str.size(), cb);
 }
 void Connection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
 {
     TROG_DEBUG("");
-    auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    auto handler = ([this, &sb, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         p_post_write_cb(cb, err, bytes_transfered);
     });
@@ -355,6 +357,32 @@ void Connection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
         boost::asio::async_write((this->m_tcp_socket), sb, handler);
     } else {
         boost::asio::async_write((*m_ssl_stream_sptr), sb, handler);
+    }
+}
+void Connection::asyncWrite(boost::asio::const_buffer constbuffer, AsyncWriteCallback cb)
+{
+    TROG_DEBUG("");
+    auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    {
+        p_post_write_cb(cb, err, bytes_transfered);
+    });
+    if (m_mode == NOTSECURE) {
+        boost::asio::async_write((this->m_tcp_socket), constbuffer, handler);
+    } else {
+        boost::asio::async_write((*m_ssl_stream_sptr), constbuffer, handler);
+    }
+}
+void Connection::asyncWrite(void* buffer, std::size_t buffer_length, AsyncWriteCallback cb)
+{
+    TROG_DEBUG("");
+    auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
+    {
+        p_post_write_cb(cb, err, bytes_transfered);
+    });
+    if (m_mode == NOTSECURE) {
+        boost::asio::async_write((this->m_tcp_socket), boost::asio::buffer(buffer, buffer_length), handler);
+    } else {
+        boost::asio::async_write((*m_ssl_stream_sptr), boost::asio::buffer(buffer, buffer_length), handler);
     }
 }
 

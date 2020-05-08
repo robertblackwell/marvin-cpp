@@ -26,8 +26,13 @@ public:
     void startRead();
 
     void asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb);
+    void asyncRead(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallback cb);
     
     void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb);
+    void asyncRead(void* buffer, std::size_t buffer_length, AsyncReadCallback cb);
+    void asyncRead(boost::asio::mutable_buffer mutablebuffer, AsyncReadCallback cb);
+    void asyncRead(boost::asio::streambuf& streambuffer, AsyncReadCallback cb);
+
     long nativeSocketFD();
 
     void asyncWrite(std::string& str, Marvin::AsyncWriteCallbackType cb);
@@ -35,7 +40,10 @@ public:
     void asyncWrite(Marvin::BufferChainSPtr chain_sptr, Marvin::AsyncWriteCallback);
     void asyncWrite(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb);
     void asyncWrite(boost::asio::streambuf& sb, Marvin::AsyncWriteCallback);
+    void asyncWrite(void* buffer, std::size_t buffer_length, Marvin::AsyncWriteCallback);
+
     void asyncConnect(Marvin::ConnectCallbackType cb);
+
     void asyncAccept(
         boost::asio::ip::tcp::acceptor& acceptor,
         std::function<void(const boost::system::error_code& err)> cb

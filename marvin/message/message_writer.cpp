@@ -20,7 +20,7 @@ std::string traceWriter(MessageWriter& writer)
     return ss.str();
 }
 
-MessageWriter::MessageWriter(boost::asio::io_service& io, ISocketSPtr write_sock):m_io(io), m_write_sock(write_sock)
+MessageWriter::MessageWriter(ISocketSPtr write_sock):m_io(write_sock->getIO()), m_write_sock(write_sock)
 {
    TROG_TRACE_CTOR();
     m_current_message = nullptr;

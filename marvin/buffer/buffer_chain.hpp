@@ -32,12 +32,19 @@ class BufferChain
         static BufferChainSPtr makeSPtr(MBuffer& mb);
         static BufferChainSPtr makeSPtr(MBufferSPtr mb_sptr);
     
+        using AsioConstBufferSeq = std::vector<boost::asio::const_buffer>;
+        using AsioMutableBufferSeq = std::vector<boost::asio::mutable_buffer>; 
+
         BufferChain();
+        /** append data - iether append to the final block or add a new block*/
         void            append(void* buf, std::size_t len);
         void            push_back(MBufferSPtr mb);
         void            clear();
-        std::vector<boost::asio::mutable_buffer> asio_buffer_sequence();
+        std::vector<boost::asio::const_buffer> asio_buffer_sequence();
+        /** total bytes in the chain */
         std::size_t     size();
+        /** number of blocks in the chain */
+        std::size_t     blocks();
         std::string     to_string();
         MBufferSPtr     amalgamate();
 
@@ -46,10 +53,11 @@ class BufferChain
          */
         friend std::ostream &operator<< (std::ostream &os, BufferChain const &b);
         /**
-        * converts a Bufferchain to a boost buffer for use in async io calls
+        * converts a Bufferchain to a boost buffer for use in async write calls
+        * thus need const_bufer_seq
         */
-        friend std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(BufferChain& bchain);
-        friend std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
+        friend AsioConstBufferSeq buffer_chain_to_const_buffer_sequence(BufferChain& bchain);
+        friend AsioConstBufferSeq buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
         // chunk encoding helpers
         friend BufferChainSPtr chunk_buffer(BufferChainSPtr buf_sptr);
         friend BufferChainSPtr chunk_empty();
@@ -57,7 +65,7 @@ class BufferChain
 
     private:
         std::vector<MBufferSPtr>                    m_chain;
-        std::vector<boost::asio::mutable_buffer>    m_asio_chain;
+        std::vector<boost::asio::const_buffer>      m_asio_chain;
         std::size_t                                 m_size;
 };
 

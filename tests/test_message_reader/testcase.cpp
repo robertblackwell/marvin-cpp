@@ -12,13 +12,13 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 Testcase::Testcase(
-    std::string description,
-    std::vector<std::string> rawMessage,
-    std::string result_first_line,
-    int status_code,
-    Marvin::ErrorType err,
-    Marvin::HeadersV2::Initializer result_headers,
-    std::string result_body
+    std::string                     description,
+    std::vector<std::string>        rawMessage,
+    std::string                     result_first_line,
+    int                             status_code,
+    Marvin::ErrorType               err,
+    Marvin::HeadersV2::Initializer  result_headers,
+    std::string                     result_body
 )
     :
     m_rawMessage(rawMessage),
@@ -58,17 +58,24 @@ Testcase::Testcase(
     {
         return (b == m_result_body);
     }
-    std::string Testcase::result_first_line(){
+    std::string Testcase::result_first_line()
+    {
         return m_result_first_line;
     }
-    int Testcase::result_status_code(){return m_result_status_code;}
-
-    Marvin::ErrorType Testcase::result_onheaders_err(){ return m_result_onheaders_err; }
-
-    Marvin::HeadersV2& Testcase::result_headers(){
+    int Testcase::result_status_code()
+    {
+        return m_result_status_code;
+    }
+    Marvin::ErrorType Testcase::result_onheaders_err()
+    { 
+        return m_result_onheaders_err; 
+    }
+    Marvin::HeadersV2& Testcase::result_headers()
+    {
         return m_result_headers;
     }
-    std::string Testcase::result_body(){
+    std::string Testcase::result_body()
+    {
         return m_result_body;
     }
     std::string Testcase::next()

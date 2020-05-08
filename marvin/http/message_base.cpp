@@ -130,6 +130,7 @@ MessageBase::MessageBase()
     this->m_is_request = true;
     this->setHttpVersMajor(1);
     this->setHttpVersMinor(1);
+    this->m_body_chain_sptr = std::make_shared<BufferChain>();
 }
 
 MessageBase::~MessageBase(){}

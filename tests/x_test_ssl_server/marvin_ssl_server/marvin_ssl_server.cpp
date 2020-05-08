@@ -39,8 +39,8 @@ class SslApp : public RequestHandlerInterface
     ){
         m_downstream_socket_sptr = clientConnectionSPtr;
         m_done_callback          = done;
-        m_rdr_sptr = std::make_shared<MessageReader>(m_io, m_downstream_socket_sptr); 
-        m_wrtr_sptr = std::make_shared<MessageWriter>(m_io, m_downstream_socket_sptr); 
+        m_rdr_sptr = std::make_shared<MessageReader>(m_downstream_socket_sptr); 
+        m_wrtr_sptr = std::make_shared<MessageWriter>(m_downstream_socket_sptr); 
         become_secure();
 
         m_downstream_socket_sptr->asyncHandshake([this](const boost::system::error_code& err)

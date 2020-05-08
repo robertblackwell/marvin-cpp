@@ -40,9 +40,7 @@ BufferChainSPtr chunk_empty()
 BufferChainSPtr chunk_last(BufferChainSPtr buf_sptr)
 {
     return nullptr;
-
 }
-
 
 BufferChain::BufferChain()
 {
@@ -55,17 +53,19 @@ void BufferChain::append(void* buf, std::size_t len)
         MBufferSPtr last_mb = m_chain.at(m_chain.size()-1);
         if ((last_mb->capacity() - last_mb->size()) >= len) {
             last_mb->append(buf, len);
+            m_size += len;
             return;
         }
     }
     MBufferSPtr new_mb = MBuffer::makeSPtr(10000);
+    new_mb->append(buf, len);
     this->push_back(new_mb);
 }
 void BufferChain::push_back(MBufferSPtr mb)
 {
     m_size += mb->size();
     m_chain.push_back(mb);
-    m_asio_chain.push_back(boost::asio::buffer(mb->data(), mb->size()));
+    m_asio_chain.push_back(boost::asio::const_buffer(mb->data(), mb->size()));
 }
 void BufferChain::clear()
 {
@@ -76,6 +76,10 @@ void BufferChain::clear()
 std::size_t BufferChain::size()
 {
     return m_size;
+}
+std::size_t BufferChain::blocks()
+{
+    return m_chain.size();
 }
 std::string BufferChain::to_string()
 {
@@ -113,17 +117,16 @@ BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr)
     return sp;
 }
 
-std::vector<boost::asio::mutable_buffer> BufferChain::asio_buffer_sequence()
+std::vector<boost::asio::const_buffer> BufferChain::asio_buffer_sequence()
 {
     return this->m_asio_chain;
 }
 
 std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(BufferChain& bchain)
 {
-    assert(false);
-//    return bchain._asio_chain;
+    return bchain.m_asio_chain;
 }
-std::vector<boost::asio::mutable_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain)
+std::vector<boost::asio::const_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain)
 {
     return bchain.m_asio_chain;
 }

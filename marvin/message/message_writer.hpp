@@ -32,7 +32,7 @@ class MessageWriter
 {
 public:
 
-    MessageWriter(boost::asio::io_service& io, ISocketSPtr conn);
+    MessageWriter(ISocketSPtr conn);
     ~MessageWriter();
     
     void asyncWrite(Marvin::MessageBaseSPtr msg, WriteMessageCallbackType cb);

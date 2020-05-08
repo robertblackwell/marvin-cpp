@@ -148,7 +148,7 @@ void ForwardingHandler::p_initiate_tunnel()
     // first lets try and connect to the upstream host
     // to do that we need an upstream connection
 //    m_response_sptr->setWriteSock(m_downstream_connection.get());
-//    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, false));
+//    m_resp = std::shared_ptr<MessageWriter>(new MessageWriter(false));
 
    TROG_TRACE3("scheme:", m_scheme, " host:", m_host, " port:", m_port);
 

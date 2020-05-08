@@ -75,8 +75,8 @@ void MitmApp::handle(
 )
 {
     m_socket_sptr = socket_sptr;
-    m_rdr = std::make_shared<MessageReader>(m_io, socket_sptr);
-    m_wrtr = std::make_shared<MessageWriter>(m_io, socket_sptr);
+    m_rdr = std::make_shared<MessageReader>(socket_sptr);
+    m_wrtr = std::make_shared<MessageWriter>(socket_sptr);
     m_uuid = server_context.uuid;
     m_uuid_str = boost::uuids::to_string(m_uuid);
     m_done_callback = done;

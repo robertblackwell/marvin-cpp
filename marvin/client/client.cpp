@@ -137,9 +137,9 @@ void Client::internalWrite()
 #ifdef RDR_WRTR_ONESHOT
     // set up the read of the response
     // create a MessageReader with a read socket
-    this->m_rdr = std::shared_ptr<MessageReader>(new MessageReader(m_io, m_conn_shared_ptr));
+    this->m_rdr = std::shared_ptr<MessageReader>(new MessageReader(m_conn_shared_ptr));
     // get a writer
-    this->m_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(m_io, m_conn_shared_ptr));
+    this->m_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(m_conn_shared_ptr));
 #endif
     // we are about to write the entire request message
     // so make sure we have the content-length correct

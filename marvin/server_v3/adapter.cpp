@@ -36,8 +36,8 @@ void Marvin::Adapter::handle(
 )
 {
     m_socket_sptr = socket_sptr;
-    m_rdr = std::make_shared<MessageReader>(m_io, socket_sptr);
-    m_wrtr = std::make_shared<MessageWriter>(m_io, socket_sptr);
+    m_rdr = std::make_shared<MessageReader>(socket_sptr);
+    m_wrtr = std::make_shared<MessageWriter>(socket_sptr);
     m_done_callback = done;
     // Adapterequest(m_socket_sptr, m_wrtr, m_rdr);
     handleRequest();

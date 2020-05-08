@@ -533,8 +533,8 @@ void Request::p_prep_write_complete_headers()
 void Request::p_create_rdr_wrtr()
 {
     p_test_good_to_go();
-    this->m_rdr = std::make_shared<MessageReader>(m_io, m_conn_shared_ptr);
-    this->m_wrtr = std::make_shared<MessageWriter>(m_io, m_conn_shared_ptr);
+    this->m_rdr = std::make_shared<MessageReader>(m_conn_shared_ptr);
+    this->m_wrtr = std::make_shared<MessageWriter>(m_conn_shared_ptr);
     this->m_current_request =std::make_shared<MessageBase>();
 }
 

@@ -38,7 +38,7 @@ MessageReaderSPtr makeMock()
 {
     static boost::asio::io_service io;
     static ISocketSPtr socketSPtr = socketFactory(io);
-    MessageReaderSPtr result = std::make_shared<MessageReader>(io, socketSPtr);
+    MessageReaderSPtr result = std::make_shared<MessageReader>(socketSPtr);
     return result;
 }
 

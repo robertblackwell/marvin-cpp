@@ -34,9 +34,14 @@ void test_fullmessage(std::vector<Testcase> tcs)
 {
     for(auto const& testcase : tcs) {
         boost::asio::io_service io_service;
-        MockReadSocketSPtr msock_ptr = std::shared_ptr<MockReadSocket>(new MockReadSocket(io_service, testcase));
+        using work_guard_type = boost::asio::executor_work_guard<boost::asio::io_context::executor_type>;
+        // work_guard_type work_guard(io_service.get_executor());
+        MockReadSocketSPtr msock_ptr = std::make_shared<MockReadSocket>(io_service, testcase);
         auto tr = new Testrunner(io_service, msock_ptr, testcase);
-        tr->run_FullMessageRead();
+        io_service.post([tr]()
+        {
+            tr->run_FullMessageRead();
+        });
         io_service.run();
         delete tr;
     }
@@ -75,11 +80,5 @@ TEST_CASE( "Reader_hv_fullmessage")
 {
     printf("START %s[%d]\n", __FILE__, __LINE__);
     test_fullmessage(tc_make_hv());
-    printf("END %s[%d]\n", __FILE__, __LINE__);
-}
-TEST_CASE( "Reader_buffering_streaming")
-{
-    printf("START %s[%d]\n", __FILE__, __LINE__);
-    test_streamingBody(tc_make_buffering());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }

@@ -19,6 +19,8 @@ Polishing:
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
+  ☐ test MBuffer and BufferChain to ensure they become const_buffer_chain for gather write
+  ☐ test to see that reading and writing streambuf's correctly manage the prepare, commit consume functions
   ☐ convert all parsing tests to new parser
   ☐ think about keeping body as a buffer chain
   ☐ new parser opportunity to rethink header definition and how values are processed by parser

@@ -108,23 +108,17 @@ public:
 
 protected:
 
-    bool                                m_is_request;
-    enum http_method  					m_method;
-    std::string                         m_methodStr;
-    std::string							m_uri;
-
-    int									m_status_code;
-    std::string							m_status;
-
-    int									m_http_major;
-    int									m_http_minor;
-
-//    Marvin::HeadersV2                   m_headers;
-//    Marvin::HeadersV2                   m_trailers;
-    Marvin::HeadersV2              m_headers;
-    Marvin::HeadersV2              m_trailers;
-
-    Marvin::BufferChainSPtr             m_body_chain_sptr;
+    bool                        m_is_request;
+    enum http_method  			m_method;
+    std::string                 m_methodStr;
+    std::string					m_uri;
+    int							m_status_code;
+    std::string					m_status;
+    int							m_http_major;
+    int							m_http_minor;
+    Marvin::HeadersV2           m_headers;
+    Marvin::HeadersV2           m_trailers;
+    Marvin::BufferChainSPtr     m_body_chain_sptr;
     
 };
 

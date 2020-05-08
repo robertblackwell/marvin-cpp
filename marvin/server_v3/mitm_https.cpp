@@ -124,7 +124,7 @@ void MitmHttps::p_handshake_upstream()
 
 void MitmHttps::p_downstream_read_message()
 {
-    m_downstream_rdr_sptr = std::make_shared<MessageReader>(m_io, m_downstream_socket_sptr);
+    m_downstream_rdr_sptr = std::make_shared<MessageReader>(m_downstream_socket_sptr);
     m_downstream_rdr_sptr->readMessage([this](Marvin::ErrorType err) 
     {
         if (err) {

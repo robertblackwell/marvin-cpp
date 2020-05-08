@@ -28,15 +28,15 @@ std::string chain_to_string(Marvin::BufferChain chain);
 */
 class Testrunner
 {
-    
+
 public:
-    Marvin::MessageReaderSPtr           m_rdr;
-    Marvin::ISocketSPtr                 m_conn;
-    boost::asio::io_service&    m_io;
-    std::string                 m_body;
-    std::ostringstream          m_bodyStream;
-    Testcase                    m_tcObj;
-    std::string                 m_body_accumulator;
+    Marvin::MessageReaderSPtr  m_rdr;
+    Marvin::ISocketSPtr        m_conn;
+    boost::asio::io_service&   m_io;
+    std::string                m_body;
+    std::ostringstream         m_bodyStream;
+    Testcase                   m_tcObj;
+    std::string                m_body_accumulator;
 
     /**
     * Constructor - tcIndex is an index into the set of testcases
@@ -48,6 +48,8 @@ public:
     * runs a test that reads reads a full message
     */
     void run_FullMessageRead();
+    void run_MultipleMessageRead();
+    void run_MultipleContinue();
     /**
     * runs a test that reads the headers only
     */
