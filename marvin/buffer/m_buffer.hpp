@@ -34,7 +34,12 @@ public:
      * Constructor - give it a slab of memory to manage
      * Let the MBuffer constructor allocate the memory - but tell it howmuch
      */
-     MBuffer(const std::size_t cap);
+    MBuffer(const std::size_t cap);
+    MBuffer(std::string str);
+    MBuffer(MBuffer& other);
+    MBuffer& operator =(MBuffer& other);
+    MBuffer(MBuffer&& other);
+    MBuffer& operator =(MBuffer&& other);
     
     /**
      * destrtuctor - frees the memory the instance is managing
@@ -70,7 +75,8 @@ public:
      *  adds (by copying) data to the buffer starting at the first unsed byte
     */
     MBuffer& append(void* data, std::size_t len);
-    
+    MBuffer& append(std::string& str);
+    MBuffer& append(std::string str);
     MBuffer& setSize(std::size_t n);
     
     /**

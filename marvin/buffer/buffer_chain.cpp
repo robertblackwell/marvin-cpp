@@ -2,6 +2,7 @@
 #include <boost/asio/buffer.hpp>
 #include <marvin/buffer/m_buffer.hpp>
 #include <marvin/buffer/buffer_chain.hpp>
+#include <marvin/macros.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
@@ -10,6 +11,16 @@ namespace Marvin {
 
 
 #pragma mark - BufferChain
+BufferChainSPtr BufferChain::makeSPtr()
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    return sp;
+}
+BufferChainSPtr BufferChain::makeSPtr(BufferChain&& other)
+{
+    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain(std::move(other)));
+    return sp;
+}
 BufferChainSPtr BufferChain::makeSPtr(std::string& s)
 {
     BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
@@ -47,6 +58,40 @@ BufferChain::BufferChain()
     m_chain = std::vector<MBufferSPtr>();
     m_size = 0;
 }
+BufferChain::BufferChain(BufferChain& other)
+{
+    m_size = other.m_size;
+    m_chain = other.m_chain;
+}
+BufferChain& BufferChain::operator =(BufferChain& other)
+{
+    if(&other == this) {
+        return *this;
+    }
+    m_size = other.m_size;
+    m_chain = other.m_chain;
+    return *this;
+}
+BufferChain::BufferChain(BufferChain&& other)
+{
+    m_size = other.m_size;
+    m_chain = std::move(other.m_chain);
+    m_asio_chain = std::move(other.m_asio_chain);
+    other.m_size = 0;
+    // m_size = other.m_size;
+    // m_chain = std::move(other.m_chain);
+    // other.m_size = 0;
+}
+BufferChain& BufferChain::operator =(BufferChain&& other)
+{
+    if (&other == this) {
+        return *this;
+    }
+    std::swap(m_chain, other.m_chain);
+    std::swap(m_size, other.m_size);
+    return *this;
+}
+
 void BufferChain::append(void* buf, std::size_t len)
 {
     if (m_chain.size() > 0) {
@@ -61,6 +106,15 @@ void BufferChain::append(void* buf, std::size_t len)
     new_mb->append(buf, len);
     this->push_back(new_mb);
 }
+void BufferChain::append(std::string str)
+{
+    append((void*)str.c_str(), str.size());
+}
+void BufferChain::append(std::string& str)
+{
+    append((void*)str.c_str(), str.size());
+}
+
 void BufferChain::push_back(MBufferSPtr mb)
 {
     m_size += mb->size();
@@ -80,6 +134,13 @@ std::size_t BufferChain::size()
 std::size_t BufferChain::blocks()
 {
     return m_chain.size();
+}
+MBuffer& BufferChain::block_at(std::size_t index)
+{
+    if (index >= m_chain.size()) {
+            MARVIN_THROW("index out of range");
+    }
+    return *(m_chain.at(index));
 }
 std::string BufferChain::to_string()
 {

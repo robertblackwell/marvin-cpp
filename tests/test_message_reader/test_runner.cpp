@@ -1,4 +1,6 @@
 
+#include <marvin/http/message_base.hpp>
+#include <marvin/message/message_reader.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include "test_runner.hpp"
@@ -70,6 +72,7 @@ void Testrunner::run_FullMessageRead()
     TROG_DEBUG("getting started");
     m_rdr->readMessage([this](Marvin::ErrorType err)
     {
+        Marvin::MessageBase msg{*m_rdr};
         onMessage(err);
     });
 }

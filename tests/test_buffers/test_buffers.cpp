@@ -74,7 +74,9 @@ TEST_CASE("mbuffer_01")
     for( std::string& s: v) {
         mb->append((void*)s.c_str(), s.size());
     }
-    
+    std::string smb = mb->toString();
+    std::string expect = "12345678901234567890123456789012345678901234567890";
+    CHECK((smb == expect));
     REQUIRE(mb->size() == 50);
 //    std::cout << *mb << std::endl;
     
@@ -87,4 +89,111 @@ TEST_CASE("mbuffer_01")
     REQUIRE(boost::asio::buffer_cast<void*>(mut_b) == mb->data());
 
     delete mb;
+}
+TEST_CASE("copy constructor")
+{
+    // demonstrate copy not reference
+    BufferChain bc1{};
+    bc1.append("1111Thisisthefirstbuffer");
+    bc1.append("222Thisisthesecondbuffer");
+    BufferChain bc2{bc1};
+    MBuffer mb1 = bc1.block_at(0);
+    std::string s1 = mb1.toString();
+    MBuffer mb2 = bc2.block_at(0);
+    std::string s2 = mb2.toString();
+    CHECK((s1 == s2));
+    bc2.append("XXXXXXX");
+    mb2 = bc2.block_at(0);
+    s2 = mb2.toString();
+    CHECK((s1 != s2));
+}
+TEST_CASE("copy constructor")
+{
+    // demonstrate copy not reference
+    BufferChain bc1{};
+    bc1.append("1111Thisisthefirstbuffer");
+    bc1.append("222Thisisthesecondbuffer");
+    BufferChain bc2{bc1};
+    MBuffer mb1 = bc1.block_at(0);
+    std::string s1 = mb1.toString();
+    MBuffer mb2 = bc2.block_at(0);
+    std::string s2 = mb2.toString();
+    bc2.append("XXXXXXX");
+    mb2 = bc2.block_at(0);
+    s2 = mb2.toString();
+    CHECK((s1 != s2));
+}
+TEST_CASE("copy assignment")
+{
+    // demonstrate copy not reference
+    BufferChain bc1{};
+    bc1.append("1111Thisisthefirstbuffer");
+    bc1.append("222Thisisthesecondbuffer");
+    BufferChain bc2{};
+    bc2 = bc1;
+    MBuffer mb1 = bc1.block_at(0);
+    std::string s1 = mb1.toString();
+    MBuffer mb2 = bc2.block_at(0);
+    std::string s2 = mb2.toString();
+    CHECK((s1 == s2));
+    bc2.append("XXXXXXX");
+    mb2 = bc2.block_at(0);
+    s2 = mb2.toString();
+    CHECK((s1 != s2));
+}
+TEST_CASE("move")
+{
+    // demonstrate copy not reference
+    BufferChain bc1{};
+    bc1.append("1111Thisisthefirstbuffer");
+    bc1.append("222Thisisthesecondbuffer");
+    // this causes a move
+    BufferChain bc2{std::move(bc1)};
+    CHECK(bc1.size() == 0);
+    CHECK(bc2.size() != 0);
+    std::string stmp = "0123456789";
+    BufferChainSPtr bc_sptr_2 = BufferChain::makeSPtr(stmp);
+    // this causes a copy not a move
+    BufferChain bc3 = (*bc_sptr_2);
+    auto x = bc3.size();
+    auto x2 = bc_sptr_2->size();
+    CHECK(x2 == x);
+    // this one is a move
+    BufferChain b4 = std::move((*bc_sptr_2));
+    CHECK((b4.size() != 0));
+    CHECK((bc_sptr_2->size() == 0));
+}
+TEST_CASE("move with pointers 1")
+{
+    // another move
+    std::string stmp = "0123456789";
+    BufferChainSPtr bc_sptr_1 = BufferChain::makeSPtr(stmp);
+    CHECK((bc_sptr_1->size() != 0));
+    BufferChainSPtr bc_sptr_2 = std::make_shared<BufferChain>(std::move(*bc_sptr_1));
+    CHECK((bc_sptr_1->size() == 0));
+    CHECK((bc_sptr_2->size() != 0));
+
+}
+TEST_CASE("move with pointers 2")
+{
+    // another move
+    std::string stmp = "0123456789";
+    BufferChainSPtr bc_sptr_1 = BufferChain::makeSPtr(stmp);
+    CHECK((bc_sptr_1->size() != 0));
+    BufferChainSPtr bc_sptr_2 = std::make_shared<BufferChain>();
+    *bc_sptr_2 = std::move(*bc_sptr_1);
+    CHECK((bc_sptr_1->size() == 0));
+    CHECK((bc_sptr_2->size() != 0));
+
+}
+TEST_CASE("move with makeSPtr()")
+{
+    // another move
+    std::string stmp = "0123456789";
+    BufferChainSPtr bc_sptr_1 = BufferChain::makeSPtr(stmp);
+    CHECK((bc_sptr_1->size() != 0));
+    BufferChainSPtr bc_sptr_2 = BufferChain::makeSPtr(std::move(*bc_sptr_1));
+    CHECK((bc_sptr_1->size() == 0));
+    CHECK((bc_sptr_2->size() != 0));
+
 }

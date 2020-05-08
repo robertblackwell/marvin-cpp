@@ -28,6 +28,8 @@ using BufferChainSPtr = std::shared_ptr<BufferChain>;
 class BufferChain
 {
     public:
+        static BufferChainSPtr makeSPtr();
+        static BufferChainSPtr makeSPtr(BufferChain&& other);
         static BufferChainSPtr makeSPtr(std::string& s);
         static BufferChainSPtr makeSPtr(MBuffer& mb);
         static BufferChainSPtr makeSPtr(MBufferSPtr mb_sptr);
@@ -36,8 +38,15 @@ class BufferChain
         using AsioMutableBufferSeq = std::vector<boost::asio::mutable_buffer>; 
 
         BufferChain();
+        BufferChain(BufferChain& other);
+        BufferChain& operator =(BufferChain& other);
+        BufferChain(BufferChain&& other);
+        BufferChain& operator =(BufferChain&& other);
+
         /** append data - iether append to the final block or add a new block*/
         void            append(void* buf, std::size_t len);
+        void            append(std::string str);
+        void            append(std::string& str);
         void            push_back(MBufferSPtr mb);
         void            clear();
         std::vector<boost::asio::const_buffer> asio_buffer_sequence();
@@ -45,6 +54,7 @@ class BufferChain
         std::size_t     size();
         /** number of blocks in the chain */
         std::size_t     blocks();
+        MBuffer&        block_at(std::size_t index);
         std::string     to_string();
         MBufferSPtr     amalgamate();
 

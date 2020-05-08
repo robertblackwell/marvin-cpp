@@ -48,6 +48,49 @@ MBuffer::MBuffer(std::size_t cap)
     size_ = 0;
     capacity_ = tmp_cap;
 }
+MBuffer::MBuffer(std::string str): MBuffer(str.size())
+{
+    this->append((void*)str.c_str(), str.size());
+}
+MBuffer::MBuffer(MBuffer& other)
+{
+    capacity_ = other.capacity_;
+    memPtr = malloc(capacity_);
+    cPtr = (char*) memPtr;
+    size_ = other.size_;
+    memcpy(memPtr, other.memPtr, other.size_);
+}
+MBuffer& MBuffer::operator =(MBuffer& other)
+{
+    if (&other == this) {
+        return *this;
+    }
+    capacity_ = other.capacity_;
+    memPtr = malloc(capacity_);
+    cPtr = (char*) memPtr;
+    size_ = other.size_;
+    memcpy(memPtr, other.memPtr, other.size_);
+    return *this;
+}
+MBuffer::MBuffer(MBuffer&& other)
+{
+    capacity_ = other.capacity_;
+    memPtr = other.memPtr;
+    cPtr = (char*) memPtr;
+    size_ = other.size_;
+    other = MBuffer(capacity_);
+}
+MBuffer& MBuffer::operator =(MBuffer&& other)
+{
+    if (&other == this) {
+        return *this;
+    }
+    memPtr = other.memPtr;
+    cPtr = other.cPtr;
+    capacity_ = other.capacity_;
+    size_ = other.size_;
+    other = MBuffer(capacity_);
+}
 
 MBuffer::~MBuffer()
 {
@@ -91,6 +134,15 @@ MBuffer& MBuffer::append(void* data, std::size_t len)
     cPtr = (char*) memPtr;
     return *this;
 }
+MBuffer& MBuffer::append(std::string str)
+{
+    append((void*)str.c_str(), str.size());
+}
+MBuffer& MBuffer::append(std::string& str)
+{
+    append((void*)str.c_str(), str.size());
+}
+
 MBuffer& MBuffer::setSize(std::size_t n)
 {
     length_ = n;
@@ -100,7 +152,9 @@ MBuffer& MBuffer::setSize(std::size_t n)
 
 std::string MBuffer::toString()
 {
-    std::string s((char*)this->data(), this->size());
+    char* p = cPtr;
+
+    std::string s(p, size_);
     return s;
 }
 

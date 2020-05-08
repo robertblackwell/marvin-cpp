@@ -8,8 +8,10 @@
 #include <boost/asio.hpp>
 #include <boost/asio/basic_streambuf.hpp>
 #include <doctest/doctest.h>
+#include <marvin/connection/socket_interface.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
+#include <marvin/message/message_reader.hpp>
 
 namespace Marvin{
 namespace Tests{
@@ -99,8 +101,8 @@ struct LineSource {
  */
 struct WrappedParserTest
 {
-    using MsgList = std::vector<Marvin::MessageBase*>;
-    using VerifyFunctionType = std::function<void(MsgList msg_list)>;
+    // using MsgList = std::vector<Marvin::MessageBase*>;
+    // using VerifyFunctionType = std::function<void(MsgList msg_list)>;
     
     Marvin::Parser&     m_parser;
     LineSource&         m_line_source;
@@ -173,6 +175,40 @@ struct WrappedParserTest
             }
         }
         m_verify_func(m_messages);
+    }
+};
+
+struct WrappedReaderTest
+{
+    MessageReader           m_rdr;
+    LineSource&             m_line_source;
+    VerifyFunctionType      m_verify_func;
+    MsgList                 m_messages;
+
+    WrappedReaderTest(ISocketSPtr socket_sptr, LineSource& line_source, VerifyFunctionType verify_func)
+    : m_rdr(socket_sptr), m_line_source(line_source), m_verify_func(verify_func)
+    {}
+    void operator()()
+    {
+        read_one();
+    }
+    void read_one() 
+    {
+        m_rdr.readMessage([this](ErrorType err)
+        {
+            if(err) {
+                m_verify_func(m_messages);
+                return;
+            } else {
+                MessageBase& msg{m_rdr};
+                m_messages.push_back(&msg);
+                next_one();
+            }
+        });
+    }
+    void next_one()
+    {
+        read_one();
     }
 };
 } // namespace Parser

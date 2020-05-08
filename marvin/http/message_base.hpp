@@ -43,6 +43,8 @@ bool isKeepConnectionAlive(MessageBaseSPtr msg_sptr);
 {
 public:
     MessageBase();
+    MessageBase(MessageBase& other);
+    MessageBase(MessageBase&& other);
     ~MessageBase();
     void setStatusCode(int sc);
     void setStatus(std::string st);

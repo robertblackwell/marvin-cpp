@@ -24,6 +24,8 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 // #include "t_client.hpp"
 #include "testcase_defs.hpp"
 #include "test_runner.hpp"
+#include "../test_message/parser_helpers.hpp"
+#include "../test_message/parser_test_data.hpp"
 //-------------------------------------------------------------------------------------
 // Run a list of testcases (that exercise a MessageReader instance) using a mock socket 
 // (that simulates asyn data arrival with a timer) reading an entire 
@@ -82,3 +84,26 @@ TEST_CASE( "Reader_hv_fullmessage")
     test_fullmessage(tc_make_hv());
     printf("END %s[%d]\n", __FILE__, __LINE__);
 }
+namespace Marvin {
+namespace Tests {
+namespace Parser {
+
+TEST_CASE("on_test_data")
+{
+    
+    TestCollection tc = parser_test_data();
+    for(auto entry: tc) {
+        std::string key = entry.first;
+        TestSet ts = entry.second;
+        std::cout << "Commencing test of Parser test data set: " << ts.description  << std::endl;
+        LineSource line_source(ts.input_data);
+        Marvin::Parser parser;
+        // MockReadSocketSPtr sock_sptr = std::make_shared<MockReadSocket>();
+        // WrappedReaderTest wpt(parser, line_source, ts.verify_function);
+        // wpt();
+        std::cout << "Completed test of Parser test data set: " << ts.description  << std::endl;
+    }
+}
+} // Parser
+} // namespace Tests
+} // namespace Marvin

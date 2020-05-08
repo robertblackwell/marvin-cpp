@@ -7,6 +7,8 @@ add_executable(${TARGET}
 	testcase.cpp
 	test_runner.cpp
 	testcase_defs.cpp
+	../test_message/parser_helpers.hpp
+	../test_message/parser_test_data.hpp
 	# t_client.cpp
 	# t_server.cpp
 	# ../test_helpers/test_headers.cpp 
