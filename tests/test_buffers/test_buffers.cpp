@@ -1,10 +1,3 @@
-//
-//  main.m
-//  test_buffers
-//
-//  Created by ROBERT BLACKWELL on 11/26/17.
-//  Copyright © 2017 Blackwellapps. All rights reserved.
-//
 #include <iostream>
 
 // #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
@@ -114,14 +107,27 @@ TEST_CASE("copy constructor")
     bc1.append("1111Thisisthefirstbuffer");
     bc1.append("222Thisisthesecondbuffer");
     BufferChain bc2{bc1};
+
+    // demonstrate bc1 and bc2 have the same value
     MBuffer mb1 = bc1.block_at(0);
     std::string s1 = mb1.toString();
     MBuffer mb2 = bc2.block_at(0);
     std::string s2 = mb2.toString();
+    CHECK(s1 == s2);
+    CHECK(bc1.size() == bc2.size());
+    CHECK(bc1.blocks() == bc2.blocks());
+    CHECK(bc1.to_string() == bc2.to_string());
+    // bc1 and bc2 have the same value
+
+    //now demonstrate they are NOT references to the same thing
     bc2.append("XXXXXXX");
+    mb1 = bc1.block_at(0);
+    s1 = mb1.toString();
     mb2 = bc2.block_at(0);
     s2 = mb2.toString();
     CHECK((s1 != s2));
+    CHECK(bc1.size() != bc2.size());
+    CHECK(bc1.to_string() != bc2.to_string());
 }
 TEST_CASE("copy assignment")
 {
@@ -131,15 +137,27 @@ TEST_CASE("copy assignment")
     bc1.append("222Thisisthesecondbuffer");
     BufferChain bc2{};
     bc2 = bc1;
+
+    // demonstrate bc1 and bc2 have the same value
     MBuffer mb1 = bc1.block_at(0);
     std::string s1 = mb1.toString();
     MBuffer mb2 = bc2.block_at(0);
     std::string s2 = mb2.toString();
-    CHECK((s1 == s2));
+    CHECK(s1 == s2);
+    CHECK(bc1.size() == bc2.size());
+    CHECK(bc1.blocks() == bc2.blocks());
+    CHECK(bc1.to_string() == bc2.to_string());
+    // bc1 and bc2 have the same value
+
+    //now demonstrate they are NOT references to the same thing
     bc2.append("XXXXXXX");
+    mb1 = bc1.block_at(0);
+    s1 = mb1.toString();
     mb2 = bc2.block_at(0);
     s2 = mb2.toString();
     CHECK((s1 != s2));
+    CHECK(bc1.size() != bc2.size());
+    CHECK(bc1.to_string() != bc2.to_string());
 }
 TEST_CASE("move")
 {

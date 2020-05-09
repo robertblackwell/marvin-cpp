@@ -24,7 +24,7 @@ add_subdirectory(test_headers)
 add_subdirectory(test_marvin_errors)
 
 add_subdirectory(test_message)
-add_subdirectory(test_message_reader)
+# add_subdirectory(test_message_reader)
 # add_subdirectory(test_message_roundtrip)
 # add_subdirectory(test_proxy_manual)
 # add_subdirectory(test_run_shell) # demonstrates how to use a shell script as the test

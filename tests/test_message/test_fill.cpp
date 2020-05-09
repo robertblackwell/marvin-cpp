@@ -186,6 +186,19 @@ void verifyRequest_03(MessageBaseSPtr msgSPtr)
     REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
     REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999" );
 }
+/// Verify request 03 using reference not pointer
+void verifyNonPointerRequest_03(MessageBase& msg)
+{
+    REQUIRE(msg.uri() == "/somepath/script.php?parm=123456#fragment");
+    REQUIRE(msg.getHeader(HeadersV2::Host) == "example.org:9999" );
+}
+/// Verify request 03 using reference not pointer
+void failedNonPointerRequest_03(MessageBase& msg)
+{
+    REQUIRE(msg.uri() != "/somepath/script.php?parm=123456#fragment");
+    REQUIRE(!msg.hasHeader(HeadersV2::Host));
+}
+
 /// Fill minimum requirements for a request
 void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
 {
@@ -280,4 +293,73 @@ TEST_CASE("min_requirement_request_01")
     std::cout << traceMessage(*msgSPtr) << std::endl;
     std::cout << *msgSPtr << std::endl;
 }
+TEST_CASE("copy ctor")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgRequest03(msgSPtr);
+    msgSPtr->getContentBuffer()->append("01234567890");
+    // make a copy
+    MessageBase tmp_msg{(*msgSPtr)};
+    // demonstrate we have two copies of the same value
+    CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
+    CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
+    // now prove the body buffers have been copied and not just two pointers to the same thing
+    tmp_msg.getContentBuffer()->append("XXXX");
+    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
+    CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
 
+    verifyRequest_03(msgSPtr);
+    verifyNonPointerRequest_03(tmp_msg);
+    std::string s4 = msgSPtr->getContentBuffer()->block_at(0).toString();
+}
+TEST_CASE("copy assignment")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgRequest03(msgSPtr);
+    msgSPtr->getContentBuffer()->append("01234567890");
+    // make a new one and assign
+    MessageBase tmp_msg;
+    tmp_msg = *msgSPtr;
+
+    // demonstrate we have two copies of the same value
+    CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
+    CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
+    // now prove the body buffers have been copied and not just two pointers to the same thing
+    tmp_msg.getContentBuffer()->append("XXXX");
+    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
+    CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
+
+    verifyRequest_03(msgSPtr);
+    verifyNonPointerRequest_03(tmp_msg);
+    std::string s4 = msgSPtr->getContentBuffer()->block_at(0).toString();
+}
+
+TEST_CASE("move ctor")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgRequest03(msgSPtr);
+    msgSPtr->getContentBuffer()->append("01234567890");
+    // ctor move
+    MessageBase tmp_msg{std::move(*msgSPtr)};
+    // demonstrate that it was a move
+    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
+    CHECK(msgSPtr->getContentBuffer()->to_string() == "");
+    CHECK(msgSPtr->getContentBuffer()->size() == 0);
+    failedNonPointerRequest_03(*msgSPtr);
+    verifyNonPointerRequest_03(tmp_msg);    
+}
+TEST_CASE("move assignment")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgRequest03(msgSPtr);
+    msgSPtr->getContentBuffer()->append("01234567890");
+    // ctor move
+    MessageBase tmp_msg;
+    tmp_msg = std::move(*msgSPtr);
+    // demonstrate that it was a move
+    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
+    CHECK(msgSPtr->getContentBuffer()->to_string() == "");
+    CHECK(msgSPtr->getContentBuffer()->size() == 0);
+    failedNonPointerRequest_03(*msgSPtr);
+    verifyNonPointerRequest_03(tmp_msg);
+}

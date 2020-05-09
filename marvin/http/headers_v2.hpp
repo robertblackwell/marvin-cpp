@@ -99,6 +99,10 @@ class HeadersV2
         static const std::string ConnectionClose;
         static const std::string ConnectionKeepAlive;
         HeadersV2();
+        HeadersV2(HeadersV2& other);
+        HeadersV2(HeadersV2&& other);
+        void operator =(HeadersV2& other);
+        void operator =(HeadersV2&& other);
         /// \brief This construct provide a means of initializing a OrderedKeyValues object
         /// using a literal value; specifically a vector of pairs of string values.
         HeadersV2(std::vector<std::pair<std::string, std::string>> initialValue);

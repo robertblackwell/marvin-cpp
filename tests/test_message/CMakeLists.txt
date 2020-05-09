@@ -1,5 +1,5 @@
 
-if(OFF)
+if(ON)
 	set(TARGET test_message)
 	add_executable(${TARGET} 
 		main.cpp
@@ -25,7 +25,7 @@ if(OFF)
 		PROPERTIES ENVIRONMENT "SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem")
 endif()
 
-if(ON)
+if(OFF)
 	set(TARGET2 test_parser)
 
 	add_executable(${TARGET2} 

@@ -258,7 +258,45 @@ TEST_CASE("message_connection_keep_alive")
     testMessageConnectionKeepAlive(" this, has, embedded", 0, false);
 
 }
-TEST_CASE("message_connection_close")
+TEST_CASE("copy constructor test")
 {
-
+    HeadersV2 h1{{
+        {"Connection", "Keep-Alive, another1, another2"},
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"33","3333333"},
+        {"44","4444444"}
+    }};
+    HeadersV2 h2{h1};
+    bool x = h2.hasKey("bb");
+    bool y = h1.hasKey("bb");
+    CHECK(x);
+    CHECK(y);
+    HeadersV2 h3{};
+    h3 = h1;
+    CHECK(h1.hasKey("ccc"));
+    CHECK(h3.hasKey("ccc")); 
+}
+TEST_CASE("move test")
+{
+    HeadersV2 h1{{
+        {"Connection", "Keep-Alive, another1, another2"},
+        {"bb","BBBBB"},
+        {"ccc", "CCCCCC"},
+        {"11","1111111"},
+        {"22","2222222"},
+        {"33","3333333"},
+        {"44","4444444"}
+    }};
+    HeadersV2 h2{std::move(h1)};
+    bool x = h2.hasKey("bb");
+    bool y = h1.hasKey("bb");
+    CHECK(x);
+    CHECK(!y);
+    HeadersV2 h3{};
+    h3 = std::move(h2);
+    CHECK(!h1.hasKey("ccc"));
+    CHECK(h3.hasKey("ccc")); 
 }

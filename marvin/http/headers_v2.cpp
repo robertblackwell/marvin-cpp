@@ -131,6 +131,19 @@ HeadersV2::Iterator HeadersV2::Iterator::operator=(const HeadersV2::Iterator &rh
 HeadersV2::HeadersV2()
 {
 }
+HeadersV2::HeadersV2(HeadersV2& other): m_pairs_vector(other.m_pairs_vector)
+{}
+HeadersV2::HeadersV2(HeadersV2&& other): m_pairs_vector(std::move(other.m_pairs_vector))
+{}
+void HeadersV2::operator =(HeadersV2& other)
+{
+    m_pairs_vector = other.m_pairs_vector;
+}
+void HeadersV2::operator =(HeadersV2&& other)
+{
+    m_pairs_vector = other.m_pairs_vector;
+    other.m_pairs_vector.clear();
+}
 HeadersV2::HeadersV2(std::vector<std::pair<std::string, std::string>> initialValue)
 {
     typedef std::vector<std::pair<std::string, std::string>> okv_init;

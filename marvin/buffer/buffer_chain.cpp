@@ -60,16 +60,20 @@ BufferChain::BufferChain()
 }
 BufferChain::BufferChain(BufferChain& other)
 {
-    m_size = other.m_size;
-    m_chain = other.m_chain;
+    m_size = 0;
+    for (MBufferSPtr mb_sptr: other.m_chain) {
+        this->push_back(MBuffer::makeSPtr(*mb_sptr));
+    }
 }
 BufferChain& BufferChain::operator =(BufferChain& other)
 {
     if(&other == this) {
         return *this;
     }
-    m_size = other.m_size;
-    m_chain = other.m_chain;
+    m_size = 0;
+    for (MBufferSPtr mb_sptr: other.m_chain) {
+        this->push_back(MBuffer::makeSPtr(*mb_sptr));
+    }
     return *this;
 }
 BufferChain::BufferChain(BufferChain&& other)

@@ -134,10 +134,18 @@ MessageBase::MessageBase()
 }
 MessageBase::MessageBase(MessageBase& other)
 {
-
+    *this = other;
+    m_body_chain_sptr = std::make_shared<BufferChain>(*other.m_body_chain_sptr);
 }
 MessageBase::MessageBase(MessageBase&& other)
 {
+    *this = std::move(other);
+}
+MessageBase& MessageBase::operator =(MessageBase& other)
+{
+    if (this == &other) {
+        return *this;
+    }
     m_is_request    = other.m_is_request;
     m_method        = other.m_method;
     m_methodStr     = other.m_methodStr;
@@ -148,7 +156,26 @@ MessageBase::MessageBase(MessageBase&& other)
     m_http_minor    = other.m_http_minor;
     m_headers       = other.m_headers;
     m_trailers      = other.m_trailers; 
-    m_body_chain_sptr = std::make_shared<BufferChain>(*m_body_chain_sptr);
+    m_body_chain_sptr = std::make_shared<BufferChain>(*other.m_body_chain_sptr);
+    return *this;
+}
+MessageBase& MessageBase::operator =(MessageBase&& other)
+{
+    if (this == &other) {
+        return *this;
+}
+    m_is_request    = other.m_is_request;
+    m_method        = other.m_method;
+    m_methodStr     = other.m_methodStr;
+    m_uri           = other.m_uri; other.m_uri = "";
+    m_status_code   = other.m_status_code;
+    m_status        = other.m_status;
+    m_http_major    = other.m_http_major;
+    m_http_minor    = other.m_http_minor;
+    m_headers       = std::move(other.m_headers);
+    m_trailers      = std::move(other.m_trailers);
+    m_body_chain_sptr = other.m_body_chain_sptr;
+    other.m_body_chain_sptr = BufferChain::makeSPtr();
 }
 
 MessageBase::~MessageBase(){}
