@@ -14,7 +14,7 @@
 #include <marvin/http/message_factory.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelCTorTrace)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 namespace Marvin {
@@ -100,6 +100,7 @@ void MitmHttps::p_handshake_upstream()
             
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             makeResponse200OKConnected(*m_downstream_response_sptr);
+
             m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, [this](Marvin::ErrorType& err)
             {
                 if( err ) {
@@ -158,17 +159,30 @@ void MitmHttps::p_initiate_upstream_roundtrip()
         } else {
             m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_upstream_socket_sptr));
 
-            p_roundtrip_upstream(m_downstream_rdr_sptr, [this](MessageBaseSPtr downMsg){
+            p_roundtrip_upstream(m_downstream_rdr_sptr, [this](MessageBaseSPtr downMsg)
+            {
                 /// get here with a message suitable for transmission to down stream client
                 m_downstream_response_sptr = downMsg;
-               TROG_TRACE3("for downstream", traceMessage(*downMsg));
+                TROG_TRACE3("for downstream", traceMessage(*downMsg));
                 Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
                 /// perform the MITM collection
                 
                 m_collector_sptr->collect(m_scheme, m_host, m_downstream_rdr_sptr, m_downstream_response_sptr);
-                
+                TROG_DEBUG("write ds response 1 size: ",m_downstream_response_sptr->getContentBuffer()->size(),
+                    " content: ",
+                    responseBodySPtr->to_string());
+
+                std::string tmp(
+                    (char*)responseBodySPtr->asio_buffer_sequence().data(),
+                    responseBodySPtr->asio_buffer_sequence().size()
+                );
+                TROG_DEBUG("write ds response 2 size: ", m_downstream_response_sptr->getContentBuffer()->asio_buffer_sequence().size(),
+                    " content: ",
+                    tmp);
                 /// write response to downstream client
-                m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err) {
+                m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, responseBodySPtr, [this, responseBodySPtr](Marvin::ErrorType& err)
+                {
+                    TROG_DEBUG("downstream write complete", responseBodySPtr->to_string());
                     if (err) {
                         m_mitm_app.p_on_downstream_write_error(err);
                     } else {
@@ -220,9 +234,12 @@ void MitmHttps::p_roundtrip_upstream(
 };
 void MitmHttps::p_on_request_completed()
 {
+    TROG_DEBUG("complete");
     if ((isConnectionKeepAlive(*m_downstream_rdr_sptr) && isConnectionKeepAlive(*m_downstream_response_sptr))) {
+        TROG_DEBUG("reading another");
         p_downstream_read_message();
     } else {
+        TROG_DEBUG("end");
         m_mitm_app.p_connection_end();
     }
 

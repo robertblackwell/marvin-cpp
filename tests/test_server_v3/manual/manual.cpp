@@ -23,7 +23,9 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn | Trog::LogLevelCTorTrace | Trog::LogLeve
 #include "handle_app.hpp"
 #include "server_v3_runner.hpp"
 #include "any_response.hpp"
+#include "timeout_response.hpp"
 #include "../../test_message_roundtrip/runners.hpp"
+
 template <class T, class R>
 class ATest
 {
@@ -54,6 +56,20 @@ TEST_CASE("roundtrip_anyresponse")
         port, 
         "This is a body");
     std::cout << "first" << std::endl; 
+}
+TEST_CASE("timeout")
+{
+    std::cout << "timeout" << std::endl;
+    Marvin::Connection::setConfig_readTimeOut(1000);
+    ATest<TimeoutResponse, RoundTripRunner<TimeoutResponse>>(
+        "/delay/10",
+        HttpMethod::POST,
+        scheme, host,
+        port,
+        "This is a body");
+    std::cout << "first" << std::endl;
+    Marvin::Connection::setConfig_readTimeOut(50000);
+
 }
 
 // this makes a roundtrip to a nodejs server that sends a body using chunked encoding

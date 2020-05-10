@@ -39,12 +39,14 @@ protected:
     void p_on_parse_error(ParserError pe);
     void p_on_eof();
     void p_on_done();
+    std::size_t p_buffer_strategy(MessageBase& partial_msg, Parser& p);
 
     ISocketSPtr                  m_read_sock_sptr;
     Parser                       m_parser;
     boost::asio::streambuf       m_streambuffer;
     MessageBase*                 m_current_message_ptr;
     DoneCallback                 m_read_cb;
+    std::size_t                  m_current_body_buffer_size;
 };
 } // namespcae
 #endif

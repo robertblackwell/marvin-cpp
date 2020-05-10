@@ -40,7 +40,7 @@ namespace Marvin{
         //     host_header = us.host;
         // }
         std::string path_value;
-        if( (us.path == "") && (us.search == "")) {
+        if( (us.path.empty()) && (us.search == "")) {
             path_value = "/";
         }else if( (us.path == "") && (us.search != "")) {
             path_value = "/?" + us.search;

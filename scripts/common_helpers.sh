@@ -102,7 +102,6 @@ function verify_variables_are_defined() {
     done
 }
 function verify_print_variables() {
-    if [ ]
     print_varables $@
     verify_variables_are_defined $@
 

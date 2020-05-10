@@ -60,6 +60,7 @@ BufferChain::BufferChain()
 }
 BufferChain::BufferChain(BufferChain& other)
 {
+    TROG_WARN("buffer chain being copied");
     m_size = 0;
     for (MBufferSPtr mb_sptr: other.m_chain) {
         this->push_back(MBuffer::makeSPtr(*mb_sptr));
@@ -67,6 +68,7 @@ BufferChain::BufferChain(BufferChain& other)
 }
 BufferChain& BufferChain::operator =(BufferChain& other)
 {
+    TROG_WARN("buffer chain being copied");
     if(&other == this) {
         return *this;
     }
@@ -78,6 +80,7 @@ BufferChain& BufferChain::operator =(BufferChain& other)
 }
 BufferChain::BufferChain(BufferChain&& other)
 {
+    TROG_WARN("buffer chain being moved");
     m_size = other.m_size;
     m_chain = std::move(other.m_chain);
     m_asio_chain = std::move(other.m_asio_chain);
@@ -88,6 +91,7 @@ BufferChain::BufferChain(BufferChain&& other)
 }
 BufferChain& BufferChain::operator =(BufferChain&& other)
 {
+    TROG_WARN("buffer chain being moved");
     if (&other == this) {
         return *this;
     }
@@ -102,11 +106,16 @@ void BufferChain::append(void* buf, std::size_t len)
         MBufferSPtr last_mb = m_chain.at(m_chain.size()-1);
         if ((last_mb->capacity() - last_mb->size()) >= len) {
             last_mb->append(buf, len);
+#define MARVIN_MK_CONSTBUF
+#ifdef MARVIN_MK_CONSTBUF
+            m_asio_chain.back() = boost::asio::const_buffer(last_mb->data(), last_mb->size());
+#endif
             m_size += len;
             return;
         }
     }
-    MBufferSPtr new_mb = MBuffer::makeSPtr(10000);
+    std::size_t required_len = (len > 256*4*8) ? len+100 : 256*4*8;
+    MBufferSPtr new_mb = MBuffer::makeSPtr(required_len);
     new_mb->append(buf, len);
     this->push_back(new_mb);
 }
@@ -123,7 +132,10 @@ void BufferChain::push_back(MBufferSPtr mb)
 {
     m_size += mb->size();
     m_chain.push_back(mb);
-    m_asio_chain.push_back(boost::asio::const_buffer(mb->data(), mb->size()));
+// this is not working
+#ifdef MARVIN_MK_CONSTBUF
+    m_asio_chain.emplace_back(boost::asio::const_buffer(mb->data(), mb->size()));
+#endif
 }
 void BufferChain::clear()
 {
@@ -156,7 +168,7 @@ std::string BufferChain::to_string()
 }
 MBufferSPtr BufferChain::amalgamate()
 {
-    MBufferSPtr mb_final = std::shared_ptr<MBuffer>(new MBuffer(this->size()));
+    MBufferSPtr mb_final = std::make_shared<MBuffer>(this->size());
     for(MBufferSPtr& mb : m_chain) {
         mb_final->append(mb->data(), mb->size());
     }
@@ -165,39 +177,58 @@ MBufferSPtr BufferChain::amalgamate()
 
 BufferChainSPtr buffer_chain(std::string& s)
 {
-    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    BufferChainSPtr sp = std::make_shared<BufferChain>();
     sp->push_back(Marvin::MBuffer::makeSPtr(s));
     return sp;
 }
 BufferChainSPtr buffer_chain(MBuffer& mb)
 {
-    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
+    BufferChainSPtr sp = std::make_shared<BufferChain>();
     sp->push_back(Marvin::MBuffer::makeSPtr(mb));
     return sp;
 }
 BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr)
 {
-    BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
-    sp->push_back(mb_sptr);
+    BufferChainSPtr sp = std::make_shared<BufferChain>();
+    sp->push_back(std::move(mb_sptr));
     return sp;
 }
-
-std::vector<boost::asio::const_buffer> BufferChain::asio_buffer_sequence()
+void BufferChain::createAsioBufferSequence()
 {
+#ifdef MARVIN_MK_CONSTBUF
+    return;
+#else
+    m_asio_chain = AsioConstBufferSeq();
+    for(auto mb: m_chain) {
+        m_asio_chain.emplace_back(boost::asio::const_buffer(mb->data(), mb->size()));
+    }
+#endif
+}
+BufferChain::AsioConstBufferSeq& BufferChain::asio_buffer_sequence()
+{
+    createAsioBufferSequence();
     return this->m_asio_chain;
 }
 
-std::vector<boost::asio::const_buffer> buffer_chain_to_const_buffer_sequence(BufferChain& bchain)
+BufferChain::AsioConstBufferSeq& buffer_chain_to_const_buffer_sequence(BufferChain& bchain)
 {
+    bchain.createAsioBufferSequence();
     return bchain.m_asio_chain;
 }
-std::vector<boost::asio::const_buffer> buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain)
+BufferChain::AsioConstBufferSeq& buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain)
 {
+    bchain.createAsioBufferSequence();
     return bchain.m_asio_chain;
 }
-
-
-std::ostream &operator<< (std::ostream &os, BufferChain &b)
+std::string buffersequence_to_string(BufferChain::AsioConstBufferSeq& bufs)
+{
+    std::string s;
+    for(auto& m: bufs) {
+        s = s + std::string((char*)m.data(), m.size());
+    }
+    return s;
+}
+std::ostream& operator <<(std::ostream &os, BufferChain& b)
 {
     if(b.size() == 0){
         os << "Empty ";

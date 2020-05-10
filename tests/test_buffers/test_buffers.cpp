@@ -8,6 +8,16 @@
 #include <marvin/configure_trog.hpp>
 
 using namespace Marvin;
+TEST_CASE("append")
+{
+    MBufferSPtr mbsptr = Marvin::MBuffer::makeSPtr("thisisastring");
+    BufferChainSPtr bc_sptr = Marvin::BufferChain::makeSPtr();
+    bc_sptr->push_back(mbsptr);
+    bc_sptr->append("1234567890");
+    Marvin::BufferChain::AsioConstBufferSeq const_buf_seq =  bc_sptr->asio_buffer_sequence();
+    auto x = boost::asio::is_const_buffer_sequence<Marvin::BufferChain::AsioConstBufferSeq>();
+    auto s1 = bc_sptr->to_string();
+}
 TEST_CASE("buffer_chain_assignment")
 {
     MBuffer mb(100);

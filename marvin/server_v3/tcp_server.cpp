@@ -5,7 +5,7 @@
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 

@@ -30,7 +30,7 @@ std::string AnyResponse::getPort() {return m_port;}
 void AnyResponse::verifyResponse(ErrorType& er, MessageBaseSPtr response)
 {
     CHECK(!er);
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " : " << er.message() << std::endl;
     BufferChainSPtr bsp = response->getContentBuffer();
     std::string raw_body = bsp->to_string();
     CHECK(response->statusCode() == 200);

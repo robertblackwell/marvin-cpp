@@ -262,6 +262,12 @@ std::string MessageBase::getHeader(std::string key)
     MARVIN_THROW("trying to access non-existent header value");
     return nullptr;
 }
+std::size_t MessageBase::contentLength()
+{
+    std::string s = header(HeadersV2::ContentLength);
+    int v = std::atoi(s.c_str());
+    return (std::size_t)v;
+}
 Marvin::HeadersV2& MessageBase::getHeaders()
 {
     return m_headers;

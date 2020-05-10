@@ -8,23 +8,23 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 
-#include "parser_helpers.hpp"
-#include "parser_test_data.hpp"
+#include "helper_types.hpp"
+#include "data_two.hpp"
 
 namespace Marvin {
 namespace Tests {
-namespace Parser {
+namespace Message {
 
 TEST_CASE("parser_on_test_data")
 {
-    TestCollection tc = parser_test_data();
+    TestCollection& tc = test_data_two_message();
     for(auto entry: tc) {
         std::string key = entry.first;
         TestSet ts = entry.second;
         std::cout << "Commencing test of Parser test data set: " << ts.description  << std::endl;
-        LineSource line_source(ts.input_data);
+        DataSource data_source(ts.input_data);
         Marvin::Parser parser;
-        WrappedParserTest wpt(parser, line_source, ts.verify_function);
+        WrappedParserTest wpt(parser, data_source, ts.verify_function);
         wpt();
         std::cout << "Completed test of Parser test data set: " << ts.description  << std::endl;
     }

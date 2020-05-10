@@ -7,6 +7,8 @@ add_executable(${TARGET}
 	../server_v3_runner.cpp
 	../../test_message_roundtrip/any_response.cpp
 	../../test_message_roundtrip/any_response.hpp
+	../../test_message_roundtrip/timeout_response.cpp
+	../../test_message_roundtrip/timeout_response.hpp
 )
 target_include_directories(${TARGET} PUBLIC 
 	./ 

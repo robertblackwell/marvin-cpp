@@ -75,6 +75,7 @@ public:
     bool hasHeader(std::string key);
     std::string header(std::string key);
     std::string getHeader(std::string key);
+    std::size_t contentLength();
     void setHeader(std::string key, std::string value);
     void removeHeader( std::string key);
     void dumpHeaders(std::ostream& os);

@@ -34,7 +34,7 @@ bool testPipeReaderExists(char* pipeName)
 }
 CollectorBase::CollectorBase(boost::asio::io_service& io, std::ostream& ofstream): m_io(io), m_my_strand(io), m_output_stream(ofstream)
 {
-    TROG_WARN("collector")
+    TROG_TRACE_CTOR ();
 }
 
 /**
@@ -68,13 +68,14 @@ void CollectorBase::postedCollect(
     temp << resp->statusCode() << " " << resp->status() << std::endl;
     auto respHeaders = resp->getHeaders();
     resp->dumpHeaders(temp);
-    // if (resp->getContentBuffer() != nullptr) {
-    //     auto s = resp->getContentBuffer()->to_string();
-    //     temp << (resp->getContentBuffer())->to_string() << std::endl;
-    // } else {
-    //     temp << "[]" << std::endl;
-    // }
-
+#if 0
+     if (resp->getContentBuffer() != nullptr) {
+         auto s = resp->getContentBuffer()->to_string();
+         temp << (resp->getContentBuffer())->to_string() << std::endl;
+     } else {
+         temp << "[]" << std::endl;
+     }
+#endif
     temp << "------------------------------------------------" << std::endl;
     m_output_stream << temp.str();
     m_output_stream.flush();

@@ -9,7 +9,7 @@
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace|Trog::LogLevelFDTrace)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <cert/cert_authority.hpp>          // for AuthoritySPtr
 #include <cert/cert_builder.hpp>            // for Builder

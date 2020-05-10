@@ -154,6 +154,7 @@ void Client::internalWrite()
                 if (!ec) {
                     this->m_response_handler(ec, m_rdr);
                 } else {
+                    std::string s = ec.message();
                     this->m_response_handler(ec, m_rdr);
                 }
             });

@@ -12,7 +12,7 @@ ServerRunner::~ServerRunner()
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-/* Uses a conditional variable and mutex to coordinate with the code that startes the server*/
+/* Uses a condition variable and mutex to coordinate with the code that startes the server*/
 void ServerRunner::waitForServerToStart()
 {
     std::cout << __PRETTY_FUNCTION__ << " waiting for server" << std::endl;

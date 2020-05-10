@@ -52,6 +52,7 @@ void FullMessageReader::readMessage(MessageBase* message_ptr, FullMessageReader:
 {
     m_read_cb = cb;
     m_current_message_ptr =  message_ptr;
+    m_parser.begin(m_current_message_ptr);
     if (m_streambuffer.data().size() > 0) {
         // there was already data in the streambuffer so parse it
         p_parse_some();
@@ -60,14 +61,55 @@ void FullMessageReader::readMessage(MessageBase* message_ptr, FullMessageReader:
         p_read_some();
     }
 }
+/**
+ * \todo Make is a policy template parameter
+ * Implements a buffer strategy that
+ * -    is fixed know size for headers
+ * -    content length + 100 if message has a content length
+ * -    no content length start at body_buffer_min, double each one thereafter
+ *      until greater than body_buffer_max
+ * @param partial_msg The message that is currently being filled
+ * @param p           The current parser.
+ * @return size of buffer for next read
+ */
+std::size_t FullMessageReader::p_buffer_strategy(MessageBase& partial_msg, Parser& p)
+{
+    static std::size_t const header_buffer = 1000;
+    static std::size_t const body_buffer_min = 256*4*8;
+    static std::size_t const body_buffer_max = 256*4*8 * 16;
+    if (!p.header_done) {
+        m_current_body_buffer_size = 0;
+        return header_buffer;
+    } else {
+        if (m_current_body_buffer_size == 0) {
+            if( partial_msg.hasHeader(HeadersV2::ContentLength) ) {
+                std::size_t cl = partial_msg.contentLength();
+                m_current_body_buffer_size = cl+100;
+            } else {
+                m_current_body_buffer_size = body_buffer_min;
+            }
+        }  else {
+            if (m_current_body_buffer_size < body_buffer_max) {
+                m_current_body_buffer_size = 2*m_current_body_buffer_size;
+            }
+        }
+        return m_current_body_buffer_size;
+    }
+}
 void FullMessageReader::p_read_some()
 {
-    m_read_sock_sptr->asyncRead(m_streambuffer, [this](Marvin::ErrorType& err, std::size_t bytes_transfered)
+    /**
+     *
+     */
+    std::size_t buf_size = p_buffer_strategy(*m_current_message_ptr, m_parser);
+    auto mutablebuffer = m_streambuffer.prepare(buf_size);
+    m_read_sock_sptr->asyncRead(mutablebuffer, [this](Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         // TODO - do I need to call streambuffer.commmit()
         if (err) {
-            // need to check for end of file
-            if((bytes_transfered == 0) && (err == boost::asio::error::eof)) {
+            TROG_DEBUG(err.message());
+            // need to check for end of file - any error an zero bytes
+            if(bytes_transfered == 0) {
                 if (m_parser.started && (!m_parser.message_done)) {
                     // eof and started and message not done - treat as eof == eom
                     p_on_eof();
@@ -76,9 +118,12 @@ void FullMessageReader::p_read_some()
                     p_on_read_error(err);
                 }
             } else {
+                auto x = err.message();
+                TROG_DEBUG("error : ", x);
                 p_on_read_error(err);
             }
         } else {
+            m_streambuffer.commit(bytes_transfered);
             p_parse_some();
         }
     });

@@ -9,7 +9,7 @@
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 

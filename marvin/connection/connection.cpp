@@ -7,7 +7,7 @@
 #include <marvin/callback_typedefs.hpp>
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3|Trog::LogLevelCTorTrace|Trog::LogLevelFDTrace)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/connection/connection.hpp>
 namespace Marvin {
@@ -99,13 +99,13 @@ Connection::Connection(
 }
 Connection::~Connection()
 {
-    std::cout << __PRETTY_FUNCTION__ << "FD: " << nativeSocketFD() << " already_closed: " << (int)m_closed_already << std::endl;
     TROG_TRACE_CTOR();
     if( ! m_closed_already) {
         TROG_TRACE3("close fd: ", nativeSocketFD());
         TROG_TRACE_FD(nativeSocketFD());
         m_tcp_socket.close();
     } else {
+        TROG_DEBUG("found it already closed fd: ", nativeSocketFD());
         TROG_TRACE_FD(nativeSocketFD());
     }
 }
@@ -158,9 +158,7 @@ void Connection::asyncAccept(
 )
 {
     acceptor.async_accept(m_tcp_socket, [cb, this](const boost::system::error_code& err) {
-        TROG_WARN("before");
         TROG_TRACE_FD(nativeSocketFD());
-        TROG_WARN("after");
         p_post_accept_cb(cb, err);
     });
 }
@@ -325,8 +323,10 @@ void Connection::asyncRead(void* buffer, std::size_t buffer_length, long timeout
 void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb)
 {
     /// this took a while to work out - change buffer code at your peril
-    TROG_DEBUG("");
-    auto tmp = buf_chain_sptr->asio_buffer_sequence();
+    TROG_DEBUG(" bchain: ", buf_chain_sptr->to_string());
+    BufferChain::AsioConstBufferSeq tmp = buf_chain_sptr->asio_buffer_sequence();
+    std::string tmps = Marvin::buffersequence_to_string(tmp);
+    TROG_DEBUG(" buffer sequence ", tmps );
     auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         p_post_write_cb(cb, err, bytes_transfered);

@@ -8,6 +8,7 @@
 #include <marvin/buffer/m_buffer.hpp>
 
 namespace Marvin {
+
 class BufferChain;
 /**
 * \defgroup buffers Buffers
@@ -18,12 +19,14 @@ class BufferChain;
 */
 using BufferChainSPtr = std::shared_ptr<BufferChain>;
 /**
-* \ingroup buffers
-* \brief BufferChain provides a concept of an expanding buffer without the need to reallocate and copy.
-*
-* BufferChain provides a means of stringing together MBuffers to provide a mechanism for
-* keeping the results of multiple read operations in the same place without the need to provide
-* an expanding contiguous buffer mechanism.
+ * \ingroup buffers
+ * \brief BufferChain provides a concept of an expanding buffer without the need to reallocate and copy.
+ *
+ * BufferChain provides a means of stringing together MBuffers to provide a mechanism for
+ * keeping the results of multiple read operations in the same place without the need to provide
+ * an expanding contiguous buffer mechanism.
+ *
+ *
 */
 class BufferChain
 {
@@ -38,6 +41,11 @@ class BufferChain
         using AsioMutableBufferSeq = std::vector<boost::asio::mutable_buffer>; 
 
         BufferChain();
+        /**
+         * \brief Copy constructor and assignment operator perform deep copies
+         * which will copy the entire buffer content. Prefer the Move constructor
+         * and assignment operator.
+         */
         BufferChain(BufferChain& other);
         BufferChain& operator =(BufferChain& other);
         BufferChain(BufferChain&& other);
@@ -49,7 +57,7 @@ class BufferChain
         void            append(std::string& str);
         void            push_back(MBufferSPtr mb);
         void            clear();
-        std::vector<boost::asio::const_buffer> asio_buffer_sequence();
+        AsioConstBufferSeq& asio_buffer_sequence();
         /** total bytes in the chain */
         std::size_t     size();
         /** number of blocks in the chain */
@@ -57,27 +65,27 @@ class BufferChain
         MBuffer&        block_at(std::size_t index);
         std::string     to_string();
         MBufferSPtr     amalgamate();
+        void createAsioBufferSequence();
 
-        /**
-         * outputs the content to a stream
-         */
-        friend std::ostream &operator<< (std::ostream &os, BufferChain const &b);
+    friend std::ostream &operator <<(std::ostream& os, BufferChain& b);
         /**
         * converts a Bufferchain to a boost buffer for use in async write calls
         * thus need const_bufer_seq
         */
-        friend AsioConstBufferSeq buffer_chain_to_const_buffer_sequence(BufferChain& bchain);
-        friend AsioConstBufferSeq buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
+        friend AsioConstBufferSeq& buffer_chain_to_const_buffer_sequence(BufferChain& bchain);
+        friend AsioConstBufferSeq& buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain);
+        friend std::string buffersequence_to_string(AsioConstBufferSeq& mutbufs);
         // chunk encoding helpers
         friend BufferChainSPtr chunk_buffer(BufferChainSPtr buf_sptr);
         friend BufferChainSPtr chunk_empty();
         friend BufferChainSPtr chunk_last(BufferChainSPtr buf_sptr);
 
     private:
-        std::vector<MBufferSPtr>                    m_chain;
-        std::vector<boost::asio::const_buffer>      m_asio_chain;
-        std::size_t                                 m_size;
+        std::vector<MBufferSPtr>    m_chain;
+        AsioConstBufferSeq          m_asio_chain;
+        std::size_t                 m_size;
 };
+std::string buffersequence_to_string(BufferChain::AsioConstBufferSeq& mutbufs);
 
 } // namespave Marvin
 #endif

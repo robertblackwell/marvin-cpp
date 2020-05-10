@@ -19,11 +19,9 @@ Polishing:
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
-  ☐ test MBuffer and BufferChain to ensure they become const_buffer_chain for gather write
-  ☐ test to see that reading and writing streambuf's correctly manage the prepare, commit consume functions
-  ☐ convert all parsing tests to new parser
+  ☐ revamp the use of simple_buffer in the parser - simple buffer seems like an unnecessary "module"
   ☐ think about keeping body as a buffer chain
-  ☐ new parser opportunity to rethink header definition and how values are processed by parser
+  ☐ consider beast model of message header+body and think about using string_view rather than string, or at least std::string&  new parser opportunity to rethink header definition and how values are processed by parser
   ☐ parsing needs to test parse errors, connect and upgrade
   ☐ command interface to simple_mitm - finish up the first phase of this - its close
   ☐ make timeouts effective in the top 500 some sites dont respond and mitm looses an FD - this needs to be terminated .
@@ -31,7 +29,6 @@ Next step:
   ☐ make logging level a cli option for simple_proxy this means fix the global filter in Trog
   ☐ Certificate initialization - not quite complete - uconsider env variable
   ☐ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
-  ☐  generally do a rebiew for unnecessary copying of data
   ☐ remove the signal handling stuff from tcp_server and make available to simple_proxy to use for all threads.
   ☐ remove raw pointer to connection handler from tcp_server - this is a related issue decide about uuid in the mitm_app currently not initialized
   ☐ cleanup all the stuff that tries to turn objects into strings - its a mess
@@ -40,8 +37,6 @@ Next step:
   ☐ should only do https_upstream if the port is 443 and even then should check the first message for upgrade and reject
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
-  ☐ break message reader into bits - maybe
-  ☐ research restructuring messagereader so as not to be a mix of 3 other classes
 
 Next project:
   ☐ consider a websocket interface for collected data
@@ -50,19 +45,28 @@ Next project:
   ☐ think about a script/app for watcing the output
 
 Tests:
+ ☐ parse error - send invalid request and then close - or at least make sure the connection does not stay around
+☐ !! timeouts - what interval ? - 60 seconds
 ☐ test trailers on message parsing and set/get of MessageBase
-☐ test_buffers does no CHECK/REQUIRE anything
-☐ message parsing needs to be clearer and also test continuation of headers
 ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
 Bugs:
   ☐ maybe still dont have headers correct as maybe the same header key canbe present a number of times
 ☐ not handling non-existence of connection header correctly when preparing upstream request
 ☐ potential - MessageWriter does not handle incomplete writes
 ☐ messagereader does not read trailers
-☐ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more.
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ research restructuring messagereader so as not to be a mix of 3 other classes @done (20-05-10 18:43) @project(Next step)
+ ✔ break message reader into bits - maybe @done (20-05-10 18:43) @project(Next step)
+ ✔  generally do a rebiew for unnecessary copying of data @done (20-05-10 18:43) @project(Next step)
+ ✔ do not need a special modified version of http_parser as my parser incorrectly uses a modified on_headers_complete modify to use a standard http_parser but test thoroughly. NOTE - this mod is to capture the "raw" - not dechunked body maybe we dont need that any more. @done (20-05-10 18:35)
+ ✔ test_buffers does no CHECK/REQUIRE anything @done (20-05-10 18:34)
+ ✔ message parsing needs to be clearer and also test continuation of headers @done (20-05-10 18:34)
+ ✔ BufferChain - asio buffers are not produced correctly when trying to update in sync with m_chain. Fix and add a test. @done (20-05-10 18:34) @project(Bugs)
+ ✔ test to see that reading and writing streambuf's correctly manage the prepare, commit consume functions @done (20-05-10 18:32) @project(Next step)
+ ✔ test MBuffer and BufferChain to ensure they become const_buffer_chain for gather write - see bug related. @done (20-05-10 18:32) @project(Next step)
+ ✔ convert all parsing tests to new parser @done (20-05-10 18:32) @project(Next step)
  ✔ NOT a problem chaged some tests to try thisinvestigate buffering what happens if a header line is split over two buffers and the buffers are not adjacent in memory @done (20-05-03 17:32) @project(Bugs)
  ✔ think about a command interface to change filters while the proxy is running @done (20-05-03 17:31) @project(Next project)
  ✔ Underway - make it into a functioning app - probably cli this will require deciding on parameters and how to filter by url/host @done (20-05-03 17:31) @project(Next project)

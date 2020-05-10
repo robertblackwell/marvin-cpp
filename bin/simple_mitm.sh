@@ -15,4 +15,6 @@ fi
 mitm_prog=${build_dir}/tests/test_proxy_manual/test_proxy_manual
 
 # now run the proxy with the env variable MITM_HOME set to project root directory
-MARVIN_HOME=${project_dir} valgrind --leak-check=yes --leak-resolution=low --undef-value-errors=no ${mitm_prog}
+MARVIN_HOME=${project_dir} ${mitm_prog}
+
+# MARVIN_HOME=${project_dir} valgrind --leak-check=yes --leak-resolution=low --undef-value-errors=no ${mitm_prog}

@@ -14,7 +14,7 @@
 #include <marvin/http/message_factory.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelCTorTrace)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 namespace Marvin {

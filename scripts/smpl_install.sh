@@ -57,13 +57,14 @@ function smpl_install() {
 	fi
 
 	function smpl_run_one() {
+		package_script=${1}
 		if [ -f ${1} ]
 		then
 			package_script=${1}
 			shift
 			bash ${package_script} $@
 		else
-			echo WARNING: smpl_run_one ${package_script} does not exist
+			echo WARNING: smpl_run_one [${package_script}] does not exist
 			exit 1
 		fi
 	}
@@ -74,9 +75,7 @@ function smpl_install() {
 	smpl_run_one ${script_dir}/boost_1.71.0.sh $@
 	smpl_run_one ${script_dir}/openssl_1.1.1.sh $@
 
-	smpl_run_one ${script_dir}/node_http_parser.sh $@
-
-	# smpl_run_one ${script_dir}/http_parser.sh $@
+	smpl_run_one ${script_dir}/nodejs_http_parser.sh $@
 
 	smpl_run_one ${script_dir}/simple_buffer.sh $@
 	smpl_run_one ${script_dir}/urlparser.sh $@

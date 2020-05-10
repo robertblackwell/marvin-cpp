@@ -106,9 +106,6 @@ public:
     friend boost::asio::mutable_buffer mb_as_mutable_buffer(MBuffer& bm);
 //    friend boost::asio::const_buffer_1 mb_as_asio_const_buffer(MBuffer& mb);
 
-    /**
-     * outputs the content to a stream
-     */
     friend std::ostream &operator<< (std::ostream &os, MBuffer &b);
 
 protected:
