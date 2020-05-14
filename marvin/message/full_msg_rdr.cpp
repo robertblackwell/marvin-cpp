@@ -82,8 +82,9 @@ std::size_t FullMessageReader::p_buffer_strategy(MessageBase& partial_msg, Parse
         return header_buffer;
     } else {
         if (m_current_body_buffer_size == 0) {
-            if( partial_msg.hasHeader(HeadersV2::ContentLength) ) {
-                std::size_t cl = partial_msg.contentLength();
+            auto clopt = partial_msg.header(HeadersV2::ContentLength);
+            if( clopt ) {
+                std::size_t cl = atoi(clopt.get().c_str());
                 m_current_body_buffer_size = cl+100;
             } else {
                 m_current_body_buffer_size = body_buffer_min;

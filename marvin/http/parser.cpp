@@ -219,7 +219,7 @@ void Parser::p_save_name_value_pair(http_parser* parser, simple_buffer_t* name, 
     free(n_p);
     
     MessageBase* m = p->currentMessage();
-    m->setHeader(n_str, v_str);
+    m->header(n_str, v_str);
 }
 int Parser::p_on_message_begin(http_parser* parser)
 {
@@ -228,7 +228,7 @@ int Parser::p_on_message_begin(http_parser* parser)
 int Parser::p_on_url_data(http_parser* parser, const char* at, size_t length)
 {
     Parser* p = this; //(Parser*)(parser->data);
-    MessageInterface* message = p->currentMessage();
+    MessageBase* message = p->currentMessage();
 
     if( p->url_buf == nullptr)
         p->url_buf = sb_create();
@@ -239,12 +239,12 @@ int Parser::p_on_url_data(http_parser* parser, const char* at, size_t length)
 int Parser::p_on_status_data(http_parser* parser, const char* at, size_t length)
 {
     Parser* p = this;//(Parser*)(parser->data);
-    MessageInterface* message = p->currentMessage();
+    MessageBase* message = p->currentMessage();
     if( p->status_buf == nullptr)
         p->status_buf = sb_create();
     
     message->setIsRequest(false);
-    message->setStatusCode(p->m_http_parser_ptr->status_code);
+    message->status_code(p->m_http_parser_ptr->status_code);
     sb_append( p->status_buf, (char*)at, length);
     return 0;
 }
@@ -292,21 +292,20 @@ int Parser::p_on_header_value_data(http_parser* parser, const char* at, size_t l
 int Parser::p_on_headers_complete(http_parser* parser) //, const char* aptr, size_t remainder)
 {
     Parser* p = this;//(Parser*)(parser->data);
-    MessageInterface* message = p->currentMessage();
+    MessageBase* message = p->currentMessage();
     
     if( p->name_buf != NULL){
         p_save_name_value_pair(parser, p->name_buf, p->value_buf);
     }
-    message->setHttpVersMajor( parser->http_major );
-    message->setHttpVersMinor( parser->http_minor );
+    message->version( parser->http_major, parser->http_minor );
     if( p->url_buf == NULL ){
     } else {
-        message->setMethod((enum http_method)parser->method);
-        message->setUri( std::string(p->url_buf->buffer, p->url_buf->used) );
+        message->method((enum http_method)parser->method);
+        message->target( std::string(p->url_buf->buffer, p->url_buf->used) );
     }
     if( p->status_buf == NULL ){
     } else {
-        message->setStatus( std::string(p->status_buf->buffer, p->status_buf->used) );
+        message->reason( std::string(p->status_buf->buffer, p->status_buf->used) );
     }
     p->header_done = true;
     return 0;
@@ -336,7 +335,7 @@ int Parser::p_on_message_complete(http_parser* parser)
     Parser* p = this;//(Parser*)(parser->data);
     this->message_done = true;
     
-    // MessageInterface* message = p->currentMessage();
+    // MessageBase* message = p->currentMessage();
     // p->OnMessageComplete(message);
     // force the parser to exit after this call
     // so that we dont process any data in the read

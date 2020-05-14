@@ -15,12 +15,12 @@ Pipeline::Pipeline(boost::asio::io_service& io, Marvin::Uri& uri)
 void Pipeline::setup()
 {
     m_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
-    m_msg_sptr->setMethod(HttpMethod::GET);
+    m_msg_sptr->method(HttpMethod::GET);
     helpers::applyUriNonProxy(m_msg_sptr, m_uri);
     if( m_counter < m_max_counter - 1)
-        m_msg_sptr->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionKeepAlive);
+        m_msg_sptr->header(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionKeepAlive);
     else
-        m_msg_sptr->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+        m_msg_sptr->header(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
     m_msg_sptr->setContent("");
 //    auto h = std::bind(&Pipeline::handler, this, _1, _2, _3);
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [this](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
@@ -42,7 +42,7 @@ void Pipeline::handler(Marvin::ErrorType err, MessageReaderSPtr rdr)
             << b->status() << " err: "
             << err.message() << std::endl;
 #endif
-        CHECK(b->statusCode() == 200 );
+        CHECK(b->status_code() == 200 );
         if (m_counter++ > 5)
             return;
         this->setup();

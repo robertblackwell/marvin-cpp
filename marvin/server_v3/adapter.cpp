@@ -53,8 +53,9 @@ void Marvin::Adapter::p_req_resp_cycle_complete()
     TROG_WARN("Adapter::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
-    if (m_rdr->hasHeader(Marvin::HeadersV2::Connection)) {
-        std::string conhdr = m_rdr->getHeader(Marvin::HeadersV2::Connection);
+    auto hopt = m_rdr->header(Marvin::HeadersV2::Connection);
+    if (hopt) {
+        std::string conhdr = hopt.get();
         keep_alive = (conhdr == "Keep-Alive");
     }
     if (keep_alive) {

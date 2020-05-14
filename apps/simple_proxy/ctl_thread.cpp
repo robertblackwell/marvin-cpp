@@ -35,14 +35,13 @@ MessageBaseSPtr make_200_response(std::string body)
 {
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
     msg->setIsRequest(false);
-    msg->setStatusCode(200);
-    msg->setStatus("OK");
-    msg->setHttpVersMajor(1);
-    msg->setHttpVersMinor(1);
+    msg->status_code(200);
+    msg->reason("OK");
+    msg->version(1, 1);
 
     // BufferChainSPtr bchain_sptr = BufferChain::makeSPtr(body);
-    // msg->setHeader(HeadersV2::ContentLength, std::to_string(body.length() ));
-    msg->setHeader(HeadersV2::ContentType, std::string("plain/text"));
+    // msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
+    msg->header(HeadersV2::ContentType, std::string("plain/text"));
     msg->setContent(body);
     return msg;
 }
@@ -50,13 +49,12 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
 {
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
     msg->setIsRequest(false);
-    msg->setStatusCode(status_code);
-    msg->setStatus(status);
-    msg->setHttpVersMajor(1);
-    msg->setHttpVersMinor(1);
+    msg->status_code(status_code);
+    msg->reason(status);
+    msg->version(1, 1);
 
     BufferChainSPtr bchain_sptr = BufferChain::makeSPtr(body);
-    msg->setHeader(HeadersV2::ContentLength, std::to_string(body.length() ));
+    msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThread* ctl_thread_ptr)
@@ -64,7 +62,7 @@ CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThre
 {
     m_dispatch_table.add(std::regex("/stop"),[this](MessageReaderSPtr rdr) 
     {
-        std::string path = rdr->getPath();
+        std::string path = rdr->target();
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
         if (bits.size() < 2) {
@@ -75,7 +73,7 @@ CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThre
     });
     m_dispatch_table.add(std::regex("/list.*"),[this](MessageReaderSPtr rdr) 
     {
-        std::string path = rdr->getPath();
+        std::string path = rdr->target();
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
         if (bits.size() < 2) {
@@ -86,7 +84,7 @@ CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThre
     });
     m_dispatch_table.add(std::regex("/echo"),[this](MessageReaderSPtr rdr) 
     {
-        std::string path = rdr->getPath();
+        std::string path = rdr->target();
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
         if (bits.size() < 2) {
@@ -120,7 +118,7 @@ void CtlApp::p_internal_handle()
         if (err) {
             p_on_read_error(err);
         } else {
-            std::string path = m_rdr->getPath();
+            std::string path = m_rdr->target();
             boost::optional<HttpRequestHandler> h = m_dispatch_table.find(path);
             if (h) {
                 h.get()(m_rdr);
@@ -165,8 +163,9 @@ void CtlApp::p_req_resp_cycle_complete()
     TROG_WARN("CtlApp::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
-    if (m_rdr->hasHeader(HeadersV2::Connection)) {
-        std::string conhdr = m_rdr->getHeader(HeadersV2::Connection);
+    auto hopt = m_rdr->header(HeadersV2::Connection);
+    if (hopt) {
+        std::string conhdr = hopt.get();
         keep_alive = (conhdr == "Keep-Alive");
     }
     if (keep_alive) {
@@ -197,7 +196,7 @@ void CtlApp::p_invalid_request()
 {
     std::string body = "INVALID REQUEST";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -211,7 +210,7 @@ void CtlApp::p_handle_echo()
 {
     std::string body = "THIS IS A RESPONSE BODY";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -225,7 +224,7 @@ void CtlApp::p_handle_stop(std::vector<std::string>& bits)
 {
     std::string body = "stop not yet implemented";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -255,7 +254,7 @@ void CtlApp::p_handle_list_filters(std::vector<std::string>& bits)
     os << "complete ------" << std::endl;
     body = os.str();
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -269,7 +268,7 @@ void CtlApp::p_handle_smart_echo()
 {
     std::string body = "INVALID REQUEST";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -283,7 +282,7 @@ void CtlApp::p_non_specific_response()
 {
     std::string body = "THIS IS A RESPONSE BODY";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {

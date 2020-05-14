@@ -14,7 +14,7 @@ cacerts=${project_dir}/.marvin/cert_store/root_certs/mozilla_ext.pem
 # cacerts=${project_dir}/.marvin/cert_store/root_certs/mozilla.pem
 
 insecure=
-
+redirect=
 echo the project_dir: ${project_dir}
 echo the cacerts: ${cacerts}
 
@@ -28,7 +28,7 @@ do
 		echo This is a comment line : $line
 	else
 		echo Server : ${count} ${line}
-		MARVIN_HOME= curl --silent --show-error -L --cacert ${cacerts} ${insecure} --raw -x localhost:9992 ${line} > /dev/null
+		MARVIN_HOME= curl --silent --show-error ${redirect} --cacert ${cacerts} ${insecure} --raw -x localhost:9992 ${line} > /dev/null
 		echo Server : ${count} ${line}
 		let count=count+1
 	fi

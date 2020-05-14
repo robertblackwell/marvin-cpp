@@ -31,8 +31,8 @@ bool bodyIsCollectable(MessageBase& msg, std::vector<std::regex>& regexs)
 {
     bool capture = false;
     std::string hv;
-    if( msg.hasHeader(Marvin::HeadersV2::ContentType) ){
-        hv = msg.getHeader(Marvin::HeadersV2::ContentType);
+    if( auto hopt = msg.header(Marvin::HeadersV2::ContentType) ){
+        hv = hopt.get();
         capture = headerValueMatched(hv, regexs);
     }
     return capture;
@@ -113,18 +113,18 @@ void PipeCollector::postedCollect(
     temp << "------------------------------------------------" << std::endl;
     temp << "HOST: " << scheme << "://" << host << std::endl;
     temp << "REQUEST : =========" << std::endl;
-    temp << req->getMethodAsString() << " " << req->uri() << " ";
-    temp << "HTTP/" << req->httpVersMajor() << "." << req->httpVersMinor() << std::endl;
-    auto reqHeaders = req->getHeaders();
+    temp << req->method_string() << " " << req->target() << " ";
+    temp << "HTTP/" << req->version_major() << "." << req->version_minor() << std::endl;
+    auto reqHeaders = req->headers();
     req->dumpHeaders(temp);
     if( bodyIsCollectable(*req, regexs) ){
         temp << (req->getContentBuffer())->to_string();
     }
     temp << std::endl;
     temp << "RESPONSE : ========" << std::endl;
-    temp << "HTTP/" << resp->httpVersMajor() << "." << resp->httpVersMinor() << " ";
-    temp << resp->statusCode() << " " << resp->status() << std::endl;
-    auto respHeaders = resp->getHeaders();
+    temp << "HTTP/" << resp->version_major() << "." << resp->version_minor() << " ";
+    temp << resp->status_code() << " " << resp->reason() << std::endl;
+    auto respHeaders = resp->headers();
     resp->dumpHeaders(temp);
     if( bodyIsCollectable(*resp, regexs) ){
         if (resp->getContentBuffer() != nullptr) {

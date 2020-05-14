@@ -41,10 +41,10 @@ namespace {
         Uri uri("https://www.ssllabs.com:443");
 #endif
         ::Marvin::Http::makeRequest(*msg, HttpMethod::GET, uri);
-        msg->setHeader(HeadersV2::Host, std::string("www.ssllabs.com"));//uri.host());
-        msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
-        msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
-        msg->setHeader(Marvin::Http::HeadersV2::TE, "");
+        msg->header(HeadersV2::Host, std::string("www.ssllabs.com"));//uri.host());
+        msg->header(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+        msg->header(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
+        msg->header(Marvin::Http::HeadersV2::TE, "");
         // Http versions defaults to 1.1, so force it to the same as the request
         msg->setContent("");
         return msg;
@@ -192,7 +192,7 @@ TEST_CASE("new_connection_GET")
         client->asyncWrite(msg, [](Marvin::ErrorType& err, MessageReaderSPtr reader){
             std::cout << "got response" << std::endl;
             std::cout << reader->str() << std::endl;
-            REQUIRE(reader->statusCode() == 200);
+            REQUIRE(reader->status_code() == 200);
             REQUIRE(reader->status() == "OK");
             std::cout << "Body:" << std::endl << reader->getContent()->to_string() << std::endl;
         });

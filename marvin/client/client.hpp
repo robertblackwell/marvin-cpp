@@ -178,7 +178,7 @@ public:
     * If not connected will perform a connect before transmitting the message. Will wait for a response
     * and call the onResponseHandler CB when the response is complete.
     *
-    * If the request is to have a body it must be already attached to the MessageInterface.
+    * If the request is to have a body it must be already attached to the MessageBase.
     * A content_length header will be attached by the client.
     *
     * If the request is to have NO body use this method with the requestMessage.body == nullptr;

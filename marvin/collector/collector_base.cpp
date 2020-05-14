@@ -57,16 +57,16 @@ void CollectorBase::postedCollect(
     temp << "------------------------------------------------" << std::endl;
     temp << "HOST: " << scheme << "://" << host << std::endl;
     temp << "REQUEST : =========" << std::endl;
-    temp << req->getMethodAsString() << " " << req->uri() << " ";
-    temp << "HTTP/" << req->httpVersMajor() << "." << req->httpVersMinor() << std::endl;
-    auto reqHeaders = req->getHeaders();
+    temp << req->method_string() << " " << req->target() << " ";
+    temp << "HTTP/" << req->version_major() << "." << req->version_minor() << std::endl;
+    auto reqHeaders = req->headers();
     req->dumpHeaders(temp);
     temp << "Body: " << std::endl << (req->getContentBuffer())->to_string();
     temp << std::endl;
     temp << "RESPONSE : ========" << std::endl;
-    temp << "HTTP/" << resp->httpVersMajor() << "." << resp->httpVersMinor() << " ";
-    temp << resp->statusCode() << " " << resp->status() << std::endl;
-    auto respHeaders = resp->getHeaders();
+    temp << "HTTP/" << resp->version_major() << "." << resp->version_minor() << " ";
+    temp << resp->status_code() << " " << resp->reason() << std::endl;
+    auto respHeaders = resp->headers();
     resp->dumpHeaders(temp);
 #if 0
      if (resp->getContentBuffer() != nullptr) {

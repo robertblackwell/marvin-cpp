@@ -33,11 +33,11 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
     
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
     
-    msg->setMethod(HttpMethod::GET);
+    msg->method(HttpMethod::GET);
     helpers::applyUriProxy(msg, uri);
-    msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
-    msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
-    msg->setHeader(Marvin::Http::HeadersV2::TE, "");
+    msg->header(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+    msg->header(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
+    msg->header(Marvin::Http::HeadersV2::TE, "");
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
@@ -49,8 +49,8 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
             REQUIRE(false);
         } else {
             MessageReaderSPtr b = client->getResponse();
-            auto st = b->statusCode();
-            REQUIRE(b->statusCode() == 200);
+            auto st = b->status_code();
+            REQUIRE(b->status_code() == 200);
             // maybe CHECK some other stuff here ?
         }
        
@@ -71,21 +71,21 @@ std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::stri
     
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
     
-    msg->setMethod(HttpMethod::GET);
+    msg->method(HttpMethod::GET);
     helpers::applyUriProxy(msg, uri);
-    msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
-    msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
-    msg->setHeader(Marvin::Http::HeadersV2::TE, "");
+    msg->header(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+    msg->header(Marvin::Http::HeadersV2::AcceptEncoding, "identity");
+    msg->header(Marvin::Http::HeadersV2::TE, "");
     // Http versions defaults to 1.1, so force it to the same as the request
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, request_url, &io](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
         MessageReaderSPtr b = client->getResponse();
         std::string bdy = (b->getContent())->to_string();
-        if (b->statusCode() != 200) {
-            std::cout << "Request URL : " << request_url << " StatusCode: " << b->statusCode() << std::endl;
+        if (b->status_code() != 200) {
+            std::cout << "Request URL : " << request_url << " StatusCode: " << b->status_code() << std::endl;
         }
-        CHECK((b->statusCode() == 200 || b->statusCode() == 302));
+        CHECK((b->status_code() == 200 || b->status_code() == 302));
         CHECK( bdy.size() > 0);
         io.stop();
         
@@ -151,11 +151,11 @@ TEST_CASE("request new")
     }
 
 #if 1
-    req->setMethod(HttpMethod::POST) ;
-    req->setPath("/utests/echo/");
-    auto p1 = req->m_current_request->getPath();
+    req->method(HttpMethod::POST) ;
+    req->target("/utests/echo/");
+    auto p1 = req->m_current_request->target();
 
-    req->setHeader(Marvin::Http::HeadersV2::ContentType, "text/html; charset=UTF-8");
+    req->header(Marvin::Http::HeadersV2::ContentType, "text/html; charset=UTF-8");
     req->setOnHeaders([&on_headers_flag](Marvin::ErrorType& err, MessageReaderSPtr msg_sptr) {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         on_headers_flag = true;

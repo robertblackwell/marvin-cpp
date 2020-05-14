@@ -33,17 +33,18 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->statusCode();
-                CHECK((m1->statusCode() == 200));
-                CHECK((m1->status() == "OK 11Reason Phrase"));
-                CHECK(m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->getHeader(HeadersV2::Host) == "ahost");
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ContentLength) == "11");
+            HeadersV2& h = m1->headers();
+            auto x = m1->status_code();
+                CHECK((m1->status_code() == 200));
+                CHECK((m1->reason() == "OK 11Reason Phrase"));
+                CHECK(h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::Host).get() == "ahost");
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ContentLength).get() == "11");
                 CHECK(m1->getContentBuffer()->to_string() == "01234567890");
         }
     };
@@ -61,16 +62,17 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->statusCode();
-                CHECK((m1->statusCode() == 200));
-                CHECK((m1->status() == "OK 11Reason Phrase"));
-                CHECK(!m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ContentLength) == "11");
+            HeadersV2& h = m1->headers();
+            auto x = m1->status_code();
+                CHECK((m1->status_code() == 200));
+                CHECK((m1->reason() == "OK 11Reason Phrase"));
+                CHECK(!h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ContentLength).get() == "11");
                 CHECK(m1->getContentBuffer()->to_string() == "11234567890");
         }
     };
@@ -88,17 +90,18 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->statusCode();
-                CHECK((m1->statusCode() == 201));
-                CHECK((m1->status() == "OK 22Reason Phrase"));
-                CHECK(m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->getHeader(HeadersV2::Host) == "ahost");
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ContentLength) == "10");
+            HeadersV2& h = m1->headers();
+            auto x = m1->status_code();
+                CHECK((m1->status_code() == 201));
+                CHECK((m1->reason() == "OK 22Reason Phrase"));
+                CHECK(h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::Host).get() == "ahost");
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ContentLength).get() == "10");
                 CHECK(m1->getContentBuffer()->to_string() == "ABCDEFGHIJ");
         }
     };
@@ -118,17 +121,18 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->statusCode();
-                CHECK((m1->statusCode() == 201));
-                CHECK((m1->status() == "OK 22Reason Phrase"));
-                CHECK(m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->getHeader(HeadersV2::Host) == "ahost");
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ContentLength) == "10");
+            HeadersV2& h = m1->headers();
+            auto x = m1->status_code();
+                CHECK((m1->status_code() == 201));
+                CHECK((m1->reason() == "OK 22Reason Phrase"));
+                CHECK(h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::Host).get() == "ahost");
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ContentLength).get() == "10");
                 CHECK(m1->getContentBuffer()->to_string() == "ABCDEFGHIJ");
         }
     };
@@ -152,18 +156,19 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->hasHeader(HeadersV2::TransferEncoding);
-                CHECK((m1->statusCode() == 201));
-                CHECK((m1->status() == "OK Reason Phrase"));
-                CHECK(m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(!m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->hasHeader(HeadersV2::TransferEncoding));
-                CHECK(m1->getHeader(HeadersV2::Host) == "ahost");
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::TransferEncoding) == "chunked");
+            HeadersV2& h = m1->headers();
+            auto x = h.atKey(HeadersV2::TransferEncoding);
+                CHECK((m1->status_code() == 201));
+                CHECK((m1->reason() == "OK Reason Phrase"));
+                CHECK(h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(!h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::TransferEncoding));
+                CHECK(h.atKey(HeadersV2::Host).get() == "ahost");
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::TransferEncoding).get() == "chunked");
                 CHECK(m1->getContentBuffer()->to_string()
                       == "12345678901234567890XXXXX12345678901234567890HGHGH1234567890");
         }
@@ -188,18 +193,19 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->hasHeader(HeadersV2::TransferEncoding);
-                CHECK((m1->statusCode() == 201));
-                CHECK((m1->status() == "OK Reason Phrase"));
-                CHECK(m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(!m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->hasHeader(HeadersV2::TransferEncoding));
-                CHECK(m1->getHeader(HeadersV2::Host) == "ahost");
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::TransferEncoding) == "chunked");
+            HeadersV2& h = m1->headers();
+            auto x = h.atKey(HeadersV2::TransferEncoding);
+                CHECK((m1->status_code() == 201));
+                CHECK((m1->reason() == "OK Reason Phrase"));
+                CHECK(h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(!h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::TransferEncoding));
+                CHECK(h.atKey(HeadersV2::Host).get() == "ahost");
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::TransferEncoding).get() == "chunked");
                 CHECK(m1->getContentBuffer()->to_string()
                       == "12345678901234567890XXXXX12345678901234567890HGHGH1234567890");
 
@@ -226,18 +232,19 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->hasHeader(HeadersV2::TransferEncoding);
-                CHECK((m1->statusCode() == 201));
-                CHECK((m1->status() == "OK Reason Phrase"));
-                CHECK(m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(!m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->hasHeader(HeadersV2::TransferEncoding));
-                CHECK(m1->getHeader(HeadersV2::Host) == "ahost");
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::TransferEncoding) == "chunked");
+            HeadersV2& h = m1->headers();
+            auto x = h.atKey(HeadersV2::TransferEncoding);
+                CHECK((m1->status_code() == 201));
+                CHECK((m1->reason() == "OK Reason Phrase"));
+                CHECK(h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(!h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::TransferEncoding));
+                CHECK(h.atKey(HeadersV2::Host).get() == "ahost");
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::TransferEncoding).get() == "chunked");
                 CHECK(m1->getContentBuffer()->to_string()
                       == "12345678901234567890XXXXX12345678901234567890HGHGH1234567890");
 
@@ -265,18 +272,19 @@ TestCollection& single_message_test_data_2()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            auto x = m1->hasHeader(HeadersV2::TransferEncoding);
-                CHECK((m1->statusCode() == 201));
-                CHECK((m1->status() == "OK Reason Phrase"));
-                CHECK(m1->hasHeader(HeadersV2::Host));
-                CHECK(m1->hasHeader(HeadersV2::Connection));
-                CHECK(m1->hasHeader(HeadersV2::ProxyConnection));
-                CHECK(!m1->hasHeader(HeadersV2::ContentLength));
-                CHECK(m1->hasHeader(HeadersV2::TransferEncoding));
-                CHECK(m1->getHeader(HeadersV2::Host) == "ahost");
-                CHECK(m1->getHeader(HeadersV2::Connection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::ProxyConnection) == "keep-alive");
-                CHECK(m1->getHeader(HeadersV2::TransferEncoding) == "chunked");
+            HeadersV2& h = m1->headers();
+            auto x = h.atKey(HeadersV2::TransferEncoding);
+                CHECK((m1->status_code() == 201));
+                CHECK((m1->reason() == "OK Reason Phrase"));
+                CHECK(h.atKey(HeadersV2::Host));
+                CHECK(h.atKey(HeadersV2::Connection));
+                CHECK(h.atKey(HeadersV2::ProxyConnection));
+                CHECK(!h.atKey(HeadersV2::ContentLength));
+                CHECK(h.atKey(HeadersV2::TransferEncoding));
+                CHECK(h.atKey(HeadersV2::Host).get() == "ahost");
+                CHECK(h.atKey(HeadersV2::Connection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.atKey(HeadersV2::TransferEncoding).get() == "chunked");
                 CHECK(m1->getContentBuffer()->to_string()
                       == "12345678901234567890XXXXX12345678901234567890HGHGH1234567890");
 

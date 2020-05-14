@@ -13,7 +13,7 @@
 #include <chrono>
 #include <boost/algorithm/string/trim.hpp>
 #include <doctest/doctest.h>
-
+#include <boost/optional/optional_io.hpp>
 #include <marvin/boost_stuff.hpp>
 
 #include <marvin/buffer/buffer.hpp>
@@ -57,20 +57,20 @@ MessageReaderSPtr makeMock()
 /// Make a typical response message
 void fillMsgAsResponse_01(MessageBaseSPtr msgRdr)
 {
-    msgRdr->setStatus("OK");
-    msgRdr->setStatusCode(200);
-    msgRdr->setHeader(HeadersV2::Connection, HeadersV2::ConnectionClose);
-    msgRdr->setHeader("Cache-Control", " max-age=604800");
-    msgRdr->setHeader("Content-Type", " text/html");
-    msgRdr->setHeader("Date", " Sun, 24 Nov 2013 01:38:41 GMT");
-    msgRdr->setHeader("Etag", " \"359670651\"");
-    msgRdr->setHeader("Connection", " keep-alive");
-    msgRdr->setHeader("Expires", " Sun, 01 Dec 2013 01:38:41 GMT");
-    msgRdr->setHeader("Last-Modified", " Fri, 09 Aug 2013 23:54:35 GMT");
-    msgRdr->setHeader("Server", " ECS (mia/41C4)");
-    msgRdr->setHeader("X-Cache", " HIT");
-    msgRdr->setHeader("x-ec-custom-error", " 1");
-    msgRdr->setHeader("Transfer-Encoding", " chunk");
+    msgRdr->reason("OK");
+    msgRdr->status_code(200);
+    msgRdr->header(HeadersV2::Connection, HeadersV2::ConnectionClose);
+    msgRdr->header("Cache-Control", " max-age=604800");
+    msgRdr->header("Content-Type", " text/html");
+    msgRdr->header("Date", " Sun, 24 Nov 2013 01:38:41 GMT");
+    msgRdr->header("Etag", " \"359670651\"");
+    msgRdr->header("Connection", " keep-alive");
+    msgRdr->header("Expires", " Sun, 01 Dec 2013 01:38:41 GMT");
+    msgRdr->header("Last-Modified", " Fri, 09 Aug 2013 23:54:35 GMT");
+    msgRdr->header("Server", " ECS (mia/41C4)");
+    msgRdr->header("X-Cache", " HIT");
+    msgRdr->header("x-ec-custom-error", " 1");
+    msgRdr->header("Transfer-Encoding", " chunk");
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContentBuffer(bdy);
@@ -83,30 +83,30 @@ void verifyResponse_01(MessageBaseSPtr msg)
     {
         return boost::algorithm::trim_copy(s);
     };
-        REQUIRE(msg->status() == "OK");
-        REQUIRE(msg->statusCode() == 200);
-        REQUIRE(msg->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
-    auto xx = msg->getHeader("Cache-Control");
-        REQUIRE(msg->getHeader("Cache-Control") == trim(" max-age=604800"));
-        REQUIRE(msg->getHeader("Content-Type") == trim(" text/html"));
-        REQUIRE(msg->getHeader("Date") == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
-        REQUIRE(msg->getHeader(HeadersV2::Date) == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
+        REQUIRE(msg->reason() == "OK");
+        REQUIRE(msg->status_code() == 200);
+        REQUIRE(msg->header(HeadersV2::Connection).get() == HeadersV2::ConnectionClose);
+    auto xx = msg->header("Cache-Control").get();
+        REQUIRE(msg->header("Cache-Control").get() == trim(" max-age=604800"));
+        REQUIRE(msg->header("Content-Type").get() == trim(" text/html"));
+        REQUIRE(msg->header("Date").get() == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
+        REQUIRE(msg->header(HeadersV2::Date).get() == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
     /// ETag just not passed down
-        REQUIRE(!msg->hasHeader("Etag"));
-        REQUIRE(!msg->hasHeader(HeadersV2::ETag));
+        REQUIRE(!msg->header("Etag"));
+        REQUIRE(!msg->header(HeadersV2::ETag));
     /// proxy transforms chunked encoding to content-length style
-        REQUIRE(!msg->hasHeader("Transfer-Encoding"));
-        REQUIRE(!msg->hasHeader(HeadersV2::TransferEncoding));
-        REQUIRE(msg->hasHeader("Content-Length"));
-        REQUIRE(msg->hasHeader(HeadersV2::ContentLength));
+        REQUIRE(!msg->header("Transfer-Encoding"));
+        REQUIRE(!msg->header(HeadersV2::TransferEncoding));
+        REQUIRE(msg->header("Content-Length"));
+        REQUIRE(msg->header(HeadersV2::ContentLength));
     /// and we force connection close
-        REQUIRE(msg->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
+        REQUIRE(msg->header(HeadersV2::Connection).get() == HeadersV2::ConnectionClose);
 
-        REQUIRE(msg->getHeader("Expires") == trim(" Sun, 01 Dec 2013 01:38:41 GMT"));
-        REQUIRE(msg->getHeader("Last-Modified") == trim(" Fri, 09 Aug 2013 23:54:35 GMT"));
-        REQUIRE(msg->getHeader("Server") == trim(" ECS (mia/41C4)"));
-        REQUIRE(msg->getHeader("X-Cache") == trim(" HIT"));
-        REQUIRE(msg->getHeader("x-ec-custom-error") == trim(" 1"));
+        REQUIRE(msg->header("Expires").get() == trim(" Sun, 01 Dec 2013 01:38:41 GMT"));
+        REQUIRE(msg->header("Last-Modified").get() == trim(" Fri, 09 Aug 2013 23:54:35 GMT"));
+        REQUIRE(msg->header("Server").get() == trim(" ECS (mia/41C4)"));
+        REQUIRE(msg->header("X-Cache").get() == trim(" HIT"));
+        REQUIRE(msg->header("x-ec-custom-error").get() == trim(" 1"));
 //    std::string s = "012345678956";
 //    Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
 //    msgRdr->setBody(bdy);
@@ -125,24 +125,24 @@ void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
 // Accept-Encoding: deflate, gzip, x-gzip, identity, *;q=0
 // Connection: Keep-Alive, TE
 //TE: deflate, gzip, chunked, identity, trailers
-    msgRdr->setMethod(HTTP_POST);
+    msgRdr->method(HTTP_POST);
     // note requests through a proxy must provide absolute uri on the first line
     // proxy mat turn that into a relative url
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // proxy absolute uri
     Helpers::applyUriProxy(msgRdr, uri);
-//    msgRdr->setUri("http://example.org/somepath/script.php?parm=123456#fragment");
-//    msgRdr->setHeader(HeadersV2::Host, "example.org");
-    msgRdr->setHeader("User-Agent", "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
-    msgRdr->setHeader("Accept",
+//    msgRdr->target("http://example.org/somepath/script.php?parm=123456#fragment");
+//    msgRdr->header(HeadersV2::Host, "example.org");
+    msgRdr->header("User-Agent", "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
+    msgRdr->header("Accept",
                       "text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
-    msgRdr->setHeader("Accept-Language", "en");
-    msgRdr->setHeader("Accept-Charset", "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    msgRdr->setHeader(HeadersV2::AcceptEncoding, "deflate, gzip, x-gzip, identity, *;q=0");
-    msgRdr->setHeader(HeadersV2::Connection, "Keep-Alive, TE");
-    msgRdr->setHeader("TE", "deflate, gzip, chunked, trailer");
-    msgRdr->setHeader(HeadersV2::TransferEncoding, "chunked");
-    msgRdr->setHeader(HeadersV2::ETag, "1928273tefadseercnbdh");
+    msgRdr->header("Accept-Language", "en");
+    msgRdr->header("Accept-Charset", "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
+    msgRdr->header(HeadersV2::AcceptEncoding, "deflate, gzip, x-gzip, identity, *;q=0");
+    msgRdr->header(HeadersV2::Connection, "Keep-Alive, TE");
+    msgRdr->header("TE", "deflate, gzip, chunked, trailer");
+    msgRdr->header(HeadersV2::TransferEncoding, "chunked");
+    msgRdr->header(HeadersV2::ETag, "1928273tefadseercnbdh");
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContent(bdy);
@@ -152,18 +152,18 @@ void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
 void verifyRequest_01(MessageBaseSPtr msgSPtr)
 {
     /// relative url
-        REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msgSPtr->target() == "/somepath/script.php?parm=123456#fragment");
     /// host name has port
-        REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999");
-        REQUIRE(msgSPtr->getHeader(HeadersV2::AcceptEncoding) == "identity");
-        REQUIRE(msgSPtr->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
-        REQUIRE(msgSPtr->getHeader(HeadersV2::TE) == "");
-        REQUIRE(msgSPtr->getHeader("User-Agent") ==
+        REQUIRE(msgSPtr->header(HeadersV2::Host).get() == "example.org:9999");
+        REQUIRE(msgSPtr->header(HeadersV2::AcceptEncoding).get() == "identity");
+        REQUIRE(msgSPtr->header(HeadersV2::Connection).get() == HeadersV2::ConnectionClose);
+        REQUIRE(msgSPtr->header(HeadersV2::TE).get() == "");
+        REQUIRE(msgSPtr->header("User-Agent").get() ==
                 "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
-        REQUIRE(msgSPtr->getHeader("Accept-Language") == "en");
-        REQUIRE(msgSPtr->getHeader("Accept-Charset") == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-        REQUIRE(!msgSPtr->hasHeader(HeadersV2::TransferEncoding));
-        REQUIRE(!msgSPtr->hasHeader(HeadersV2::ETag));
+        REQUIRE(msgSPtr->header("Accept-Language").get() == "en");
+        REQUIRE(msgSPtr->header("Accept-Charset").get() == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
+        REQUIRE(!msgSPtr->header(HeadersV2::TransferEncoding));
+        REQUIRE(!msgSPtr->header(HeadersV2::ETag));
 }
 
 /// request 02 test a proxy request
@@ -177,8 +177,8 @@ void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
 /// verify request 02 test a proxy request
 void verifyRequest_02(MessageBaseSPtr msgSPtr)
 {
-        REQUIRE(msgSPtr->uri() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
-        REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999");
+        REQUIRE(msgSPtr->target() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msgSPtr->header(HeadersV2::Host).get() == "example.org:9999");
 }
 
 /// Request 03 non proxy request
@@ -192,32 +192,32 @@ void fillMsgRequest_03(MessageBaseSPtr msgSPtr)
 /// Verify request 03
 void verifyRequest_03(MessageBaseSPtr msgSPtr)
 {
-        REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
-        REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999");
+        REQUIRE(msgSPtr->target() == "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msgSPtr->header(HeadersV2::Host).get() == "example.org:9999");
 }
 
 /// Verify request 03 using reference not pointer
 void verifyNonPointerRequest_03(MessageBase &msg)
 {
-        REQUIRE(msg.uri() == "/somepath/script.php?parm=123456#fragment");
-        REQUIRE(msg.getHeader(HeadersV2::Host) == "example.org:9999");
+        REQUIRE(msg.target() == "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msg.header(HeadersV2::Host).get() == "example.org:9999");
 }
 
 /// Verify request 03 using reference not pointer
 void failedNonPointerRequest_03(MessageBase &msg)
 {
-        REQUIRE(msg.uri() != "/somepath/script.php?parm=123456#fragment");
-        REQUIRE(!msg.hasHeader(HeadersV2::Host));
+        REQUIRE(msg.target() != "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(!msg.header(HeadersV2::Host));
 }
 
 /// Fill minimum requirements for a request
 void fillMsgAsRequest(MessageBaseSPtr msgRdr)
 {
-    msgRdr->setMethod(HTTP_POST);
+    msgRdr->method(HTTP_POST);
     Marvin::Uri uri("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
     Helpers::applyUriProxy(msgRdr, uri);
 //    Helpers::fillRequestFromUri(*msgRdr, "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
-    msgRdr->setHeader(HeadersV2::Connection, HeadersV2::ConnectionKeepAlive);
+    msgRdr->header(HeadersV2::Connection, HeadersV2::ConnectionKeepAlive);
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContent(bdy);
@@ -226,18 +226,19 @@ void fillMsgAsRequest(MessageBaseSPtr msgRdr)
 /// Verify minimum requirements
 bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 {
-    auto meth = msgSPtr->getMethodAsString();
+    auto meth = msgSPtr->method_string();
         CHECK_FALSE(meth == "");
-    auto uri = msgSPtr->uri();
+    auto uri = msgSPtr->target();
         CHECK_FALSE(uri == "");
-        CHECK(msgSPtr->hasHeader(HeadersV2::Host));
-        CHECK(msgSPtr->hasHeader(HeadersV2::Connection));
+        CHECK(msgSPtr->header(HeadersV2::Host));
+        CHECK(msgSPtr->header(HeadersV2::Connection));
     {
-        auto bb = ((msgSPtr->hasHeader(HeadersV2::ContentLength)) || (msgSPtr->hasHeader(HeadersV2::TransferEncoding)));
+        auto bb = ((msgSPtr->header(HeadersV2::ContentLength)) || (msgSPtr->header(HeadersV2::TransferEncoding)));
             CHECK(bb);
     }
-    if (msgSPtr->hasHeader(HeadersV2::ContentLength) && (msgSPtr->getHeader(HeadersV2::ContentLength) != "0")) {
-        int cl = std::stoi(msgSPtr->getHeader(HeadersV2::ContentLength));
+    auto hopt = msgSPtr->header(HeadersV2::ContentLength);
+    if ((!!hopt) && (hopt.get() != "0")) {
+        int cl = std::stoi(hopt.get());
         auto contentChain = msgSPtr->getContentBuffer();
             CHECK(contentChain != nullptr);
         if (contentChain != nullptr) {
@@ -389,7 +390,7 @@ TEST_CASE("serialize 1")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     for(int i = 0; i < 10000; i++) {
-        MBufferSPtr mb = serializeHeaders(*msgSPtr);
+        MBufferSPtr mb = serialize_headers(*msgSPtr);
     }
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
@@ -420,7 +421,7 @@ TEST_CASE("header_serialize 1")
         std::string str = "";
         std::ostringstream os;
         os.str(str);
-        for (auto const &h : msgSPtr->getHeaders()) {
+        for (auto const &h : msgSPtr->headers()) {
             os << h.key << ": " << h.value << "\r\n";
         }
         // end of headers
@@ -442,7 +443,7 @@ TEST_CASE("header_serialize_2")
     {
         BufferChainSPtr bchain_sptr = BufferChain::makeSPtr();
         MBufferSPtr mb2 = MBuffer::makeSPtr(256);
-        auto hdrs = msgSPtr->getHeaders();
+        auto hdrs = msgSPtr->headers();
         for(auto const& h : hdrs) {
             int num_bytes = 0;
             do {
@@ -465,7 +466,7 @@ std::string fmt_headers_stream(MessageBaseSPtr msgSPtr)
     std::string str = "";
     std::ostringstream os;
     os.str(str);
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     for (auto const &h : hdrs) {
         os << h.key << ": " << h.value << "\r\n";
     }
@@ -536,7 +537,7 @@ TEST_CASE("header_serialize_3")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     MBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
@@ -567,7 +568,7 @@ TEST_CASE("header_serialize_4")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     MBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
@@ -591,7 +592,7 @@ TEST_CASE("header_serialize_5")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     MBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
@@ -615,7 +616,7 @@ TEST_CASE("header_serialize_6")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     MBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
@@ -639,7 +640,7 @@ TEST_CASE("header_serialize_7")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     MBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
@@ -663,12 +664,12 @@ TEST_CASE("message_serialize_8")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     MBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
         mb2 = MBuffer::makeSPtr(256*4*8);
-        serializeHeaders(*msgSPtr, *mb2);
+        serialize_headers(*msgSPtr, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();
 
@@ -688,22 +689,22 @@ TEST_CASE("message_serialize_9")
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
-    auto hdrs = msgSPtr->getHeaders();
+    auto hdrs = msgSPtr->headers();
     MBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
         mb2 = MBuffer::makeSPtr(256*4*8);
-        serialize(*msgSPtr, mb2);
+        serialize_headers(*msgSPtr, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     auto x = duration.count();
-    std::string ss = serializeHeaders(*msgSPtr)->toString();
+    std::string ss = serialize_headers(*msgSPtr)->toString();
     std::string sss = mb2->toString();
     bool xy = (ss == sss);
         CHECK(xy);
-        CHECK((mb2->toString() == serializeHeaders(*msgSPtr)->toString()));
+        CHECK((mb2->toString() == serialize_headers(*msgSPtr)->toString()));
     std::cout << "headers serialize 9" << " duration(millisecs): " << duration.count() << std::endl;
     std::cout << "headers serialize 9" << " duration(millisecs): " << duration.count() << std::endl;
 }

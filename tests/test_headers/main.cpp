@@ -63,28 +63,28 @@ void testHeaderConnectionClose(std::string test_value, bool expected)
 void testMessageConnectionKeepAlive(std::string test_value, int minor_version, bool expected)
 {
     MessageBase msg;
-    msg.setHttpVersMinor(minor_version);
-    msg.setHeader("bb","BBBBB");
-    msg.setHeader("ccc", "CCCCCC");
-    msg.setHeader("11","1111111");
-    msg.setHeader("22","2222222");
-    msg.setHeader("Connection", test_value);
-    msg.setHeader("11","1111111");
-    msg.setHeader("22","2222222");
+    msg.version_minor(minor_version);
+    msg.header("bb","BBBBB");
+    msg.header("ccc", "CCCCCC");
+    msg.header("11","1111111");
+    msg.header("22","2222222");
+    msg.header("Connection", test_value);
+    msg.header("11","1111111");
+    msg.header("22","2222222");
 
     CHECK( (expected == isConnectionKeepAlive(msg)));
 }
 void testMessageConnectionClose(std::string test_value, int minor_version, bool expected)
 {
     MessageBase msg;
-    msg.setHttpVersMinor(minor_version);
-    msg.setHeader("bb","BBBBB");
-    msg.setHeader("ccc", "CCCCCC");
-    msg.setHeader("11","1111111");
-    msg.setHeader("22","2222222");
-    msg.setHeader("Connection", test_value);
-    msg.setHeader("11","1111111");
-    msg.setHeader("22","2222222");
+    msg.version_minor(minor_version);
+    msg.header("bb","BBBBB");
+    msg.header("ccc", "CCCCCC");
+    msg.header("11","1111111");
+    msg.header("22","2222222");
+    msg.header("Connection", test_value);
+    msg.header("11","1111111");
+    msg.header("22","2222222");
 
     CHECK( (expected != isConnectionKeepAlive(msg)));
 }

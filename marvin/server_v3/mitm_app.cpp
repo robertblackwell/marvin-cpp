@@ -106,7 +106,8 @@ void MitmApp::p_read_first_message()
 
 void MitmApp::p_on_first_message()
 {   
-    std::string tmp_url = m_rdr->uri();
+    std::string tmp_url = m_rdr->target();
+    // the Uri() constructor steals the input
     std::string tmp_url_safe = tmp_url;
     Uri tmp_uri = Uri(tmp_url_safe);
 

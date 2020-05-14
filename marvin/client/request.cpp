@@ -35,7 +35,7 @@ Request::Request(
     std::cout << "Constructor" << std::endl;
     m_conn_shared_ptr = socketFactory(m_io, m_scheme, m_server, m_port);
     p_create_rdr_wrtr();
-    m_current_request->setHeader(Marvin::HeadersV2::Host, m_server+":"+m_port);
+    m_current_request->header(Marvin::HeadersV2::Host, m_server+":"+m_port);
     m_is_connected = false;
 }
 Request::Request(
@@ -70,44 +70,35 @@ Request::~Request()
 /*!--------------------------------------------------------------------------------
 * implement set functions
 *--------------------------------------------------------------------------------*/
-void Request::setMethod(HttpMethod method)
+void Request::method(HttpMethod method)
 {
     p_test_good_to_go();
-    m_current_request->setMethod(method);
+    m_current_request->method(method);
 }
 void Request::setUrl(std::string uri)
 {
 
 }
-void Request::setPath(std::string path)
+void Request::target(std::string path)
 {
     p_test_good_to_go();
-    m_current_request->setPath(path);
+    m_current_request->target(path);
 }
 void Request::setVersion(int major, int minor)
 {
     p_test_good_to_go();
-    m_current_request->setHttpVersMajor(major);
-    m_current_request->setHttpVersMinor(minor);
+    m_current_request->version_major(major);
+    m_current_request->version_minor(minor);
 }
-void Request::setHeaders(Marvin::HeadersV2 headers)
+void Request::header(Marvin::HeadersV2 headers)
 {
     p_test_good_to_go();
 
 }
-void Request::setHeader(std::string key, std::string value)
+void Request::header(std::string key, std::string value)
 {
     p_test_good_to_go();
-    m_current_request->setHeader(key, value);
-}
-void Request::setTrailers(Marvin::HeadersV2 trailers)
-{
-    p_test_good_to_go();
-}
-void Request::setTrailer(std::string key, std::string value)
-{
-    p_test_good_to_go();
-    m_current_request->setTrailer(key, value);
+    m_current_request->header(key, value);
 }
 
 /*!--------------------------------------------------------------------------------
@@ -307,7 +298,7 @@ void Request::p_set_content_length()
     if( m_body_mbuffer_sptr != nullptr ) {
         len = m_body_mbuffer_sptr->size();
     }
-    msg->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(len));
+    msg->header(Marvin::HeadersV2::ContentLength, std::to_string(len));
 }
 /*!--------------------------------------------------------------------------------
 * implement helper functions
@@ -324,17 +315,20 @@ void Request::p_test_good_to_go()
 // add host header
 void Request::p_prep_write_complete_headers()
 {
-    if(!m_current_request->hasHeader(HeadersV2::ContentLength)) {
-        if (!m_current_request->hasHeader(HeadersV2::TransferEncoding)) {
+    auto hopt_cl = m_current_request->header(HeadersV2::ContentLength);
+    auto hopt_te = m_current_request->header(HeadersV2::TransferEncoding);
+
+    if(! hopt_cl ) {
+        if (! hopt_te ) {
             MARVIN_THROW("Request::p_prep_write_complete_headers - no content length or chunked header");
         } else {
-            auto te = m_current_request->getHeader(HeadersV2::TransferEncoding);
+            auto te = hopt_te.get();
             if (te != "chunked") {
                 MARVIN_THROW("Request::p_prep_write_complete_headers - no content-length header and transfer-encoding header is not chunked");
             }
         }
     }
-    m_current_request->setHeader(HeadersV2::Host, m_server+":"+m_port);
+    m_current_request->header(HeadersV2::Host, m_server+":"+m_port);
 }
 
 void Request::p_create_rdr_wrtr()

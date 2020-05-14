@@ -47,86 +47,6 @@ SSLForwardingHandler::~SSLForwardingHandler()
 
 #pragma mark - handle upgrade request
 
-#if 0
-void ForwardingHandler::handleRequest(
-        ServerContext&          server_context,
-        MessageReaderSPtr       request,
-        MessageWriterSPtr       responseWriter,
-        ISocketSPtr             clientConnectionPtr,
-        HandlerDoneCallbackType done
-){
-   TROG_TRACE3("from downstream", Marvin::traceMessage(*(request.get())));
-    m_request_sptr = request;
-    m_response_writer_sptr = responseWriter;
-    m_done_callback = done;
-   
-    Marvin::Uri tmp_uri(request->uri());
-    m_host = tmp_uri.server();
-    m_port = (int)tmp_uri.port();
-    m_scheme = tmp_uri.scheme();
-    assert( ! m_request_sptr->hasHeader("Upgrade") );
-    p_round_trip_upstream(request, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
-        /// get here with a message suitable for transmission to down stream client
-        m_response_sptr = downMsg;
-       TROG_TRACE3("for downstream", Marvin::traceMessage(*downMsg));
-        Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
-        /// perform the MITM collection
-        
-        m_collector_ptr->collect(m_scheme, m_host, m_request_sptr, m_response_sptr);
-        
-        /// write response to downstream client
-        m_response_writer_sptr->asyncWrite(m_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err){
-//            TROG_WARN("error: ", err.value(), err.category().name(), err.category().message(err.value()));
-           TROG_TRACE3("after write downstream", " err:", Marvin::make_error_description(err));
-            auto pf = std::bind(m_done_callback, err, (! err) );
-            m_io.post(pf);
-        });
-
-    });
-}
-/// \brief Perform the proxy forwarding process; and produces a response suitable
-/// for downstream transmission; the result of this method is a response to send back to the client
-/// \param req : MessageReaderSPtr the request from the original client - has same value
-///                                 as class property m_request_sptr
-/// \param upstreamCb : called when the round trip has finished
-///
-void ForwardingHandler::p_round_trip_upstream(
-        MessageReaderSPtr req,
-        std::function<void(Marvin::ErrorType& err, MessageBaseSPtr downstreamReplyMsg)> upstreamCb
-){
-    /// a client object to manage the round trip of request and response to
-    /// the final destination
-    Marvin::Uri uri(req->uri()); /// a proxy request must have an absolute uri
-    m_scheme = uri.scheme();
-    m_host = uri.server();
-    
-    m_port = (int)uri.port();
-    m_upstream_client_uptr = std::unique_ptr<Client>(new Client(m_io, m_scheme, m_host, std::to_string(m_port)));
-    /// the MessageBase that will be the up stream request
-    m_upstream_request_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
-    /// format upstream msg for transmission
-    helpers::makeUpstreamRequest(m_upstream_request_msg_sptr, req);
-    assert( ! m_request_sptr->hasHeader("Upgrade") );
-    Marvin::BufferChainSPtr content = req->getContentBuffer();
-    
-   TROG_TRACE3("upstream request", Marvin::traceMessage(*m_upstream_request_msg_sptr));
-    
-    m_upstream_client_uptr->asyncWrite(m_upstream_request_msg_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
-    {
-        if (ec || (upstrmRdr == nullptr)) {
-            TROG_WARN("async write failed");
-            // TODO: how to handle error
-        } else {
-           TROG_TRACE3("upstream rresponse", Marvin::traceMessage(*(upstrmRdr.get())));
-            m_downstream_msg_sptr = std::make_shared<MessageBase>();
-            m_response_body_sptr = upstrmRdr->getContentBuffer();
-            helpers::makeDownstreamResponse(m_downstream_msg_sptr, upstrmRdr, ec);
-            upstreamCb(ec, m_downstream_msg_sptr);
-        }
-    });
-    
-};
-#endif
 void SSLForwardingHandler::p_on_complete(Marvin::ErrorType& err)
 {
     if( err ){
@@ -156,7 +76,7 @@ void SSLForwardingHandler::handleSSLRequest(
     m_done_callback = done;
     m_downstream_connection = clientConnectionPtr;
     
-    Marvin::Uri tmp_uri(request->uri());
+    Marvin::Uri tmp_uri(request->target());
     m_host = tmp_uri.server();
     m_port = (int)tmp_uri.port();
     m_scheme = tmp_uri.scheme();

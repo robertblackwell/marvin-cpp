@@ -166,34 +166,37 @@ void verify_result(std::vector<Marvin::MessageBase*> messages)
 {
     REQUIRE(messages.size() > 0);
     Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+    Marvin::HeadersV2& h = m0->headers();
     REQUIRE(m0 != nullptr);
-    CHECK(m0->httpVersMajor() == 1);
-    CHECK(m0->httpVersMinor() == 1);
-    CHECK(m0->statusCode() == 200);
-    CHECK(m0->header("CONTENT-LENGTH") == "10");
-    CHECK(m0->header("CONNECTION") == "keep-alive");
-    CHECK(m0->header("PROXY-CONNECTION") == "keep-alive");
+    CHECK(m0->version_major() == 1);
+    CHECK(m0->version_minor() == 1);
+    CHECK(m0->status_code() == 200);
+    CHECK(h.atKey("CONTENT-LENGTH").get() == "10");
+    CHECK(h.atKey("CONNECTION").get() == "keep-alive");
+    CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
     auto b0 = m0->getContentBuffer()->to_string();
     CHECK(m0->getContent()->to_string() == "1234567890");
     Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
+    Marvin::HeadersV2& h2 = m1->headers();
     REQUIRE(m1 != nullptr);
-    CHECK(m1->httpVersMajor() == 1);
-    CHECK(m1->httpVersMinor() == 1);
-    CHECK(m1->statusCode() == 201);
-    CHECK(m1->header("CONTENT-LENGTH") == "11");
-    CHECK(m1->header("CONNECTION") == "keep-alive");
-    CHECK(m1->header("PROXY-CONNECTION") == "keep-alive");
+    CHECK(m1->version_major() == 1);
+    CHECK(m1->version_minor() == 1);
+    CHECK(m1->status_code() == 201);
+    CHECK(h2.atKey("CONTENT-LENGTH").get() == "11");
+    CHECK(h2.atKey("CONNECTION").get() == "keep-alive");
+    CHECK(h2.atKey("PROXY-CONNECTION").get() == "keep-alive");
     auto b1 = m1->getContentBuffer()->to_string();
     CHECK(m1->getContent()->to_string() == "ABCDEFGHIJK");
 }
 void verify_eof_test(std::vector<Marvin::MessageBase*> messages)
 {
     Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-    CHECK(m0->httpVersMajor() == 1);
-    CHECK(m0->httpVersMinor() == 1);
-    CHECK(m0->statusCode() == 200);
-    CHECK(m0->header("CONNECTION") == "keep-alive");
-    CHECK(m0->header("PROXY-CONNECTION") == "keep-alive");
+    Marvin::HeadersV2& h = m0->headers();
+    CHECK(m0->version_major() == 1);
+    CHECK(m0->version_minor() == 1);
+    CHECK(m0->status_code() == 200);
+    CHECK(h.atKey("CONNECTION").get() == "keep-alive");
+    CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
     auto b0 = m0->getContentBuffer()->to_string();
     CHECK(m0->getContent()->to_string() == "1234567890");
 

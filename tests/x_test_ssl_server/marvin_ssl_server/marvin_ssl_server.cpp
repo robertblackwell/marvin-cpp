@@ -58,7 +58,7 @@ class SslApp : public RequestHandlerInterface
                     } else {
                         m_response_msg_sptr = std::make_shared<MessageBase>();
                         makeResponse200OKConnected(*m_response_msg_sptr);
-                        m_response_msg_sptr->setHeader(HeadersV2::Connection, "Close");
+                        m_response_msg_sptr->header(HeadersV2::Connection, "Close");
                         std::string body{"This is a legitimate response"};
                         m_response_msg_sptr->setContent(body);
                         BufferChainSPtr buffer_sptr = BufferChain::makeSPtr(body);

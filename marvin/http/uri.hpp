@@ -27,8 +27,10 @@ namespace Marvin{
             std::string password();
             /// \brief if the uri had both a username and a  password the value "user:password" is returned ortherwise ""
             std::string userAndPassword();
+            
             /// \brief returns a host value suitable for a host header in the form somewhere.com:port - the port is always present
             std::string host();
+
             /// \brief the host name without the port attached suitable for boost::asio resolver
             std::string server();
             /// \brief interger port number always has a value - 0 is an error and you have found a bug

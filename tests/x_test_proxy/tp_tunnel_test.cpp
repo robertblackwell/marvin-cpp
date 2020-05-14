@@ -95,7 +95,7 @@ namespace  {
         std::string raw_body = bsp->to_string();
     //    std::cout << raw_body << std::endl;
         /// check correct status
-        CHECK(rdr->statusCode() == 200);
+        CHECK(rdr->status_code() == 200);
 
         /// now test echo correctly
         json j;
@@ -132,7 +132,7 @@ namespace  {
         ///
         /// check method
         auto echoed_method = j["req"]["method"].get<std::string>();
-        auto original_method = m_testcase_sptr->m_msg_sptr->getMethodAsString();
+        auto original_method = m_testcase_sptr->m_msg_sptr->method_string();
         CHECK( (echoed_method == original_method) );
         /// check headers
     //    auto reqq = j["req"];
@@ -143,7 +143,7 @@ namespace  {
         auto echoed_headers = test::helpers::headersFromJson(j["req"]["headers"]);
     //    std::string lenstr = echoed_headers[Marvin::Http::HeadersV2::ContentLength];
 
-        auto original_headers = m_testcase_sptr->m_msg_sptr->getHeaders();
+        auto original_headers = m_testcase_sptr->m_msg_sptr->headers();
         /// these are the headers that should be preserved - they arer [present in every test case just for convenience
         CHECK( (echoed_headers["ACCEPT"] == original_headers["ACCEPT"]) );
         CHECK( (echoed_headers["ACCEPT-CHARSET"] == original_headers["ACCEPT-CHARSET"]) );
@@ -164,7 +164,7 @@ namespace  {
         std::string originalBody = (m_testcase_sptr->m_msg_sptr->getContentBuffer())->to_string();
         CHECK(echoedBody == originalBody);
 
-        if(rdr->getHeader(Marvin::Http::HeadersV2::Connection) == Marvin::Http::HeadersV2::ConnectionClose) {
+        if(rdr->header(Marvin::Http::HeadersV2::Connection).get() == Marvin::Http::HeadersV2::ConnectionClose) {
             m_client_sptr->close();
             m_client_sptr = nullptr;
         }
@@ -196,24 +196,24 @@ namespace  {
         tp::TestcaseSPtr tc;
         {
             MessageBaseSPtr msg = std::make_shared<MessageBase>();
-            msg->setMethod(HTTP_POST);
+            msg->method(HTTP_POST);
             // note requests through a proxy must provide absolute uri on the first line
             // proxy may turn that into a relative url
     //        Marvin::Uri uri("http://whiteacorn/utests/echo/index.php");
             Marvin::Uri uri(uriString);
             helpers::applyUriProxy(msg, uri);
-    //        msg->setUri("http://localhost/echo");
-    //        msg->setHeader(Marvin::Http::HeadersV2::Host, "localhost:9991");
-            msg->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
-            msg->setHeader(
+    //        msg->target("http://localhost/echo");
+    //        msg->header(Marvin::Http::HeadersV2::Host, "localhost:9991");
+            msg->header("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
+            msg->header(
                 "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
-            msg->setHeader("Accept-Language","en");
-            msg->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-            msg->setHeader(Marvin::Http::HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
-            msg->setHeader(Marvin::Http::HeadersV2::Connection,"Keep-Alive, TE");
-            msg->setHeader("TE","deflate, gzip, chunked, trailer");
-    //        msg->setHeader(Marvin::Http::HeadersV2::TransferEncoding,"chunked");
-            msg->setHeader(Marvin::Http::HeadersV2::ETag,"1928273tefadseercnbdh");
+            msg->header("Accept-Language","en");
+            msg->header("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
+            msg->header(Marvin::Http::HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+            msg->header(Marvin::Http::HeadersV2::Connection,"Keep-Alive, TE");
+            msg->header("TE","deflate, gzip, chunked, trailer");
+    //        msg->header(Marvin::Http::HeadersV2::TransferEncoding,"chunked");
+            msg->header(Marvin::Http::HeadersV2::ETag,"1928273tefadseercnbdh");
             std::string s = "012345678956";
             Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
             msg->setContent(bdy);

@@ -33,13 +33,13 @@ using ::boost::asio::streambuf;
 void Request::p_read_response_headers()
 {
     this->m_rdr->readHeaders([this](Marvin::ErrorType ec2){
-        auto resp_str = m_rdr->str();
+        // auto resp_str = m_rdr->str();
         auto bdy_str = m_rdr->getContent()->to_string();
         if (!ec2) {
             // call onHeaders
             // setup read of body unless content length == 0
-            if (this->m_rdr->hasHeader(Marvin::HeadersV2::ContentLength)) {
-                std::string clstr = this->m_rdr->getHeader(Marvin::HeadersV2::ContentLength);
+            if (auto hopt = this->m_rdr->header(Marvin::HeadersV2::ContentLength)) {
+                std::string clstr = hopt.get();
                 if (clstr != "0") {
                     p_read_response_body();
                 } else {

@@ -120,15 +120,13 @@ public:
     */
     void setOnError(ErrorOnlyCallbackType cb);
 #endif
-    void setMethod(HttpMethod method);
+    void method(HttpMethod method);
     void setUrl(std::string url);
 
-    void setPath(std::string path);
+    void target(std::string path);
     void setVersion(int major, int minor);
-    void setHeaders(Marvin::HeadersV2 headers);
-    void setHeader(std::string key, std::string value);
-    void setTrailers(Marvin::HeadersV2 trailers);
-    void setTrailer(std::string key, std::string value);
+    void header(Marvin::HeadersV2 headers);
+    void header(std::string key, std::string value);
 
     void asyncWriteHeaders(WriteHeadersCallbackType cb);
     void asyncWriteTrailers(WriteHeadersCallbackType cb);

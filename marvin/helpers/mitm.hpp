@@ -28,8 +28,8 @@ std::string base64Encode(std::string& source);
 
 http::url decodeUri(MessageReaderSPtr requestSPtr);
 
-/// \brief applies the Uri to a MessageBase to make a PROXY request where the uri in
-/// the message is an absolute uri; fills in the message uri field and host header
+/// \brief Inserts the Uri into the target field and host field of the message in a way
+/// consistent with the requirements of a proxy request. The target should be absolute
 void applyUriProxy(MessageBaseSPtr msg, Uri& uri);
 
 /// \brief applies the Uri to a MessageBase to make a NON PROXY request where the uri in

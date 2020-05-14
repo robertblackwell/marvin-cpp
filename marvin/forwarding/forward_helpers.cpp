@@ -15,7 +15,7 @@ std::string base64Encode(std::string& source)
 
 http::url decodeUri(MessageReaderSPtr requestSPtr)
 {
-    std::string tmp_url = requestSPtr->uri();
+    std::string tmp_url = requestSPtr->target();
     http::url tmp_u = http::ParseHttpUrl(tmp_url);
     return tmp_u;
 }
@@ -23,10 +23,10 @@ http::url decodeUri(MessageReaderSPtr requestSPtr)
 void applyUri(MessageBaseSPtr msg, Uri& uri, bool proxy)
 {
     if(proxy)
-        msg->setUri(uri.absolutePath());
+        msg->target(uri.absolutePath());
     else
-        msg->setUri(uri.relativePath());
-    msg->setHeader(Marvin::HeadersV2::Host, uri.host());
+        msg->target(uri.relativePath());
+    msg->header(Marvin::HeadersV2::Host, uri.host());
 }
 void applyUriProxy(MessageBaseSPtr msgSPtr, Uri& uri)
 {
@@ -44,7 +44,7 @@ void removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue)
     for (const auto& t : tokens) {
         std::string str(t);
         boost::algorithm::trim (str);
-        msgSPtr->removeHeader(str);
+        msgSPtr->remove_header(str);
 //        std::string s = std::string(t.c_str());
 //        std::string s2 = t;
 //        std::cout << t << "." << std::endl;
@@ -55,19 +55,19 @@ void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  req
     MessageReaderSPtr req = requestSPtr;
     MessageBaseSPtr result = upstreamRequest;
     
-    Marvin::Uri tmp_uri(req->uri());
+    Marvin::Uri tmp_uri(req->target());
     
     applyUriNonProxy(upstreamRequest, tmp_uri);
 //    helpers::fillRequestFromUri(*upstreamRequest, tmp_url);
     // filter out upgrade requests
-    assert( ! req->hasHeader("Upgrade") );
+    assert( ! req->header("Upgrade") );
     
     // set the method
-    result->setMethod(req->method());
+    result->method(req->method());
     // copy the headers
     // should also test for manditory Host header
     //
-    auto hdrs = req->getHeaders();
+    auto hdrs = req->headers();
     std::set<std::string> dontCopyList{
         Marvin::HeadersV2::Host,
         Marvin::HeadersV2::ProxyConnection,
@@ -76,23 +76,23 @@ void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  req
         Marvin::HeadersV2::TransferEncoding
     };
     // copy all headers except those in dontCopyList
-    HeadersV2::copyExcept(hdrs, result->getHeaders(),dontCopyList);
+    HeadersV2::copyExcept(hdrs, result->headers(),dontCopyList);
     //    Headers::filterNotInList(hdrs, dontCopyList, [result]( Marvin::Headers& hdrs, std::string k, std::string v) {
-//        result->setHeader(k,v);
+//        result->header(k,v);
 //    });
-    if (req->hasHeader(Marvin::HeadersV2::Connection)) {
-        std::string cv = req->getHeader(Marvin::HeadersV2::Connection);
+    if (auto hopt = req->header(Marvin::HeadersV2::Connection)) {
+        std::string cv = hopt.get();
         removeHopByHop(result, cv);
     }
     // set the uri and host header
     // no keep alive
-    result->setHeader(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
-    result->setHeader(Marvin::HeadersV2::AcceptEncoding, "identity");
-    result->setHeader(Marvin::HeadersV2::TE, "");
+    result->header(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
+    result->header(Marvin::HeadersV2::AcceptEncoding, "identity");
+    result->header(Marvin::HeadersV2::TE, "");
     // Http versions defaults to 1.1, so force it to the same as the request
-    result->setHttpVersMinor(req->httpVersMinor());
+    result->version_minor(req->version_minor());
     result->setContent(req->getContentBuffer());
-//    result->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(req->getBody()->size()));
+//    result->header(Marvin::HeadersV2::ContentLength, std::to_string(req->getBody()->size()));
 
 }
 
@@ -102,7 +102,7 @@ void makeDownstreamGoodResponse(MessageBaseSPtr downstream, MessageReaderSPtr re
     MessageReaderSPtr resp = responseSPtr;
     MessageBaseSPtr result = downstream;
         // copy the headers
-    auto hdrs = resp->getHeaders();
+    auto hdrs = resp->headers();
     HttpHeaderFilterSetType dontCopyList{
         Marvin::HeadersV2::Host,
         Marvin::HeadersV2::ProxyConnection,
@@ -110,24 +110,24 @@ void makeDownstreamGoodResponse(MessageBaseSPtr downstream, MessageReaderSPtr re
         Marvin::HeadersV2::TransferEncoding,
         Marvin::HeadersV2::ETag
     };
-    HeadersV2::copyExcept(hdrs, result->getHeaders(), dontCopyList);
+    HeadersV2::copyExcept(hdrs, result->headers(), dontCopyList);
 //    Headers::filterNotInList(hdrs, dontCopyList, [result]( Marvin::Headers& hdrs, std::string k, std::string v)
 //    {
-//        result->setHeader(k,v);
+//        result->header(k,v);
 //    });
 
     // set the uri and host header
-    result->setStatus(resp->status());
-    result->setStatusCode(resp->statusCode());
+    result->reason(resp->status());
+    result->status_code(resp->status_code());
     // no keep alive
-    result->setHeader(Marvin::HeadersV2::Connection,  Marvin::HeadersV2::ConnectionClose);
+    result->header(Marvin::HeadersV2::Connection,  Marvin::HeadersV2::ConnectionClose);
     // Http versions defaults to 1.1, so force it to the same as the request
-    result->setHttpVersMinor(resp->httpVersMinor());
+    result->version_minor(resp->version_minor());
     // now attach the body
     std::size_t len;
     if( (len = responseSPtr->getContentBuffer()->size()) > 0){
         result->setContent(responseSPtr->getContent());
-//        resp->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(len));
+//        resp->header(Marvin::HeadersV2::ContentLength, std::to_string(len));
     }
 
 }
@@ -136,9 +136,9 @@ void makeDownstreamErrorResponse(MessageBaseSPtr msg, MessageReaderSPtr resp, Ma
 {
     TROG_DEBUG("");
     // bad gateway 502
-    msg->setStatus("Bad gateway");
-    msg->setStatusCode(501);
-    msg->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(0));
+    msg->reason("Bad gateway");
+    msg->status_code(501);
+    msg->header(Marvin::HeadersV2::ContentLength, std::to_string(0));
     std::string n("");
 }
 void makeDownstreamResponse(MessageBaseSPtr msg_sptr, MessageReaderSPtr resp, Marvin::ErrorType& err)
@@ -154,7 +154,7 @@ void makeDownstreamResponse(MessageBaseSPtr msg_sptr, MessageReaderSPtr resp, Ma
 
 bool apply_connection_close(MessageReaderSPtr req, MessageBaseSPtr response)
 {
-    response->setHeader(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
+    response->header(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
     return false;
 }
 
@@ -162,32 +162,33 @@ bool apply_keepalive_rules(MessageReaderSPtr req, MessageBaseSPtr response)
 {
     /// correctly handle keep-alive/close
     bool keep_alive;
-    if(req->getHeader(Marvin::HeadersV2::Connection) == Marvin::HeadersV2::ConnectionKeepAlive) {
+    if((auto hopt = req->header(Marvin::HeadersV2::Connection))
+    && (hopt.get() == Marvin::HeadersV2::ConnectionKeepAlive)) {
         keep_alive = true;
-        response->setHeader(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionKeepAlive);
+        response->header(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionKeepAlive);
     } else {
         keep_alive = false;
-        response->setHeader(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
+        response->header(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
     }
     return keep_alive;
 }
 
 void response403Forbidden(MessageBaseSPtr msg)
 {
-    msg->setStatus("Forbidden");
-    msg->setStatusCode(403);
+    msg->reason("Forbidden");
+    msg->status_code(403);
     msg->setContent("");
 }
 void response200OKConnected(MessageBaseSPtr msg)
 {
-    msg->setStatus("OK");
-    msg->setStatusCode(200);
+    msg->reason("OK");
+    msg->status_code(200);
     msg->setContent("");
 }
 void response502Badgateway(MessageBaseSPtr msg)
 {
-    msg->setStatus("BAD GATEWAY");
-    msg->setStatusCode(503);
+    msg->reason("BAD GATEWAY");
+    msg->status_code(503);
     msg->setContent("");
 }
 } // namespace

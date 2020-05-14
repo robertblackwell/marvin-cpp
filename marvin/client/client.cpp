@@ -181,7 +181,7 @@ void Client::setContentLength()
     if( m_body_mbuffer_sptr != nullptr ) {
         len = m_body_mbuffer_sptr->size();
     }
-    msg->setHeader(Marvin::HeadersV2::ContentLength, std::to_string(len));
+    msg->header(Marvin::HeadersV2::ContentLength, std::to_string(len));
 }
 MessageReaderSPtr Client::getResponse()
 {

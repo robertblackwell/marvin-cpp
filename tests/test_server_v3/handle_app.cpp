@@ -33,14 +33,13 @@ MessageBaseSPtr make_200_response(std::string body)
 {
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
     msg->setIsRequest(false);
-    msg->setStatusCode(200);
-    msg->setStatus("OK");
-    msg->setHttpVersMajor(1);
-    msg->setHttpVersMinor(1);
+    msg->status_code(200);
+    msg->reason("OK");
+    msg->version(1, 1);
 
     // BufferChainSPtr bchain_sptr = BufferChain::makeSPtr(body);
-    // msg->setHeader(HeadersV2::ContentLength, std::to_string(body.length() ));
-    msg->setHeader(HeadersV2::ContentType, std::string("plain/text"));
+    // msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
+    msg->header(HeadersV2::ContentType, std::string("plain/text"));
     msg->setContent(body);
     return msg;
 }
@@ -48,13 +47,12 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
 {
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
     msg->setIsRequest(false);
-    msg->setStatusCode(status_code);
-    msg->setStatus(status);
-    msg->setHttpVersMajor(1);
-    msg->setHttpVersMinor(1);
+    msg->status_code(status_code);
+    msg->reason(status);
+    msg->version(1, 1);
 
     BufferChainSPtr bchain_sptr = BufferChain::makeSPtr(body);
-    msg->setHeader(HeadersV2::ContentLength, std::to_string(body.length() ));
+    msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 AppHandler::AppHandler(boost::asio::io_service& io): m_io(io)
@@ -85,7 +83,7 @@ void AppHandler::p_internal_handle()
         if (err) {
             p_on_read_error(err);
         } else {
-            std::string path = m_rdr->getPath();
+            std::string path = m_rdr->target();
             std::vector<std::string> bits;
             boost::split(bits, path, [](char c){return c == '/';});
             if (bits.size() < 2) {
@@ -117,8 +115,9 @@ void AppHandler::p_req_resp_cycle_complete()
     TROG_WARN("AppHandler::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
-    if (m_rdr->hasHeader(HeadersV2::Connection)) {
-        std::string conhdr = m_rdr->getHeader(HeadersV2::Connection);
+    auto hopt = m_rdr->header(HeadersV2::Connection);
+    if (hopt) {
+        std::string conhdr = hopt.get();
         keep_alive = (conhdr == "Keep-Alive");
     }
     if (keep_alive) {
@@ -149,7 +148,7 @@ void AppHandler::p_invalid_request()
 {
     std::string body = "INVALID REQUEST";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -163,7 +162,7 @@ void AppHandler::p_handle_echo()
 {
     std::string body = "THIS IS A RESPONSE BODY";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -177,7 +176,7 @@ void AppHandler::p_handle_smart_echo()
 {
     std::string body = "INVALID REQUEST";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
@@ -191,7 +190,7 @@ void AppHandler::p_non_specific_response()
 {
     std::string body = "THIS IS A RESPONSE BODY";
     MessageBaseSPtr response_msg = make_200_response(body);
-    auto s = response_msg->str();
+    auto s = response_msg->to_string();
     m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {

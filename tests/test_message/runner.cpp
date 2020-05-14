@@ -47,15 +47,15 @@ void Testrunner::onMessage(Marvin::ErrorType er)
     if( er != expected_err){
         std::cout << "bad" << std::endl;
     }
-    REQUIRE(m_rdr->statusCode() == m_tcObj.result_status_code());
+    REQUIRE(m_rdr->status_code() == m_tcObj.result_status_code());
     auto h1 = m_tcObj.result_headers();
-    auto h2 = m_rdr->getHeaders();
+    auto h2 = m_rdr->headers();
     bool hh = h1.sameValues(h2);
 
-    if( m_tcObj.result_headers().sameValues(m_rdr->getHeaders()))
-        assert(m_tcObj.result_headers().sameValues(m_rdr->getHeaders()));
+    if( m_tcObj.result_headers().sameValues(m_rdr->headers()))
+        assert(m_tcObj.result_headers().sameValues(m_rdr->headers()));
 
-    bool catch_is_stupid = m_tcObj.result_headers().sameValues(m_rdr->getHeaders());
+    bool catch_is_stupid = m_tcObj.result_headers().sameValues(m_rdr->headers());
     REQUIRE( catch_is_stupid );
     
     auto b1 = m_tcObj.result_body();

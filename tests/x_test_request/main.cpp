@@ -53,11 +53,11 @@ TEST_CASE("request new")
     }
 
 #if 1
-    req->setMethod(HttpMethod::POST) ;
-    req->setPath("/utests/echo/");
-    auto p1 = req->m_current_request->getPath();
+    req->method(HttpMethod::POST) ;
+    req->target("/utests/echo/");
+    auto p1 = req->m_current_request->target();
 
-    req->setHeader(Marvin::Http::HeadersV2::ContentType, "text/html; charset=UTF-8");
+    req->header(Marvin::Http::HeadersV2::ContentType, "text/html; charset=UTF-8");
     req->setOnHeaders([&on_headers_flag](Marvin::ErrorType& err, MessageReaderSPtr msg_sptr) {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         on_headers_flag = true;

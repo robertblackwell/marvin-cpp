@@ -117,7 +117,7 @@ void ForwardingHandler::handleConnect(
     // Parse the url to determine were we have to send the "upstream" request
     //
     
-    std::string tmp_url = m_request_sptr->uri();
+    std::string tmp_url = m_request_sptr->target();
     http::url tmp_u = http::ParseHttpUrl(tmp_url);
    
     m_scheme = tmp_u.protocol;
@@ -219,11 +219,11 @@ void ForwardingHandler::handleRequest(
     m_response_writer_sptr = responseWriter;
     m_done_callback = done;
    
-    Marvin::Uri tmp_uri(request->uri());
+    Marvin::Uri tmp_uri(request->target());
     m_host = tmp_uri.server();
     m_port = (int)tmp_uri.port();
     m_scheme = tmp_uri.scheme();
-    assert( ! m_request_sptr->hasHeader("Upgrade") );
+    assert( ! m_request_sptr->header("Upgrade") );
     p_round_trip_upstream(request, [this]( Marvin::ErrorType& err, MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_response_sptr = downMsg;
@@ -255,7 +255,7 @@ void ForwardingHandler::p_round_trip_upstream(
 ){
     /// a client object to manage the round trip of request and response to
     /// the final destination
-    Marvin::Uri uri(req->uri()); /// a proxy request must have an absolute uri
+    Marvin::Uri uri(req->target()); /// a proxy request must have an absolute uri
     m_scheme = uri.scheme();
     m_host = uri.server();
     
@@ -265,7 +265,7 @@ void ForwardingHandler::p_round_trip_upstream(
     m_upstream_request_msg_sptr = std::shared_ptr<MessageBase>(new MessageBase());
     /// format upstream msg for transmission
     Helpers::makeUpstreamRequest(m_upstream_request_msg_sptr, req);
-    assert( ! m_request_sptr->hasHeader("Upgrade") );
+    assert( ! m_request_sptr->header("Upgrade") );
     Marvin::BufferChainSPtr content = req->getContentBuffer();
     
    TROG_TRACE3("upstream request", Marvin::traceMessage(*m_upstream_request_msg_sptr));

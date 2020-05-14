@@ -22,9 +22,9 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
     
     std::shared_ptr<MessageBase> msg = std::shared_ptr<MessageBase>(new MessageBase());
     
-    msg->setMethod(HttpMethod::GET);
+    msg->method(HttpMethod::GET);
     helpers::applyUriNonProxy(msg, uri);
-    msg->setHeader(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
+    msg->header(Marvin::Http::HeadersV2::Connection, Marvin::Http::HeadersV2::ConnectionClose);
     msg->setContent("");
 
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [client, msg, code](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
@@ -32,15 +32,15 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
         std::cout << "request " << "Error " << ec.value() << " " << ec.message() << std::endl;
         std::cout << "request " << std::hex << client.get() << std::endl;
 //        std::cout << "request " << std::hex << &resp << std::endl;
-//        std::cout << "request " << resp.statusCode() << " " << resp.status() << std::endl;
+//        std::cout << "request " << resp.status_code() << " " << resp.status() << std::endl;
 //        std::cout << "request " << resp.getBody() << std::endl;
 //        std::cout << "request " << std::hex << req.get() << std::endl;
         
 #endif
         MessageReaderSPtr b = client->getResponse();
         std::string bdy = b->getContent()->to_string();
-        auto st = b->statusCode();
-        REQUIRE(b->statusCode() == 200);
+        auto st = b->status_code();
+        REQUIRE(b->status_code() == 200);
     };
     client->asyncWrite(msg, f);
     return client;

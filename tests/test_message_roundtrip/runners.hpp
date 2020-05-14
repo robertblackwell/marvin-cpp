@@ -43,6 +43,7 @@ public:
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
         m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
+            std::string msg = err.message();
             testcase.verifyResponse(err, response_sptr);
         });
     }
@@ -89,7 +90,7 @@ public:
     void http_exec(T& testcase)
     {
         MessageBaseSPtr request_sptr = testcase.makeRequest();
-        request_sptr->setHeader(HeadersV2::Connection,"Keep-Alive");
+        request_sptr->header(HeadersV2::Connection,"Keep-Alive");
         Marvin::BufferChainSPtr body = testcase.makeBody();
         m_host = testcase.getHost();
         m_port = testcase.getPort();
@@ -139,9 +140,9 @@ public:
         MessageBaseSPtr request_sptr = m_testcase.makeRequest();
         Marvin::BufferChainSPtr body = m_testcase.makeBody();
         if (m_times == 1) {
-            request_sptr->setHeader(HeadersV2::Connection,"Close");
+            request_sptr->header(HeadersV2::Connection,"Close");
         } else {
-            request_sptr->setHeader(HeadersV2::Connection,"Keep-Alive");
+            request_sptr->header(HeadersV2::Connection,"Keep-Alive");
         }
         m_client_sptr->asyncWrite(request_sptr, body, [this](ErrorType& err,  MessageBaseSPtr response_sptr) {
             m_testcase.verifyResponse(err, response_sptr);
