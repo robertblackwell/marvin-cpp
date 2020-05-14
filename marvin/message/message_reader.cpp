@@ -35,6 +35,9 @@ void MessageReader::readMessage(std::function<void(Marvin::ErrorType)> cb)
 {
     m_full_rdr.readMessage(*this, [this, cb](ErrorType err)
     {
+        /**
+         * \TODO - make this a post
+         */
         cb(err);
     });
 }

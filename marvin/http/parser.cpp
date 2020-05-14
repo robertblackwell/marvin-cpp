@@ -205,8 +205,8 @@ bool Parser::isError(){
 void Parser::p_save_name_value_pair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value)
 {
     Parser* p = this;//(Parser*)(parser->data);
-    char* n_p = NULL;
-    char* v_p = NULL;
+    char* n_p = nullptr;
+    char* v_p = nullptr;
     int n;
     n = sb_to_string(name, &n_p);
     n = sb_to_string(value,&v_p);
@@ -230,9 +230,8 @@ int Parser::p_on_url_data(http_parser* parser, const char* at, size_t length)
     Parser* p = this; //(Parser*)(parser->data);
     MessageInterface* message = p->currentMessage();
 
-    if( p->url_buf == NULL)
+    if( p->url_buf == nullptr)
         p->url_buf = sb_create();
-        
     message->setIsRequest(true);
     sb_append( p->url_buf, (char*)at, length);
     return 0;
@@ -241,7 +240,7 @@ int Parser::p_on_status_data(http_parser* parser, const char* at, size_t length)
 {
     Parser* p = this;//(Parser*)(parser->data);
     MessageInterface* message = p->currentMessage();
-    if( p->status_buf == NULL)
+    if( p->status_buf == nullptr)
         p->status_buf = sb_create();
     
     message->setIsRequest(false);

@@ -14,9 +14,6 @@ namespace {
 }
 
 namespace Marvin {
-
-
-
 const std::string HeadersV2::AcceptEncoding = "ACCEPT-ENCODING";
 const std::string HeadersV2::Authorization = "AUTHORIZATION";
 const std::string HeadersV2::Connection = "CONNECTION";
@@ -33,7 +30,6 @@ const std::string HeadersV2::RequestHandlerId = "REQUEST-HANDLER-ID";
 
 const std::string HeadersV2::ConnectionClose = "CLOSE";
 const std::string HeadersV2::ConnectionKeepAlive = "KEEP-ALIVE";
-
 
 bool isConnectionKeepAlive(std::string value)
 {
@@ -53,7 +49,7 @@ bool isConnectionKeepAlive(Marvin::HeadersV2& h)
 {
     boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
     if(opt) {
-        std::string s = opt.get();
+        std::string& s = opt.get();
         return isConnectionKeepAlive(s);
     }
     return false;
@@ -63,7 +59,7 @@ bool isConnectionClose(Marvin::HeadersV2& h)
 {
     boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
     if(opt) {
-        std::string s = opt.get();
+        std::string& s = opt.get();
         return isConnectionClose(s);
     }
     return false;
@@ -75,7 +71,7 @@ std::ostream &operator<< (std::ostream &os, HeadersV2& headers)
     int num = headers.size();
     for(int i = 0; i < num; i++) {
         auto p = headers.atIndex(i);
-        os << " " << p.first << ": " << p.second;
+        os << " " << p.key << ": " << p.value;
     }
 }
 
@@ -88,10 +84,10 @@ std::string HeadersV2::str()
 void HeadersV2::copyExcept(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList)
 {
     for(auto it = source.begin(); it != source.end(); it++) {
-        std::string k = it->first;
+        std::string k = it->key;
         if( filterList.end() == filterList.find(k) ) {
             /// if not in list copy
-            dest.setAtKey(it->first, it->second);
+            dest.setAtKey(it->key, it->value);
         }
     }
 }
@@ -102,17 +98,17 @@ HeadersV2::Iterator HeadersV2::Iterator::operator++()
     m_index++;
     return i;
 }
-HeadersV2::Iterator HeadersV2::Iterator::operator++(int junk)
+HeadersV2::Iterator const HeadersV2::Iterator::operator++(int junk)
 {
     m_index++; return *this;
 }
-HeadersV2::Pair& HeadersV2::Iterator::operator*()
+HeadersV2::Field& HeadersV2::Iterator::operator*()
 {
-    return m_headers.m_pairs_vector[m_index];
+    return m_headers.m_Fields_vector[m_index];
 }
-HeadersV2::Pair* HeadersV2::Iterator::operator->()
+HeadersV2::Field* HeadersV2::Iterator::operator->()
 {
-    return &(m_headers.m_pairs_vector[m_index]);
+    return &(m_headers.m_Fields_vector[m_index]);
 }
 bool HeadersV2::Iterator::operator==(const Iterator& rhs)
 {
@@ -123,7 +119,7 @@ bool HeadersV2::Iterator::operator!=(const Iterator& rhs)
     return m_index != rhs.m_index;
 }
 
-HeadersV2::Iterator HeadersV2::Iterator::operator=(const HeadersV2::Iterator &rhs)
+HeadersV2::Iterator & HeadersV2::Iterator::operator=(const HeadersV2::Iterator &rhs)
 {
     return *this;
 }
@@ -131,29 +127,30 @@ HeadersV2::Iterator HeadersV2::Iterator::operator=(const HeadersV2::Iterator &rh
 HeadersV2::HeadersV2()
 {
 }
-HeadersV2::HeadersV2(HeadersV2& other): m_pairs_vector(other.m_pairs_vector)
+HeadersV2::HeadersV2(HeadersV2& other): m_Fields_vector(other.m_Fields_vector)
 {}
-HeadersV2::HeadersV2(HeadersV2&& other): m_pairs_vector(std::move(other.m_pairs_vector))
+HeadersV2::HeadersV2(HeadersV2&& other) noexcept: m_Fields_vector(std::move(other.m_Fields_vector))
 {}
-void HeadersV2::operator =(HeadersV2& other)
+HeadersV2& HeadersV2::operator =(HeadersV2 const& other)
 {
-    m_pairs_vector = other.m_pairs_vector;
+    m_Fields_vector = other.m_Fields_vector;
 }
-void HeadersV2::operator =(HeadersV2&& other)
+HeadersV2& HeadersV2::operator =(HeadersV2&& other)
 {
-    m_pairs_vector = other.m_pairs_vector;
-    other.m_pairs_vector.clear();
+    m_Fields_vector = other.m_Fields_vector;
+    other.m_Fields_vector.clear();
 }
 HeadersV2::HeadersV2(std::vector<std::pair<std::string, std::string>> initialValue)
 {
     typedef std::vector<std::pair<std::string, std::string>> okv_init;
     for(int i = 0; i < initialValue.size(); i++) {
         auto x = initialValue[i];
-        setAtKey(toupper_copy(x.first), x.second);
+        std::string tmp_first = toupper_copy(x.first);
+        setAtKey(tmp_first, x.second);
     }
 }
 
-std::size_t HeadersV2::size() const { return (std::size_t)m_pairs_vector.size(); }
+std::size_t HeadersV2::size() const { return (std::size_t)m_Fields_vector.size(); }
 
 HeadersV2::Iterator HeadersV2::begin()
 {
@@ -162,89 +159,94 @@ HeadersV2::Iterator HeadersV2::begin()
 
 HeadersV2::Iterator HeadersV2::end()
 {
-    return HeadersV2::Iterator(*this, (int)m_pairs_vector.size());
+    return HeadersV2::Iterator(*this, (int)m_Fields_vector.size());
 }
 
-HeadersV2::Iterator HeadersV2::find(std::string key)
+HeadersV2::Iterator HeadersV2::find(HeadersV2::FieldKeyArg key)
 {
     HeadersV2::Iterator it{*this, 0};
-    std::string key_upper = toupper_copy(key);
+    std::string s{key};
+    std::string key_upper = toupper_copy(s);
     for( it = this->begin(); it != this->end(); it++ ) {
-        if ((*it).first == key_upper) {
+        if ((*it).key == key_upper) {
             return it;
         }
     }
     return this->end();
 }
 
-boost::optional<std::size_t> HeadersV2::findAtIndex(std::string key)
+boost::optional<std::size_t> HeadersV2::findAtIndex(HeadersV2::FieldKeyArg key)
 {
-    std::string key_upper = toupper_copy(key);
-    for(std::size_t index = 0; index < m_pairs_vector.size(); index++) {
-        if (m_pairs_vector[index].first == key_upper) {
+    std::string s{key};
+    std::string key_upper = toupper_copy(s);
+    for(std::size_t index = 0; index < m_Fields_vector.size(); index++) {
+        if (m_Fields_vector[index].key == key_upper) {
             return boost::optional<std::size_t>(index);
         }
     }
     return boost::optional<std::size_t>();
 }
 
-std::pair<std::string, std::string> HeadersV2::atIndex(std::size_t index)
+HeadersV2::Field HeadersV2::atIndex(std::size_t index)
 {
-    if (index >= m_pairs_vector.size()) {
+    if (index >= m_Fields_vector.size()) {
         throw HeadersV2::Exception("index is out of bounds accessing headers");
     } else {
-        return m_pairs_vector[index];
+        return m_Fields_vector[index];
     }
 }
-boost::optional<std::string> HeadersV2::atKey(std::string k)
+boost::optional<std::string> HeadersV2::atKey(HeadersV2::FieldKeyArg k)
 {
     boost::optional<std::size_t> index = this->findAtIndex(k);
     if(index) {
-        return m_pairs_vector[index.get()].second;
+        return m_Fields_vector[index.get()].value;
     }
     return boost::optional<std::string>();
 }
-void HeadersV2::setAtKey(std::string k, std::string v)
+void HeadersV2::setAtKey(HeadersV2::FieldKeyArg k, std::string v)
 {
-    std::string key_upper = toupper_copy(k);
+    std::string s{k};
+    std::string key_upper = toupper_copy(s);
     boost::optional<std::size_t> index = this->findAtIndex(k);
     if(index) {
-        m_pairs_vector[index.get()].second = v;
+        m_Fields_vector[index.get()].value = v;
     } else {
-        std::pair<std::string, std::string> pair(key_upper, v);
-        m_pairs_vector.push_back(pair);
+        Field Field{.key=key_upper, .value=v};
+        m_Fields_vector.push_back(Field);
     }
 }
 void HeadersV2::eraseAtIndex(std::size_t position)
 {
-    if((position >= 0)&&(position < m_pairs_vector.size())) {
-        for(std::size_t idx = position; idx < m_pairs_vector.size() - 1; idx ++ ) {
-            m_pairs_vector[idx] = m_pairs_vector[idx+1];
+    if((position >= 0)&&(position < m_Fields_vector.size())) {
+        for(std::size_t idx = position; idx < m_Fields_vector.size() - 1; idx ++ ) {
+            m_Fields_vector[idx] = m_Fields_vector[idx+1];
         }
-        m_pairs_vector.erase(m_pairs_vector.end());
+        m_Fields_vector.erase(m_Fields_vector.end());
     } else {
         return;
     }    
 }
-void HeadersV2::removeAtKey(std::string k)
+void HeadersV2::removeAtKey(HeadersV2::FieldKeyArg k)
 {
     boost::optional<std::size_t> index = this->findAtIndex(k);
     if(index) {
         this->eraseAtIndex(index.get());
     }
 }
+#if 0
 bool HeadersV2::hasKey(std::string k)
 {
     return !(!(this->atKey(k)));
 }
-
+#endif
+#if 1
 bool HeadersV2::sameValues(HeadersV2& other)
 {
     if (this->size() != other.size()) return false;
     for (std::size_t index = 0; index < this->size(); index++ ) {
     
-        std::pair<std::string, std::string> this_element = m_pairs_vector[index];
-        auto found_optional = other.atKey(this_element.first);
+        Field this_element = m_Fields_vector[index];
+        auto found_optional = other.atKey(this_element.key);
         if(found_optional) {
             // found it and unwrapped the options
         } else {
@@ -258,15 +260,15 @@ bool HeadersV2::sameOrderAndValues(HeadersV2& other)
     if (this->size() != other.size()) return false;
     for (std::size_t index = 0; index < this->size(); index++ ) {
     
-        std::pair<std::string, std::string> other_element = other.atIndex(index);
-        std::pair<std::string, std::string> this_element = m_pairs_vector[index];
+        Field other_element = other.atIndex(index);
+        Field this_element = m_Fields_vector[index];
 
-        if(other_element != this_element) {
+        if( (other_element.key != this_element.key) || (other_element.value != this_element.value)) {
             return false;
         }
     }
     return true;
 }
-
+#endif
 
 } // namespace NewHeaders

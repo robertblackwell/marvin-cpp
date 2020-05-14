@@ -28,25 +28,24 @@ bool isConnectionClose(Marvin::HeadersV2& h);
 
 /**
  * \ingroup http
- * \brief A class that represents http headers in request and response messages.
+ * \brief A class that represents http header fields in request and response messages.
  *
- * Maintains an ordered list of std::pair<std::string, std::string>
+ * Maintains an ordered list of std::Field<std::string, std::string>
  * To represent the header lines of an http message.
  * They are maintained in the order they are added.
  * 
- * Keys are case insensitive and hence are converted to upper case 
- * whenever used or stored.
+ * Keys are case insensitive. They are converted to upper case
+ * whenever used or stored. Keys are always passed by ref and key values
+ * should always be one of the string constants defined below.
  * 
  * Values are case sensitive, or at least this class does not mess with the case except
- * in regard to keep-alive/close. chunked and upgrade. In those circumstances all possible case 
+ * in regard to keep-alive/close,  chunked and upgrade. In those circumstances all possible case
  * variations are considered.  
  * 
  */
 class HeadersV2
 {
     public:
-
-
 
         /// \ingroup HttpMessage
         /// \brief  Filters a header map to remove all headers whose keys are IN the filterList
@@ -55,30 +54,35 @@ class HeadersV2
         class Exception: public std::exception
         {
             public:
-                Exception(std::string message) : marvin_message(message){}
-                const char* what() const noexcept {return marvin_message.c_str();}
+                explicit Exception(std::string message) : marvin_message(message){}
+                [[nodiscard]] const char* what() const noexcept override {return marvin_message.c_str();}
             protected:
                 std::string marvin_message;
         };
         typedef std::vector<std::pair<std::string, std::string>>  Initializer;
 
-        typedef std::pair<std::string, std::string> Pair;
-
+        using FieldKeyArg = const std::string; /** type for function arguments */
+        struct Field
+        {
+            using KeyType = std::string;
+            KeyType     key;
+            std::string value;
+        };
         class Iterator
         {
             public:
-                Iterator(HeadersV2& headers, long index = 0) : m_headers(headers), m_index(index){ }
+                explicit Iterator(HeadersV2& headers, long index = 0) : m_headers(headers), m_index(index){ }
             
                 Iterator operator++();
-                Iterator operator++(int junk);
-                Pair& operator*();
-                Pair* operator->();
-                Iterator operator=(const Iterator& rhs);
+                Iterator const operator++(int junk);
+                Field& operator*();
+                Field* operator->();
+                Iterator& operator=(const Iterator& rhs);
                 bool operator==(const Iterator& rhs);
                 bool operator!=(const Iterator& rhs);
             private:
                 HeadersV2& m_headers;
-                // std::vector<std::pair<std::string, std::string>>& m_vector;
+                // std::vector<std::Field<std::string, std::string>>& m_vector;
                 long     m_index;
         };
         // commonly used header keys
@@ -100,59 +104,63 @@ class HeadersV2
         static const std::string ConnectionKeepAlive;
         HeadersV2();
         HeadersV2(HeadersV2& other);
-        HeadersV2(HeadersV2&& other);
-        void operator =(HeadersV2& other);
-        void operator =(HeadersV2&& other);
-        /// \brief This construct provide a means of initializing a OrderedKeyValues object
-        /// using a literal value; specifically a vector of pairs of string values.
-        HeadersV2(std::vector<std::pair<std::string, std::string>> initialValue);
-
-        /** Returns the number of header key-value pairs*/
-        std::size_t size() const;
-        
-        /** Gets a header key and value pair by index - header order is maintained.
-         * Will throw an exception if the index is out of range
-        */
-        std::pair<std::string, std::string> atIndex(std::size_t index);
-
-        boost::optional<std::size_t> findAtIndex(std::string key);
-
-        /** gets the current value for a key or undefined if there is not one. 
-         * Returns this as an optional so that existence can be tested at the 
-         * same time as getting the value
-         * */ 
-        boost::optional< std::string> atKey(std::string k);
-
-        /** will add a new header keya dn value or will update an existing key with a new value*/
-        void setAtKey(std::string k, std::string v);
-
-        /** returns true if there is a header with the given key
-         * Made redundant by atKey returning optional
-        */
-        bool hasKey(std::string k);
+        HeadersV2(HeadersV2&& other) noexcept ;
+        HeadersV2& operator =(HeadersV2 const& other);
+        HeadersV2& operator =(HeadersV2&& other);
 
         /**
-         * Removes the header with the given key value. If there was no such header
+         * \brief This constructor provide a means of initializing a HeadersV2 object
+         * using a literal value; specifically a vector of Fields of string values.
+         */
+         explicit HeadersV2(std::vector<std::pair<std::string, std::string>> initialValue);
+
+        /** Returns the number of header key-value Fields*/
+        std::size_t size() const;
+        
+        /**
+         * \brief Gets a header <key value> Field by index - header order is maintained.
+         * Will throw an exception if the index is out of range
+        */
+        Field atIndex(std::size_t index);
+        /**
+         * \brief finds the index of a header by key.
+         * @return optional value
+         */
+        boost::optional<std::size_t> findAtIndex(FieldKeyArg key);
+
+        /**
+         * \brief Gets the current value for a key or undefined if there is not one.
+         * Returns this as an optional so that existence can be tested at the 
+         * same time as getting the value
+         */
+        boost::optional<std::string> atKey(FieldKeyArg k);
+
+        /**
+         * \brief add a new header <key value> will update an existing key with a new value
+         */
+        void setAtKey(FieldKeyArg k, std::string v);
+
+        /**
+         * \brief Removes the header with the given key value. If there was no such header
          * no action is taken.
          * */
-        void removeAtKey(std::string k);
+        void removeAtKey(FieldKeyArg k);
 
-        /** deprecated*/
-        void erase(std::string k);
-
-        bool sameValues(HeadersV2& other);
-        bool sameOrderAndValues(HeadersV2& other);
         /** Iterator base find function*/
-        Iterator find(std::string k);
+        Iterator find(FieldKeyArg k);
         Iterator begin();
         Iterator end();
         std::string str();
         friend std::ostream &operator<< (std::ostream &os, HeadersV2 &headers);
 
+        /// used for testing
+        bool sameValues(HeadersV2& other);
+        bool sameOrderAndValues(HeadersV2& other);
+
     private:
         void eraseAtIndex(std::size_t position);
 
-        std::vector<Pair> m_pairs_vector;
+        std::vector<Field> m_Fields_vector;
         // std::map<std::string, long> m_keys;
 };
 } //namespace

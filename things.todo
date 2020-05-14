@@ -19,16 +19,17 @@ Polishing:
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
-  ☐ revamp the use of simple_buffer in the parser - simple buffer seems like an unnecessary "module"
-  ☐ think about keeping body as a buffer chain
+
+  ☐ msg and header serialization is a mess - clean it up - almost done
+  ☐ consider making MessageBase inherit from Headers and change name to HeaderFields or some such  
   ☐ consider beast model of message header+body and think about using string_view rather than string, or at least std::string&  new parser opportunity to rethink header definition and how values are processed by parser
   ☐ parsing needs to test parse errors, connect and upgrade
   ☐ command interface to simple_mitm - finish up the first phase of this - its close
-  ☐ make timeouts effective in the top 500 some sites dont respond and mitm looses an FD - this needs to be terminated .
   ☐ implement https hosts update on the fly - and ensure that MitmApp uses the info - maybe add an all/none flag to prevent unnecessary regex matches
   ☐ make logging level a cli option for simple_proxy this means fix the global filter in Trog
-  ☐ Certificate initialization - not quite complete - uconsider env variable
-  ☐ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
+  ☐ simple_buffer
+      ☐ revamp the use of simple_buffer in the parser - simple buffer seems like an unnecessary "module"
+      ☐ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
   ☐ remove the signal handling stuff from tcp_server and make available to simple_proxy to use for all threads.
   ☐ remove raw pointer to connection handler from tcp_server - this is a related issue decide about uuid in the mitm_app currently not initialized
   ☐ cleanup all the stuff that tries to turn objects into strings - its a mess
@@ -57,6 +58,10 @@ Bugs:
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Certificate initialization - not quite complete - uconsider env variable @done (20-05-11 11:58) @project(Next step)
+ ✔ think about keeping body as a buffer chain @done (20-05-11 11:57) @project(Next step)
+ ✔ make timeouts effective in the top 500 some sites dont respond and mitm looses an FD - this needs to be terminated . @done (20-05-11 11:57) @project(Next step)
+ ✔ headersv2 - test iterators copy and move constructor and assignment @done (20-05-11 11:57) @project(Next step)
  ✔ research restructuring messagereader so as not to be a mix of 3 other classes @done (20-05-10 18:43) @project(Next step)
  ✔ break message reader into bits - maybe @done (20-05-10 18:43) @project(Next step)
  ✔  generally do a rebiew for unnecessary copying of data @done (20-05-10 18:43) @project(Next step)

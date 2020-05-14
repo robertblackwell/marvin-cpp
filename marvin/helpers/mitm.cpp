@@ -163,7 +163,7 @@ void makeUpstreamHttpsRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr
     int nh = req->getHeaders().size();
     for(int i = 0; i < nh; i++ ) {
         auto y = req->getHeaders().atIndex(i);
-        result->setHeader(y.first, y.second);
+        result->setHeader(y.key, y.value);
     }
     auto cb = req->getContentBuffer();
     result->setContentBuffer(cb);

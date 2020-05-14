@@ -18,6 +18,30 @@ TEST_CASE("append")
     auto x = boost::asio::is_const_buffer_sequence<Marvin::BufferChain::AsioConstBufferSeq>();
     auto s1 = bc_sptr->to_string();
 }
+TEST_CASE("m_buffer append_realloc")
+{
+    MBuffer mb{0};
+    CHECK(mb.capacity() == MBuffer::min_buffer_size);
+    std::string big_str = "";
+    for(int j = 0; j<100; j++) {
+        big_str += "0123456789ABCDEF";
+    }
+    static std::string const tmpchars = "abcdefghijlkn";
+    static std::string tmpchars2 = "abcdefghijlkn";
+    // calls the append(std::string* ) variant
+    mb.append(&big_str);
+
+    // calls the append(std::string const & ) variant
+    mb.append(tmpchars);
+    mb.append(tmpchars2);
+
+    // calls the append(std::string && ) variant
+    mb.append("thisisatemporary");
+    mb.append(std::string("thisisanothertemporary"));
+    mb.append(std::move(std::string("thisisanothertemporary")));
+    CHECK(mb.capacity() > MBuffer::min_buffer_size);
+    std::cout << __func__ << std::endl;
+}
 TEST_CASE("buffer_chain_assignment")
 {
     MBuffer mb(100);

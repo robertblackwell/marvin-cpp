@@ -6,13 +6,11 @@
 /// No actual transmission is involved
 //
 #if 1
+
 #include <iostream>
-#include <sstream>
 #include <string>
-#include <unistd.h>
 #include <thread>
-#include <pthread.h>
-#include <boost/tokenizer.hpp>
+#include <chrono>
 #include <boost/algorithm/string/trim.hpp>
 #include <doctest/doctest.h>
 
@@ -25,9 +23,10 @@
 #include <marvin/connection/socket_factory.hpp>
 
 #include <marvin/configure_trog.hpp>
+
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
-#endif 
+#endif
 #pragma mark - mock up a MessageReader
 
 using namespace Marvin;
@@ -56,63 +55,66 @@ MessageReaderSPtr makeMock()
 //Content-Length: 1270
 
 /// Make a typical response message
-void fillMsgRdrAsResponse_01(MessageReaderSPtr msgRdr)
+void fillMsgAsResponse_01(MessageBaseSPtr msgRdr)
 {
     msgRdr->setStatus("OK");
     msgRdr->setStatusCode(200);
     msgRdr->setHeader(HeadersV2::Connection, HeadersV2::ConnectionClose);
-    msgRdr->setHeader("Cache-Control"," max-age=604800");
-    msgRdr->setHeader("Content-Type"," text/html");
-    msgRdr->setHeader("Date"," Sun, 24 Nov 2013 01:38:41 GMT");
-    msgRdr->setHeader("Etag"," \"359670651\"");
-    msgRdr->setHeader("Connection"," keep-alive");
-    msgRdr->setHeader("Expires"," Sun, 01 Dec 2013 01:38:41 GMT");
-    msgRdr->setHeader("Last-Modified"," Fri, 09 Aug 2013 23:54:35 GMT");
-    msgRdr->setHeader("Server"," ECS (mia/41C4)");
-    msgRdr->setHeader("X-Cache"," HIT");
-    msgRdr->setHeader("x-ec-custom-error"," 1");
-    msgRdr->setHeader("Transfer-Encoding"," chunk");
+    msgRdr->setHeader("Cache-Control", " max-age=604800");
+    msgRdr->setHeader("Content-Type", " text/html");
+    msgRdr->setHeader("Date", " Sun, 24 Nov 2013 01:38:41 GMT");
+    msgRdr->setHeader("Etag", " \"359670651\"");
+    msgRdr->setHeader("Connection", " keep-alive");
+    msgRdr->setHeader("Expires", " Sun, 01 Dec 2013 01:38:41 GMT");
+    msgRdr->setHeader("Last-Modified", " Fri, 09 Aug 2013 23:54:35 GMT");
+    msgRdr->setHeader("Server", " ECS (mia/41C4)");
+    msgRdr->setHeader("X-Cache", " HIT");
+    msgRdr->setHeader("x-ec-custom-error", " 1");
+    msgRdr->setHeader("Transfer-Encoding", " chunk");
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContentBuffer(bdy);
 }
+
 /// Verify the correctness of the typical response message
 void verifyResponse_01(MessageBaseSPtr msg)
 {
-    auto trim = [](std::string s) -> std::string {
+    auto trim = [](std::string s) -> std::string
+    {
         return boost::algorithm::trim_copy(s);
     };
-    REQUIRE(msg->status() == "OK");
-    REQUIRE(msg->statusCode() == 200);
-    REQUIRE(msg->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
+        REQUIRE(msg->status() == "OK");
+        REQUIRE(msg->statusCode() == 200);
+        REQUIRE(msg->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
     auto xx = msg->getHeader("Cache-Control");
-    REQUIRE(msg->getHeader("Cache-Control") == trim(" max-age=604800"));
-    REQUIRE(msg->getHeader("Content-Type") == trim(" text/html"));
-    REQUIRE(msg->getHeader("Date") == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
-    REQUIRE(msg->getHeader(HeadersV2::Date) == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
+        REQUIRE(msg->getHeader("Cache-Control") == trim(" max-age=604800"));
+        REQUIRE(msg->getHeader("Content-Type") == trim(" text/html"));
+        REQUIRE(msg->getHeader("Date") == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
+        REQUIRE(msg->getHeader(HeadersV2::Date) == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
     /// ETag just not passed down
-    REQUIRE( ! msg->hasHeader("Etag"));
-    REQUIRE( ! msg->hasHeader(HeadersV2::ETag));
+        REQUIRE(!msg->hasHeader("Etag"));
+        REQUIRE(!msg->hasHeader(HeadersV2::ETag));
     /// proxy transforms chunked encoding to content-length style
-    REQUIRE( ! msg->hasHeader("Transfer-Encoding"));
-    REQUIRE( ! msg->hasHeader(HeadersV2::TransferEncoding));
-    REQUIRE(msg->hasHeader("Content-Length"));
-    REQUIRE(msg->hasHeader(HeadersV2::ContentLength));
+        REQUIRE(!msg->hasHeader("Transfer-Encoding"));
+        REQUIRE(!msg->hasHeader(HeadersV2::TransferEncoding));
+        REQUIRE(msg->hasHeader("Content-Length"));
+        REQUIRE(msg->hasHeader(HeadersV2::ContentLength));
     /// and we force connection close
-    REQUIRE(msg->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
+        REQUIRE(msg->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
 
-    REQUIRE(msg->getHeader("Expires") == trim(" Sun, 01 Dec 2013 01:38:41 GMT"));
-    REQUIRE(msg->getHeader("Last-Modified") == trim(" Fri, 09 Aug 2013 23:54:35 GMT"));
-    REQUIRE(msg->getHeader("Server") == trim(" ECS (mia/41C4)"));
-    REQUIRE(msg->getHeader("X-Cache") == trim(" HIT"));
-    REQUIRE(msg->getHeader("x-ec-custom-error") == trim(" 1"));
+        REQUIRE(msg->getHeader("Expires") == trim(" Sun, 01 Dec 2013 01:38:41 GMT"));
+        REQUIRE(msg->getHeader("Last-Modified") == trim(" Fri, 09 Aug 2013 23:54:35 GMT"));
+        REQUIRE(msg->getHeader("Server") == trim(" ECS (mia/41C4)"));
+        REQUIRE(msg->getHeader("X-Cache") == trim(" HIT"));
+        REQUIRE(msg->getHeader("x-ec-custom-error") == trim(" 1"));
 //    std::string s = "012345678956";
 //    Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
 //    msgRdr->setBody(bdy);
 
 }
+
 /// Fill a typical pstream non proxy request
-void fillMsgRdrAsRequest_01(MessageReaderSPtr msgRdr)
+void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
 {
 // GET / HTTPS/1.1
 // Host: example.org
@@ -131,35 +133,39 @@ void fillMsgRdrAsRequest_01(MessageReaderSPtr msgRdr)
     Helpers::applyUriProxy(msgRdr, uri);
 //    msgRdr->setUri("http://example.org/somepath/script.php?parm=123456#fragment");
 //    msgRdr->setHeader(HeadersV2::Host, "example.org");
-    msgRdr->setHeader("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
-    msgRdr->setHeader("Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
-    msgRdr->setHeader("Accept-Language","en");
-    msgRdr->setHeader("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    msgRdr->setHeader(HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
-    msgRdr->setHeader(HeadersV2::Connection,"Keep-Alive, TE");
-    msgRdr->setHeader("TE","deflate, gzip, chunked, trailer");
-    msgRdr->setHeader(HeadersV2::TransferEncoding,"chunked");
-    msgRdr->setHeader(HeadersV2::ETag,"1928273tefadseercnbdh");
+    msgRdr->setHeader("User-Agent", "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
+    msgRdr->setHeader("Accept",
+                      "text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
+    msgRdr->setHeader("Accept-Language", "en");
+    msgRdr->setHeader("Accept-Charset", "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
+    msgRdr->setHeader(HeadersV2::AcceptEncoding, "deflate, gzip, x-gzip, identity, *;q=0");
+    msgRdr->setHeader(HeadersV2::Connection, "Keep-Alive, TE");
+    msgRdr->setHeader("TE", "deflate, gzip, chunked, trailer");
+    msgRdr->setHeader(HeadersV2::TransferEncoding, "chunked");
+    msgRdr->setHeader(HeadersV2::ETag, "1928273tefadseercnbdh");
     std::string s = "012345678956";
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContent(bdy);
 }
+
 /// Verify the typical non proxy request
 void verifyRequest_01(MessageBaseSPtr msgSPtr)
 {
     /// relative url
-    REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
     /// host name has port
-    REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999" );
-    REQUIRE(msgSPtr->getHeader(HeadersV2::AcceptEncoding) == "identity");
-    REQUIRE(msgSPtr->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
-    REQUIRE(msgSPtr->getHeader(HeadersV2::TE) == "");
-    REQUIRE(msgSPtr->getHeader("User-Agent") =="Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
-    REQUIRE(msgSPtr->getHeader("Accept-Language") == "en");
-    REQUIRE(msgSPtr->getHeader("Accept-Charset") == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    REQUIRE( ! msgSPtr->hasHeader(HeadersV2::TransferEncoding));
-    REQUIRE( ! msgSPtr->hasHeader(HeadersV2::ETag));
+        REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999");
+        REQUIRE(msgSPtr->getHeader(HeadersV2::AcceptEncoding) == "identity");
+        REQUIRE(msgSPtr->getHeader(HeadersV2::Connection) == HeadersV2::ConnectionClose);
+        REQUIRE(msgSPtr->getHeader(HeadersV2::TE) == "");
+        REQUIRE(msgSPtr->getHeader("User-Agent") ==
+                "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
+        REQUIRE(msgSPtr->getHeader("Accept-Language") == "en");
+        REQUIRE(msgSPtr->getHeader("Accept-Charset") == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
+        REQUIRE(!msgSPtr->hasHeader(HeadersV2::TransferEncoding));
+        REQUIRE(!msgSPtr->hasHeader(HeadersV2::ETag));
 }
+
 /// request 02 test a proxy request
 void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
 {
@@ -167,40 +173,45 @@ void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
     // proxy full uri
     Helpers::applyUriProxy(msgSPtr, uri);
 }
+
 /// verify request 02 test a proxy request
 void verifyRequest_02(MessageBaseSPtr msgSPtr)
 {
-    REQUIRE(msgSPtr->uri() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
-    REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999" );
+        REQUIRE(msgSPtr->uri() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999");
 }
+
 /// Request 03 non proxy request
-void fillMsgRequest03(MessageBaseSPtr msgSPtr)
+void fillMsgRequest_03(MessageBaseSPtr msgSPtr)
 {
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // non proxy relative uri
     Helpers::applyUriNonProxy(msgSPtr, uri);
 }
+
 /// Verify request 03
 void verifyRequest_03(MessageBaseSPtr msgSPtr)
 {
-    REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
-    REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999" );
+        REQUIRE(msgSPtr->uri() == "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msgSPtr->getHeader(HeadersV2::Host) == "example.org:9999");
 }
+
 /// Verify request 03 using reference not pointer
-void verifyNonPointerRequest_03(MessageBase& msg)
+void verifyNonPointerRequest_03(MessageBase &msg)
 {
-    REQUIRE(msg.uri() == "/somepath/script.php?parm=123456#fragment");
-    REQUIRE(msg.getHeader(HeadersV2::Host) == "example.org:9999" );
+        REQUIRE(msg.uri() == "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(msg.getHeader(HeadersV2::Host) == "example.org:9999");
 }
+
 /// Verify request 03 using reference not pointer
-void failedNonPointerRequest_03(MessageBase& msg)
+void failedNonPointerRequest_03(MessageBase &msg)
 {
-    REQUIRE(msg.uri() != "/somepath/script.php?parm=123456#fragment");
-    REQUIRE(!msg.hasHeader(HeadersV2::Host));
+        REQUIRE(msg.uri() != "/somepath/script.php?parm=123456#fragment");
+        REQUIRE(!msg.hasHeader(HeadersV2::Host));
 }
 
 /// Fill minimum requirements for a request
-void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
+void fillMsgAsRequest(MessageBaseSPtr msgRdr)
 {
     msgRdr->setMethod(HTTP_POST);
     Marvin::Uri uri("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
@@ -211,155 +222,488 @@ void fillMsgRdrAsRequest(MessageReaderSPtr msgRdr)
     Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
     msgRdr->setContent(bdy);
 }
+
 /// Verify minimum requirements
 bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
 {
     auto meth = msgSPtr->getMethodAsString();
-    CHECK_FALSE(meth == "");
+        CHECK_FALSE(meth == "");
     auto uri = msgSPtr->uri();
-    CHECK_FALSE(uri == "");
-    CHECK( msgSPtr->hasHeader(HeadersV2::Host));
-    CHECK( msgSPtr->hasHeader(HeadersV2::Connection));
+        CHECK_FALSE(uri == "");
+        CHECK(msgSPtr->hasHeader(HeadersV2::Host));
+        CHECK(msgSPtr->hasHeader(HeadersV2::Connection));
     {
-    auto bb = ( (msgSPtr->hasHeader(HeadersV2::ContentLength)) || (msgSPtr->hasHeader(HeadersV2::TransferEncoding)));
-    CHECK(bb);
+        auto bb = ((msgSPtr->hasHeader(HeadersV2::ContentLength)) || (msgSPtr->hasHeader(HeadersV2::TransferEncoding)));
+            CHECK(bb);
     }
-    if(msgSPtr->hasHeader(HeadersV2::ContentLength) && (msgSPtr->getHeader(HeadersV2::ContentLength) != "0" )){
+    if (msgSPtr->hasHeader(HeadersV2::ContentLength) && (msgSPtr->getHeader(HeadersV2::ContentLength) != "0")) {
         int cl = std::stoi(msgSPtr->getHeader(HeadersV2::ContentLength));
         auto contentChain = msgSPtr->getContentBuffer();
-        CHECK(contentChain != nullptr);
-        if( contentChain != nullptr) {
-            CHECK(contentChain->size() == cl);
+            CHECK(contentChain != nullptr);
+        if (contentChain != nullptr) {
+                CHECK(contentChain->size() == cl);
         }
     }
     return true;
 }
 } //namespace
-#pragma mark - TEST_CASE 
-TEST_CASE("Helpers_Example")
+#pragma mark - TEST_CASE
+TEST_CASE ("Helpers_Example")
 {
     Marvin::Uri u("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
-    CHECK(u.scheme() == "http");
-    CHECK(u.server() == "somewhere.com");
-    CHECK(u.host() == "somewhere.com:80");
-    CHECK(u.port() == 80);
-    CHECK(u.search() == "a=1111#fragment");
-    CHECK(u.relativePath() == "/subdirpath/index.php?a=1111#fragment");
-    CHECK(u.absolutePath() == "http://somewhere.com:80/subdirpath/index.php?a=1111#fragment");
+        CHECK(u.scheme() == "http");
+        CHECK(u.server() == "somewhere.com");
+        CHECK(u.host() == "somewhere.com:80");
+        CHECK(u.port() == 80);
+        CHECK(u.search() == "a=1111#fragment");
+        CHECK(u.relativePath() == "/subdirpath/index.php?a=1111#fragment");
+        CHECK(u.absolutePath() == "http://somewhere.com:80/subdirpath/index.php?a=1111#fragment");
 }
-TEST_CASE("Uri")
+
+TEST_CASE ("Uri")
 {
     MessageReaderSPtr msg = makeMock();
-    fillMsgRdrAsRequest(msg);
+    fillMsgAsRequest(msg);
     verifyRequest_MimimumRequirements(msg);
 }
-TEST_CASE("response_01")
+
+TEST_CASE ("response_01")
 {
     MessageReaderSPtr msgRdr = makeMock();
-    fillMsgRdrAsResponse_01(msgRdr);
+    fillMsgAsResponse_01(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     Marvin::ErrorType err = Marvin::make_error_ok();
-    Helpers::makeDownstreamResponse(msgSPtr,msgRdr, err);
+    Helpers::makeDownstreamResponse(msgSPtr, msgRdr, err);
     verifyResponse_01(msgSPtr);
 }
-TEST_CASE("request_01")
+
+TEST_CASE ("request_01")
 {
     MessageReaderSPtr msgRdr = makeMock();
-    fillMsgRdrAsRequest_01(msgRdr);
+    fillMsgAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     Helpers::makeUpstreamRequest(msgSPtr, msgRdr);
     verifyRequest_01(msgSPtr);
 }
-TEST_CASE("request_02")
+
+TEST_CASE ("request_02")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_02(msgSPtr);
     verifyRequest_02(msgSPtr);
 }
 
-TEST_CASE("request_03")
+TEST_CASE ("request_03")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    fillMsgRequest03(msgSPtr);
+    fillMsgRequest_03(msgSPtr);
     verifyRequest_03(msgSPtr);
 }
-TEST_CASE("min_requirement_request_01")
+
+TEST_CASE ("min_requirement_request_01")
 {
     MessageReaderSPtr msgRdr = makeMock();
-    fillMsgRdrAsRequest_01(msgRdr);
+    fillMsgAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     std::cout << traceMessage(*msgSPtr) << std::endl;
     std::cout << *msgSPtr << std::endl;
 }
-TEST_CASE("copy ctor")
+
+TEST_CASE ("copy ctor")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    fillMsgRequest03(msgSPtr);
+    fillMsgRequest_03(msgSPtr);
     msgSPtr->getContentBuffer()->append("01234567890");
     // make a copy
     MessageBase tmp_msg{(*msgSPtr)};
     // demonstrate we have two copies of the same value
-    CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
-    CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
+        CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
+        CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
     // now prove the body buffers have been copied and not just two pointers to the same thing
     tmp_msg.getContentBuffer()->append("XXXX");
-    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
-    CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
+        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
+        CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
 
     verifyRequest_03(msgSPtr);
     verifyNonPointerRequest_03(tmp_msg);
     std::string s4 = msgSPtr->getContentBuffer()->block_at(0).toString();
 }
-TEST_CASE("copy assignment")
+
+TEST_CASE ("copy assignment")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    fillMsgRequest03(msgSPtr);
+    fillMsgRequest_03(msgSPtr);
     msgSPtr->getContentBuffer()->append("01234567890");
     // make a new one and assign
     MessageBase tmp_msg;
     tmp_msg = *msgSPtr;
 
     // demonstrate we have two copies of the same value
-    CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
-    CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
+        CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
+        CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
     // now prove the body buffers have been copied and not just two pointers to the same thing
     tmp_msg.getContentBuffer()->append("XXXX");
-    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
-    CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
+        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
+        CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
 
     verifyRequest_03(msgSPtr);
     verifyNonPointerRequest_03(tmp_msg);
     std::string s4 = msgSPtr->getContentBuffer()->block_at(0).toString();
 }
 
-TEST_CASE("move ctor")
+TEST_CASE ("move ctor")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    fillMsgRequest03(msgSPtr);
+    fillMsgRequest_03(msgSPtr);
     msgSPtr->getContentBuffer()->append("01234567890");
     // ctor move
     MessageBase tmp_msg{std::move(*msgSPtr)};
     // demonstrate that it was a move
-    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
-    CHECK(msgSPtr->getContentBuffer()->to_string() == "");
-    CHECK(msgSPtr->getContentBuffer()->size() == 0);
+        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
+        CHECK(msgSPtr->getContentBuffer()->to_string() == "");
+        CHECK(msgSPtr->getContentBuffer()->size() == 0);
     failedNonPointerRequest_03(*msgSPtr);
-    verifyNonPointerRequest_03(tmp_msg);    
+    verifyNonPointerRequest_03(tmp_msg);
 }
-TEST_CASE("move assignment")
+
+TEST_CASE ("move assignment")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    fillMsgRequest03(msgSPtr);
+    fillMsgRequest_03(msgSPtr);
     msgSPtr->getContentBuffer()->append("01234567890");
     // ctor move
     MessageBase tmp_msg;
     tmp_msg = std::move(*msgSPtr);
     // demonstrate that it was a move
-    CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
-    CHECK(msgSPtr->getContentBuffer()->to_string() == "");
-    CHECK(msgSPtr->getContentBuffer()->size() == 0);
+        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
+        CHECK(msgSPtr->getContentBuffer()->to_string() == "");
+        CHECK(msgSPtr->getContentBuffer()->size() == 0);
     failedNonPointerRequest_03(*msgSPtr);
     verifyNonPointerRequest_03(tmp_msg);
+}
+TEST_CASE("serialize 1")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    for(int i = 0; i < 10000; i++) {
+        MBufferSPtr mb = serializeHeaders(*msgSPtr);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::cout << "serialize 1" << " duration(millisecs): " << duration.count() << std::endl;
+}
+//TEST_CASE("serialize 2")
+//{
+//    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+//    fillMsgAsResponse_01(msgSPtr);
+//    auto start = std::chrono::high_resolution_clock::now();
+//    for(int i = 0; i < 10000; i++) {
+//        BufferChainSPtr bc_sptr = BufferChain::makeSPtr();
+//        serialize_headers(*msgSPtr, bc_sptr);
+//    }
+//    auto stop = std::chrono::high_resolution_clock::now();
+//    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+//    auto x = duration.count();
+//    std::cout << "serialize 2" << " duration(millisecs): " << duration.count() << std::endl;
+//}
+TEST_CASE("header_serialize 1")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    for(int i = 0; i < 10000; i++)
+    {
+        std::string str = "";
+        std::ostringstream os;
+        os.str(str);
+        for (auto const &h : msgSPtr->getHeaders()) {
+            os << h.key << ": " << h.value << "\r\n";
+        }
+        // end of headers
+        os << "\r\n";
+        str = os.str();
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::cout << "headers serialize 1" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 1" << " duration(millisecs): " << duration.count() << std::endl;
+}
+TEST_CASE("header_serialize_2")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    for(int i = 0; i < 10000; i++)
+    {
+        BufferChainSPtr bchain_sptr = BufferChain::makeSPtr();
+        MBufferSPtr mb2 = MBuffer::makeSPtr(256);
+        auto hdrs = msgSPtr->getHeaders();
+        for(auto const& h : hdrs) {
+            int num_bytes = 0;
+            do {
+                mb2 = MBuffer::makeSPtr(256 + num_bytes + 10);
+                num_bytes = snprintf((char *) mb2->data(), mb2->capacity(), "%s: %s\r\n", h.key.c_str(), h.value.c_str());
+                mb2->setSize(num_bytes);
+            } while(num_bytes > 256 - 1);
+            bchain_sptr->push_back(mb2);
+        }
+        bchain_sptr->append("\r\n");
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::cout << "headers serialize 2" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 2" << " duration(millisecs): " << duration.count() << std::endl;
+}
+std::string fmt_headers_stream(MessageBaseSPtr msgSPtr)
+{
+    std::string str = "";
+    std::ostringstream os;
+    os.str(str);
+    auto hdrs = msgSPtr->getHeaders();
+    for (auto const &h : hdrs) {
+        os << h.key << ": " << h.value << "\r\n";
+    }
+// end of headers
+    os << "\r\n";
+    return os.str();
+}
+void my_memcpy_string(MBufferSPtr mb, std::string const& str)
+{
+    memcpy(mb->nextAvailable(), str.c_str(), str.size()); mb->setSize(mb->size()+str.size());
+}
+void fmtHeaders2(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+{
+    static const std::string lfcr = "\r\n";
+    static const std::string colon{": "};
+    for(auto const& h : hdrs) {
+        my_memcpy_string(mb, h.key);
+        my_memcpy_string(mb, colon);
+        my_memcpy_string(mb, h.value);
+        my_memcpy_string(mb, lfcr);
+    }
+    my_memcpy_string(mb, lfcr);
+}
+
+void fmtHeaders1(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+{
+    for(auto const& h : hdrs) {
+        memcpy(mb->nextAvailable(), h.key.c_str(), h.key.size());
+        mb->setSize(mb->size()+h.key.size());
+        memcpy(mb->nextAvailable(), (char*)": ", 2);
+        mb->setSize(mb->size() + 2);
+        memcpy(mb->nextAvailable(), h.value.c_str(), h.value.size());
+        mb->setSize(mb->size() + h.value.size());
+        memcpy(mb->nextAvailable(), (char*)"\r\n", 2);
+        mb->setSize(mb->size() + 2);
+    }
+    memcpy(mb->nextAvailable(), (char*)"\r\n", 2); mb->setSize(mb->size() + 2);
+}
+
+void fmtHeaders3(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+{
+    for(auto const& h : hdrs) {
+        mb->append((void*)h.key.c_str(), h.key.size());
+        mb->append((void*)(char*)": ", 2);
+        mb->append((void*)h.value.c_str(), h.value.size());
+        mb->append((void*)(char*)"\r\n", 2);
+    }
+    mb->append((void*)(char*)"\r\n", 2);
+}
+void fmtMsg(Marvin::MessageBaseSPtr msg_sptr, MBufferSPtr mb)
+{
+
+}
+void fmtHeaders4(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+{
+    static const std::string lfcr = "\r\n";
+    static const std::string colon{": "};
+    for(auto const& h : hdrs) {
+        mb->append((void*)h.key.c_str(), h.key.size());
+        mb->append((void*)(colon.c_str()), 2);
+        mb->append((void*)h.value.c_str(), h.value.size());
+        mb->append((void*)(lfcr.c_str()), 2);
+    }
+    mb->append((void*)(lfcr.c_str()), 2);
+}
+TEST_CASE("header_serialize_3")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto hdrs = msgSPtr->getHeaders();
+    MBufferSPtr mb2;
+    for(int i = 0; i < 10000; i++)
+    {
+        mb2 = MBuffer::makeSPtr(256*4*8);
+        for(auto const& h : hdrs) {
+            int num_bytes = 0;
+            memcpy(mb2->nextAvailable(), h.key.c_str(), h.key.size()); mb2->setSize(mb2->size()+h.key.size());
+            memcpy(mb2->nextAvailable(), (char*)": ", 2); mb2->setSize(mb2->size() + 2);
+            memcpy(mb2->nextAvailable(), h.value.c_str(), h.value.size()); mb2->setSize(mb2->size() + h.value.size());
+            assert(num_bytes < 256*4*8);
+            memcpy(mb2->nextAvailable(), (char*)"\r\n", 2); mb2->setSize(mb2->size() + 2);
+        }
+        memcpy(mb2->nextAvailable(), (char*)"\r\n", 2); mb2->setSize(mb2->size() + 2);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::string ss = fmt_headers_stream(msgSPtr);
+    std::string sss = mb2->toString();
+    bool xy = (ss == sss);
+    CHECK(xy);
+    std::cout << "headers serialize 3" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 3" << " duration(millisecs): " << duration.count() << std::endl;
+}
+TEST_CASE("header_serialize_4")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto hdrs = msgSPtr->getHeaders();
+    MBufferSPtr mb2;
+    for(int i = 0; i < 10000; i++)
+    {
+        mb2 = MBuffer::makeSPtr(256*4*8);
+        fmtHeaders1(hdrs, mb2);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::string ss = fmt_headers_stream(msgSPtr);
+    std::string sss = mb2->toString();
+    bool xy = (ss == sss);
+    CHECK(xy);
+
+    std::cout << "headers serialize 4" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 4" << " duration(millisecs): " << duration.count() << std::endl;
+}
+TEST_CASE("header_serialize_5")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto hdrs = msgSPtr->getHeaders();
+    MBufferSPtr mb2;
+    for(int i = 0; i < 10000; i++)
+    {
+        mb2 = MBuffer::makeSPtr(256*4*8);
+        fmtHeaders2(hdrs, mb2);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::string ss = fmt_headers_stream(msgSPtr);
+    std::string sss = mb2->toString();
+    bool xy = (ss == sss);
+    CHECK(xy);
+    CHECK((mb2->toString() == fmt_headers_stream(msgSPtr)));
+    std::cout << "headers serialize 5" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 5" << " duration(millisecs): " << duration.count() << std::endl;
+}
+TEST_CASE("header_serialize_6")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto hdrs = msgSPtr->getHeaders();
+    MBufferSPtr mb2;
+    for(int i = 0; i < 10000; i++)
+    {
+        mb2 = MBuffer::makeSPtr(256*4*8);
+        fmtHeaders3(hdrs, mb2);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::string ss = fmt_headers_stream(msgSPtr);
+    std::string sss = mb2->toString();
+    bool xy = (ss == sss);
+    CHECK(xy);
+        CHECK((mb2->toString() == fmt_headers_stream(msgSPtr)));
+    std::cout << "headers serialize 6" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 6" << " duration(millisecs): " << duration.count() << std::endl;
+}
+TEST_CASE("header_serialize_7")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto hdrs = msgSPtr->getHeaders();
+    MBufferSPtr mb2;
+    for(int i = 0; i < 10000; i++)
+    {
+        mb2 = MBuffer::makeSPtr(256*4*8);
+        fmtHeaders4(hdrs, mb2);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::string ss = fmt_headers_stream(msgSPtr);
+    std::string sss = mb2->toString();
+    bool xy = (ss == sss);
+        CHECK(xy);
+        CHECK((mb2->toString() == fmt_headers_stream(msgSPtr)));
+    std::cout << "headers serialize 7" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 7" << " duration(millisecs): " << duration.count() << std::endl;
+}
+TEST_CASE("message_serialize_8")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto hdrs = msgSPtr->getHeaders();
+    MBufferSPtr mb2;
+    for(int i = 0; i < 10000; i++)
+    {
+        mb2 = MBuffer::makeSPtr(256*4*8);
+        serializeHeaders(*msgSPtr, *mb2);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+//    std::string ss = fmt_headers_stream(msgSPtr);
+//    std::string sss = mb2->toString();
+//    bool xy = (ss == sss);
+//        CHECK(xy);
+//        CHECK((mb2->toString() == fmt_headers_stream(msgSPtr)));
+    std::cout << "headers serialize 8" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 8" << " duration(millisecs): " << duration.count() << std::endl;
+}
+// this give a typical measurement of 17millisecs the previous give 73
+TEST_CASE("message_serialize_9")
+{
+    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    fillMsgAsResponse_01(msgSPtr);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto hdrs = msgSPtr->getHeaders();
+    MBufferSPtr mb2;
+    for(int i = 0; i < 10000; i++)
+    {
+        mb2 = MBuffer::makeSPtr(256*4*8);
+        serialize(*msgSPtr, mb2);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto x = duration.count();
+    std::string ss = serializeHeaders(*msgSPtr)->toString();
+    std::string sss = mb2->toString();
+    bool xy = (ss == sss);
+        CHECK(xy);
+        CHECK((mb2->toString() == serializeHeaders(*msgSPtr)->toString()));
+    std::cout << "headers serialize 9" << " duration(millisecs): " << duration.count() << std::endl;
+    std::cout << "headers serialize 9" << " duration(millisecs): " << duration.count() << std::endl;
 }

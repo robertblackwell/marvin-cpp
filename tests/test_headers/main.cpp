@@ -249,14 +249,29 @@ TEST_CASE("header_connectionclose")
     testHeaderConnectionClose("close" , true);
 
 }
-TEST_CASE("message_connection_keep_alive")
+TEST_CASE("message_connection_keep_alive_1")
 {
     testMessageConnectionKeepAlive(" this has keep-alive embedded", 1, true);
+}
+TEST_CASE("message_connection_keep_alive_2")
+{
     testMessageConnectionKeepAlive(" this, has, embedded", 1, true);
+    std::cout << " " << std::endl;
+}
+TEST_CASE("message_connection_keep_alive_3")
+{
     testMessageConnectionKeepAlive(" this, has, close", 1, false);
+    std::cout << " " << std::endl;
+}
+TEST_CASE("message_connection_keep_alive_4")
+{
     testMessageConnectionKeepAlive(" this, has, close", 0, false);
+    std::cout << " " << std::endl;
+}
+TEST_CASE("message_connection_keep_alive")
+{
     testMessageConnectionKeepAlive(" this, has, embedded", 0, false);
-
+    std::cout << " " << std::endl;
 }
 TEST_CASE("copy constructor test")
 {
@@ -270,14 +285,18 @@ TEST_CASE("copy constructor test")
         {"44","4444444"}
     }};
     HeadersV2 h2{h1};
-    bool x = h2.hasKey("bb");
-    bool y = h1.hasKey("bb");
+    std::string bb = "bb";
+    bool x = !!h2.atKey(bb);
+    bool y = !!h1.atKey(bb);
     CHECK(x);
     CHECK(y);
+    CHECK((h1.size() == h2.size()));
     HeadersV2 h3{};
     h3 = h1;
-    CHECK(h1.hasKey("ccc"));
-    CHECK(h3.hasKey("ccc")); 
+    std::string ccc = "ccc";
+    CHECK((h3.size() == h1.size()));
+    CHECK(!!h1.atKey(ccc));
+    CHECK(!!h3.atKey(ccc));
 }
 TEST_CASE("move test")
 {
@@ -290,13 +309,22 @@ TEST_CASE("move test")
         {"33","3333333"},
         {"44","4444444"}
     }};
+    std::size_t h1_initial_size = h1.size();
     HeadersV2 h2{std::move(h1)};
-    bool x = h2.hasKey("bb");
-    bool y = h1.hasKey("bb");
+    std::string bb = "bb";
+    bool x = !!h2.atKey(bb);
+    bool y = !!h1.atKey(bb);
+
     CHECK(x);
     CHECK(!y);
+    CHECK((h1.size() == 0));
+    CHECK((h2.size() == h1_initial_size));
     HeadersV2 h3{};
     h3 = std::move(h2);
-    CHECK(!h1.hasKey("ccc"));
-    CHECK(h3.hasKey("ccc")); 
+    std::string ccc = "ccc";
+    CHECK(!h1.atKey(ccc));
+    CHECK(!h2.atKey(ccc));
+    CHECK((h2.size() == 0));
+    CHECK((h3.size() == h1_initial_size));
+    CHECK(!!h3.atKey(ccc));
 }

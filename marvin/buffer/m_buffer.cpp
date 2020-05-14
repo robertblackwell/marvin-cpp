@@ -6,47 +6,45 @@
 #include <marvin/buffer/m_buffer.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
-namespace {
-    const std::size_t MBUFMIN=1000;
-}
 using namespace Marvin;
 namespace  Marvin {
   
+std::size_t MBuffer::min_buffer_size = 1000;
 
 #pragma mark - MBuffer implementation
 MBufferSPtr MBuffer::makeSPtr(std::size_t capacity)
 {
-    std::size_t sz = (capacity > MBUFMIN) ? capacity : MBUFMIN ;
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(sz));
+    std::size_t sz = (capacity > MBuffer::min_buffer_size) ? capacity : MBuffer::min_buffer_size ;
+    MBufferSPtr mbp = std::make_shared<MBuffer>((sz));
     return mbp;
 }
 MBufferSPtr MBuffer::makeSPtr(std::string s)
 {
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(s.size()));
+    MBufferSPtr mbp = std::make_shared<MBuffer>((s.size()));
     mbp->append((void*) s.c_str(), s.size());
     return mbp;
 }
 MBufferSPtr MBuffer::makeSPtr(void* mem, std::size_t size)
 {
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(size));
+    MBufferSPtr mbp = std::make_shared<MBuffer>((size));
     mbp->append(mem, size);
     return mbp;
 }
 MBufferSPtr MBuffer::makeSPtr(MBuffer& mb)
 {
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(mb.capacity()));
+    MBufferSPtr mbp = std::make_shared<MBuffer>((mb.capacity()));
     mbp->append(mb.data(), mb.size());
     return mbp;
 }
 
 MBuffer::MBuffer(std::size_t cap)
 {
-    std::size_t tmp_cap = (cap > MBUFMIN) ? cap : MBUFMIN ;
-    memPtr = malloc(tmp_cap);
-    cPtr = (char*) memPtr;
-    length_ = 0;
-    size_ = 0;
-    capacity_ = tmp_cap;
+    std::size_t tmp_cap = (cap > MBuffer::min_buffer_size) ? cap : MBuffer::min_buffer_size ;
+    m_memPtr = malloc(tmp_cap);
+    m_cPtr = (char*) m_memPtr;
+    m_length = 0;
+    m_size = 0;
+    m_capacity = tmp_cap;
 }
 MBuffer::MBuffer(std::string str): MBuffer(str.size())
 {
@@ -54,107 +52,122 @@ MBuffer::MBuffer(std::string str): MBuffer(str.size())
 }
 MBuffer::MBuffer(MBuffer& other)
 {
-    capacity_ = other.capacity_;
-    memPtr = malloc(capacity_);
-    cPtr = (char*) memPtr;
-    size_ = other.size_;
-    memcpy(memPtr, other.memPtr, other.size_);
+    m_capacity = other.m_capacity;
+    m_memPtr = malloc(m_capacity);
+    m_cPtr = (char*) m_memPtr;
+    m_size = other.m_size;
+    memcpy(m_memPtr, other.m_memPtr, other.m_size);
 }
 MBuffer& MBuffer::operator =(MBuffer& other)
 {
     if (&other == this) {
         return *this;
     }
-    capacity_ = other.capacity_;
-    memPtr = malloc(capacity_);
-    cPtr = (char*) memPtr;
-    size_ = other.size_;
-    memcpy(memPtr, other.memPtr, other.size_);
+    m_capacity = other.m_capacity;
+    m_memPtr = malloc(m_capacity);
+    m_cPtr = (char*) m_memPtr;
+    m_size = other.m_size;
+    memcpy(m_memPtr, other.m_memPtr, other.m_size);
     return *this;
 }
 MBuffer::MBuffer(MBuffer&& other)
 {
-    capacity_ = other.capacity_;
-    memPtr = other.memPtr;
-    cPtr = (char*) memPtr;
-    size_ = other.size_;
-    other = MBuffer(capacity_);
+    m_capacity = other.m_capacity;
+    m_memPtr = other.m_memPtr;
+    m_cPtr = (char*) m_memPtr;
+    m_size = other.m_size;
+    other = MBuffer(m_capacity);
 }
 MBuffer& MBuffer::operator =(MBuffer&& other)
 {
     if (&other == this) {
         return *this;
     }
-    memPtr = other.memPtr;
-    cPtr = other.cPtr;
-    capacity_ = other.capacity_;
-    size_ = other.size_;
-    other = MBuffer(capacity_);
+    m_memPtr = other.m_memPtr;
+    m_cPtr = other.m_cPtr;
+    m_capacity = other.m_capacity;
+    m_size = other.m_size;
+    other = MBuffer(m_capacity);
 }
 
 MBuffer::~MBuffer()
 {
-    if( (memPtr != nullptr) && (capacity_ > 0) ){
-        free(memPtr);
+    if( (m_memPtr != nullptr) && (m_capacity > 0) ){
+        free(m_memPtr);
     }
 }
 
 void* MBuffer::data()
 {
-    return memPtr;
+    return m_memPtr;
 }
 std::size_t MBuffer::size()
 {
-    return length_;
+    return m_length;
 }
 std::size_t MBuffer::capacity()
 {
-    return capacity_;
+    return m_capacity;
 }
 void* MBuffer::nextAvailable()
 {
-    return (void*) (cPtr + length_);
+    return (void*) (m_cPtr + m_length);
 }
 
 MBuffer& MBuffer::empty()
 {
-    length_ = 0; cPtr[0] = (char)0;
+    m_length = 0; m_cPtr[0] = (char)0;
     return *this;
 }
 
 MBuffer& MBuffer::append(void* data, std::size_t len)
 {
-    assert( ( (length_ + len) <= capacity_ )  );
+    if ( ( (m_length + len) >= m_capacity )  ) {
+        std::size_t new_capacity = m_capacity * 2;
+        void* tmp = realloc(m_memPtr, m_capacity*2);
+        m_memPtr = tmp;
+        m_cPtr = (char*) m_memPtr;
+        m_capacity = new_capacity;
+    }
     void* na = nextAvailable();
     
     memcpy(na, data, len);
-    length_ = length_ + len;
-    size_ = length_;
+    m_length = m_length + len;
+    m_size = m_length;
     
-    cPtr = (char*) memPtr;
+    m_cPtr = (char*) m_memPtr;
     return *this;
 }
-MBuffer& MBuffer::append(std::string str)
+MBuffer& MBuffer::append(std::string const & str)
 {
     append((void*)str.c_str(), str.size());
 }
-MBuffer& MBuffer::append(std::string& str)
+MBuffer& MBuffer::append(std::string&& str)
 {
     append((void*)str.c_str(), str.size());
 }
+MBuffer& MBuffer::append(std::string* str)
+{
+    append((void*)str->c_str(), str->size());
+}
+//MBuffer& MBuffer::append(char const* c_str)
+//{
+//    std::size_t len = strlen(c_str);
+//    append((void*)c_str, len+1);
+//}
 
 MBuffer& MBuffer::setSize(std::size_t n)
 {
-    length_ = n;
-    size_ = n;
+    m_length = n;
+    m_size = n;
     return *this;
 }
 
 std::string MBuffer::toString()
 {
-    char* p = cPtr;
+    char* p = m_cPtr;
 
-    std::string s(p, size_);
+    std::string s(p, m_size);
     return s;
 }
 
@@ -165,8 +178,8 @@ bool MBuffer::contains(void* ptr)
 }
 bool MBuffer::contains(char* ptr)
 {
-    char* endPtr = cPtr + (long)capacity_;
-    char* sPtr = cPtr;
+    char* endPtr = m_cPtr + (long)m_capacity;
+    char* sPtr = m_cPtr;
 //    bool r1 = ptr <= endPtr;
 //    bool r2 = ptr >= sPtr;
     bool r = ( ptr <= endPtr && ptr >= sPtr);
@@ -174,40 +187,39 @@ bool MBuffer::contains(char* ptr)
 }
 MBufferSPtr m_buffer(std::size_t capacity)
 {
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(capacity));
+    MBufferSPtr mbp = std::make_shared<MBuffer>(capacity);
     return mbp;
 }
 MBufferSPtr m_buffer(std::string s)
 {
     
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(s.size()));
+    MBufferSPtr mbp = std::make_shared<MBuffer>(s.size());
     mbp->append((void*) s.c_str(), s.size());
     return mbp;
 }
 MBufferSPtr m_buffer(void* mem, std::size_t size)
 {
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(size));
+    MBufferSPtr mbp = std::make_shared<MBuffer>((size));
     mbp->append(mem, size);
     return mbp;
 
 }
 MBufferSPtr m_buffer(MBuffer& mb)
 {
-    MBufferSPtr mbp = std::shared_ptr<MBuffer>(new MBuffer(mb.capacity()));
+    MBufferSPtr mbp = std::make_shared<MBuffer>((mb.capacity()));
     mbp->append(mb.data(), mb.size());
     return mbp;
-
 }
 
 #pragma mark - friend functions
 std::ostream &operator<< (std::ostream &os, MBuffer &b)
 {
-    if(b.length_ == 0){
+    if(b.m_length == 0){
         os << "Empty ";
     }else{
         const std::size_t sz = b.size();
-        std::string s((char*)b.memPtr, sz);
-        os << "\r\nMBuffer{ length: " << b.length_ << "content: [" << s << "]}";
+        std::string s((char*)b.m_memPtr, sz);
+        os << "\r\nMBuffer{ length: " << b.m_length << "content: [" << s << "]}";
     }
     return os;
 }

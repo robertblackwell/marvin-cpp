@@ -17,6 +17,9 @@ using MessageBaseSPtr = std::shared_ptr<MessageBase>;
 std::string traceMessage(MessageBase& msg);
 void serializeHeaders(MessageBase& msg, ::Marvin::MBuffer& buf);
 Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
+//void serialize_headers(MessageBase& msg, BufferChainSPtr bchain_sptr);
+void serialize(MessageBase& msg, MBufferSPtr mb);
+
 /**
 * \defgroup http Http Message 
 * \brief Classes that collectively implement details of the http message format.
@@ -35,7 +38,6 @@ Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
 ///         and the msg http version is 1.0
 ///
 bool isConnectionKeepAlive(Marvin::MessageBase& msg);
-bool isKeepConnectionAlive(MessageBaseSPtr msg_sptr);
 
 /**
 * \brief A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
@@ -109,7 +111,10 @@ public:
     friend Marvin::MBufferSPtr serializeHeaders(MessageBase& msg);
     friend std::string serialize_headers(MessageBase& msg);
     friend void serialize_headers(MessageBase& msg, std::string& str);
-//    friend void serializeHeaders(MessageBase& msg, boost::asio::streambuf& buf);
+    friend void serialize_headers(MessageBase& msg, BufferChainSPtr bchain_sptr);
+    friend void serialize(MessageBase& msg, MBufferSPtr mb);
+
+    //    friend void serializeHeaders(MessageBase& msg, boost::asio::streambuf& buf);
     friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);
 
 protected:

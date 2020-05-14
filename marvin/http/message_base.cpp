@@ -40,7 +40,7 @@ void serializeHeaders(MessageBase& msg, Marvin::MBuffer& mb)
     }
     
     for(auto const& h : msg.m_headers) {
-        os << h.first << ": " << h.second << "\r\n";
+        os << h.key << ": " << h.value << "\r\n";
     }
     // end of headers
     os << "\r\n";
@@ -71,24 +71,93 @@ void serialize_headers(MessageBase& msg, std::string& str)
     str = "";
     std::ostringstream os;
     os.str(str);
-
     std::string vers = "HTTP/" + std::to_string(msg.httpVersMajor()) + "." + std::to_string(msg.httpVersMinor());
-    if( msg.isRequest() ){
+    if( msg.isRequest() ) {
         std::string m = msg.getMethodAsString();
         std::string u = msg.uri();
         os << m << " " << u << " " << vers << "\r\n";
     } else{
         os << vers << " " << msg.m_status_code << " " << msg.m_status <<  "\r\n";
     }
-    
     for(auto const& h : msg.m_headers) {
-        os << h.first << ": " << h.second << "\r\n";
+        os << h.key << ": " << h.value << "\r\n";
     }
     // end of headers
     os << "\r\n";
     str = os.str();
 }
+//void serialize_headers(MessageBase& msg, BufferChainSPtr bchain_sptr)
+//{
+//    int num_bytes = 0;
+//    MBufferSPtr mb1;
+//    if( msg.isRequest() ) {
+//        std::string m = msg.getMethodAsString();
+//        std::string u = msg.uri();
+//        os << m << " " << u << " " << vers << "\r\n";
+//    } else{
+//        do {
+//            mb1 = MBuffer::makeSPtr(1000 + num_bytes + 10);
+//            num_bytes = snprintf((char *) mb1->data(), mb1->capacity(), "HTTP/%1d.%1d %3.d %s\r\n",
+//                                 msg.httpVersMajor(), msg.httpVersMinor(), msg.m_status_code, msg.m_status.c_str());
+//            mb1->setSize(num_bytes);
+//        } while(num_bytes > 1000 - 1);
+//    }
+//    bchain_sptr->push_back(mb1);
+//    MBufferSPtr mb2 = MBuffer::makeSPtr(256);
+//    for(auto const& h : msg.m_headers) {
+//        num_bytes = 0;
+//        do {
+//            mb2 = MBuffer::makeSPtr(256 + num_bytes + 10);
+//            num_bytes = snprintf((char *) mb2->data(), mb2->capacity(), "%s: %s\r\n", h.key.c_str(), h.value.c_str());
+//            mb2->setSize(num_bytes);
+//        } while(num_bytes > 256 - 1);
+//        bchain_sptr->push_back(mb2);
+//    }
+//    bchain_sptr->append("\r\n");
+//    std::string schain = bchain_sptr->to_string();
+////    std::cout << schain << std::endl;
+//}
+void serialize(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+{
+    for(auto const& h : hdrs) {
+        mb->append((void*)h.key.c_str(), h.key.size());
+        mb->append((void*)(char*)": ", 2);
+        mb->append((void*)h.value.c_str(), h.value.size());
+        mb->append((void*)(char*)"\r\n", 2);
+    }
+}
 
+void serialize(MessageBase& msg, MBufferSPtr mb)
+{
+    static std::string const req_vers1_0 = " HTTP/1.0\r\n";
+    static std::string const req_vers1_1 = " HTTP/1.1\r\n";
+    static std::string const resp_vers1_0 = "HTTP/1.0 ";
+    static std::string const resp_vers1_1 = "HTTP/1.1 ";
+    static std::string const lfcr = "\n\r";
+    int num_bytes = 0;
+    if( msg.isRequest() ) {
+        mb->append(msg.getMethodAsString());
+        mb->append(" ");
+        mb->append((void*)msg.uri().c_str(), msg.uri().size());
+        if (msg.httpVersMinor() == 0) {
+            mb->append(req_vers1_0);
+        } else {
+            mb->append(req_vers1_1);
+        }
+    } else{
+        if (msg.httpVersMinor() == 0) {
+            mb->append(resp_vers1_0);
+        } else {
+            mb->append(resp_vers1_1);
+        }
+        std::string remainder_of_line = std::to_string(msg.m_status_code) + " " + msg.m_status + "\r\n";
+        mb->append(remainder_of_line);
+    }
+    serialize(msg.m_headers, mb);
+    mb->append((void*)(char*)"\r\n", 2);
+    serialize(msg.m_trailers, mb);
+//    std::cout << schain << std::endl;
+}
 ///
 /// KeepAlive is true if:
 ///     there is a connection header that contains the string "[ ,]keep-alive[ ,]" case independent
@@ -117,11 +186,6 @@ bool isConnectionKeepAlive(Marvin::MessageBase& msg)
         return false;
     }
 }
-bool isKeepConnectionAlive(MessageBaseSPtr msg_sptr)
-{
-    return isConnectionKeepAlive(*msg_sptr);
-}
-
 
 #pragma - http message base impl
 
@@ -239,8 +303,7 @@ bool MessageBase::hasHeader( std::string key)
 
 std::string MessageBase::header(std::string key) 
 {
-    boost::optional<std::string> res = m_headers.atKey(key); 
-
+    boost::optional<std::string> res{m_headers.atKey(key)};
     if(res) {
         return res.get();
     } else {
@@ -255,7 +318,7 @@ void MessageBase::removeHeader( std::string keyIn)
 
 std::string MessageBase::getHeader(std::string key)
 {
-    boost::optional<std::string> result = m_headers.atKey(key);
+    boost::optional<std::string> result{m_headers.atKey(key)};
     if(result) {
         return result.get();
     }
@@ -305,7 +368,7 @@ void MessageBase::dumpHeaders(std::ostream& os)
 {
     HeadersV2::Iterator it = m_headers.begin();
     while(it != m_headers.end()) {
-        os<<it->first<<" : "<<it->second<<std::endl;
+        os<<it->key <<" : "<<it->value<<std::endl;
         it++;
     }
 }
@@ -319,7 +382,7 @@ bool MessageBase::hasTrailer( std::string key)
 };
 std::string MessageBase::trailer(std::string key)
 {
-    boost::optional<std::string> result = m_headers.atKey(key);
+    boost::optional<std::string> result{m_headers.atKey(key)};
     if( result ){
         return result.get();
     } else{ 

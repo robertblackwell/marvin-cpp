@@ -25,6 +25,7 @@ using MBufferUPtr =  std::unique_ptr<MBuffer>;
 */
 class MBuffer {
 public:
+    static std::size_t min_buffer_size;
     static MBufferSPtr makeSPtr(std::size_t capacity);
     static MBufferSPtr makeSPtr(std::string s);
     static MBufferSPtr makeSPtr(void* mem, std::size_t size);
@@ -71,12 +72,21 @@ public:
      */
     MBuffer& empty();
     
-    /**
-     *  adds (by copying) data to the buffer starting at the first unsed byte
-    */
+    /** adds (by copying) data to the buffer starting at the first unsed byte*/
     MBuffer& append(void* data, std::size_t len);
-    MBuffer& append(std::string& str);
-    MBuffer& append(std::string str);
+    /**
+     * convenience overloads
+     */
+    MBuffer& append(std::string* str);
+    /**
+     * for constants and variables
+     */
+    MBuffer& append(std::string const& str);
+    /**
+     * for literals
+     */
+    MBuffer& append(std::string&& str);
+
     MBuffer& setSize(std::size_t n);
     
     /**
@@ -110,11 +120,11 @@ public:
 
 protected:
     
-    void*       memPtr;     /// points to the start of the memory slab managed by the instance
-    char*       cPtr;       /// same as memPtr but makes it easier in debugger to see whats in the buffer
-    std::size_t length_;    ///
-    std::size_t capacity_;  /// the capacity of the buffer, the value used for the malloc call
-    std::size_t size_;      /// size of the currently filled portion of the memory slab
+    void*       m_memPtr;     /// points to the start of the memory slab managed by the instance
+    char*       m_cPtr;       /// same as memPtr but makes it easier in debugger to see whats in the buffer
+    std::size_t m_length;    ///
+    std::size_t m_capacity;  /// the capacity of the buffer, the value used for the malloc call
+    std::size_t m_size;      /// size of the currently filled portion of the memory slab
 };
 
 } //namespace Marvin
