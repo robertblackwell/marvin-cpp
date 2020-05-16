@@ -32,11 +32,11 @@ public:
 
     void startRead();
 
-    void asyncRead(Marvin::MBufferSPtr mb, long timeout_ms, AsyncReadCallback cb) override;
+    void asyncRead(Marvin::ContigBufferSPtr mb, long timeout_ms, AsyncReadCallback cb) override;
 
     void asyncRead(void *buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallback cb) override;
 
-    void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb) override;
+    void asyncRead(Marvin::ContigBufferSPtr mb, AsyncReadCallback cb) override;
 
     void asyncRead(void *buffer, std::size_t buffer_length, AsyncReadCallback cb) override;
 
@@ -48,7 +48,7 @@ public:
 
     void asyncWrite(std::string &str, Marvin::AsyncWriteCallbackType cb) override;
 
-    void asyncWrite(Marvin::MBuffer &fb, Marvin::AsyncWriteCallback) override;
+    void asyncWrite(Marvin::ContigBuffer &fb, Marvin::AsyncWriteCallback) override;
 
     void asyncWrite(Marvin::BufferChainSPtr chain_sptr, Marvin::AsyncWriteCallback) override;
 

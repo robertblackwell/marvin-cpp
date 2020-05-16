@@ -392,3 +392,61 @@ TEST_CASE("field speed vec of pointers")
     std::cout << "copy string 1000 100,000" << " duration(nanosecs): " << double(duration.count())/(float)(number) << std::endl;
 
 }
+namespace rb {
+struct true_type
+{
+    static constexpr bool value = true;
+};
+struct false_type
+{
+    static constexpr bool value = false;
+};
+static_assert(rb_true_type::value, "This did not work");
+
+template<typename T, typename U>
+struct is_same : false_type
+{
+};
+template <typename T>
+struct is_same<T, T> : true_type {};
+
+static_assert(!is_same<int, char>::value, "***"); // ok
+static_assert(is_same<int, int>::value, "***");  // fires!
+
+template <typename T, bool Small = (sizeof(T) == 1)>
+struct is_small : false_type {};
+template <typename T>
+struct is_small<T, true> : true_type {};
+
+static_assert(!is_small<int>::value, "***");
+static_assert(is_small<char>::value, "char is supposed to be small");
+//
+// another implementation of issmall
+//
+template <bool Cond>
+struct enable_if
+{
+    /* empty body*/
+};
+template <>
+struct enable_if<true>
+{
+    typedef void type;
+};
+// a notational convenience
+//template <bool Cond>
+//using enable_if_t = typename enable_if<Cond>::type;
+
+template <typename T, typename /*U*/ = void>
+struct is_small2 : false_type {};
+
+template<typename T>
+struct is_small2<T, typename enable_if<sizeof(T) == 1>::type> :true_type{};
+
+//
+//template <typename T>
+//struct is_small2B<T, enable_if_t<sizeof(T) == 1>> : true_type {};
+
+
+
+}

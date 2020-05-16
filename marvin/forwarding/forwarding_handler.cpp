@@ -112,7 +112,7 @@ void ForwardingHandler::handleConnect(
     m_downstream_connection  = clientConnectionSPtr;
     m_done_callback = done;
     m_response_writer_sptr = responseWriter;
-    m_initial_response_buf = std::unique_ptr<Marvin::MBuffer>(new Marvin::MBuffer(1000));
+    m_initial_response_buf = std::unique_ptr<Marvin::ContigBuffer>(new Marvin::ContigBuffer(1000));
     //
     // Parse the url to determine were we have to send the "upstream" request
     //

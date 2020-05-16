@@ -8,44 +8,44 @@
 
 namespace Marvin {
 
-class MBuffer;
-using MBufferSPtr =  std::shared_ptr<MBuffer>;
-using MBufferUPtr =  std::unique_ptr<MBuffer>;
+class ContigBuffer;
+using ContigBufferSPtr =  std::shared_ptr<ContigBuffer>;
+using ContigBufferUPtr =  std::unique_ptr<ContigBuffer>;
 
-#pragma mark - MBuffer class
+#pragma mark - ContigBuffer class
 
 /**
 *
 * \ingroup buffers
-* \brief MBuffer provides a contiguous expanding buffer
+* \brief ContigBuffer provides a contiguous expanding buffer
 *
-* MBuffer class wraps a contigous buffer and provides manipulation methods.
+* ContigBuffer class wraps a contigous buffer and provides manipulation methods.
 * Once constructed the Mbuffer instance "own" the raw memory.
-* MBuffer destructor releases the raw memory.
+* ContigBuffer destructor releases the raw memory.
 */
-class MBuffer {
+class ContigBuffer {
 public:
     static std::size_t min_buffer_size;
-    static MBufferSPtr makeSPtr(std::size_t capacity);
-    static MBufferSPtr makeSPtr(std::string s);
-    static MBufferSPtr makeSPtr(void* mem, std::size_t size);
-    static MBufferSPtr makeSPtr(MBuffer& mb);
+    static ContigBufferSPtr makeSPtr(std::size_t capacity);
+    static ContigBufferSPtr makeSPtr(std::string s);
+    static ContigBufferSPtr makeSPtr(void* mem, std::size_t size);
+    static ContigBufferSPtr makeSPtr(ContigBuffer& mb);
 
     /**
      * Constructor - give it a slab of memory to manage
-     * Let the MBuffer constructor allocate the memory - but tell it howmuch
+     * Let the ContigBuffer constructor allocate the memory - but tell it howmuch
      */
-    MBuffer(const std::size_t cap);
-    MBuffer(std::string str);
-    MBuffer(MBuffer& other);
-    MBuffer& operator =(MBuffer& other);
-    MBuffer(MBuffer&& other);
-    MBuffer& operator =(MBuffer&& other);
+    ContigBuffer(const std::size_t cap);
+    ContigBuffer(std::string str);
+    ContigBuffer(ContigBuffer& other);
+    ContigBuffer& operator =(ContigBuffer& other);
+    ContigBuffer(ContigBuffer&& other);
+    ContigBuffer& operator =(ContigBuffer&& other);
     
     /**
      * destrtuctor - frees the memory the instance is managing
      */
-    ~MBuffer();
+    ~ContigBuffer();
     
     /**
      * gets a pointer to the start of the memory slab being managed by the instance
@@ -70,24 +70,24 @@ public:
     /**
      * Resets the buffer so that it is again an empty buffer
      */
-    MBuffer& empty();
+    ContigBuffer& empty();
     
     /** adds (by copying) data to the buffer starting at the first unsed byte*/
-    MBuffer& append(void* data, std::size_t len);
+    ContigBuffer& append(void* data, std::size_t len);
     /**
      * convenience overloads
      */
-    MBuffer& append(std::string* str);
+    ContigBuffer& append(std::string* str);
     /**
      * for constants and variables
      */
-    MBuffer& append(std::string const& str);
+    ContigBuffer& append(std::string const& str);
     /**
      * for literals
      */
-    MBuffer& append(std::string&& str);
+    ContigBuffer& append(std::string&& str);
 
-    MBuffer& setSize(std::size_t n);
+    ContigBuffer& setSize(std::size_t n);
     
     /**
      * Returns a string that has the same value as the used portion of the buffer
@@ -106,17 +106,17 @@ public:
     bool contains(char* ptr);
     
     /**
-     * converts an MBuffer to a boost::asio::const_buffer
+     * converts an ContigBuffer to a boost::asio::const_buffer
      */
-    friend boost::asio::const_buffer mb_as_const_buffer(MBuffer& bm);
+    friend boost::asio::const_buffer mb_as_const_buffer(ContigBuffer& bm);
 
     /**
-     * converts an MBuffer to a boost::asio::mutable_buffer
+     * converts an ContigBuffer to a boost::asio::mutable_buffer
      */
-    friend boost::asio::mutable_buffer mb_as_mutable_buffer(MBuffer& bm);
-//    friend boost::asio::const_buffer_1 mb_as_asio_const_buffer(MBuffer& mb);
+    friend boost::asio::mutable_buffer mb_as_mutable_buffer(ContigBuffer& bm);
+//    friend boost::asio::const_buffer_1 mb_as_asio_const_buffer(ContigBuffer& mb);
 
-    friend std::ostream &operator<< (std::ostream &os, MBuffer &b);
+    friend std::ostream &operator<< (std::ostream &os, ContigBuffer &b);
 
 protected:
     

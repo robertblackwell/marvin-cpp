@@ -65,8 +65,22 @@ class HeadersV2
         struct Field
         {
             using KeyType = std::string;
-            KeyType     key;
+            std::string key;
             std::string value;
+            /// best way I found of forcing a steal of memory from source
+            /// used in praser only
+            Field(std::string* k, std::string* v)
+            {
+                std::swap(*v, value);
+                std::swap(*k, key);
+            }
+            Field(std::string const & k, std::string const& v): key(k), value(v)
+            {
+            }
+
+            Field(std::string&& k, std::string&& v): key(k), value(v)
+            {
+            }
         };
         class Iterator
         {
@@ -143,6 +157,7 @@ class HeadersV2
          * \brief add a new header <key value> will update an existing key with a new value
          */
         void setAtKey(FieldKeyArg k, std::string v);
+        void setAtKey(std::string* k, std::string* v);
 
         /**
          * \brief Removes the header with the given key value. If there was no such header

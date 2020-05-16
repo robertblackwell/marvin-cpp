@@ -83,10 +83,10 @@ void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
 //--------------------------------------------------------------------------------
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb)
 {
-    m_body_mbuffer_sptr = Marvin::MBuffer::makeSPtr(body);
+    m_body_mbuffer_sptr = Marvin::ContigBuffer::makeSPtr(body);
     p_async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body, ResponseHandlerCallbackType cb)
+void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::ContigBufferSPtr body, ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr = body;
     p_async_write(requestMessage, cb);
@@ -98,7 +98,7 @@ void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr
 }
 void Client::asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
-    m_body_mbuffer_sptr  = Marvin::MBuffer::makeSPtr(""); // no body
+    m_body_mbuffer_sptr  = Marvin::ContigBuffer::makeSPtr(""); // no body
     p_async_write(requestMessage, cb);
 }
 void Client::p_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)

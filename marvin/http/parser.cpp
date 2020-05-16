@@ -222,7 +222,7 @@ int Parser::p_on_header_field_data(http_parser* parser, const char* at, size_t l
     int state = header_state;
     if( (state == 0)||(state == kHEADER_STATE_NOTHING) || (state == kHEADER_STATE_VALUE)){
         if(name_stringbuf.size() != 0) {
-            currentMessage()->header(name_stringbuf, value_stringbuf);
+            currentMessage()->header(&name_stringbuf, &value_stringbuf);
             name_stringbuf.clear();
             value_stringbuf.clear();
         }
@@ -275,7 +275,7 @@ int Parser::p_on_body_data(http_parser* parser, const char* at, size_t length)
 {
     BufferChainSPtr chain_sptr = this->m_current_message_ptr->getContentBuffer();
     if (chain_sptr == nullptr) {
-        MBufferSPtr mb_sptr = MBuffer::makeSPtr(10000);
+        ContigBufferSPtr mb_sptr = ContigBuffer::makeSPtr(10000);
         chain_sptr = BufferChain::makeSPtr(mb_sptr);
         m_current_message_ptr->setContentBuffer(chain_sptr);
     }

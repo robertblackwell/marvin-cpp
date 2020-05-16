@@ -33,8 +33,8 @@ class HalfTunnel
         ISocketSPtr     m_read_end;
         ISocketSPtr     m_write_end;
         std::function<void(Marvin::ErrorType& err)> m_callback;
-//        Marvin::MBufferUPtr                 m_bufferUPtr;
-        Marvin::MBufferSPtr                 m_bufferSPtr;
+//        Marvin::ContigBufferUPtr                 m_bufferUPtr;
+        Marvin::ContigBufferSPtr                 m_bufferSPtr;
 };
 } // namespace
 #endif /* half_tunnel_hpp */

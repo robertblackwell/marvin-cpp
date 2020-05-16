@@ -119,7 +119,7 @@ class ForwardingHandler : public RequestHandlerBase
         ICollector*                 m_collector_ptr;
     
         /// used for handleConnect - tunnel
-        Marvin::MBufferUPtr         m_initial_response_buf;
+        Marvin::ContigBufferUPtr         m_initial_response_buf;
         TunnelHandlerSPtr           m_tunnel_handler;
         SSLForwardingHandlerSPtr    m_ssl_handler_sptr;
         ISocketSPtr                 m_downstream_connection; // used only for tunnel

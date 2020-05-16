@@ -207,6 +207,11 @@ boost::optional<std::string> HeadersV2::atKey(HeadersV2::FieldKeyArg k)
     }
     return boost::optional<std::string>();
 }
+void HeadersV2::setAtKey(std::string* k, std::string* v)
+{
+    std::string k_upper = toupper_copy(*k);
+    m_fields_vector.emplace_back(Field(&k_upper, v));
+}
 void HeadersV2::setAtKey(HeadersV2::FieldKeyArg k, std::string v)
 {
     std::string s{k};
@@ -215,8 +220,7 @@ void HeadersV2::setAtKey(HeadersV2::FieldKeyArg k, std::string v)
     if(index) {
         m_fields_vector[index.get()].value = v;
     } else {
-        Field Field{.key=key_upper, .value=v};
-        m_fields_vector.push_back(Field);
+        m_fields_vector.emplace_back(Field(key_upper, v));
     }
 }
 void HeadersV2::eraseAtIndex(std::size_t position)

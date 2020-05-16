@@ -392,7 +392,7 @@ TEST_CASE("serialize 1")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     for(int i = 0; i < 10000; i++) {
-        MBufferSPtr mb = serialize_headers(*msgSPtr);
+        ContigBufferSPtr mb = serialize_headers(*msgSPtr);
     }
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
@@ -444,12 +444,12 @@ TEST_CASE("header_serialize_2")
     for(int i = 0; i < 10000; i++)
     {
         BufferChainSPtr bchain_sptr = BufferChain::makeSPtr();
-        MBufferSPtr mb2 = MBuffer::makeSPtr(256);
+        ContigBufferSPtr mb2 = ContigBuffer::makeSPtr(256);
         auto hdrs = msgSPtr->headers();
         for(auto const& h : hdrs) {
             int num_bytes = 0;
             do {
-                mb2 = MBuffer::makeSPtr(256 + num_bytes + 10);
+                mb2 = ContigBuffer::makeSPtr(256 + num_bytes + 10);
                 num_bytes = snprintf((char *) mb2->data(), mb2->capacity(), "%s: %s\r\n", h.key.c_str(), h.value.c_str());
                 mb2->setSize(num_bytes);
             } while(num_bytes > 256 - 1);
@@ -476,11 +476,11 @@ std::string fmt_headers_stream(MessageBaseSPtr msgSPtr)
     os << "\r\n";
     return os.str();
 }
-void my_memcpy_string(MBufferSPtr mb, std::string const& str)
+void my_memcpy_string(ContigBufferSPtr mb, std::string const& str)
 {
     memcpy(mb->nextAvailable(), str.c_str(), str.size()); mb->setSize(mb->size()+str.size());
 }
-void fmtHeaders2(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+void fmtHeaders2(Marvin::HeadersV2& hdrs, ContigBufferSPtr mb)
 {
     static const std::string lfcr = "\r\n";
     static const std::string colon{": "};
@@ -493,7 +493,7 @@ void fmtHeaders2(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
     my_memcpy_string(mb, lfcr);
 }
 
-void fmtHeaders1(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+void fmtHeaders1(Marvin::HeadersV2& hdrs, ContigBufferSPtr mb)
 {
     for(auto const& h : hdrs) {
         memcpy(mb->nextAvailable(), h.key.c_str(), h.key.size());
@@ -508,7 +508,7 @@ void fmtHeaders1(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
     memcpy(mb->nextAvailable(), (char*)"\r\n", 2); mb->setSize(mb->size() + 2);
 }
 
-void fmtHeaders3(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+void fmtHeaders3(Marvin::HeadersV2& hdrs, ContigBufferSPtr mb)
 {
     for(auto const& h : hdrs) {
         mb->append((void*)h.key.c_str(), h.key.size());
@@ -518,11 +518,11 @@ void fmtHeaders3(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
     }
     mb->append((void*)(char*)"\r\n", 2);
 }
-void fmtMsg(Marvin::MessageBaseSPtr msg_sptr, MBufferSPtr mb)
+void fmtMsg(Marvin::MessageBaseSPtr msg_sptr, ContigBufferSPtr mb)
 {
 
 }
-void fmtHeaders4(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+void fmtHeaders4(Marvin::HeadersV2& hdrs, ContigBufferSPtr mb)
 {
     static const std::string lfcr = "\r\n";
     static const std::string colon{": "};
@@ -540,10 +540,10 @@ TEST_CASE("header_serialize_3")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
-    MBufferSPtr mb2;
+    ContigBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
-        mb2 = MBuffer::makeSPtr(256*4*8);
+        mb2 = ContigBuffer::makeSPtr(256*4*8);
         for(auto const& h : hdrs) {
             int num_bytes = 0;
             memcpy(mb2->nextAvailable(), h.key.c_str(), h.key.size()); mb2->setSize(mb2->size()+h.key.size());
@@ -571,10 +571,10 @@ TEST_CASE("header_serialize_4")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
-    MBufferSPtr mb2;
+    ContigBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
-        mb2 = MBuffer::makeSPtr(256*4*8);
+        mb2 = ContigBuffer::makeSPtr(256*4*8);
         fmtHeaders1(hdrs, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();
@@ -595,10 +595,10 @@ TEST_CASE("header_serialize_5")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
-    MBufferSPtr mb2;
+    ContigBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
-        mb2 = MBuffer::makeSPtr(256*4*8);
+        mb2 = ContigBuffer::makeSPtr(256*4*8);
         fmtHeaders2(hdrs, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();
@@ -619,10 +619,10 @@ TEST_CASE("header_serialize_6")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
-    MBufferSPtr mb2;
+    ContigBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
-        mb2 = MBuffer::makeSPtr(256*4*8);
+        mb2 = ContigBuffer::makeSPtr(256*4*8);
         fmtHeaders3(hdrs, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();
@@ -643,10 +643,10 @@ TEST_CASE("header_serialize_7")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
-    MBufferSPtr mb2;
+    ContigBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
-        mb2 = MBuffer::makeSPtr(256*4*8);
+        mb2 = ContigBuffer::makeSPtr(256*4*8);
         fmtHeaders4(hdrs, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();
@@ -667,10 +667,10 @@ TEST_CASE("message_serialize_8")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
-    MBufferSPtr mb2;
+    ContigBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
-        mb2 = MBuffer::makeSPtr(256*4*8);
+        mb2 = ContigBuffer::makeSPtr(256*4*8);
         serialize_headers(*msgSPtr, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();
@@ -692,10 +692,10 @@ TEST_CASE("message_serialize_9")
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
-    MBufferSPtr mb2;
+    ContigBufferSPtr mb2;
     for(int i = 0; i < 10000; i++)
     {
-        mb2 = MBuffer::makeSPtr(256*4*8);
+        mb2 = ContigBuffer::makeSPtr(256*4*8);
         serialize_headers(*msgSPtr, mb2);
     }
     auto stop = std::chrono::high_resolution_clock::now();

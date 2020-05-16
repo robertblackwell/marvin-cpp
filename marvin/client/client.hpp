@@ -10,7 +10,7 @@
 #include <memory>                                  // for shared_ptr, unique...
 #include <boost/asio/io_service.hpp>               // for io_service
 #include <marvin/buffer/buffer_chain.hpp>          // for BufferChain (ptr o...
-#include <marvin/buffer/m_buffer.hpp>              // for MBufferSPtr
+#include <marvin/buffer/contig_buffer.hpp>              // for ContigBufferSPtr
 #include <marvin/callback_typedefs.hpp>            // for AsyncWriteCallback...
 #include <marvin/connection/socket_interface.hpp>  // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>           // for ErrorType
@@ -19,7 +19,7 @@
 #include <string>                                       // for to_string
 #include <boost/asio/io_service.hpp>                    // for io_service
 #include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
-#include <marvin/buffer/m_buffer.hpp>                   // for MBufferSPtr
+#include <marvin/buffer/contig_buffer.hpp>                   // for ContigBufferSPtr
 #include <marvin/callback_typedefs.hpp>                 // for ErrorOnlyCall...
 #include <marvin/connection/socket_interface.hpp>       // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>                // for ErrorType
@@ -186,11 +186,11 @@ public:
     void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     /**
     * The following are three ways to add a body to a request. The first two take a string or
-    * a shared pointer to an MBuffer - these are contiguous buffers and can be sent with a single
+    * a shared pointer to an ContigBuffer - these are contiguous buffers and can be sent with a single
     * asyncWrite
     */
     void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandlerCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::MBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
+    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::ContigBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
     void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb);
 
     /**
@@ -274,7 +274,7 @@ protected:
 
     boost::asio::io_service&          m_io;
     Marvin::MessageBaseSPtr           m_current_request;
-    Marvin::MBufferSPtr               m_body_mbuffer_sptr;
+    Marvin::ContigBufferSPtr               m_body_mbuffer_sptr;
     MessageWriterSPtr                 m_wrtr;
     MessageReaderSPtr                 m_rdr;
     ISocketSPtr                       m_conn_shared_ptr;

@@ -114,7 +114,7 @@ class SSLForwardingHandler
         ICollector*                 m_collector_ptr;
     
         /// used for handleConnect - tunnel
-        Marvin::MBufferUPtr         m_initial_response_buf;
+        Marvin::ContigBufferUPtr         m_initial_response_buf;
         ConnectionSPtr              m_downstream_connection;
         ConnectionSPtr              m_upstream_connection; 
     

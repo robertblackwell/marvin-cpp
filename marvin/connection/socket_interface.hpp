@@ -56,18 +56,18 @@ class ISocket //: public IReadSocket, public IWriteSocket
     
     virtual Cert::Certificate getServerCertificate() =0 ;
 
-    virtual void asyncRead(Marvin::MBufferSPtr mb, AsyncReadCallback cb) = 0;
+    virtual void asyncRead(Marvin::ContigBufferSPtr mb, AsyncReadCallback cb) = 0;
     virtual void asyncRead(boost::asio::streambuf& buffer, AsyncReadCallback cb) = 0;
     virtual void asyncRead(boost::asio::mutable_buffer buffer, AsyncReadCallback cb) = 0;
     virtual void asyncRead(void* buf, std::size_t length, AsyncReadCallback cb) = 0;
 
-    virtual void asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb) = 0;
+    virtual void asyncRead(Marvin::ContigBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb) = 0;
     virtual void asyncRead(void* buffer, std::size_t length, long timeout_ms, AsyncReadCallbackType cb) = 0;
     
     virtual void asyncWrite(std::string& str, AsyncWriteCallbackType cb) = 0;
     
     virtual void asyncWrite(Marvin::BufferChainSPtr chain_sptr, AsyncWriteCallback) = 0;
-    virtual void asyncWrite(Marvin::MBuffer& fb, AsyncWriteCallback) = 0;
+    virtual void asyncWrite(Marvin::ContigBuffer& fb, AsyncWriteCallback) = 0;
     
     virtual void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
     virtual void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb) = 0;

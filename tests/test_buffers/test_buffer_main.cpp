@@ -17,14 +17,14 @@
 using namespace Marvin;
 TEST_CASE("buffer_chain_assignment")
 {
-    MBuffer mb(100);
+    ContigBuffer mb(100);
     boost::asio::mutable_buffer bt = boost::asio::buffer(mb.data(), mb.capacity());
     BufferChain chain1;
     BufferChain chain2;
     std::string stmp = "GH";
 
     for( int i = 0; i < 10; i++) {
-        MBufferSPtr mb = std::shared_ptr<MBuffer>(new MBuffer(i*10 + 10));
+        ContigBufferSPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
         stmp += "GH";
         mb->append((void*) stmp.c_str(), stmp.size());
         chain1.push_back(mb);
@@ -41,7 +41,7 @@ TEST_CASE("buffer_chain_makeboostbuffer")
     std::string stmp = "GH";
 
     for( int i = 0; i < 10; i++) {
-        MBufferSPtr mb = std::shared_ptr<MBuffer>(new MBuffer(i*10 + 10));
+        ContigBufferSPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
         stmp += "GH";
         mb->append((void*) stmp.c_str(), stmp.size());
         chain1.push_back(mb);
@@ -70,7 +70,7 @@ TEST_CASE("mbuffer_01")
         "1234567890"
     };
     
-    MBuffer* mb = new MBuffer(1000);
+    ContigBuffer* mb = new ContigBuffer(1000);
     for( std::string& s: v) {
         mb->append((void*)s.c_str(), s.size());
     }

@@ -30,7 +30,7 @@ using ::boost::asio::streambuf;
 //--------------------------------------------------------------------------------
 // come here to do a write of the full message
 //--------------------------------------------------------------------------------
-void Request::p_msg_check_connected(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
+void Request::p_msg_check_connected(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
 {
     if(m_is_connected) {
         p_msg_write(msg, mbuf_sptr, cb);
@@ -38,7 +38,7 @@ void Request::p_msg_check_connected(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, 
         p_msg_connect(msg, mbuf_sptr, cb);
     }
 }
-void Request::p_msg_connect(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
+void Request::p_msg_connect(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
 {
     TROG_INFO("", (long)this);
     using namespace Marvin;
@@ -54,7 +54,7 @@ void Request::p_msg_connect(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMes
         }
     });
 }
-void Request::p_msg_write(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
+void Request::p_msg_write(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb)
 {
     TROG_INFO("", (long)this);
 

@@ -328,3 +328,20 @@ TEST_CASE("move test")
     CHECK((h3.size() == h1_initial_size));
     CHECK(!!h3.atKey(ccc));
 }
+TEST_CASE("field efficient copy")
+{
+    std::string k = "1234567890123456789";
+    std::string v = "this is a long value";
+    auto k_p = (void*)k.c_str();
+    auto v_p = (void*)v.c_str();
+//    std::vector<Marvin::HeadersV2::Field> fields;
+//    Marvin::HeadersV2::Field f(std::move(k),std::move(v));
+
+    Marvin::HeadersV2::Field f(&(k), &(v));
+
+    auto key_p = (void*)f.key.c_str();
+    auto value_p = (void*)f.value.c_str();
+    CHECK(key_p == k_p);
+    CHECK(value_p == v_p);
+    std::cout << __func__ << std::endl;
+}

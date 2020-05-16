@@ -64,7 +64,7 @@ void FullMessageReader::readMessage(MessageBase* message_ptr, FullMessageReader:
 /**
  * \todo Make is a policy template parameter
  * Implements a buffer strategy that
- * -    is fixed know size for headers
+ * -    is fixed known size for headers
  * -    content length + 100 if message has a content length
  * -    no content length start at body_buffer_min, double each one thereafter
  *      until greater than body_buffer_max

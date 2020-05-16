@@ -13,7 +13,7 @@ set(MARVIN_LIBRARY_HEADER_FILES
 
 	buffer/buffer.hpp
 	buffer/buffer_chain.hpp
-	buffer/m_buffer.hpp
+	buffer/contig_buffer.hpp
 	
 	certificates/certificates.hpp
 	certificates/env_utils.hpp
@@ -77,7 +77,7 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	${EXTSRC}/http-parser/http_parser.c
 
 	buffer/buffer_chain.cpp			
-	buffer/m_buffer.cpp				
+	buffer/contig_buffer.cpp				
 	
 	certificates/certificates.cpp
 	certificates/env_utils.cpp

@@ -19,19 +19,15 @@ Polishing:
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
+  ☐ formalize buffer strategy - 
   ☐ review message writer - simplify like we have done with message reader
-  ☐ messagebase experiment with performance on interface to header() std::string, std::string& std::string&&
   ☐ parsing needs to test parse errors, connect and upgrade
   ☐ command interface to simple_mitm - finish up the first phase of this - its close
   ☐ implement https hosts update on the fly - and ensure that MitmApp uses the info - maybe add an all/none flag to prevent unnecessary regex matches
   ☐ make logging level a cli option for simple_proxy this means fix the global filter in Trog
-  ☐ simple_buffer
-      ☐ revamp the use of simple_buffer in the parser - simple buffer seems like an unnecessary "module"
-      ☐ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer
   ☐ remove the signal handling stuff from tcp_server and make available to simple_proxy to use for all threads.
   ☐ remove raw pointer to connection handler from tcp_server - this is a related issue decide about uuid in the mitm_app currently not initialized
   ☐ cleanup all the stuff that tries to turn objects into strings - its a mess
-  ☐ upstream roundtrip does not adequately configure headers. Particularly https upstream
   ☐ need to permit tunnel requests for any port as it might be a websocket
   ☐ should only do https_upstream if the port is 443 and even then should check the first message for upgrade and reject
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
@@ -55,9 +51,14 @@ Bugs:
   ☐ maybe still dont have headers correct as maybe the same header key canbe present a number of times
 ☐ potential - MessageWriter does not handle incomplete writes
 ☐ messagereader does not read trailers
-☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader. @done (20-05-16 15:25)
+ ✔ upstream roundtrip does not adequately configure headers. Particularly https upstream @done (20-05-16 15:19) @project(Next step)
+ ✔ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer @done (20-05-16 15:18) @project(Next step)
+ ✔ simple_buffer @done (20-05-16 15:18) @project(Next step)
+ ✔ revamp the use of simple_buffer in the parser - simple buffer seems like an unnecessary "module" @done (20-05-16 15:18) @project(Next step)
+ ✔ lots of complexity here - compiler has its own strategies for not copying - messes up simplistic experiments messagebase experiment with performance on interface to header() std::string, std::string& std::string&& @done (20-05-16 15:18) @project(Next step)
  ✔ not handling non-existence of connection header correctly when preparing upstream request @done (20-05-14 19:20)
  ✔ no - revamp of message done consider making MessageBase inherit from Headers and change name to HeaderFields or some such @done (20-05-14 19:20) @project(Next step)  
  ✔ NO consider beast model of message header+body and think about using string_view rather than string, or at least std::string&  new parser opportunity to rethink header definition and how values are processed by parser @done (20-05-14 19:20) @project(Next step)

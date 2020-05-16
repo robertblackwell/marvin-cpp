@@ -16,8 +16,8 @@ using MessageBaseSPtr = std::shared_ptr<MessageBase>;
 std::string traceMessage(MessageBase& msg);
 
 void serialize_headers(MessageBase& msg, std::string& string);
-void serialize_headers(MessageBase& msg, MBufferSPtr mb);
-MBufferSPtr serialize_headers(MessageBase& msg);
+void serialize_headers(MessageBase& msg, ContigBufferSPtr mb);
+ContigBufferSPtr serialize_headers(MessageBase& msg);
 bool isConnectionKeepAlive(Marvin::MessageBase& msg);
 
 /**
@@ -59,6 +59,7 @@ public:
     HeadersV2& headers();
     boost::optional<std::string> header(std::string key);
     void header(std::string key, std::string value);
+    void header(std::string* k, std::string* v);
     void remove_header( std::string key);
     boost::optional<std::size_t> contentLength();
     
@@ -69,9 +70,9 @@ public:
     void dumpHeaders(std::ostream& os);
 
     /** serialize the message prefix = firstline + headers lines*/
-    void serialize_headers(MBufferSPtr mb);
+    void serialize_headers(ContigBufferSPtr mb);
     /** serialize the message prefix = firstline + headers lines*/
-    MBufferSPtr serialize_headers();
+    ContigBufferSPtr serialize_headers();
     
     // std::string  str();
 
@@ -95,13 +96,13 @@ public:
 
     std::string to_string();
 #if 1
-    // friend void serialize_headers(MessageBase& msg, ::Marvin::MBuffer& buf);
-    // friend Marvin::MBufferSPtr serialize_headers(MessageBase& msg);
+    // friend void serialize_headers(MessageBase& msg, ::Marvin::ContigBuffer& buf);
+    // friend Marvin::ContigBufferSPtr serialize_headers(MessageBase& msg);
     // friend std::string serialize_headers(MessageBase& msg);
     friend void serialize_headers(MessageBase& msg, std::string& str);
     // friend void serialize_headers(MessageBase& msg, BufferChainSPtr bchain_sptr);
-    friend void serialize_headers(MessageBase& msg, MBufferSPtr mb);
-    friend MBufferSPtr serialize_headers(MessageBase& msg);
+    friend void serialize_headers(MessageBase& msg, ContigBufferSPtr mb);
+    friend ContigBufferSPtr serialize_headers(MessageBase& msg);
 #endif
     friend std::string traceMessage(MessageBase& msg);
     friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);

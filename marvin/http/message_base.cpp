@@ -25,7 +25,7 @@ std::string traceMessage(MessageBase& msg)
     return ss.str();
 }
 #if 0
-void serialize_headers(MessageBase& msg, Marvin::MBuffer& mb)
+void serialize_headers(MessageBase& msg, Marvin::ContigBuffer& mb)
 {
     boost::asio::streambuf b;
     std::ostream os(&b);
@@ -54,11 +54,11 @@ void serialize_headers(MessageBase& msg, Marvin::MBuffer& mb)
 //    std::cout << __FUNCTION__ << ":" << ss << std::endl;
     
 }
-Marvin::MBufferSPtr serialize_headers(MessageBase& msg)
+Marvin::ContigBufferSPtr serialize_headers(MessageBase& msg)
 {
     std::string h = "";
     serialize_headers(msg, h);
-    return Marvin::MBuffer::makeSPtr(h);
+    return Marvin::ContigBuffer::makeSPtr(h);
 }
 std::string serialize_headers(MessageBase& msg)
 {
@@ -88,7 +88,7 @@ void serialize_headers(MessageBase& msg, std::string& str)
     str = os.str();
 }
 
-void serialize_header_lines(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
+void serialize_header_lines(Marvin::HeadersV2& hdrs, ContigBufferSPtr mb)
 {
     for(auto const& h : hdrs) {
         mb->append((void*)h.key.c_str(), h.key.size());
@@ -97,7 +97,7 @@ void serialize_header_lines(Marvin::HeadersV2& hdrs, MBufferSPtr mb)
         mb->append((void*)(char*)"\r\n", 2);
     }
 }
-void serialize_headers(MessageBase& msg, MBufferSPtr mb)
+void serialize_headers(MessageBase& msg, ContigBufferSPtr mb)
 {
     static std::string const req_vers1_0 = " HTTP/1.0\r\n";
     static std::string const req_vers1_1 = " HTTP/1.1\r\n";
@@ -126,9 +126,9 @@ void serialize_headers(MessageBase& msg, MBufferSPtr mb)
     serialize_header_lines(msg.m_headers, mb);
     mb->append((void*)(char*)"\r\n", 2);
 }
-MBufferSPtr serialize_headers(MessageBase& msg)
+ContigBufferSPtr serialize_headers(MessageBase& msg)
 {
-    MBufferSPtr mb = MBuffer::makeSPtr(256*4*8);
+    ContigBufferSPtr mb = ContigBuffer::makeSPtr(256*4*8);
     serialize_headers(msg, mb);
     return mb;
 }
@@ -239,7 +239,11 @@ void MessageBase::header(std::string key, std::string value)
     std::string v(value);
     std::string v2 = boost::algorithm::trim_copy(v);
     m_headers.setAtKey(key, v2);
-};
+}
+void MessageBase::header(std::string* k, std::string* v)
+{
+    m_headers.setAtKey(k, v);
+}
 boost::optional<std::string>
 MessageBase::header(std::string key) 
 {
@@ -281,12 +285,12 @@ MessageBase::contentLength()
         return boost::none;
     }
 }
-void MessageBase::serialize_headers(MBufferSPtr mb)
+void MessageBase::serialize_headers(ContigBufferSPtr mb)
 {
     // force use of friend
     Marvin::serialize_headers(*this, mb);
 }
-MBufferSPtr MessageBase::serialize_headers()
+ContigBufferSPtr MessageBase::serialize_headers()
 {
     // force use of friend
     return Marvin::serialize_headers(*this);
@@ -332,7 +336,7 @@ void MessageBase::dumpHeaders(std::ostream& os)
     
 std::ostream &operator<< (std::ostream &os, MessageBase &msg)
 {
-    MBufferSPtr mb_h = msg.serialize_headers();
+    ContigBufferSPtr mb_h = msg.serialize_headers();
     os << mb_h->toString() ;
     return os;
 }

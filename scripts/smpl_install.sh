@@ -77,7 +77,6 @@ function smpl_install() {
 
 	smpl_run_one ${script_dir}/nodejs_http_parser.sh $@
 
-	smpl_run_one ${script_dir}/simple_buffer.sh $@
 	smpl_run_one ${script_dir}/urlparser.sh $@
 	smpl_run_one ${script_dir}/cxxurl.sh $@
 	smpl_run_one ${script_dir}/trog.sh $@

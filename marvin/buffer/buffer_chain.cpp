@@ -1,6 +1,6 @@
 #include <cassert>
 #include <boost/asio/buffer.hpp>
-#include <marvin/buffer/m_buffer.hpp>
+#include <marvin/buffer/contig_buffer.hpp>
 #include <marvin/buffer/buffer_chain.hpp>
 #include <marvin/macros.hpp>
 #include <marvin/configure_trog.hpp>
@@ -24,16 +24,16 @@ BufferChainSPtr BufferChain::makeSPtr(BufferChain&& other)
 BufferChainSPtr BufferChain::makeSPtr(std::string& s)
 {
     BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
-    sp->push_back(Marvin::MBuffer::makeSPtr(s));
+    sp->push_back(Marvin::ContigBuffer::makeSPtr(s));
     return sp;
 }
-BufferChainSPtr BufferChain::makeSPtr(MBuffer& mb)
+BufferChainSPtr BufferChain::makeSPtr(ContigBuffer& mb)
 {
     BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
-    sp->push_back(Marvin::MBuffer::makeSPtr(mb));
+    sp->push_back(Marvin::ContigBuffer::makeSPtr(mb));
     return sp;
 }
-BufferChainSPtr BufferChain::makeSPtr(MBufferSPtr mb_sptr)
+BufferChainSPtr BufferChain::makeSPtr(ContigBufferSPtr mb_sptr)
 {
     BufferChainSPtr sp = std::shared_ptr<BufferChain>(new BufferChain());
     sp->push_back(mb_sptr);
@@ -55,15 +55,15 @@ BufferChainSPtr chunk_last(BufferChainSPtr buf_sptr)
 
 BufferChain::BufferChain()
 {
-    m_chain = std::vector<MBufferSPtr>();
+    m_chain = std::vector<ContigBufferSPtr>();
     m_size = 0;
 }
 BufferChain::BufferChain(BufferChain& other)
 {
     TROG_WARN("buffer chain being copied");
     m_size = 0;
-    for (MBufferSPtr mb_sptr: other.m_chain) {
-        this->push_back(MBuffer::makeSPtr(*mb_sptr));
+    for (ContigBufferSPtr mb_sptr: other.m_chain) {
+        this->push_back(ContigBuffer::makeSPtr(*mb_sptr));
     }
 }
 BufferChain& BufferChain::operator =(BufferChain& other)
@@ -73,8 +73,8 @@ BufferChain& BufferChain::operator =(BufferChain& other)
         return *this;
     }
     m_size = 0;
-    for (MBufferSPtr mb_sptr: other.m_chain) {
-        this->push_back(MBuffer::makeSPtr(*mb_sptr));
+    for (ContigBufferSPtr mb_sptr: other.m_chain) {
+        this->push_back(ContigBuffer::makeSPtr(*mb_sptr));
     }
     return *this;
 }
@@ -103,7 +103,7 @@ BufferChain& BufferChain::operator =(BufferChain&& other)
 void BufferChain::append(void* buf, std::size_t len)
 {
     if (m_chain.size() > 0) {
-        MBufferSPtr last_mb = m_chain.at(m_chain.size()-1);
+        ContigBufferSPtr last_mb = m_chain.at(m_chain.size()-1);
         if ((last_mb->capacity() - last_mb->size()) >= len) {
             last_mb->append(buf, len);
 #define MARVIN_MK_CONSTBUF
@@ -115,7 +115,7 @@ void BufferChain::append(void* buf, std::size_t len)
         }
     }
     std::size_t required_len = (len > 256*4*8) ? len+100 : 256*4*8;
-    MBufferSPtr new_mb = MBuffer::makeSPtr(required_len);
+    ContigBufferSPtr new_mb = ContigBuffer::makeSPtr(required_len);
     new_mb->append(buf, len);
     this->push_back(new_mb);
 }
@@ -128,7 +128,7 @@ void BufferChain::append(std::string& str)
     append((void*)str.c_str(), str.size());
 }
 
-void BufferChain::push_back(MBufferSPtr mb)
+void BufferChain::push_back(ContigBufferSPtr mb)
 {
     m_size += mb->size();
     m_chain.push_back(mb);
@@ -151,7 +151,7 @@ std::size_t BufferChain::blocks()
 {
     return m_chain.size();
 }
-MBuffer& BufferChain::block_at(std::size_t index)
+ContigBuffer& BufferChain::block_at(std::size_t index)
 {
     if (index >= m_chain.size()) {
             MARVIN_THROW("index out of range");
@@ -161,15 +161,15 @@ MBuffer& BufferChain::block_at(std::size_t index)
 std::string BufferChain::to_string()
 {
     std::string s = "";
-    for(MBufferSPtr& mb : m_chain) {
+    for(ContigBufferSPtr& mb : m_chain) {
         s += mb->toString();
     }
     return s;
 }
-MBufferSPtr BufferChain::amalgamate()
+ContigBufferSPtr BufferChain::amalgamate()
 {
-    MBufferSPtr mb_final = std::make_shared<MBuffer>(this->size());
-    for(MBufferSPtr& mb : m_chain) {
+    ContigBufferSPtr mb_final = std::make_shared<ContigBuffer>(this->size());
+    for(ContigBufferSPtr& mb : m_chain) {
         mb_final->append(mb->data(), mb->size());
     }
     return mb_final;
@@ -178,16 +178,16 @@ MBufferSPtr BufferChain::amalgamate()
 BufferChainSPtr buffer_chain(std::string& s)
 {
     BufferChainSPtr sp = std::make_shared<BufferChain>();
-    sp->push_back(Marvin::MBuffer::makeSPtr(s));
+    sp->push_back(Marvin::ContigBuffer::makeSPtr(s));
     return sp;
 }
-BufferChainSPtr buffer_chain(MBuffer& mb)
+BufferChainSPtr buffer_chain(ContigBuffer& mb)
 {
     BufferChainSPtr sp = std::make_shared<BufferChain>();
-    sp->push_back(Marvin::MBuffer::makeSPtr(mb));
+    sp->push_back(Marvin::ContigBuffer::makeSPtr(mb));
     return sp;
 }
-BufferChainSPtr buffer_chain(MBufferSPtr mb_sptr)
+BufferChainSPtr buffer_chain(ContigBufferSPtr mb_sptr)
 {
     BufferChainSPtr sp = std::make_shared<BufferChain>();
     sp->push_back(std::move(mb_sptr));

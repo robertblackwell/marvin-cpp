@@ -45,7 +45,7 @@ void MessageWriter::asyncWrite(MessageBaseSPtr msg, std::string& body_string, Wr
         asyncWrite(msg, cb);
     }
 }
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::MBufferSPtr body_mb_sptr, WriteMessageCallbackType cb)
+void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::ContigBufferSPtr body_mb_sptr, WriteMessageCallbackType cb)
 {
     assert(body_mb_sptr != nullptr);
     m_body_buffer_chain_sptr = Marvin::BufferChain::makeSPtr(body_mb_sptr);
@@ -102,7 +102,7 @@ void MessageWriter::asyncWriteBodyData(std::string& data, WriteBodyDataCallbackT
         cb(err);
     });
 }
-void MessageWriter::asyncWriteBodyData(Marvin::MBuffer& data, WriteBodyDataCallbackType cb)
+void MessageWriter::asyncWriteBodyData(Marvin::ContigBuffer& data, WriteBodyDataCallbackType cb)
 {
     m_write_sock->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);

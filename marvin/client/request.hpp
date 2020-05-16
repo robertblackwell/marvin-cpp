@@ -10,7 +10,7 @@
 #include <memory>                                  // for shared_ptr, unique...
 #include <boost/asio/io_service.hpp>               // for io_service
 #include <marvin/buffer/buffer_chain.hpp>          // for BufferChain (ptr o...
-#include <marvin/buffer/m_buffer.hpp>              // for MBufferSPtr
+#include <marvin/buffer/contig_buffer.hpp>              // for ContigBufferSPtr
 #include <marvin/callback_typedefs.hpp>            // for AsyncWriteCallback...
 #include <marvin/connection/socket_interface.hpp>  // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>           // for ErrorType
@@ -19,7 +19,7 @@
 #include <string>                                       // for to_string
 #include <boost/asio/io_service.hpp>                    // for io_service
 #include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
-#include <marvin/buffer/m_buffer.hpp>                   // for MBufferSPtr
+#include <marvin/buffer/contig_buffer.hpp>                   // for ContigBufferSPtr
 #include <marvin/callback_typedefs.hpp>                 // for ErrorOnlyCall...
 #include <marvin/connection/socket_interface.hpp>       // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>                // for ErrorType
@@ -132,11 +132,11 @@ public:
     void asyncWriteTrailers(WriteHeadersCallbackType cb);
 
     void asyncWriteBodyData(std::string& body_str, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(Marvin::MBufferSPtr body_sptr, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(Marvin::ContigBufferSPtr body_sptr, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(Marvin::BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
 
     void asyncWriteLastBodyData(std::string& body_str, WriteBodyDataCallbackType  cb);
-    void asyncWriteLastBodyData(Marvin::MBufferSPtr body_sptr, WriteBodyDataCallbackType  cb);
+    void asyncWriteLastBodyData(Marvin::ContigBufferSPtr body_sptr, WriteBodyDataCallbackType  cb);
     void asyncWriteLastBodyData(Marvin::BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
     void asyncConnect(std::function<void(Marvin::ErrorType& err)> cb);
     void end();
@@ -183,9 +183,9 @@ public:
     void p_internal_write_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
 
     // steps in writing a full message in one go
-    void p_msg_check_connected(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
-    void p_msg_connect(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
-    void p_msg_write(MessageBaseSPtr msg, MBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_check_connected(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_connect(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_write(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
     // general write error handler
     void p_write_error();
     // @TODO need to determine role of this method
@@ -222,7 +222,7 @@ public:
 
     boost::asio::io_service&                        m_io;
     Marvin::MessageBaseSPtr                   m_current_request;
-    Marvin::MBufferSPtr                             m_body_mbuffer_sptr;
+    Marvin::ContigBufferSPtr                             m_body_mbuffer_sptr;
     MessageWriterSPtr                               m_wrtr;
     MessageReaderSPtr                               m_rdr;
     ISocketSPtr                                     m_conn_shared_ptr;

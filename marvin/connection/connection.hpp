@@ -106,7 +106,7 @@ class Connection : public ISocket
     void asyncWrite(std::string& str, AsyncWriteCallbackType cb) override;
     
     void asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb) override;
-    void asyncWrite(Marvin::MBuffer& buffer, AsyncWriteCallbackType cb) override;
+    void asyncWrite(Marvin::ContigBuffer& buffer, AsyncWriteCallbackType cb) override;
     
     void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) override;
     void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb) override;
@@ -117,9 +117,9 @@ class Connection : public ISocket
     void asyncRead(boost::asio::streambuf& streambuf,  AsyncReadCallbackType cb) override;
     void asyncRead(boost::asio::mutable_buffer buffer,  AsyncReadCallbackType cb) override;
     void asyncRead(void* buffer, std::size_t buffer_length,  AsyncReadCallbackType cb) override;
-    void asyncRead(Marvin::MBufferSPtr mb,  AsyncReadCallbackType cb) override;
+    void asyncRead(Marvin::ContigBufferSPtr mb,  AsyncReadCallbackType cb) override;
     /// same as asyncRead except that can set the read timeout specifically for this read
-    void asyncRead(Marvin::MBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb);
+    void asyncRead(Marvin::ContigBufferSPtr buffer, long timeout_ms, AsyncReadCallbackType cb);
     void asyncRead(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb);
 
     void shutdown(ISocket::ShutdownType type) override;
