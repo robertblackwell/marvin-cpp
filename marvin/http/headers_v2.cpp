@@ -22,10 +22,14 @@ const std::string HeadersV2::ContentLength = "CONTENT-LENGTH";
 const std::string HeadersV2::ContentType = "CONTENT-TYPE";
 const std::string HeadersV2::Date = "DATE";
 const std::string HeadersV2::Host = "HOST";
+const std::string HeadersV2::ProxyAuthorization = "PROXY-AUTHORIZATION";
+const std::string HeadersV2::ProxyAuthentication = "PROXY-AUTHENTICATION";
 const std::string HeadersV2::ProxyConnection = "PROXY-CONNECTION";
 const std::string HeadersV2::TE = "TE";
 const std::string HeadersV2::TransferEncoding = "TRANSFER-ENCODING";
 const std::string HeadersV2::ETag = "ETAG";
+const std::string HeadersV2::Upgrade = "UPGRADE";
+const std::string HeadersV2::Trailer = "TRAILER";
 const std::string HeadersV2::RequestHandlerId = "REQUEST-HANDLER-ID";
 
 const std::string HeadersV2::ConnectionClose = "CLOSE";
@@ -104,11 +108,11 @@ HeadersV2::Iterator const HeadersV2::Iterator::operator++(int junk)
 }
 HeadersV2::Field& HeadersV2::Iterator::operator*()
 {
-    return m_headers.m_Fields_vector[m_index];
+    return m_headers.m_fields_vector[m_index];
 }
 HeadersV2::Field* HeadersV2::Iterator::operator->()
 {
-    return &(m_headers.m_Fields_vector[m_index]);
+    return &(m_headers.m_fields_vector[m_index]);
 }
 bool HeadersV2::Iterator::operator==(const Iterator& rhs)
 {
@@ -127,18 +131,18 @@ HeadersV2::Iterator & HeadersV2::Iterator::operator=(const HeadersV2::Iterator &
 HeadersV2::HeadersV2()
 {
 }
-HeadersV2::HeadersV2(HeadersV2& other): m_Fields_vector(other.m_Fields_vector)
+HeadersV2::HeadersV2(HeadersV2& other): m_fields_vector(other.m_fields_vector)
 {}
-HeadersV2::HeadersV2(HeadersV2&& other) noexcept: m_Fields_vector(std::move(other.m_Fields_vector))
+HeadersV2::HeadersV2(HeadersV2&& other) noexcept: m_fields_vector(std::move(other.m_fields_vector))
 {}
 HeadersV2& HeadersV2::operator =(HeadersV2 const& other)
 {
-    m_Fields_vector = other.m_Fields_vector;
+    m_fields_vector = other.m_fields_vector;
 }
 HeadersV2& HeadersV2::operator =(HeadersV2&& other)
 {
-    m_Fields_vector = other.m_Fields_vector;
-    other.m_Fields_vector.clear();
+    m_fields_vector = other.m_fields_vector;
+    other.m_fields_vector.clear();
 }
 HeadersV2::HeadersV2(std::vector<std::pair<std::string, std::string>> initialValue)
 {
@@ -150,7 +154,7 @@ HeadersV2::HeadersV2(std::vector<std::pair<std::string, std::string>> initialVal
     }
 }
 
-std::size_t HeadersV2::size() const { return (std::size_t)m_Fields_vector.size(); }
+std::size_t HeadersV2::size() const { return (std::size_t)m_fields_vector.size(); }
 
 HeadersV2::Iterator HeadersV2::begin()
 {
@@ -159,7 +163,7 @@ HeadersV2::Iterator HeadersV2::begin()
 
 HeadersV2::Iterator HeadersV2::end()
 {
-    return HeadersV2::Iterator(*this, (int)m_Fields_vector.size());
+    return HeadersV2::Iterator(*this, (int)m_fields_vector.size());
 }
 
 HeadersV2::Iterator HeadersV2::find(HeadersV2::FieldKeyArg key)
@@ -179,8 +183,8 @@ boost::optional<std::size_t> HeadersV2::findAtIndex(HeadersV2::FieldKeyArg key)
 {
     std::string s{key};
     std::string key_upper = toupper_copy(s);
-    for(std::size_t index = 0; index < m_Fields_vector.size(); index++) {
-        if (m_Fields_vector[index].key == key_upper) {
+    for(std::size_t index = 0; index < m_fields_vector.size(); index++) {
+        if (m_fields_vector[index].key == key_upper) {
             return boost::optional<std::size_t>(index);
         }
     }
@@ -189,17 +193,17 @@ boost::optional<std::size_t> HeadersV2::findAtIndex(HeadersV2::FieldKeyArg key)
 
 HeadersV2::Field HeadersV2::atIndex(std::size_t index)
 {
-    if (index >= m_Fields_vector.size()) {
+    if (index >= m_fields_vector.size()) {
         throw HeadersV2::Exception("index is out of bounds accessing headers");
     } else {
-        return m_Fields_vector[index];
+        return m_fields_vector[index];
     }
 }
 boost::optional<std::string> HeadersV2::atKey(HeadersV2::FieldKeyArg k)
 {
     boost::optional<std::size_t> index = this->findAtIndex(k);
     if(index) {
-        return m_Fields_vector[index.get()].value;
+        return m_fields_vector[index.get()].value;
     }
     return boost::optional<std::string>();
 }
@@ -209,19 +213,19 @@ void HeadersV2::setAtKey(HeadersV2::FieldKeyArg k, std::string v)
     std::string key_upper = toupper_copy(s);
     boost::optional<std::size_t> index = this->findAtIndex(k);
     if(index) {
-        m_Fields_vector[index.get()].value = v;
+        m_fields_vector[index.get()].value = v;
     } else {
         Field Field{.key=key_upper, .value=v};
-        m_Fields_vector.push_back(Field);
+        m_fields_vector.push_back(Field);
     }
 }
 void HeadersV2::eraseAtIndex(std::size_t position)
 {
-    if((position >= 0)&&(position < m_Fields_vector.size())) {
-        for(std::size_t idx = position; idx < m_Fields_vector.size() - 1; idx ++ ) {
-            m_Fields_vector[idx] = m_Fields_vector[idx+1];
+    if((position >= 0)&&(position < m_fields_vector.size())) {
+        for(std::size_t idx = position; idx < m_fields_vector.size() - 1; idx ++ ) {
+            m_fields_vector[idx] = m_fields_vector[idx+1];
         }
-        m_Fields_vector.erase(m_Fields_vector.end());
+        m_fields_vector.erase(m_fields_vector.end());
     } else {
         return;
     }    
@@ -245,7 +249,7 @@ bool HeadersV2::sameValues(HeadersV2& other)
     if (this->size() != other.size()) return false;
     for (std::size_t index = 0; index < this->size(); index++ ) {
     
-        Field this_element = m_Fields_vector[index];
+        Field this_element = m_fields_vector[index];
         auto found_optional = other.atKey(this_element.key);
         if(found_optional) {
             // found it and unwrapped the options
@@ -261,7 +265,7 @@ bool HeadersV2::sameOrderAndValues(HeadersV2& other)
     for (std::size_t index = 0; index < this->size(); index++ ) {
     
         Field other_element = other.atIndex(index);
-        Field this_element = m_Fields_vector[index];
+        Field this_element = m_fields_vector[index];
 
         if( (other_element.key != this_element.key) || (other_element.value != this_element.value)) {
             return false;

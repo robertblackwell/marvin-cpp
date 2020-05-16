@@ -104,9 +104,12 @@ TEST_CASE("virt dtor")
 
 TEST_CASE("uri_http_no_missing_elements")
 {
-    Marvin::Uri uri(std::string("http://www.somewhere.com:243/path1/path2?one=111&two=222"));
+
+    std::string url = std::string("http://www.somewhere.com:243/path1/path2?one=111&two=222");
+    Marvin::Uri uri(url);
     CHECK(uri.scheme() == "http");
     CHECK(uri.host() == "www.somewhere.com:243");
+    CHECK(uri.host_and_port() == "www.somewhere.com:243");
     CHECK(uri.server() == "www.somewhere.com");
     auto x = uri.port();
     CHECK(uri.port() == 243);
@@ -118,6 +121,7 @@ TEST_CASE("uri_https_no_missing_elements")
     Marvin::Uri uri(std::string("https://www.somewhere.com:243/path1/path2?one=111&two=222"));
     CHECK(uri.scheme() == "https");
     CHECK(uri.host() == "www.somewhere.com:243");
+    CHECK(uri.host_and_port() == "www.somewhere.com:243");
     CHECK(uri.server() == "www.somewhere.com");
     auto x = uri.port();
     CHECK(uri.port() == 243);
@@ -130,6 +134,7 @@ TEST_CASE("uri_https_port_missing")
     Marvin::Uri uri(std::string("https://www.somewhere.com/path1/path2?one=111&two=222"));
     CHECK(uri.scheme() == "https");
     CHECK(uri.host() == "www.somewhere.com:443");
+    CHECK(uri.host_and_port() == "www.somewhere.com:443");
     CHECK(uri.server() == "www.somewhere.com");
     auto x = uri.port();
     CHECK(uri.port() == 443);
@@ -141,6 +146,7 @@ TEST_CASE("uri_http_port_missing")
     Marvin::Uri uri(std::string("http://www.somewhere.com/path1/path2?one=111&two=222"));
     CHECK(uri.scheme() == "http");
     CHECK(uri.host() == "www.somewhere.com:80");
+    CHECK(uri.host_and_port() == "www.somewhere.com:80");
     CHECK(uri.server() == "www.somewhere.com");
     auto x = uri.port();
     CHECK(uri.port() == 80);

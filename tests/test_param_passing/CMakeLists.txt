@@ -1,9 +1,6 @@
-
-
-file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-set(TARGET test_uri)
+set(TARGET test_param_passing)
 add_executable(${TARGET} 
-	test_uri_main.cpp
+	test_main.cpp
 )
 
 target_include_directories(${TARGET} 

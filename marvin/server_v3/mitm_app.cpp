@@ -9,7 +9,7 @@
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
 
 
 
@@ -107,12 +107,12 @@ void MitmApp::p_read_first_message()
 void MitmApp::p_on_first_message()
 {   
     std::string tmp_url = m_rdr->target();
-    // the Uri() constructor steals the input
+    // the Uri() constructor steals the input - I think this is fixed but better safe than sorry
     std::string tmp_url_safe = tmp_url;
     Uri tmp_uri = Uri(tmp_url_safe);
 
     m_scheme = tmp_uri.scheme();
-    m_host = tmp_uri.server(); // tmp_uri.host() would have the port number on the end this is not what we want for a proxy
+    m_host = tmp_uri.host_no_port(); // tmp_uri.host() would have the port number on the end this is not what we want for a proxy
     m_port = std::to_string(tmp_uri.port());
 
     HttpMethod method = m_rdr->method();

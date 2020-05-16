@@ -37,6 +37,7 @@ add_subdirectory(test_message)
  add_subdirectory(test_timeout)
  add_subdirectory(test_uri)
  add_subdirectory(test_subcommands)
+ add_subdirectory(test_param_passing)
 
 if (OFF)
 endif()

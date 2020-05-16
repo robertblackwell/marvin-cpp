@@ -29,18 +29,13 @@ std::string base64Encode(std::string& source);
 http::url decodeUri(MessageReaderSPtr requestSPtr);
 
 /// \brief Inserts the Uri into the target field and host field of the message in a way
-/// consistent with the requirements of a proxy request. The target should be absolute
+/// consistent with the requirements of a proxy request. The target should be absolute.
+/// the host should include the port
 void applyUriProxy(MessageBaseSPtr msg, Uri& uri);
 
 /// \brief applies the Uri to a MessageBase to make a NON PROXY request where the uri in
 /// the message is an relative uri; fills in the message uri field and host header
 void applyUriNonProxy(MessageBaseSPtr msg, Uri& uri);
-
-//void applyUri(MessageBaseSPtr msg, Marvin::Uri& uri, bool proxy);
-
-//void applyUri(MessageBaseSPtr msg, std::string uri);
-
-//void fillRequestFromUri(MessageBase& msg, std::string uri_in, bool absolute = false);
 
 void removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue);
 

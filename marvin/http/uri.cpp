@@ -70,6 +70,8 @@ std::string Uri::user(){ return m_user;}
 std::string Uri::password(){ return m_password;}
 std::string Uri::userAndPassword(){ return m_user_and_password;}
 std::string Uri::host(){ return m_host;}
+std::string Uri::host_and_port() {return m_host;}
+std::string Uri::host_no_port(){ return m_server;}
 std::string Uri::server(){ return m_server;}
 long        Uri::port(){ return m_port;}
 std::string Uri::relativePath(){ return m_rel_path;}

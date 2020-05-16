@@ -5,7 +5,7 @@
 #include <marvin/server_v3/server_connection_manager.hpp>
 #include <marvin/server_v3/server_context.hpp>
 
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
 namespace Marvin {
 
 ConnectionHandler::ConnectionHandler(

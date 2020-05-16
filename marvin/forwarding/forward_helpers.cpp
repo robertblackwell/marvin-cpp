@@ -26,7 +26,7 @@ void applyUri(MessageBaseSPtr msg, Uri& uri, bool proxy)
         msg->target(uri.absolutePath());
     else
         msg->target(uri.relativePath());
-    msg->header(Marvin::HeadersV2::Host, uri.host());
+    msg->header(Marvin::HeadersV2::Host, uri.host_and_port());
 }
 void applyUriProxy(MessageBaseSPtr msgSPtr, Uri& uri)
 {

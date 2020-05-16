@@ -30,6 +30,8 @@ namespace Marvin{
             
             /// \brief returns a host value suitable for a host header in the form somewhere.com:port - the port is always present
             std::string host();
+            std::string host_and_port();
+            std::string host_no_port();
 
             /// \brief the host name without the port attached suitable for boost::asio resolver
             std::string server();

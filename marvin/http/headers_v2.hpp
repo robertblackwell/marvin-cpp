@@ -95,9 +95,13 @@ class HeadersV2
         static const std::string Date;
         static const std::string Host;
         static const std::string ProxyConnection;
-        static const std::string TE;
+        static const std::string ProxyAuthorization;
+        static const std::string ProxyAuthentication;
         static const std::string TransferEncoding;
         static const std::string ETag;
+        static const std::string Upgrade;
+        static const std::string TE;
+        static const std::string Trailer;
         static const std::string RequestHandlerId;
         // important connect header values
         static const std::string ConnectionClose;
@@ -160,7 +164,7 @@ class HeadersV2
     private:
         void eraseAtIndex(std::size_t position);
 
-        std::vector<Field> m_Fields_vector;
+        std::vector<Field> m_fields_vector;
         // std::map<std::string, long> m_keys;
 };
 } //namespace

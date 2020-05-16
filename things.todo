@@ -19,10 +19,8 @@ Polishing:
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
-
-  ☐ msg and header serialization is a mess - clean it up - almost done
-  ☐ consider making MessageBase inherit from Headers and change name to HeaderFields or some such  
-  ☐ consider beast model of message header+body and think about using string_view rather than string, or at least std::string&  new parser opportunity to rethink header definition and how values are processed by parser
+  ☐ review message writer - simplify like we have done with message reader
+  ☐ messagebase experiment with performance on interface to header() std::string, std::string& std::string&&
   ☐ parsing needs to test parse errors, connect and upgrade
   ☐ command interface to simple_mitm - finish up the first phase of this - its close
   ☐ implement https hosts update on the fly - and ensure that MitmApp uses the info - maybe add an all/none flag to prevent unnecessary regex matches
@@ -39,11 +37,14 @@ Next step:
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
 
-Next project:
-  ☐ consider a websocket interface for collected data
-  ☐ more than 1 thread for the mitm with a separate io_context for each thread - that seems to be the recommended way for performance - boost has cpp3 example of a io_service pool.
+Complete-make a usefull app:
+  ☐ make a websocket servce inside simple_proxy with a cache of collected exchanges
   ☐ Collector - run in another thread so that can spend time doing filtering and formatting
-  ☐ think about a script/app for watcing the output
+  ☐ use a browser - its the simplest think about a script/app for watcing the output
+  ☐ pretty print json, html, xml - have a dynamic list of content types to pretty print
+  ☐ separate command interface and websocket interface
+  ☐ finish the command interface
+  ☐ more than 1 thread for the mitm with a separate io_context for each thread - that seems to be the recommended way for performance - boost has cpp3 example of a io_service pool.
 
 Tests:
  ☐ parse error - send invalid request and then close - or at least make sure the connection does not stay around
@@ -52,12 +53,15 @@ Tests:
 ☐ devise a test that verifies that the entire proxy app works correctly at least on a simple example. Maybe use curl/wget to a know website to tests the output.
 Bugs:
   ☐ maybe still dont have headers correct as maybe the same header key canbe present a number of times
-☐ not handling non-existence of connection header correctly when preparing upstream request
 ☐ potential - MessageWriter does not handle incomplete writes
 ☐ messagereader does not read trailers
 ☐ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ not handling non-existence of connection header correctly when preparing upstream request @done (20-05-14 19:20)
+ ✔ no - revamp of message done consider making MessageBase inherit from Headers and change name to HeaderFields or some such @done (20-05-14 19:20) @project(Next step)  
+ ✔ NO consider beast model of message header+body and think about using string_view rather than string, or at least std::string&  new parser opportunity to rethink header definition and how values are processed by parser @done (20-05-14 19:20) @project(Next step)
+ ✔ msg and header serialization is a mess - clean it up - almost done @done (20-05-14 19:19) @project(Next step)
  ✔ Certificate initialization - not quite complete - uconsider env variable @done (20-05-11 11:58) @project(Next step)
  ✔ think about keeping body as a buffer chain @done (20-05-11 11:57) @project(Next step)
  ✔ make timeouts effective in the top 500 some sites dont respond and mitm looses an FD - this needs to be terminated . @done (20-05-11 11:57) @project(Next step)

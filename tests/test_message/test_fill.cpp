@@ -254,7 +254,9 @@ TEST_CASE ("Helpers_Example")
     Marvin::Uri u("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
         CHECK(u.scheme() == "http");
         CHECK(u.server() == "somewhere.com");
+        CHECK(u.host_no_port() == "somewhere.com");
         CHECK(u.host() == "somewhere.com:80");
+        CHECK(u.host_and_port() == "somewhere.com:80");
         CHECK(u.port() == 80);
         CHECK(u.search() == "a=1111#fragment");
         CHECK(u.relativePath() == "/subdirpath/index.php?a=1111#fragment");

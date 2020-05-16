@@ -50,7 +50,6 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	http/http_method.hpp 
 	http/message_base.hpp 
 	http/message_factory.hpp
-	http/message_interface.hpp 
 	http/parser.hpp
 	http/uri.hpp 
 	http/uri_query.hpp

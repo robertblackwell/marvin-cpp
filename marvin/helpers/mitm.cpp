@@ -25,7 +25,7 @@ void applyUri(MessageBaseSPtr msg, Uri& uri, bool proxy)
         msg->target(uri.absolutePath());
     else
         msg->target(uri.relativePath());
-    msg->header(Marvin::HeadersV2::Host, uri.host());
+    msg->header(Marvin::HeadersV2::Host, uri.host_and_port());
 }
 void applyUriProxy(MessageBaseSPtr msgSPtr, Uri& uri)
 {
@@ -35,6 +35,7 @@ void applyUriNonProxy(MessageBaseSPtr msgSPtr, Uri& uri)
 {
     applyUri(msgSPtr, uri, false);
 }
+
 void removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue)
 {
     char_separator<char> sep(",");
@@ -48,6 +49,48 @@ void removeHopByHop(MessageBaseSPtr msgSPtr, std::string connectionValue)
 //        std::string s2 = t;
 //        std::cout << t << "." << std::endl;
     }
+}
+//
+// Elements that are common between http and https in the transforming of a client
+// request into a form to send upstream to the end server.
+//
+void request_transform_common(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr)
+{
+    MessageReaderSPtr req = requestSPtr;
+    MessageBaseSPtr result = upstreamRequest;
+
+    // copy the headers
+    auto hdrs = req->headers();
+    std::set<std::string> dontCopyList{
+        Marvin::HeadersV2::Host,
+        Marvin::HeadersV2::ProxyConnection,
+        Marvin::HeadersV2::ProxyAuthorization,
+        Marvin::HeadersV2::ProxyAuthentication,
+        Marvin::HeadersV2::Connection,
+        Marvin::HeadersV2::ETag,
+        Marvin::HeadersV2::TransferEncoding,
+        Marvin::HeadersV2::TE,
+        Marvin::HeadersV2::Trailer,
+        Marvin::HeadersV2::Upgrade
+    };
+    // copy all headers except those in dontCopyList
+    HeadersV2::copyExcept(hdrs, result->headers(),dontCopyList);
+
+    if (auto hdropt = req->header(Marvin::HeadersV2::Connection)) {
+        std::string cv = hdropt.get();
+        removeHopByHop(result, cv);
+    }
+
+    // no keep alive
+    result->header(Marvin::HeadersV2::Connection, Marvin::HeadersV2::ConnectionClose);
+    // no compression
+    result->header(Marvin::HeadersV2::AcceptEncoding, "identity");
+    result->header(Marvin::HeadersV2::TE, "");
+    // Http versions defaults to 1.1, so force it to the same as the request
+    result->version_minor(req->version_minor());
+    result->setContent(req->getContentBuffer());
+//    result->header(Marvin::HeadersV2::ContentLength, std::to_string(req->getBody()->size()));
+
 }
 void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr)
 {
@@ -65,14 +108,21 @@ void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  req
     // set the method
     result->method(req->method());
 
+    request_transform_common(result, req);
+    return;
     // copy the headers
     auto hdrs = req->headers();
     std::set<std::string> dontCopyList{
         Marvin::HeadersV2::Host,
         Marvin::HeadersV2::ProxyConnection,
+        Marvin::HeadersV2::ProxyAuthorization,
+        Marvin::HeadersV2::ProxyAuthentication,
         Marvin::HeadersV2::Connection,
         Marvin::HeadersV2::ETag,
-        Marvin::HeadersV2::TransferEncoding
+        Marvin::HeadersV2::TransferEncoding,
+        Marvin::HeadersV2::TE,
+        Marvin::HeadersV2::Trailer,
+        Marvin::HeadersV2::Upgrade
     };
     // copy all headers except those in dontCopyList
     HeadersV2::copyExcept(hdrs, result->headers(),dontCopyList);
@@ -93,7 +143,10 @@ void makeUpstreamRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  req
 //    result->header(Marvin::HeadersV2::ContentLength, std::to_string(req->getBody()->size()));
 
 }
-
+// https is a little different because when in mitm mode the client thinks
+// they have a direct connection rather than through proxy and hence the
+// request will be different to that of a http request
+// the target field will be a relative path not an absolue path
 void makeUpstreamHttpsRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr)
 {
     MessageReaderSPtr req = requestSPtr;
@@ -101,6 +154,13 @@ void makeUpstreamHttpsRequest(MessageBaseSPtr upstreamRequest, MessageReaderSPtr
     
     result->target(req->target());
     result->method(req->method());
+    auto hdropt = req->header(HeadersV2::Host);
+    if (!hdropt) {
+        TROG_ERROR("no host header in request");
+    }
+    result->header(HeadersV2::Host, req->header(HeadersV2::Host).get());
+    request_transform_common(result, req);
+    return;
     int nh = req->headers().size();
     for(int i = 0; i < nh; i++ ) {
         auto y = req->headers().atIndex(i);
