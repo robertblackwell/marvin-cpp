@@ -41,8 +41,7 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	${EXTSRC}/CxxUrl/url.hpp 
 	${EXTSRC}/uri-parser/UriParser.hpp 
 	${EXTSRC}/http-parser/http_parser.h 
-	${EXTSRC}/simple_buffer/simple_buffer.h
-	
+
 	helpers/helpers_fs.hpp
 	helpers/mitm.hpp
 	
@@ -76,7 +75,6 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	${EXTSRC}/CxxUrl/url.cpp
 	${EXTSRC}/uri-parser/UriCodec.cpp
 	${EXTSRC}/http-parser/http_parser.c
-	${EXTSRC}/simple_buffer/simple_buffer.c
 
 	buffer/buffer_chain.cpp			
 	buffer/m_buffer.cpp				

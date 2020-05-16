@@ -31,10 +31,6 @@ Parser::Parser()
     header_done = false;
     m_http_parser_ptr = NULL;
     m_http_parser_settings_ptr = NULL;
-    url_buf = NULL;
-    status_buf = NULL;
-    name_buf = NULL;
-    value_buf = NULL;
     header_state = kHEADER_STATE_NOTHING;
 }
 
@@ -42,10 +38,6 @@ Parser::~Parser()
 {
     if (m_http_parser_ptr != NULL) {free(m_http_parser_ptr);m_http_parser_ptr = NULL;}
     if (m_http_parser_ptr != NULL) {free(m_http_parser_settings_ptr); m_http_parser_settings_ptr = NULL;}
-    if (url_buf != NULL) {sb_free(url_buf); url_buf = NULL;}
-    if (status_buf != NULL) {sb_free(status_buf); status_buf = NULL;}
-    if (name_buf != NULL) {sb_free(name_buf); name_buf = NULL;}
-    if (value_buf != NULL) {sb_free(value_buf);value_buf = NULL;}
 }
 MessageBase* Parser::currentMessage()
 {
@@ -202,117 +194,85 @@ bool Parser::isError(){
     // FTROG_DEBUG(" errno: %d name: %s, description: %s", this->parser->http_errno, n,d);
     return (this->m_http_parser_ptr->http_errno != 0) && (this->m_http_parser_ptr->http_errno != HPE_PAUSED);
 };
-void Parser::p_save_name_value_pair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value)
-{
-    Parser* p = this;//(Parser*)(parser->data);
-    char* n_p = nullptr;
-    char* v_p = nullptr;
-    int n;
-    n = sb_to_string(name, &n_p);
-    n = sb_to_string(value,&v_p);
-    
-    // Marvin::Headers::canonicalKey(name->buffer, name->used);
-    
-    std::string n_str = std::string(name->buffer, name->used);
-    std::string v_str = std::string(value->buffer, value->used);
-    free(v_p);
-    free(n_p);
-    
-    MessageBase* m = p->currentMessage();
-    m->header(n_str, v_str);
-}
 int Parser::p_on_message_begin(http_parser* parser)
 {
+    status_stringbuf.clear();
+    url_stringbuf.clear();
+    name_stringbuf.clear();
+    value_stringbuf.clear();
     return 0;
 }
 int Parser::p_on_url_data(http_parser* parser, const char* at, size_t length)
 {
-    Parser* p = this; //(Parser*)(parser->data);
-    MessageBase* message = p->currentMessage();
-
-    if( p->url_buf == nullptr)
-        p->url_buf = sb_create();
+    MessageBase* message = currentMessage();
     message->setIsRequest(true);
-    sb_append( p->url_buf, (char*)at, length);
+    url_stringbuf.append((char*)at, length);
     return 0;
 }
 int Parser::p_on_status_data(http_parser* parser, const char* at, size_t length)
 {
-    Parser* p = this;//(Parser*)(parser->data);
-    MessageBase* message = p->currentMessage();
-    if( p->status_buf == nullptr)
-        p->status_buf = sb_create();
-    
+    MessageBase* message = currentMessage();
     message->setIsRequest(false);
-    message->status_code(p->m_http_parser_ptr->status_code);
-    sb_append( p->status_buf, (char*)at, length);
+    message->status_code(m_http_parser_ptr->status_code);
+    status_stringbuf.append((char*)at, length);
     return 0;
 }
 int Parser::p_on_header_field_data(http_parser* parser, const char* at, size_t length)
 {
-    Parser* p = this;//(Parser*)(parser->data);
-    int state = p->header_state;
+    int state = header_state;
     if( (state == 0)||(state == kHEADER_STATE_NOTHING) || (state == kHEADER_STATE_VALUE)){
-        if( p->name_buf!= NULL){
-            p_save_name_value_pair(parser, p->name_buf, p->value_buf);
-            sb_free(p->name_buf); p->name_buf= NULL;
-            sb_free(p->value_buf);p->value_buf = NULL;
+        if(name_stringbuf.size() != 0) {
+            currentMessage()->header(name_stringbuf, value_stringbuf);
+            name_stringbuf.clear();
+            value_stringbuf.clear();
         }
-        simple_buffer_t* sb = sb_create();
-        sb_append(sb, (char*)at, length);
-        p->name_buf= sb;
-        p->value_buf = NULL;
+        name_stringbuf.append((char*)at, length);
     } else if( state == kHEADER_STATE_FIELD){
-        simple_buffer_t* sb = p->name_buf;
-        sb_append(sb, (char*)at, length);
+        name_stringbuf.append((char*)at, length);
     } else {
         assert(false);
     }
-    p->header_state = kHEADER_STATE_FIELD;
+    header_state = kHEADER_STATE_FIELD;
     return 0;
 }
 int Parser::p_on_header_value_data(http_parser* parser, const char* at, size_t length)
 {
-    Parser* p = this;//(Parser*)(parser->data);
-    int state = p->header_state;
-    
+    int state = header_state;
     if( state == kHEADER_STATE_FIELD ){
-        simple_buffer_t* sb = sb_create();
-        sb_append(sb, (char*)at, length);
-        p->value_buf = sb;
+        value_stringbuf.clear();
+        value_stringbuf.reserve(200);
+        value_stringbuf.append((char*)at, length);
     } else if( state == kHEADER_STATE_VALUE){
-        simple_buffer_t* sb = p->value_buf;
-        sb_append(sb, (char*)at, length);
+        value_stringbuf.append((char*)at, length);
     } else {
         assert(false);
     }
-    p->header_state = kHEADER_STATE_VALUE;
+    header_state = kHEADER_STATE_VALUE;
     return 0;
 }
 int Parser::p_on_headers_complete(http_parser* parser) //, const char* aptr, size_t remainder)
 {
-    Parser* p = this;//(Parser*)(parser->data);
-    MessageBase* message = p->currentMessage();
-    
-    if( p->name_buf != NULL){
-        p_save_name_value_pair(parser, p->name_buf, p->value_buf);
+    MessageBase* message = currentMessage();
+    if(name_stringbuf.size() != 0) {
+        message->header(name_stringbuf, value_stringbuf);
+        name_stringbuf.clear();
+        value_stringbuf.clear();
     }
     message->version( parser->http_major, parser->http_minor );
-    if( p->url_buf == NULL ){
+    if( url_stringbuf.size()  == 0 ){
     } else {
         message->method((enum http_method)parser->method);
-        message->target( std::string(p->url_buf->buffer, p->url_buf->used) );
+        message->target(url_stringbuf);
     }
-    if( p->status_buf == NULL ){
+    if( status_stringbuf.size() == 0 ){
     } else {
-        message->reason( std::string(p->status_buf->buffer, p->status_buf->used) );
+        message->reason(status_stringbuf);
     }
-    p->header_done = true;
+    header_done = true;
     return 0;
 }
 int Parser::p_on_body_data(http_parser* parser, const char* at, size_t length)
 {
-    Parser* p = this;//(Parser*)(parser->data);
     BufferChainSPtr chain_sptr = this->m_current_message_ptr->getContentBuffer();
     if (chain_sptr == nullptr) {
         MBufferSPtr mb_sptr = MBuffer::makeSPtr(10000);
@@ -371,23 +331,10 @@ void Parser::p_initialize()
     }
     http_parser_settings* settings = (http_parser_settings*)malloc(sizeof(http_parser_settings));
     m_http_parser_settings_ptr = settings;
-     
-    if(url_buf != NULL){
-        sb_free(url_buf);
-        url_buf = NULL;
-    }
-    if( status_buf != NULL){
-        sb_free(status_buf);
-        status_buf = NULL;
-    }
-    if(name_buf != NULL){
-        sb_free(name_buf);
-        name_buf = NULL;
-    }
-    if(value_buf != NULL){
-        sb_free(value_buf);
-        value_buf = NULL;
-    }
+    status_stringbuf.clear();
+    url_stringbuf.clear();
+    name_stringbuf.clear();
+    value_stringbuf.clear();
     m_http_parser_settings_ptr->on_message_begin = message_begin_cb;
     m_http_parser_settings_ptr->on_url = url_data_cb;
     m_http_parser_settings_ptr->on_status = status_data_cb;
@@ -400,10 +347,6 @@ void Parser::p_initialize()
     m_http_parser_settings_ptr->on_chunk_complete = chunk_complete_cb;
 }
 #pragma mark - c-language call back functions implementation
-Parser* xgetParser(http_parser* parser)
-{
-    return (Parser*) parser->data;
-}
 
 int message_begin_cb(http_parser* parser)
 {

@@ -5,7 +5,6 @@
 #include <map>
 #include <iostream>
 #include<http-parser/http_parser.h>
-#include<simple_buffer/simple_buffer.h>
 #include <marvin/http/message_base.hpp>
 #include <marvin/configure_trog.hpp>
 
@@ -200,7 +199,6 @@ protected:
     /**
      * member function callbacks  
      */
-    void p_save_name_value_pair(http_parser* parser, simple_buffer_t* name, simple_buffer_t* value);
     int p_on_message_begin(http_parser* parser);
     int p_on_url_data(http_parser* parser, const char* at, size_t length);
     int p_on_status_data(http_parser* parser, const char* at, size_t length);
@@ -228,14 +226,12 @@ protected:
 
     int				        header_state;
     ///////////////////////////////////////////////////////////////////////////////////
-    // These are C structures and must be allocated and freed explicitly with SBFree()
-    // They are also temporary working variables used only during the parsing process
+    // String buffers that interface with the http-parser
     ///////////////////////////////////////////////////////////////////////////////////
-    simple_buffer_t*        url_buf;
-    simple_buffer_t*        status_buf;
-    simple_buffer_t*        name_buf;
-    simple_buffer_t*        value_buf;
-    // Marvin::HeadersV2  headers;
+    std::string             url_stringbuf;
+    std::string             status_stringbuf;
+    std::string             name_stringbuf;
+    std::string             value_stringbuf;
     ////////////////////////////////////////////////////////////////////
 };
 
