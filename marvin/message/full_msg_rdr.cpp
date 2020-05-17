@@ -15,7 +15,6 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 
-
 // FullMessageReader::MessageReader(ISocketSPtr read_sock, boost::asio::streambuf, FullMessageReader::DoneCallback cb)
 FullMessageReader::FullMessageReader(ISocketSPtr read_socket_sptr)
 : m_streambuffer()
@@ -61,48 +60,12 @@ void FullMessageReader::readMessage(MessageBase* message_ptr, FullMessageReader:
         p_read_some();
     }
 }
-/**
- * \todo Make is a policy template parameter
- * Implements a buffer strategy that
- * -    is fixed known size for headers
- * -    content length + 100 if message has a content length
- * -    no content length start at body_buffer_min, double each one thereafter
- *      until greater than body_buffer_max
- * @param partial_msg The message that is currently being filled
- * @param p           The current parser.
- * @return size of buffer for next read
- */
-std::size_t FullMessageReader::p_buffer_strategy(MessageBase& partial_msg, Parser& p)
-{
-    static std::size_t const header_buffer = 1000;
-    static std::size_t const body_buffer_min = 256*4*8;
-    static std::size_t const body_buffer_max = 256*4*8 * 16;
-    if (!p.header_done) {
-        m_current_body_buffer_size = 0;
-        return header_buffer;
-    } else {
-        if (m_current_body_buffer_size == 0) {
-            auto clopt = partial_msg.header(HeadersV2::ContentLength);
-            if( clopt ) {
-                std::size_t cl = atoi(clopt.get().c_str());
-                m_current_body_buffer_size = cl+100;
-            } else {
-                m_current_body_buffer_size = body_buffer_min;
-            }
-        }  else {
-            if (m_current_body_buffer_size < body_buffer_max) {
-                m_current_body_buffer_size = 2*m_current_body_buffer_size;
-            }
-        }
-        return m_current_body_buffer_size;
-    }
-}
 void FullMessageReader::p_read_some()
 {
     /**
      *
      */
-    std::size_t buf_size = p_buffer_strategy(*m_current_message_ptr, m_parser);
+    std::size_t buf_size = recommended_buffer_size(*m_current_message_ptr, m_parser);
     auto mutablebuffer = m_streambuffer.prepare(buf_size);
     m_read_sock_sptr->asyncRead(mutablebuffer, [this](Marvin::ErrorType& err, std::size_t bytes_transfered)
     {

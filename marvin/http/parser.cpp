@@ -4,8 +4,7 @@
 #include <iostream>
 #include <cassert>
 #include <marvin/http/headers_v2.hpp>
-#include <marvin/exception.hpp>
-#include <marvin/macros.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 

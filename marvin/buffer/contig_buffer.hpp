@@ -1,11 +1,12 @@
-#ifndef m_buffer_hpp
-#define m_buffer_hpp
+#ifndef marvin_contig_buffer_hpp
+#define marvin_contig_buffer_hpp
 #include <stddef.h>
 #include <memory>
 #include <iostream>
 #include <iterator>
 #include <boost/asio/buffer.hpp>
-
+#include <marvin/error_handler/error_handler.hpp>
+//#include <marvin/buffer/buffer_allocator.hpp>
 namespace Marvin {
 
 class ContigBuffer;
@@ -41,37 +42,37 @@ public:
     ContigBuffer& operator =(ContigBuffer& other);
     ContigBuffer(ContigBuffer&& other);
     ContigBuffer& operator =(ContigBuffer&& other);
-    
+
     /**
      * destrtuctor - frees the memory the instance is managing
      */
     ~ContigBuffer();
-    
+
     /**
      * gets a pointer to the start of the memory slab being managed by the instance
      */
     void* data();
-    
+
     /**
      * gets the size of used portion of the buffer
     */
      std::size_t size();
-    
+
     /**
      * capacity of the buffer - max value of size
     */
     std::size_t capacity();
-    
+
     /**
      * returns a pointer to the next available unused position in the buffer
     */
     void* nextAvailable();
-    
+
     /**
      * Resets the buffer so that it is again an empty buffer
      */
     ContigBuffer& empty();
-    
+
     /** adds (by copying) data to the buffer starting at the first unsed byte*/
     ContigBuffer& append(void* data, std::size_t len);
     /**
@@ -88,12 +89,12 @@ public:
     ContigBuffer& append(std::string&& str);
 
     ContigBuffer& setSize(std::size_t n);
-    
+
     /**
      * Returns a string that has the same value as the used portion of the buffer
      */
     std::string toString();
-    
+
     /**
      * Detremines if an address value (pointer) is within the address range of the
      * the buffer ie
@@ -104,7 +105,7 @@ public:
      */
     bool contains(void* ptr);
     bool contains(char* ptr);
-    
+
     /**
      * converts an ContigBuffer to a boost::asio::const_buffer
      */
@@ -119,7 +120,7 @@ public:
     friend std::ostream &operator<< (std::ostream &os, ContigBuffer &b);
 
 protected:
-    
+
     void*       m_memPtr;     /// points to the start of the memory slab managed by the instance
     char*       m_cPtr;       /// same as memPtr but makes it easier in debugger to see whats in the buffer
     std::size_t m_length;    ///

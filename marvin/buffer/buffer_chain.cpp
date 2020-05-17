@@ -2,7 +2,7 @@
 #include <boost/asio/buffer.hpp>
 #include <marvin/buffer/contig_buffer.hpp>
 #include <marvin/buffer/buffer_chain.hpp>
-#include <marvin/macros.hpp>
+#include <marvin/error_handler/error_handler.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 

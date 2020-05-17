@@ -19,7 +19,8 @@ Polishing:
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
-  ☐ formalize buffer strategy - 
+  ☐ callback typedefs are a mess cleanup
+  ☐ formalize buffer strategy - for streambuf and ContigBuffer
   ☐ review message writer - simplify like we have done with message reader
   ☐ parsing needs to test parse errors, connect and upgrade
   ☐ command interface to simple_mitm - finish up the first phase of this - its close

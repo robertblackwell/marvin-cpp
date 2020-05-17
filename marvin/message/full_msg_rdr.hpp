@@ -13,8 +13,44 @@
 #include <marvin/http/parser.hpp>
 
 namespace Marvin {
+class ReadBufferStrategy
+{
+protected:
+    std::size_t m_current_body_buffer_size;
+    std::size_t const m_header_buffer = 256*4;
+    std::size_t const m_body_buffer_min = 256*4*8;
+    std::size_t const m_body_buffer_max = 256*4*8 * 64;
+public:
+    ReadBufferStrategy()
+    {
+    }
+    /** the recommendation depends on where the reading/parsing process is up to
+    */
+    std::size_t recommended_buffer_size(MessageBase& partial_msg, Parser& parser)
+    {
+        if (!parser.header_done) {
+            m_current_body_buffer_size = 0;
+            return m_header_buffer;
+        } else {
+            if (m_current_body_buffer_size == 0) {
+                auto clopt = partial_msg.header(HeadersV2::ContentLength);
+                if( clopt ) {
+                    std::size_t cl = atoi(clopt.get().c_str());
+                    m_current_body_buffer_size = cl+100;
+                } else {
+                    m_current_body_buffer_size = m_body_buffer_min;
+                }
+            }  else {
+                if (m_current_body_buffer_size < m_body_buffer_max) {
+                    m_current_body_buffer_size = 2*m_current_body_buffer_size;
+                }
+            }
+            return m_current_body_buffer_size;
+        }
+    }
+};
 
-class FullMessageReader
+class FullMessageReader: public ReadBufferStrategy
 {
 public:
 
@@ -46,7 +82,6 @@ protected:
     boost::asio::streambuf       m_streambuffer;
     MessageBase*                 m_current_message_ptr;
     DoneCallback                 m_read_cb;
-    std::size_t                  m_current_body_buffer_size;
 };
 } // namespcae
 #endif

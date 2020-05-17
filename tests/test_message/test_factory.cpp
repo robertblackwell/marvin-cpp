@@ -2,19 +2,11 @@
 // Start both a server and a number of client tthreads and have each of the client
 // threads make a number of requests from the server.
 //
-#include <iostream>
-#include <sstream>
 #include <string>
-#include <unistd.h>
 #include <thread>
-#include <pthread.h>
 #include <doctest/doctest.h>
 
-#include <marvin/boost_stuff.hpp>
-#include <marvin/connection/socket_factory.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/client/client.hpp>
-#include <marvin/forwarding//forward_helpers.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 

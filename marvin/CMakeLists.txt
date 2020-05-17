@@ -35,7 +35,7 @@ set(MARVIN_LIBRARY_HEADER_FILES
 
 	error/marvin_error.hpp 
 
-	error_handler/exception.hpp
+	# error_handler/exception.hpp
 	error_handler/error_handler.hpp
 	
 	${EXTSRC}/CxxUrl/url.hpp 
@@ -102,7 +102,7 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	
 	error/marvin_error.cpp 	
 
-	error_handler/exception.cpp
+	# error_handler/exception.cpp
 	error_handler/error_handler.cpp
 
 	helpers/helpers_fs.cpp

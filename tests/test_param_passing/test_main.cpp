@@ -392,6 +392,7 @@ TEST_CASE("field speed vec of pointers")
     std::cout << "copy string 1000 100,000" << " duration(nanosecs): " << double(duration.count())/(float)(number) << std::endl;
 
 }
+#if 0
 namespace rb {
 struct true_type
 {
@@ -450,3 +451,4 @@ struct is_small2<T, typename enable_if<sizeof(T) == 1>::type> :true_type{};
 
 
 }
+#endif
