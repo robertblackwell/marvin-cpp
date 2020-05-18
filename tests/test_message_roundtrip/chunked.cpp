@@ -4,7 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include <json/json.hpp>
 
-#include <marvin/buffer/buffer_chain.hpp>
+#include <marvin/buffer/buffer.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelDebug)
 

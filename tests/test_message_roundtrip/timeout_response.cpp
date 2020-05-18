@@ -5,7 +5,7 @@
 #include <boost/algorithm/string.hpp>
 #include <json/json.hpp>
 
-#include <marvin/buffer/buffer_chain.hpp>
+#include <marvin/buffer/buffer.hpp>
 
 using namespace Marvin;
 

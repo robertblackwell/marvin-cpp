@@ -5,7 +5,7 @@
 #include <boost/algorithm/string.hpp>
 #include <json/json.hpp>
 
-#include <marvin/buffer/buffer_chain.hpp>
+#include <marvin/buffer/buffer.hpp>
 
 EchoSmart::EchoSmart(
             std::string path,   // the string that goes after the method usually for non proxy requests a relative path like /echo/smart

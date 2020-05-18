@@ -9,8 +9,6 @@
 #include <marvin/message/message_writer.hpp>       // for MessageWriterSPtr
 #include <memory>                                  // for shared_ptr, unique...
 #include <boost/asio/io_service.hpp>               // for io_service
-#include <marvin/buffer/buffer_chain.hpp>          // for BufferChain (ptr o...
-#include <marvin/buffer/contig_buffer.hpp>              // for ContigBufferSPtr
 #include <marvin/callback_typedefs.hpp>            // for AsyncWriteCallback...
 #include <marvin/connection/socket_interface.hpp>  // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>           // for ErrorType
@@ -18,8 +16,7 @@
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
 #include <boost/asio/io_service.hpp>                    // for io_service
-#include <marvin/buffer/buffer_chain.hpp>               // for BufferChain
-#include <marvin/buffer/contig_buffer.hpp>                   // for ContigBufferSPtr
+#include <marvin/buffer/buffer.hpp>               // for BufferChain
 #include <marvin/callback_typedefs.hpp>                 // for ErrorOnlyCall...
 #include <marvin/connection/socket_interface.hpp>       // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>                // for ErrorType

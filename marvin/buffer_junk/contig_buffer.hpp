@@ -24,7 +24,9 @@ using ContigBufferUPtr =  std::unique_ptr<ContigBuffer>;
 * Once constructed the Mbuffer instance "own" the raw memory.
 * ContigBuffer destructor releases the raw memory.
 */
-class ContigBuffer {
+
+class ContigBuffer
+{
 public:
     static std::size_t min_buffer_size;
     static ContigBufferSPtr makeSPtr(std::size_t capacity);
