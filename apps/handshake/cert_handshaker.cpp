@@ -34,7 +34,7 @@ client::client(
     success(false)
 {
     // Marvin::Certificates certificats = Marvin::Certificates::getInstance();
-    // X509_STORE* X509_store_p = certificats.getX509StorePtr();
+    // X509_STORE* X509_store_p = certificats.get_X509_STORE_ptr();
     // std::shared_ptr<boost::asio::ssl::context> ctx_sptr = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
     // ctx_sptr->set_verify_mode(boost::asio::ssl::verify_peer);
     // SSL_CTX_set_cert_store(ctx_sptr->native_handle(), X509_store_p);
@@ -56,7 +56,7 @@ client::~client()
 void client::makeSecure()
 {
     Marvin::Certificates certificats = Marvin::Certificates::getInstance();
-    X509_STORE* X509_store_p = certificats.getX509StorePtr();
+    X509_STORE* X509_store_p = certificats.get_X509_STORE_ptr();
     std::shared_ptr<boost::asio::ssl::context> ctx_sptr = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
     ctx_sptr->set_verify_mode(boost::asio::ssl::verify_peer);
     ctx_sptr->set_options(

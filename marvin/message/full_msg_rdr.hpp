@@ -89,9 +89,9 @@ public:
     FullMessageReader(ISocketSPtr read_socket_sptr);
     ~FullMessageReader();
 
-    void readMessage(MessageBase& message, DoneCallback cb);
-    void readMessage(MessageBase* message, DoneCallback cb);
-    void readMessage(MessageBaseSPtr message, DoneCallback cb);
+    void async_read_message(MessageBase& message, DoneCallback cb);
+    void async_read_message(MessageBase* message, DoneCallback cb);
+    void async_read_message(MessageBaseSPtr message, DoneCallback cb);
 
 protected:
     //----------------------------------------------------------------------------------------------------

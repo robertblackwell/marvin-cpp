@@ -49,7 +49,8 @@ public:
     void async_op_1()
     {
         m_timer.expires_from_now(boost::posix_time::seconds(m_op_1_interval_secs));
-        m_timeout.setTimeout(m_op_1_timeout_interval_secs, ([this](){
+        m_timeout.set_timeout(m_op_1_timeout_interval_secs, ([this]()
+        {
             m_timer.cancel();
         }));
         m_timer.async_wait((std::bind(&AsyncComposedOp::async_op_1_handler, this, std::placeholders::_1)));
@@ -58,8 +59,9 @@ public:
     void async_op_1_handler(const boost::system::error_code& err)
     {
         boost::system::error_code ec = err;
-        m_timeout.cancelTimeout( ([this, err, ec](){
-            if(!err) {
+        m_timeout.cancel_timeout(([this, err, ec]()
+        {
+            if (!err) {
                 m_result += m_op_1_result;
                 async_op_2();
             } else {
@@ -72,9 +74,10 @@ public:
     void async_op_2()
     {
         m_timer.expires_from_now(boost::posix_time::seconds(m_op_2_interval_secs));
-        m_timeout.setTimeout(m_op_2_timeout_interval_secs, m_strand.wrap([this](){
-            m_timer.cancel();
-        }));
+        m_timeout.set_timeout(m_op_2_timeout_interval_secs, m_strand.wrap([this]()
+                                                                          {
+                                                                              m_timer.cancel();
+                                                                          }));
         m_timer.async_wait((std::bind(&AsyncComposedOp::async_op_2_handler, this, std::placeholders::_1)));
     }
     /// handler for simulated successful async operation
@@ -83,15 +86,16 @@ public:
         boost::system::error_code ec = err;
         std::string s = Marvin::make_error_description(ec);
         TROG_DEBUG(" err: ", s);
-        m_timeout.cancelTimeout(m_strand.wrap([this, err, ec, s](){
-            TROG_DEBUG(" err: ", s);
-            if(!err) {
-                m_result += m_op_2_result;
-                m_io.post(std::bind(m_composed_handler, m_result, err));
-            } else {
-                m_io.post(std::bind(m_composed_handler, m_result, err));
-            }
-        }));
+        m_timeout.cancel_timeout(m_strand.wrap([this, err, ec, s]()
+                                               {
+                                                   TROG_DEBUG(" err: ", s);
+                                                   if (!err) {
+                                                       m_result += m_op_2_result;
+                                                       m_io.post(std::bind(m_composed_handler, m_result, err));
+                                                   } else {
+                                                       m_io.post(std::bind(m_composed_handler, m_result, err));
+                                                   }
+                                               }));
     }
     
 private:

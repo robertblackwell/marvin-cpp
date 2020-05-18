@@ -60,9 +60,9 @@ using RequestDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err
 *
 * Two modes of transmission operation are provided for:
 *
-*   -   send the entire request in a single call using asyncWrite. This mode is best when
+*   -   send the entire request in a single call using async_write. This mode is best when
 *       either there is NO message body or the entire message body is available at the time
-*       the request transmission is started. In this mode the handler provided to asyncWrite
+*       the request transmission is started. In this mode the handler provided to async_write
 *       is passed a complete response including any body data.
 *
 *   -   send the request/message piecemeal - headers, followed by multiple chunks of body, followed by trailers.

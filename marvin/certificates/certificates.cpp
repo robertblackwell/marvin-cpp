@@ -153,15 +153,15 @@ Certificates::~Certificates()
 
     // X509_STORE_free(m_X509_store_ptr);
 }
-X509_STORE* Certificates::getX509StorePtr()
+X509_STORE* Certificates::get_X509_STORE_ptr()
 {
     X509_STORE_up_ref(m_X509_store_ptr);
     return m_X509_store_ptr;
 }
 
-Cert::Identity Certificates::buildServerMitmCertificate(std::string host, Cert::Certificate original_certificate)
+Cert::Identity Certificates::build_server_mitm_certificate(std::string host, Cert::Certificate original_cert)
 {
-    Cert::Identity tmp = m_builder_sptr->buildMitmIdentity(host, original_certificate);
+    Cert::Identity tmp = m_builder_sptr->buildMitmIdentity(host, original_cert);
     return tmp;
 }
 } // namespace Marvin

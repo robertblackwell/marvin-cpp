@@ -74,8 +74,8 @@ Connection::Connection(
             m_write_timeout_interval_ms(s_write_timeout_interval_ms)
 {
    TROG_TRACE_CTOR();
-   TROG_TRACE_FD(nativeSocketFD());
-   auto x = nativeSocketFD();
+   TROG_TRACE_FD(native_socket_fd());
+   auto x = native_socket_fd();
    TROG_DEBUG("constructor:: native handle :: ", x);
 }
 
@@ -95,40 +95,40 @@ Connection::Connection(
 
 {
    TROG_TRACE_CTOR();
-   TROG_TRACE_FD(nativeSocketFD());
+   TROG_TRACE_FD(native_socket_fd());
 }
 Connection::~Connection()
 {
     TROG_TRACE_CTOR();
     if( ! m_closed_already) {
-        TROG_TRACE3("close fd: ", nativeSocketFD());
-        TROG_TRACE_FD(nativeSocketFD());
+        TROG_TRACE3("close fd: ", native_socket_fd());
+        TROG_TRACE_FD(native_socket_fd());
         m_tcp_socket.close();
     } else {
-        TROG_DEBUG("found it already closed fd: ", nativeSocketFD());
-        TROG_TRACE_FD(nativeSocketFD());
+        TROG_DEBUG("found it already closed fd: ", native_socket_fd());
+        TROG_TRACE_FD(native_socket_fd());
     }
 }
 std::string Connection::scheme(){return m_scheme;}
 std::string Connection::server(){return m_server;}
 std::string Connection::service(){return m_port;}
 
-long Connection::nativeSocketFD()
+long Connection::native_socket_fd()
 {
     return m_tcp_socket.native_handle();
 }
-boost::asio::io_service& Connection::getIO()
+boost::asio::io_service& Connection::get_io_context()
 {
     return m_io;
 }
-boost::asio::ssl::context& Connection::getSslContext()
+boost::asio::ssl::context& Connection::get_ssl_context()
 {
     return *m_ssl_ctx_sptr;
 };
 
 void Connection::close()
 {
-   TROG_TRACE_FD(nativeSocketFD());
+   TROG_TRACE_FD(native_socket_fd());
     assert(! m_closed_already);
     m_closed_already = true;
     m_tcp_socket.cancel();
@@ -143,29 +143,29 @@ void Connection::cancel()
 {
     m_tcp_socket.cancel();
 }
-void Connection::setReadTimeout(long millisecs)
+void Connection::set_read_timeout(long millisecs)
 {
     m_read_timeout_interval_ms = millisecs;
 }
-long Connection::getReadTimeout()
+long Connection::get_read_timeout()
 {
     return m_read_timeout_interval_ms;
 }
 #pragma mark - public interface async io operations
-void Connection::asyncAccept(
+void Connection::async_accept(
     boost::asio::ip::tcp::acceptor&                     acceptor,
     std::function<void(const boost::system::error_code& err)> cb
 )
 {
     acceptor.async_accept(m_tcp_socket, [cb, this](const boost::system::error_code& err) {
-        TROG_TRACE_FD(nativeSocketFD());
+        TROG_TRACE_FD(native_socket_fd());
         p_post_accept_cb(cb, err);
     });
 }
 
-void Connection::asyncConnect(ConnectCallbackType connect_cb)
+void Connection::async_connect(ConnectCallbackType cb)
 {
-    m_connect_cb = connect_cb; // save the connect callback
+    m_connect_cb = cb; // save the connect callback
 
     tcp::resolver::query query(this->m_server, this->m_port);
     #ifdef TIMEOUT_ON_RESOLVE
@@ -185,7 +185,7 @@ void Connection::asyncConnect(ConnectCallbackType connect_cb)
     m_resolver.async_resolve(query, h);
 }
 
-void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
+void Connection::become_secure_client(X509_STORE* certificate_store_ptr)
 {
     if (m_mode != NOTSECURE) {
         MARVIN_THROW("connection already secured");
@@ -216,7 +216,7 @@ void Connection::becomeSecureClient(X509_STORE* certificate_store_ptr)
     X509_VERIFY_PARAM_free(param);
  
  }
-void Connection::becomeSecureServer(Cert::Identity server_identity)
+void Connection::become_secure_server(Cert::Identity server_identity)
 {
     if (m_mode != NOTSECURE) {
         MARVIN_THROW("connection already secured");
@@ -241,14 +241,14 @@ void Connection::becomeSecureServer(Cert::Identity server_identity)
     m_ssl_stream_sptr = std::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(m_tcp_socket, *m_ssl_ctx_sptr);
 
 }
-void Connection::asyncHandshake(std::function<void(const boost::system::error_code& err)> cb)
+void Connection::async_handshake(std::function<void(const boost::system::error_code& err)> cb)
 {
     m_connect_cb = [this, cb](Marvin::ErrorType& err, ISocket* conn) {
         cb(err);
     };
     p_start_handshake();
 }
-Cert::Certificate Connection::getServerCertificate()
+Cert::Certificate Connection::get_server_certificate()
 {
     if (!m_server_certificate) {
         MARVIN_THROW("cannot get server certificate until after successful handshake");
@@ -260,29 +260,29 @@ Cert::Certificate Connection::getServerCertificate()
 */
 
 /** not implemented*/
-void Connection::asyncRead(boost::asio::streambuf& streambuffer, AsyncReadCallbackType cb)
+void Connection::async_read(boost::asio::streambuf& streambuffer, AsyncReadCallbackType cb)
 {
     MARVIN_THROW("not implemented yet");
 }
 /** read some into a Marvin ContigBuffer  and update the size property*/
-void Connection::asyncRead(Marvin::ContigBuffer::SPtr buffer, AsyncReadCallbackType cb)
+void Connection::async_read(Marvin::ContigBuffer::SPtr buffer, AsyncReadCallbackType cb)
 {
-    asyncRead(buffer, m_read_timeout_interval_ms, cb);
+    async_read(buffer, m_read_timeout_interval_ms, cb);
 }
 /** read some into a boost::asio::mutable buffer*/
-void Connection::asyncRead(boost::asio::mutable_buffer buffer, AsyncReadCallbackType cb)
+void Connection::async_read(boost::asio::mutable_buffer buffer, AsyncReadCallbackType cb)
 {
-    asyncRead(buffer.data(), buffer.size(), cb);
+    async_read(buffer.data(), buffer.size(), cb);
 }
 /** read some into a buffer .egnth pair */
-void Connection::asyncRead(void* buffer, std::size_t length, AsyncReadCallbackType cb)
+void Connection::async_read(void* buffer, std::size_t length, AsyncReadCallbackType cb)
 {
-    asyncRead(buffer, length, m_read_timeout_interval_ms, cb);
+    async_read(buffer, length, m_read_timeout_interval_ms, cb);
 }
 /** read some with explicit timeout into a Marvin ContigBuffer and update its size property*/
-void Connection::asyncRead(Marvin::ContigBuffer::SPtr mbuffer, long timeout_ms, AsyncReadCallbackType cb)
+void Connection::async_read(Marvin::ContigBuffer::SPtr mbuffer, long timeout_ms, AsyncReadCallbackType cb)
 {
-    asyncRead(mbuffer->data(), mbuffer->capacity(), timeout_ms, 
+    async_read(mbuffer->data(), mbuffer->capacity(), timeout_ms, 
     [this, mbuffer, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         Marvin::ErrorType m_err = err;
@@ -291,12 +291,13 @@ void Connection::asyncRead(Marvin::ContigBuffer::SPtr mbuffer, long timeout_ms, 
     });
 }
 /** the heavy lifting - read with explicit timeout into a pointer length pair */
-void Connection::asyncRead(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb)
+void Connection::async_read(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb)
 {
     /// a bit of explanation -
     /// -   set a time out with a handler, the handler knows what to do, in this case cancel outstanding
     ///     ops on the socket
-    m_timeout.setTimeout(timeout_ms, [this](){
+    m_timeout.set_timeout(timeout_ms, [this]()
+    {
         m_tcp_socket.cancel();
     });
     auto handler = ([this, cb, buffer](const Marvin::ErrorType& err, std::size_t bytes_transfered)
@@ -304,10 +305,11 @@ void Connection::asyncRead(void* buffer, std::size_t buffer_length, long timeout
         /// when a handler is called the first thing to do is call timeout.cancel()
         /// when timeout object is finshed it will call the CB and then we can complete
         /// our processing knowing that both the IO and tineout are both done
-        m_timeout.cancelTimeout([this, cb, buffer, err, bytes_transfered](){
-            Marvin::ErrorType m_err = err;
-            p_post_read_cb(cb, m_err, bytes_transfered);
-        });
+        m_timeout.cancel_timeout([this, cb, buffer, err, bytes_transfered]()
+                                 {
+                                     Marvin::ErrorType m_err = err;
+                                     p_post_read_cb(cb, m_err, bytes_transfered);
+                                 });
     });
     if (m_mode == NOTSECURE) {
         m_tcp_socket.async_read_some(boost::asio::buffer(buffer, buffer_length), handler);
@@ -320,7 +322,7 @@ void Connection::asyncRead(void* buffer, std::size_t buffer_length, long timeout
  * write
  */
 
-void Connection::asyncWrite(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWriteCallback cb)
+void Connection::async_write(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWriteCallback cb)
 {
     /// this took a while to work out - change buffer code at your peril
     TROG_DEBUG(" bchain: ", buf_chain_sptr->to_string());
@@ -338,15 +340,15 @@ void Connection::asyncWrite(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWrite
     }
 }
 
-void Connection::asyncWrite(Marvin::ContigBuffer& buf, AsyncWriteCallbackType cb)
+void Connection::async_write(Marvin::ContigBuffer& buffer, AsyncWriteCallbackType cb)
 {
-    p_async_write((void*)buf.data(), buf.size(), cb);
+    p_async_write((void*)buffer.data(), buffer.size(), cb);
 }
-void Connection::asyncWrite(std::string& str, AsyncWriteCallback cb)
+void Connection::async_write(std::string& str, AsyncWriteCallback cb)
 {
     p_async_write( (void*)str.c_str(), str.size(), cb);
 }
-void Connection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
+void Connection::async_write(boost::asio::streambuf& sb, AsyncWriteCallback cb)
 {
     TROG_DEBUG("");
     auto handler = ([this, &sb, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
@@ -359,7 +361,7 @@ void Connection::asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback cb)
         boost::asio::async_write((*m_ssl_stream_sptr), sb, handler);
     }
 }
-void Connection::asyncWrite(boost::asio::const_buffer constbuffer, AsyncWriteCallback cb)
+void Connection::async_write(boost::asio::const_buffer constbuffer, AsyncWriteCallback cb)
 {
     TROG_DEBUG("");
     auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
@@ -372,7 +374,7 @@ void Connection::asyncWrite(boost::asio::const_buffer constbuffer, AsyncWriteCal
         boost::asio::async_write((*m_ssl_stream_sptr), constbuffer, handler);
     }
 }
-void Connection::asyncWrite(void* buffer, std::size_t buffer_length, AsyncWriteCallback cb)
+void Connection::async_write(void* buffer, std::size_t buffer_length, AsyncWriteCallback cb)
 {
     TROG_DEBUG("");
     auto handler = ([this, cb]( const Marvin::ErrorType& err, std::size_t bytes_transfered)
@@ -413,15 +415,17 @@ void Connection::p_handle_resolve(
         // always use the first iterator result
         TROG_DEBUG("resolve OK","so now connect");
         tcp::endpoint endpoint = *endpoint_iterator;
-        
-        m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
+
+        m_timeout.set_timeout(m_connect_timeout_interval_ms, [this]()
+        {
             m_tcp_socket.cancel();
         });
         auto next_iter = ++endpoint_iterator;
         auto h = ([this, next_iter](const error_code& err) {
-            m_timeout.cancelTimeout([this, err, next_iter](){
-                p_handle_connect(err, next_iter);
-            });
+            m_timeout.cancel_timeout([this, err, next_iter]()
+                                     {
+                                         p_handle_connect(err, next_iter);
+                                     });
         });
         m_tcp_socket.async_connect(endpoint, h);
         TROG_DEBUG("leaving");
@@ -437,7 +441,7 @@ void Connection::p_handle_connect(
     TROG_DEBUG("entry: ", Marvin::make_error_description(ec));
     if (!err)
     {
-       TROG_TRACE_FD(nativeSocketFD());
+       TROG_TRACE_FD(native_socket_fd());
         m_tcp_socket.non_blocking(true);
         ///
         /// now must do handshake - not return
@@ -452,14 +456,16 @@ void Connection::p_handle_connect(
     {
         TROG_DEBUG("try next iterator");
         tcp::endpoint endpoint = *endpoint_iterator;
-        m_timeout.setTimeout(m_connect_timeout_interval_ms, [this](){
+        m_timeout.set_timeout(m_connect_timeout_interval_ms, [this]()
+        {
             m_tcp_socket.cancel();
         });
         auto next_iter = ++endpoint_iterator;
         auto h = ([this, next_iter](const error_code& err) {
-            m_timeout.cancelTimeout([this, err, next_iter](){
-                p_handle_connect(err, next_iter);
-            });
+            m_timeout.cancel_timeout([this, err, next_iter]()
+                                     {
+                                         p_handle_connect(err, next_iter);
+                                     });
         });
         m_tcp_socket.async_connect(endpoint, h);
     }

@@ -18,21 +18,21 @@ HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd, long firstRead
 }
 void HalfTunnel::start(std::function<void(Marvin::ErrorType& err)> cb)
 {
-    m_read_end->setReadTimeout(m_first_read_timeout_millisecs);
+    m_read_end->set_read_timeout(m_first_read_timeout_millisecs);
     m_callback = cb;
     p_start_read();
 }
 void HalfTunnel::p_start_read()
 {
     auto hf = std::bind(&HalfTunnel::p_handle_read, this, std::placeholders::_1, std::placeholders::_2);
-    m_read_end->asyncRead(m_bufferSPtr, hf);
+    m_read_end->async_read(m_bufferSPtr, hf);
 }
 void HalfTunnel::p_handle_read(Marvin::ErrorType& err, std::size_t bytes_transfered)
 {
     if( ! err ){
        TROG_TRACE4("OK Read bytes transfered : ", bytes_transfered);
         auto hf = std::bind(&HalfTunnel::p_handle_write, this, std::placeholders::_1, std::placeholders::_2);
-        m_write_end->asyncWrite(*m_bufferSPtr, hf);
+        m_write_end->async_write(*m_bufferSPtr, hf);
     } else {
         std::string m = Marvin::make_error_description(err);
         m_callback(err);
@@ -43,7 +43,7 @@ void HalfTunnel::p_handle_write(Marvin::ErrorType& err, std::size_t bytes_transf
 {
     if( ! err ){
        TROG_TRACE3("OK write");
-        m_read_end->setReadTimeout(m_subsequent_read_timeout_millisecs);
+        m_read_end->set_read_timeout(m_subsequent_read_timeout_millisecs);
         p_start_read();
     } else {
         std::string m = Marvin::make_error_description(err);

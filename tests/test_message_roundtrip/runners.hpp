@@ -42,7 +42,7 @@ public:
         m_port = testcase.getPort();
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
-        m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
+        m_client_sptr->async_write(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
             std::string msg = err.message();
             testcase.verifyResponse(err, response_sptr);
         });
@@ -68,11 +68,15 @@ public:
         m_port = testcase.getPort();
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
-        m_client_sptr->asyncConnect([this, &testcase, request_sptr, body](Marvin::ErrorType err){
-            m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
-                testcase.verifyResponse(err, response_sptr);
-            });
-        });
+        m_client_sptr->async_connect([this, &testcase, request_sptr, body](Marvin::ErrorType err)
+                                     {
+                                         m_client_sptr->async_write(request_sptr, body,
+                                                                    [this, &testcase](ErrorType &err,
+                                                                                      MessageBaseSPtr response_sptr)
+                                                                    {
+                                                                        testcase.verifyResponse(err, response_sptr);
+                                                                    });
+                                     });
     }
 
     void https_exec(std::string host, std::string port){};
@@ -96,17 +100,29 @@ public:
         m_port = testcase.getPort();
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         m_client_sptr = std::shared_ptr<Client>(new Client(m_io, "http", m_host, m_port));
-        m_client_sptr->asyncConnect([this, &testcase, request_sptr, body](Marvin::ErrorType err){
-            m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
-                testcase.verifyResponse(err, response_sptr);
-                MessageBaseSPtr another_request_sptr = testcase.makeRequest();
-                Marvin::BufferChain::SPtr another_body = testcase.makeBody();
-                m_client_sptr->asyncWrite(another_request_sptr, another_body, [this, &testcase](ErrorType& err,  MessageBaseSPtr another_response_sptr) {
-                    REQUIRE(!err);
-                    testcase.verifyResponse(err, another_response_sptr);
-                });
-            });
-        });
+        m_client_sptr->async_connect([this, &testcase, request_sptr, body](Marvin::ErrorType err)
+                                     {
+                                         m_client_sptr->async_write(request_sptr, body,
+                                                                    [this, &testcase](ErrorType &err,
+                                                                                      MessageBaseSPtr response_sptr)
+                                                                    {
+                                                                        testcase.verifyResponse(err, response_sptr);
+                                                                        MessageBaseSPtr another_request_sptr = testcase.makeRequest();
+                                                                        Marvin::BufferChain::SPtr another_body = testcase.makeBody();
+                                                                        m_client_sptr->async_write(another_request_sptr,
+                                                                                                   another_body,
+                                                                                                   [this, &testcase](
+                                                                                                       ErrorType &err,
+                                                                                                       MessageBaseSPtr another_response_sptr)
+                                                                                                   {
+                                                                                                           REQUIRE(
+                                                                                                           !err);
+                                                                                                       testcase.verifyResponse(
+                                                                                                           err,
+                                                                                                           another_response_sptr);
+                                                                                                   });
+                                                                    });
+                                     });
     }
 
     void https_exec(std::string host, std::string port){};
@@ -144,7 +160,7 @@ public:
         } else {
             request_sptr->header(HeadersV2::Connection,"Keep-Alive");
         }
-        m_client_sptr->asyncWrite(request_sptr, body, [this](ErrorType& err,  MessageBaseSPtr response_sptr) {
+        m_client_sptr->async_write(request_sptr, body, [this](ErrorType& err,  MessageBaseSPtr response_sptr) {
             m_testcase.verifyResponse(err, response_sptr);
             p_next();
         });

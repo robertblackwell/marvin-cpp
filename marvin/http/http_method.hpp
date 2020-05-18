@@ -16,9 +16,9 @@ enum class HttpMethod{
 #undef EC
 
 };
-std::string httpMethodString(enum http_method m);
+std::string http_method_string(enum http_method m);
 std::string method_as_string(enum http_method m);
-std::string httpMethodString(HttpMethod m);
+std::string http_method_string(HttpMethod m);
 std::string method_as_string(HttpMethod method);
 
 } // namespace

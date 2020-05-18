@@ -26,7 +26,7 @@ using TimeoutUPtr = std::unique_ptr<Timeout>;
 *
 * Provides two interface functions:
 *
-*      `setTimeout(interval, timeout_handler)`
+*      `set_timeout(interval, timeout_handler)`
 *
 *       This sets the timeout interval and provides the timout handler with a callback to invoke/post
 *       if and when the timeout expires before the timeout is cancelled. The handlers purpose is
@@ -37,9 +37,9 @@ using TimeoutUPtr = std::unique_ptr<Timeout>;
 *       The timeout_handler should do whatever is appropriate to abort the timed out async operation.
 *       For boost socksts/streams the appropriate action is `socket.cancel()`
 *
-*       `cancelTimeout(cancel_handler)`
+*       `cancel_timeout(cancel_handler)`
 *       Called by a completion handler when an async operation completes before a timeout expired. It cancels the
-*       timeout_handler provided in the setTimeout call, cancels the asio deadline timer at the heart of the timeout mechanism
+*       timeout_handler provided in the set_timeout call, cancels the asio deadline timer at the heart of the timeout mechanism
 *       and calls/posts the cancel_handler when the internal timeout handler is finally called. Thus when the cancel_handler
 *       is called one can be sure the timeout mechansim has no outstanding handlers.
 *
@@ -47,9 +47,9 @@ using TimeoutUPtr = std::unique_ptr<Timeout>;
 *
 * Code that implements async operations on behalf of client code will have to be modified to use this tiimeout mechanism.
 *
-*   -   `setTimeout()` should be called at the start of all async operations.
-*   -   all internal handlers should call `cancelTimeout` and should only invoke or post higher level handlers
-*       within the `cancel_hander` passed to `cancelTimeout`
+*   -   `set_timeout()` should be called at the start of all async operations.
+*   -   all internal handlers should call `cancel_timeout` and should only invoke or post higher level handlers
+*       within the `cancel_hander` passed to `cancel_timeout`
 *
 * ## io_service
 *
@@ -67,8 +67,8 @@ class Timeout : public std::enable_shared_from_this<Timeout>
     Timeout(boost::asio::io_service& io_service);
     
     ~Timeout();
-    void setTimeout(long interval_millisecs, std::function<void()> handler);
-    void cancelTimeout(std::function<void()> handler);
+    void set_timeout(long interval_millisecs, std::function<void()> handler);
+    void cancel_timeout(std::function<void()> handler);
 
 private:
     void p_handle_timeout(const boost::system::error_code& err);

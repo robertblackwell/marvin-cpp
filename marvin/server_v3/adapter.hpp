@@ -51,7 +51,7 @@ public:
         Marvin::HandlerDoneCallbackType   done
     );
 
-    virtual void handleRequest(
+    virtual void handle_request(
         // ISocketSPtr                       connPtr,
         // MessageWriterSPtr                   m_wrtr,
         // MessageReaderSPtr                   m_rdr

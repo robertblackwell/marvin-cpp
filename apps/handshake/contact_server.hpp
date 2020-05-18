@@ -87,7 +87,7 @@ class ContactServer
     {
         Marvin::Certificates certificates = Marvin::Certificates::getInstance();
         Cert::Certificate cert(original_cert_X509);
-        Cert::Identity id = certificates.buildServerMitmCertificate(host, cert);
+        Cert::Identity id = certificates.build_server_mitm_certificate(host, cert);
         #ifdef USE_X509
         path store_root = this->storeRootDirPath();
         Cert::Store::LocatorSPtr locator_sptr = std::make_shared<Cert::Store::Locator>(store_root);
@@ -121,7 +121,7 @@ class ContactServer
     void certContactServer(std::string server)
     {
         Marvin::Certificates certificats = Marvin::Certificates::getInstance();
-        X509_STORE* X509_store_p = certificats.getX509StorePtr();
+        X509_STORE* X509_store_p = certificats.get_X509_STORE_ptr();
 
         std::shared_ptr<boost::asio::ssl::context> ctx_sptr = std::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
         
@@ -159,7 +159,7 @@ class ContactServer
     void marvinContactServer(std::string server)
     {
     //     Marvin::Certificates certificats = Marvin::Certificates::getInstance();
-    //     X509_STORE* X509_store_p = certificats.getX509StorePtr();
+    //     X509_STORE* X509_store_p = certificats.get_X509_STORE_ptr();
     //     boost::asio::ssl::context ctx(boost::asio::ssl::context::sslv23);
     // #define XTURN_OFF_VERIFY
     // #ifdef TURN_OFF_VERIFY

@@ -150,7 +150,7 @@ struct WrappedParserTest
                     case Marvin::Parser::ReturnCode::end_of_header:
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        m_messages.push_back((m_parser.currentMessage()));
+                        m_messages.push_back((m_parser.current_message()));
                         m_parser.begin(new Marvin::MessageBase());
                     break;
                 }
@@ -216,18 +216,18 @@ struct WrappedReaderTest
     }
     void read_one() 
     {
-        m_rdr.readMessage([this](ErrorType err)
-        {
-            if(err) {
-                std::cout << "error: " << err.message() << std::endl;
-                m_verify_func(m_messages);
-                return;
-            } else {
-                MessageBase* msg_ptr = new MessageBase(std::move(m_rdr));
-                m_messages.push_back(msg_ptr);
-                next_one();
-            }
-        });
+        m_rdr.async_read_message([this](ErrorType err)
+                                 {
+                                     if (err) {
+                                         std::cout << "error: " << err.message() << std::endl;
+                                         m_verify_func(m_messages);
+                                         return;
+                                     } else {
+                                         MessageBase *msg_ptr = new MessageBase(std::move(m_rdr));
+                                         m_messages.push_back(msg_ptr);
+                                         next_one();
+                                     }
+                                 });
     }
     void next_one()
     {

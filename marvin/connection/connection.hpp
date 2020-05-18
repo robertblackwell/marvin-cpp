@@ -49,6 +49,10 @@ or accept a connection (and even echange traffic) nonsecure and then
 class Connection : public ISocket
 {
     public:
+    using ConstBoostErrRefHandler = std::function<void(const boost::system::error_code& err)>;
+    using ErrRefAndBytesHandler  = std::function<void(ErrorType& err, std::size_t bytes_transfered)>;
+    using ReadHandler = ErrRefAndBytesHandler ;
+    using WriteHandler = ErrRefAndBytesHandler ;
     enum Mode {
         NOTSECURE,
         SECURE_CLIENT,
@@ -95,44 +99,44 @@ class Connection : public ISocket
     );
     
     ~Connection();
-    void asyncConnect(ConnectCallbackType cb) override;
-    void asyncAccept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb) override;
+    void async_connect(ConnectCallbackType cb) override;
+    void async_accept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb) override;
     
-    void becomeSecureClient(X509_STORE* certificate_store_ptr) override;
-    void becomeSecureServer(Cert::Identity server_identity) override;
-    void asyncHandshake(std::function<void(const boost::system::error_code& err)> cb) override;
-    Cert::Certificate getServerCertificate() override;
+    void become_secure_client(X509_STORE* certificate_store_ptr) override;
+    void become_secure_server(Cert::Identity server_identity) override;
+    void async_handshake(std::function<void(const boost::system::error_code& err)> cb) override;
+    Cert::Certificate get_server_certificate() override;
 
-    void asyncWrite(std::string& str, AsyncWriteCallbackType cb) override;
+    void async_write(std::string& str, AsyncWriteCallbackType cb) override;
     
-    void asyncWrite(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWriteCallback cb) override;
-    void asyncWrite(Marvin::ContigBuffer& buffer, AsyncWriteCallbackType cb) override;
+    void async_write(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWriteCallback cb) override;
+    void async_write(Marvin::ContigBuffer& buffer, AsyncWriteCallbackType cb) override;
     
-    void asyncWrite(boost::asio::streambuf& sb, AsyncWriteCallback) override;
-    void asyncWrite(boost::asio::const_buffer buf, AsyncWriteCallback cb) override;
+    void async_write(boost::asio::streambuf& sb, AsyncWriteCallback) override;
+    void async_write(boost::asio::const_buffer buf, AsyncWriteCallback cb) override;
 
-    void asyncWrite(void* buffer, std::size_t buffer_length, AsyncWriteCallback cb) override;
+    void async_write(void* buffer, std::size_t buffer_length, AsyncWriteCallback cb) override;
 
     /// read with default timeout
-    void asyncRead(boost::asio::streambuf& streambuf,  AsyncReadCallbackType cb) override;
-    void asyncRead(boost::asio::mutable_buffer buffer,  AsyncReadCallbackType cb) override;
-    void asyncRead(void* buffer, std::size_t buffer_length,  AsyncReadCallbackType cb) override;
-    void asyncRead(Marvin::ContigBuffer::SPtr mb,  AsyncReadCallbackType cb) override;
-    /// same as asyncRead except that can set the read timeout specifically for this read
-    void asyncRead(Marvin::ContigBuffer::SPtr buffer, long timeout_ms, AsyncReadCallbackType cb);
-    void asyncRead(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb);
+    void async_read(boost::asio::streambuf& streambuf,  AsyncReadCallbackType cb) override;
+    void async_read(boost::asio::mutable_buffer buffer,  AsyncReadCallbackType cb) override;
+    void async_read(void* buffer, std::size_t buffer_length,  AsyncReadCallbackType cb) override;
+    void async_read(Marvin::ContigBuffer::SPtr mb,  AsyncReadCallbackType cb) override;
+    /// same as async_read except that can set the read timeout specifically for this read
+    void async_read(Marvin::ContigBuffer::SPtr buffer, long timeout_ms, AsyncReadCallbackType cb);
+    void async_read(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb);
 
     void shutdown(ISocket::ShutdownType type) override;
     void cancel() override;
     void close() override;
-    void setReadTimeout(long millisecs) override;
-    long getReadTimeout() override;
+    void set_read_timeout(long millisecs) override;
+    long get_read_timeout() override;
     /**
     * Utility getter functions®
     */
-    boost::asio::io_service& getIO();
-    boost::asio::ssl::context& getSslContext();
-    long nativeSocketFD() override;
+    boost::asio::io_service& get_io_context();
+    boost::asio::ssl::context& get_ssl_context();
+    long native_socket_fd() override;
     std::string scheme();
     std::string server();
     std::string service();

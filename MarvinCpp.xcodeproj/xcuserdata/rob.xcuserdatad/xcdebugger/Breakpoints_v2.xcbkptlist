@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "242"
             endingLineNumber = "242"
-            landmarkName = "ForwardingHandler::handleRequest( ServerContext&amp; server_context, MessageReaderSPtr request, MessageWriterSPtr responseWriter, HandlerDoneCallbackType done )"
+            landmarkName = "ForwardingHandler::handle_request( ServerContext&amp; server_context, MessageReaderSPtr request, MessageWriterSPtr responseWriter, HandlerDoneCallbackType done )"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -31,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "145"
             endingLineNumber = "145"
-            landmarkName = "Client::internalConnect()"
+            landmarkName = "Client::p_internal_connect()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -572,7 +572,7 @@
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::&apos;lambda&apos;()(&apos;lambda&apos;() const&amp;)"
+                  symbolName = "SSLConnection::async_connect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::&apos;lambda&apos;()(&apos;lambda&apos;() const&amp;)"
                   moduleName = "test_connect"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"
@@ -602,7 +602,7 @@
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "SSLConnection::asyncConnect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::~&apos;lambda&apos;()()"
+                  symbolName = "SSLConnection::async_connect(std::__1::function&lt;void (boost::system::error_code&amp;, ISocket*)&gt;)::$_2::operator()(boost::system::error_code const&amp;, boost::asio::ip::basic_resolver_iterator&lt;boost::asio::ip::tcp&gt;) const::&apos;lambda&apos;()::~&apos;lambda&apos;()()"
                   moduleName = "test_connect"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rob/MyCurrentProjects/Pixie/MarvinCpp/marvin/connection/tls_connection.cpp"

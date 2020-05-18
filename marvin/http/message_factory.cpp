@@ -26,19 +26,19 @@ namespace {
     }
 } // namespace anonymous
 
-    void makeRequest(MessageBase& msg, HttpMethod method, Uri& uri)
+    void make_request(MessageBase& msg, HttpMethod method, Uri& uri)
     {
         msg.method(method);
         msg.target(uri.relativePath());
         msg.header(HeadersV2::Host, uri.host_and_port());
     }
-    void makeProxyRequest(MessageBase& msg, HttpMethod method,  Uri& uri)
+    void make_proxy_request(MessageBase& msg, HttpMethod method, Uri& uri)
     {
         msg.method(method);
         msg.target(uri.absolutePath());
         msg.header(HeadersV2::Host, uri.host_and_port());
     }
-    void makeProxyConnectRequest(MessageBase& msg, std::string server, std::string port)
+    void make_proxy_connect_request(MessageBase& msg, std::string server, std::string port)
     {
         using namespace boost;
         
@@ -46,31 +46,31 @@ namespace {
         msg.method(HttpMethod::CONNECT);
         msg.target(host_port);
         msg.header(HeadersV2::Host, host_port);
-        msg.setContent(std::string(""));
+        msg.set_body(std::string(""));
     }
 
-    void makeResponse403Forbidden(MessageBase& msg)
+    void make_response_403_forbidden(MessageBase& msg)
     {
         msg.reason("Forbidden");
         msg.status_code(403);
         std::string n("");
-        msg.setContent(n);
+        msg.set_body(n);
 
     }
-    void makeResponse200OKConnected(MessageBase& msg)
+    void make_response_200_OK_connected(MessageBase& msg)
     {
         msg.reason("OK");
         msg.status_code(200);
         std::string n("");
-        msg.setContent(n);
+        msg.set_body(n);
 
     }
-    void makeResponse502Badgateway(MessageBase& msg)
+    void make_response_502_badgateway(MessageBase& msg)
     {
         msg.reason("BAD GATEWAY");
         msg.status_code(503);
         std::string n("");
-        msg.setContent(n);
+        msg.set_body(n);
 
     }
 

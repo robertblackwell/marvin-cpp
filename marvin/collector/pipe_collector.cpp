@@ -95,7 +95,7 @@ void PipeCollector::configSet_PipePath(std::string path)
 ** strand. Even if this method does IO-wait operations the other thread will
 ** keep going
 **/
-void PipeCollector::postedCollect(
+void PipeCollector::posted_collect(
     std::string scheme,
     std::string host,
     MessageReaderSPtr req,
@@ -118,7 +118,7 @@ void PipeCollector::postedCollect(
     auto reqHeaders = req->headers();
     req->dumpHeaders(temp);
     if( bodyIsCollectable(*req, regexs) ){
-        temp << (req->getContentBuffer())->to_string();
+        temp << (req->get_body_buffer_chain())->to_string();
     }
     temp << std::endl;
     temp << "RESPONSE : ========" << std::endl;
@@ -127,9 +127,9 @@ void PipeCollector::postedCollect(
     auto respHeaders = resp->headers();
     resp->dumpHeaders(temp);
     if( bodyIsCollectable(*resp, regexs) ){
-        if (resp->getContentBuffer() != nullptr) {
-            auto s = resp->getContentBuffer()->to_string();
-            temp << (resp->getContentBuffer())->to_string() << std::endl;
+        if (resp->get_body_buffer_chain() != nullptr) {
+            auto s = resp->get_body_buffer_chain()->to_string();
+            temp << (resp->get_body_buffer_chain())->to_string() << std::endl;
         } else {
             temp << "[]" << std::endl;
         }
@@ -160,7 +160,7 @@ void PipeCollector::collect(
     ** leave that for postedCollect
     **/
 
-    auto pf = m_my_strand.wrap(std::bind(&PipeCollector::postedCollect, this, scheme, host, req, resp));
+    auto pf = m_my_strand.wrap(std::bind(&PipeCollector::posted_collect, this, scheme, host, req, resp));
     m_io.post(pf);
 }
 } // namespace    

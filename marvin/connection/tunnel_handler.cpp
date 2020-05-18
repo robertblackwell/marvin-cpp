@@ -53,8 +53,8 @@ TunnelHandler::~TunnelHandler(){};
 void TunnelHandler::start(std::function<void(Marvin::ErrorType& err)> cb)
 {
     m_callback = cb;
-//    m_downstream_connection->setReadTimeout(20000);
-//    m_upstream_connection->setReadTimeout(20000);
+//    m_downstream_connection->set_read_timeout(20000);
+//    m_upstream_connection->set_read_timeout(20000);
     /// start both halves, downstream first as there is not likely to be traffic that way until the upstream starts
     /// we are done when they are both done
     /// the error to record is the one that strikes first.

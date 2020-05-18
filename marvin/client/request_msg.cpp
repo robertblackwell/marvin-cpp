@@ -5,7 +5,7 @@
 #include <marvin/client/request.hpp>
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
-#include <marvin/connection/socket_factory.hpp>         // for socketFactory
+#include <marvin/connection/socket_factory.hpp>         // for socket_factory
 #include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
@@ -61,25 +61,26 @@ void Request::p_msg_write(MessageBaseSPtr msg, ContigBuffer::SPtr mbuf_sptr, Wri
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     p_set_content_length();
-    TROG_INFO("",traceWriter(*m_wrtr));
+    TROG_INFO("", trace_writer(*m_wrtr));
     
     assert(m_body_mbuffer_sptr != nullptr);
     // auto req_str = msg->str();
-    m_wrtr->asyncWrite(msg, mbuf_sptr, [this, cb](Marvin::ErrorType& ec){
+    m_wrtr->async_write(msg, mbuf_sptr, [this, cb](Marvin::ErrorType& ec){
         if (!ec) {
             TROG_DEBUG("start read");
-            this->m_rdr->readMessage([this](Marvin::ErrorType ec2){
-                // auto resp_str = m_rdr->str();
-                auto bdy_str = m_rdr->getContent()->to_string();
-                if (!!ec2) {
-                    p_resp_on_error(ec2);
-                } else {
-                    p_resp_on_headers(ec2, m_rdr);
-                    auto ec_eom = Marvin::Error::make_eom();
-                    p_resp_on_data(ec_eom, m_rdr->getContentBuffer());
-                    p_resp_on_complete(ec2, m_rdr);
-                }
-            });
+            this->m_rdr->async_read_message([this](Marvin::ErrorType ec2)
+                                            {
+                                                // auto resp_str = m_rdr->str();
+                                                auto bdy_str = m_rdr->get_content()->to_string();
+                                                if (!!ec2) {
+                                                    p_resp_on_error(ec2);
+                                                } else {
+                                                    p_resp_on_headers(ec2, m_rdr);
+                                                    auto ec_eom = Marvin::Error::make_eom();
+                                                    p_resp_on_data(ec_eom, m_rdr->get_body_buffer_chain());
+                                                    p_resp_on_complete(ec2, m_rdr);
+                                                }
+                                            });
         } else {
             cb(ec);
         }

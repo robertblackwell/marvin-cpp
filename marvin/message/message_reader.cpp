@@ -31,9 +31,9 @@ MessageReader::~MessageReader()
 {
    TROG_TRACE_CTOR();
 }
-void MessageReader::readMessage(std::function<void(Marvin::ErrorType)> cb)
+void MessageReader::async_read_message(std::function<void(Marvin::ErrorType)> cb)
 {
-    m_full_rdr.readMessage(*this, [this, cb](ErrorType err)
+    m_full_rdr.async_read_message(*this, [this, cb](ErrorType err)
     {
         /**
          * \TODO - make this a post

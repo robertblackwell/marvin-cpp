@@ -32,7 +32,7 @@ Timeout::~Timeout()
    TROG_TRACE_CTOR();
 }
 
-void Timeout::cancelTimeout(std::function<void()> handler)
+void Timeout::cancel_timeout(std::function<void()> handler)
 {
     TROG_DEBUG(" m_active: ", m_active);
 #define XDISABLE_TIMEOUT
@@ -55,7 +55,7 @@ void Timeout::cancelTimeout(std::function<void()> handler)
     }
 #endif
 }
-void Timeout::setTimeout(long interval_millisecs, std::function<void()> handler)
+void Timeout::set_timeout(long interval_millisecs, std::function<void()> handler)
 {
     TROG_DEBUG(" interval millisecs: ", interval_millisecs);
 #ifdef DISABLE_TIMEOUT

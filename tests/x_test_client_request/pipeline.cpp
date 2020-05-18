@@ -26,7 +26,7 @@ void Pipeline::setup()
     std::function<void(Marvin::ErrorType& er, MessageReaderSPtr rdr)> f = [this](Marvin::ErrorType& ec, MessageReaderSPtr rdr) {
         this->handler(ec, rdr);
     };
-    m_client_sptr->asyncWrite(m_msg_sptr, f);
+    m_client_sptr->async_write(m_msg_sptr, f);
 
 }
 void Pipeline::handler(Marvin::ErrorType err, MessageReaderSPtr rdr)

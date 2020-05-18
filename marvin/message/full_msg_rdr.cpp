@@ -38,16 +38,16 @@ FullMessageReader::~FullMessageReader()
  * -    err == err, just shutdown/close link
  * 
  */
-void FullMessageReader::readMessage(MessageBaseSPtr message_sptr, FullMessageReader::DoneCallback cb)
+void FullMessageReader::async_read_message(MessageBaseSPtr message_sptr, FullMessageReader::DoneCallback cb)
 {
     throw("not implemented yet");
 }
-void FullMessageReader::readMessage(MessageBase& message_ref, FullMessageReader::DoneCallback cb)
+void FullMessageReader::async_read_message(MessageBase& message_ref, FullMessageReader::DoneCallback cb)
 {
     MessageBase* p = std::addressof(message_ref);
-    readMessage(p, cb);
+    async_read_message(p, cb);
 }
-void FullMessageReader::readMessage(MessageBase* message_ptr, FullMessageReader::DoneCallback cb)
+void FullMessageReader::async_read_message(MessageBase* message_ptr, FullMessageReader::DoneCallback cb)
 {
     m_read_cb = cb;
     m_current_message_ptr =  message_ptr;
@@ -67,7 +67,7 @@ void FullMessageReader::p_read_some()
      */
     std::size_t buf_size = recommended_buffer_size(*m_current_message_ptr, m_parser);
     auto mutablebuffer = m_streambuffer.prepare(buf_size);
-    m_read_sock_sptr->asyncRead(mutablebuffer, [buf_size, this](Marvin::ErrorType& err, std::size_t bytes_transfered)
+    m_read_sock_sptr->async_read(mutablebuffer, [buf_size, this](Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         // TODO - do I need to call streambuffer.commmit()
         TROG_TRACE4("bytes read : ", bytes_transfered, " buf_size: ", buf_size)
@@ -99,7 +99,7 @@ void FullMessageReader::p_parse_some()
         Parser::ReturnValue r = m_parser.consume(m_streambuffer);
         switch (r.return_code) {
             case Parser::ReturnCode::error:
-                p_on_parse_error(m_parser.getError());
+                p_on_parse_error(m_parser.get_error());
             break;
             case Parser::ReturnCode::end_of_data:
             case Parser::ReturnCode::end_of_header:
@@ -117,7 +117,7 @@ void FullMessageReader::p_on_eof()
     Parser::ReturnValue r = m_parser.end();
     switch (r.return_code) {
         case Parser::ReturnCode::error:
-            pe =  m_parser.getError();
+            pe = m_parser.get_error();
             p_on_parse_error(pe);
         break;
         case Parser::ReturnCode::end_of_data:

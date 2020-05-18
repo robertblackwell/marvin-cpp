@@ -185,7 +185,7 @@ TEST_CASE("new_connection_GET")
         client = std::make_shared<Client>(io, conn_sptr);
         MessageBaseSPtr msg = makeRequest(std::string("https://www.ssllabs.com:443"));
         std::string s = msg->str();
-        client->asyncWrite(msg, [](Marvin::ErrorType& err, MessageReaderSPtr reader){
+        client->async_write(msg, [](Marvin::ErrorType& err, MessageReaderSPtr reader){
             std::cout << "got response" << std::endl;
             std::cout << reader->str() << std::endl;
             REQUIRE(reader->status_code() == 200);

@@ -93,8 +93,8 @@ public:
      *      The caller should retain the buffer and provide it to a different parser object at the start
      *      of parsing of the next next message.
      * 
-     * -    A parsing error is encountered. This will be indicated by isError() returning true. In such a case
-     *      getError() will give details of the error. A Parse error is unrecoverable. The connection should
+     * -    A parsing error is encountered. This will be indicated by is_error() returning true. In such a case
+     *      get_error() will give details of the error. A Parse error is unrecoverable. The connection should
      *      be closed.
      * 
      * -    This function signals completin of parsing of the message header by setting a header complete flag,
@@ -102,7 +102,7 @@ public:
      * 
      * -    Sometimes a message will be sent that does not contain a content-length nor a chunked-encoding header.
      *      the peer is expecting to signal end of message by closing the connection and as a sign of EOF. The
-     *      parser can be informed of this by appending a buffer of zero length or calling appendEOF(). 
+     *      parser can be informed of this by appending a buffer of zero length or calling append_eof().
      *      The parse may recognize this situation and ask for a terminating eof by setting need_eof tru, this can
      *      be tested by calling needsEOF() after the function returns having consumed all of the buffer.
 	 */
@@ -150,7 +150,7 @@ public:
 	 * Signal end of data to the parser. Required in some cases as there are message formats that do not
 	 * contain message length information.
 	 */
-	void appendEOF();
+	void append_eof();
     /**
      * Pause and/or unpause the parser
      */
@@ -173,14 +173,14 @@ public:
 	 */
 	bool message_done;
     
-    bool            isError();
-    enum http_errno getErrno();
-    ParserError     getError();
+    bool            is_error();
+    enum http_errno get_errno();
+    ParserError     get_error();
     
 	/** 
 	 * Returns the the Message currently being parsed or just parsed. 
 	 */
-    MessageBase* currentMessage();
+    MessageBase* current_message();
     
     /**
     * C parser class callback functions that interface with the C language parser

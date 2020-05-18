@@ -49,7 +49,7 @@ class HeadersV2
 
         /// \ingroup HttpMessage
         /// \brief  Filters a header map to remove all headers whose keys are IN the filterList
-        static void copyExcept(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList);
+        static void copy_except(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList);
         
         class Exception: public std::exception
         {
@@ -139,31 +139,31 @@ class HeadersV2
          * \brief Gets a header <key value> Field by index - header order is maintained.
          * Will throw an exception if the index is out of range
         */
-        Field atIndex(std::size_t index);
+        Field at_index(std::size_t index);
         /**
          * \brief finds the index of a header by key.
          * @return optional value
          */
-        boost::optional<std::size_t> findAtIndex(FieldKeyArg key);
+        boost::optional<std::size_t> find_at_index(FieldKeyArg key);
 
         /**
          * \brief Gets the current value for a key or undefined if there is not one.
          * Returns this as an optional so that existence can be tested at the 
          * same time as getting the value
          */
-        boost::optional<std::string> atKey(FieldKeyArg k);
+        boost::optional<std::string> at_key(FieldKeyArg k);
 
         /**
          * \brief add a new header <key value> will update an existing key with a new value
          */
-        void setAtKey(FieldKeyArg k, std::string v);
-        void setAtKey(std::string* k, std::string* v);
+        void set_at_key(FieldKeyArg k, std::string v);
+        void set_at_key(std::string* k, std::string* v);
 
         /**
          * \brief Removes the header with the given key value. If there was no such header
          * no action is taken.
          * */
-        void removeAtKey(FieldKeyArg k);
+        void remove_at_key(FieldKeyArg k);
 
         /** Iterator base find function*/
         Iterator find(FieldKeyArg k);
@@ -173,11 +173,11 @@ class HeadersV2
         friend std::ostream &operator<< (std::ostream &os, HeadersV2 &headers);
 
         /// used for testing
-        bool sameValues(HeadersV2& other);
-        bool sameOrderAndValues(HeadersV2& other);
+        bool same_values(HeadersV2& other);
+        bool same_order_and_values(HeadersV2& other);
 
     private:
-        void eraseAtIndex(std::size_t position);
+        void erase_at_index(std::size_t position);
 
         std::vector<Field> m_fields_vector;
         // std::map<std::string, long> m_keys;

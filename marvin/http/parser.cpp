@@ -38,7 +38,7 @@ Parser::~Parser()
     if (m_http_parser_ptr != NULL) {free(m_http_parser_ptr);m_http_parser_ptr = NULL;}
     if (m_http_parser_ptr != NULL) {free(m_http_parser_settings_ptr); m_http_parser_settings_ptr = NULL;}
 }
-MessageBase* Parser::currentMessage()
+MessageBase* Parser::current_message()
 {
     return m_current_message_ptr;
 }
@@ -107,9 +107,9 @@ Parser::ReturnValue Parser::consume(const void* buf, std::size_t length, bool on
         total_parsed = total_parsed + nparsed;
         // std::cout << "nparsed: " << nparsed  << "len: " << length - total_parsed << " content: " << buf <<  std::endl;
         rv.bytes_remaining = length - nparsed;
-        if (this->isError()) {
+        if (this->is_error()) {
             rv.return_code = ReturnCode::error;
-            auto x = getError();
+            auto x = get_error();
             return rv;
         } else if (this->message_done) {
             rv.return_code = ReturnCode::end_of_message;
@@ -135,9 +135,9 @@ Parser::ReturnValue Parser::end()
         if (started) {
             nparsed = http_parser_execute(m_http_parser_ptr, m_http_parser_settings_ptr, buffer, someLength);
         }
-        if (this->isError()) {
+        if (this->is_error()) {
             rv.return_code = ReturnCode::error;
-            auto x = getError();
+            auto x = get_error();
             return rv;
         } else if (this->message_done) {
             rv.return_code = ReturnCode::end_of_message;
@@ -151,7 +151,7 @@ Parser::ReturnValue Parser::end()
         }
     }
 }
-void Parser::appendEOF()
+void Parser::append_eof()
 {
     char* buffer = NULL;
     size_t nparsed;
@@ -162,11 +162,11 @@ void Parser::appendEOF()
     }
     TROG_DEBUG("back from parser nparsed: ", nparsed);
 }
-enum http_errno Parser::getErrno()
+enum http_errno Parser::get_errno()
 {
     return (enum http_errno) this->m_http_parser_ptr->http_errno;
 }
-ParserError Parser::getError()
+ParserError Parser::get_error()
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wall"
@@ -182,7 +182,7 @@ ParserError Parser::getError()
     return erst;
 
 }
-bool Parser::isError(){
+bool Parser::is_error(){
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wall"
     enum http_errno x = (enum http_errno)this->m_http_parser_ptr->http_errno;
@@ -203,15 +203,15 @@ int Parser::p_on_message_begin(http_parser* parser)
 }
 int Parser::p_on_url_data(http_parser* parser, const char* at, size_t length)
 {
-    MessageBase* message = currentMessage();
-    message->setIsRequest(true);
+    MessageBase* message = current_message();
+    message->set_is_request(true);
     url_stringbuf.append((char*)at, length);
     return 0;
 }
 int Parser::p_on_status_data(http_parser* parser, const char* at, size_t length)
 {
-    MessageBase* message = currentMessage();
-    message->setIsRequest(false);
+    MessageBase* message = current_message();
+    message->set_is_request(false);
     message->status_code(m_http_parser_ptr->status_code);
     status_stringbuf.append((char*)at, length);
     return 0;
@@ -221,7 +221,7 @@ int Parser::p_on_header_field_data(http_parser* parser, const char* at, size_t l
     int state = header_state;
     if( (state == 0)||(state == kHEADER_STATE_NOTHING) || (state == kHEADER_STATE_VALUE)){
         if(name_stringbuf.size() != 0) {
-            currentMessage()->header(&name_stringbuf, &value_stringbuf);
+            current_message()->header(&name_stringbuf, &value_stringbuf);
             name_stringbuf.clear();
             value_stringbuf.clear();
         }
@@ -251,7 +251,7 @@ int Parser::p_on_header_value_data(http_parser* parser, const char* at, size_t l
 }
 int Parser::p_on_headers_complete(http_parser* parser) //, const char* aptr, size_t remainder)
 {
-    MessageBase* message = currentMessage();
+    MessageBase* message = current_message();
     if(name_stringbuf.size() != 0) {
         message->header(name_stringbuf, value_stringbuf);
         name_stringbuf.clear();
@@ -272,11 +272,11 @@ int Parser::p_on_headers_complete(http_parser* parser) //, const char* aptr, siz
 }
 int Parser::p_on_body_data(http_parser* parser, const char* at, size_t length)
 {
-    BufferChain::SPtr chain_sptr = this->m_current_message_ptr->getContentBuffer();
+    BufferChain::SPtr chain_sptr = this->m_current_message_ptr->get_body_buffer_chain();
     if (chain_sptr == nullptr) {
         ContigBuffer::SPtr mb_sptr = m_factory.makeSPtr();
         chain_sptr = makeBufferChainSPtr(mb_sptr);
-        m_current_message_ptr->setContentBuffer(chain_sptr);
+        m_current_message_ptr->set_body_buffer_chain(chain_sptr);
     }
     chain_sptr->append((void*)at, length);
     return 0;
@@ -294,7 +294,7 @@ int Parser::p_on_message_complete(http_parser* parser)
     Parser* p = this;//(Parser*)(parser->data);
     this->message_done = true;
     
-    // MessageBase* message = p->currentMessage();
+    // MessageBase* message = p->current_message();
     // p->OnMessageComplete(message);
     // force the parser to exit after this call
     // so that we dont process any data in the read

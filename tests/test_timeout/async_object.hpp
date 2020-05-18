@@ -35,7 +35,8 @@ public:
         m_op_handler = handler;
         long to_interval = to_interval_secs*1000;
         m_timer.expires_from_now(boost::posix_time::seconds(interval_secs));
-        m_timeout.setTimeout(to_interval, ([this](){
+        m_timeout.set_timeout(to_interval, ([this]()
+        {
             m_timer.cancel();
         }));
         auto xhw = (std::bind(&AsyncObject::async_fail_op_handler, this, std::placeholders::_1));
@@ -56,7 +57,8 @@ public:
         }
         std::string s = Marvin::make_error_description(ec);
         TROG_DEBUG(" err: ", s);
-        m_timeout.cancelTimeout( ([this, ec, s](){
+        m_timeout.cancel_timeout(([this, ec, s]()
+        {
             TROG_DEBUG(" err: ", s);
             m_op_handler(ec);
         }));
@@ -70,7 +72,8 @@ public:
         m_op_handler = handler;
         long to_interval = to_interval_secs*1000;
         m_timer.expires_from_now(boost::posix_time::seconds(interval_secs));
-        m_timeout.setTimeout(to_interval, [this](){
+        m_timeout.set_timeout(to_interval, [this]()
+        {
             m_timer.cancel();
         });
         m_timer.async_wait((std::bind(&AsyncObject::async_op_handler, this, std::placeholders::_1)));
@@ -81,10 +84,11 @@ public:
         boost::system::error_code ec = err;
         std::string s = Marvin::make_error_description(ec);
         TROG_DEBUG(" err: ", s);
-        m_timeout.cancelTimeout([this, ec, s](){
-            TROG_DEBUG(" err: ", s);
-            m_op_handler(ec);
-        });
+        m_timeout.cancel_timeout([this, ec, s]()
+                                 {
+                                     TROG_DEBUG(" err: ", s);
+                                     m_op_handler(ec);
+                                 });
     }
     
 private:

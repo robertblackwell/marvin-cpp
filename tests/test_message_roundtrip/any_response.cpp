@@ -31,7 +31,7 @@ void AnyResponse::verifyResponse(ErrorType& er, MessageBaseSPtr response)
 {
     CHECK(!er);
     std::cout << __PRETTY_FUNCTION__ << " : " << er.message() << std::endl;
-    BufferChain::SPtr bsp = response->getContentBuffer();
+    BufferChain::SPtr bsp = response->get_body_buffer_chain();
     std::string raw_body = bsp->to_string();
     CHECK(response->status_code() == 200);
 }
@@ -60,7 +60,7 @@ MessageBaseSPtr AnyResponse::makeRequest()
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // BufferChain::SPtr bdy = makeBufferChainSPtr(s);
-    // msg->setContent(bdy);
+    // msg->set_body(bdy);
     m_request_sptr = msg;
     return msg;
 }

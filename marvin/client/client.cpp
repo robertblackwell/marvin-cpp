@@ -3,7 +3,7 @@
 
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
-#include <marvin/connection/socket_factory.hpp>         // for socketFactory
+#include <marvin/connection/socket_factory.hpp>         // for socket_factory
 #include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
@@ -60,43 +60,43 @@ Client::~Client()
 /*!--------------------------------------------------------------------------------
 * implement connect
 *--------------------------------------------------------------------------------*/
-void Client::asyncConnect(std::function<void(ErrorType& err)> cb)
+void Client::async_connect(std::function<void(ErrorType& err)> cb)
 {
     TROG_INFO("", (long)this);
-//    std::cout << "client asyncConnect " << std::hex << (long) this << std::endl;
+//    std::cout << "client async_connect " << std::hex << (long) this << std::endl;
     if (m_conn_shared_ptr != nullptr ) {
         MARVIN_THROW("should not have a connection at this point");
     }
-    m_conn_shared_ptr = socketFactory(m_io, m_scheme, m_server, m_port);
+    m_conn_shared_ptr = socket_factory(m_io, m_scheme, m_server, m_port);
 
     auto f = [this, cb](Marvin::ErrorType& ec, ISocket* c) {
         std::string er_s = Marvin::make_error_description(ec);
         TROG_INFO(" conn", (long)m_conn_shared_ptr.get(), " er: ", er_s);
         cb(ec);
     };
-    m_conn_shared_ptr->asyncConnect(f);
+    m_conn_shared_ptr->async_connect(f);
 }
 
 //--------------------------------------------------------------------------------
-// asyncWrite - the whole request message but first check all the header fields are
+// async_write - the whole request message but first check all the header fields are
 // ok
 //--------------------------------------------------------------------------------
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb)
+void Client::async_write(MessageBaseSPtr requestMessage,  std::string& body, ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr = Marvin::makeContigBufferSPtr(body);
     p_async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::ContigBuffer::SPtr body, ResponseHandlerCallbackType cb)
+void Client::async_write(MessageBaseSPtr requestMessage,  Marvin::ContigBuffer::SPtr body, ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr = body;
     p_async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  Marvin::BufferChain::SPtr chain_sptr, ResponseHandlerCallbackType cb)
+void Client::async_write(MessageBaseSPtr requestMessage,  Marvin::BufferChain::SPtr chain_sptr, ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr = chain_sptr->amalgamate();
     p_async_write(requestMessage, cb);
 }
-void Client::asyncWrite(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
+void Client::async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb)
 {
     m_body_mbuffer_sptr  = Marvin::makeContigBufferSPtr(""); // no body
     p_async_write(requestMessage, cb);
@@ -110,27 +110,28 @@ void Client::p_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallb
     bool already_connected = (m_conn_shared_ptr != nullptr);
     
     if ( ! already_connected ) {
-        internalConnect();
+        p_internal_connect();
     }else {
-        internalWrite();
+        p_internal_write();
     }
 }
-void Client::internalConnect()
+void Client::p_internal_connect()
 {
     TROG_INFO("", (long)this);
-    asyncConnect([this](Marvin::ErrorType& ec){
-        TROG_DEBUG("cb-connect");
-        if(!ec) {
-            internalWrite();
-        } else {
-            m_response_handler(ec, m_rdr);
-        }
-    });
+    async_connect([this](Marvin::ErrorType &ec)
+                  {
+                      TROG_DEBUG("cb-connect");
+                      if (!ec) {
+                          p_internal_write();
+                      } else {
+                          m_response_handler(ec, m_rdr);
+                      }
+                  });
 }
 //--------------------------------------------------------------------------------
 // come here to do a write of the full message
 //--------------------------------------------------------------------------------
-void Client::internalWrite()
+void Client::p_internal_write()
 {
     TROG_INFO("", (long)this);
 
@@ -143,21 +144,22 @@ void Client::internalWrite()
 #endif
     // we are about to write the entire request message
     // so make sure we have the content-length correct
-    setContentLength();
-    TROG_INFO("",traceWriter(*m_wrtr));
+    p_set_content_length();
+    TROG_INFO("", trace_writer(*m_wrtr));
     
     assert(m_body_mbuffer_sptr != nullptr);
-    m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
+    m_wrtr->async_write(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {
             TROG_DEBUG("start read");
-            this->m_rdr->readMessage([this](Marvin::ErrorType ec){
-                if (!ec) {
-                    this->m_response_handler(ec, m_rdr);
-                } else {
-                    std::string s = ec.message();
-                    this->m_response_handler(ec, m_rdr);
-                }
-            });
+            this->m_rdr->async_read_message([this](Marvin::ErrorType ec)
+                                            {
+                                                if (!ec) {
+                                                    this->m_response_handler(ec, m_rdr);
+                                                } else {
+                                                    std::string s = ec.message();
+                                                    this->m_response_handler(ec, m_rdr);
+                                                }
+                                            });
         } else {
             this->m_response_handler(ec, m_rdr);
         }
@@ -174,7 +176,7 @@ void Client::end()
 {
 }
 
-void Client::setContentLength()
+void Client::p_set_content_length()
 {
     long len = 0;
     MessageBaseSPtr msg = m_current_request;

@@ -100,11 +100,11 @@ void TcpServer::terminate()
 {
 
    TROG_TRACE3("");
-    ISocketSPtr conn_sptr = socketFactory(m_io);
+    ISocketSPtr conn_sptr = socket_factory(m_io);
     
     ConnectionHandler* waiting_conn_handler_ptr = new ConnectionHandler(m_io, m_connectionManager, conn_sptr, m_factory);
 
-    conn_sptr->asyncAccept(m_acceptor, [this, waiting_conn_handler_ptr](const boost::system::error_code& err)
+    conn_sptr->async_accept(m_acceptor, [this, waiting_conn_handler_ptr](const boost::system::error_code &err)
     {
         p_handle_accept(waiting_conn_handler_ptr, err);
     });
@@ -122,19 +122,20 @@ void TcpServer::terminate()
         return; // something is wrong
     }
     if (!err){
-       TROG_TRACE3("got a connection", waiting_conn_handler_ptr->nativeSocketFD());
+       TROG_TRACE3("got a connection", waiting_conn_handler_ptr->native_socket_fd());
         /// at this point the native socket fd is assigned
         /// so for debug purposes we can stash it in the
         /// fd_inuse list
-       
-        m_connectionManager.registerConnectionHandler(waiting_conn_handler_ptr);
+
+        m_connectionManager.register_connection_handler(waiting_conn_handler_ptr);
         // important sequence - if a call to p_start_accept() is defered
-        // by allowAnotherConnection() we need to be sure there is still
+        // by allow_another_connection() we need to be sure there is still
         // an outstanding connection that will start an accept in the future.
-        m_connectionManager.allowAnotherConnection([this](){
-           TROG_TRACE3("allowAnother Callback");
-            p_start_accept();
-        });
+        m_connectionManager.allow_another_connection([this]()
+                                                     {
+                                                         TROG_TRACE3("allowAnother Callback");
+                                                         p_start_accept();
+                                                     });
         waiting_conn_handler_ptr->serve();
     }else{
         TROG_WARN("Accept error value:",err.value()," cat:", err.category().name(), "message: ",err.message());

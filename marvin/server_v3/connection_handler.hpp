@@ -36,7 +36,7 @@ class ConnectionHandler
         ~ConnectionHandler();
     
         void serve();
-        long nativeSocketFD();
+        long native_socket_fd();
         std::string uuid();
     private:
     

@@ -31,29 +31,33 @@ typedef std::unique_ptr<MessageWriter> MessageWriterUPtr;
 class MessageWriter
 {
 public:
+    using ErrRefHandler = std::function<void(ErrorType& err)>;
+    using WriteMessageHandler = ErrRefHandler ;
+    using WriteHeadersHandler = ErrRefHandler ;
+    using WriteBodyDataHandler = ErrRefHandler ;
 
     MessageWriter(ISocketSPtr conn);
     ~MessageWriter();
     
-    void asyncWrite(Marvin::MessageBaseSPtr msg, WriteMessageCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr msg, Marvin::ContigBuffer::SPtr body_mb_sptr, WriteMessageCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr msg, Marvin::BufferChain::SPtr body_chain_sptr, WriteMessageCallbackType cb);
+    void async_write(Marvin::MessageBaseSPtr msg, WriteMessageHandler cb);
+    void async_write(Marvin::MessageBaseSPtr msg, std::string& body_string, WriteMessageHandler cb);
+    void async_write(Marvin::MessageBaseSPtr msg, Marvin::ContigBuffer::SPtr body_mb_sptr, WriteMessageHandler cb);
+    void async_write(Marvin::MessageBaseSPtr msg, Marvin::BufferChain::SPtr body_chain_sptr, WriteMessageHandler cb);
 
-    void asyncWriteHeaders(Marvin::MessageBaseSPtr msg, WriteHeadersCallbackType cb);
-    void asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(Marvin::ContigBuffer& data, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(Marvin::BufferChain::SPtr chain_ptr, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb);
+    void async_write_headers(Marvin::MessageBaseSPtr msg, WriteHeadersHandler cb);
+    void async_write_body_data(std::string& data, WriteBodyDataHandler cb);
+    void async_write_body_data(Marvin::ContigBuffer& data, WriteBodyDataHandler cb);
+    void async_write_body_data(Marvin::BufferChain::SPtr chain_ptr, WriteBodyDataHandler cb);
+    void async_write_body_data(boost::asio::const_buffer data, WriteBodyDataHandler cb);
 
-    void asyncWriteTrailers(Marvin::MessageBaseSPtr msg, WriteHeadersCallbackType cb);
+    void async_write_trailers(Marvin::MessageBaseSPtr msg, WriteHeadersHandler cb);
     
     void end();
     
-    friend std::string traceWriter(MessageWriter& wrtr);
+    friend std::string trace_writer(MessageWriter& wrtr);
 
 protected:
-    void p_async_write_full_body(WriteMessageCallbackType cb);
+    void p_async_write_full_body(WriteMessageHandler cb);
     void p_put_headers_stuff_in_buffer();
 
     boost::asio::io_service&    m_io;

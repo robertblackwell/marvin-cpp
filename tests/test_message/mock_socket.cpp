@@ -27,41 +27,41 @@ MockReadSocket::MockReadSocket(boost::asio::io_service& io, DataSource& data_sou
 //     TROG_DEBUG(""); 
 //     free((void*)m_rdBuf);
 // }
-long MockReadSocket::nativeSocketFD(){ return 9876; };
+long MockReadSocket::native_socket_fd(){ return 9876; };
 
-boost::asio::io_service& MockReadSocket::getIO() {return m_io; }
-boost::asio::ssl::context& MockReadSocket::getSslContext(){return m_ssl_context;}
+boost::asio::io_service& MockReadSocket::get_io_context() {return m_io; }
+boost::asio::ssl::context& MockReadSocket::get_ssl_context(){return m_ssl_context;}
 
-long MockReadSocket::getReadTimeout(){return 99;}
+long MockReadSocket::get_read_timeout(){return 99;}
 void MockReadSocket::cancel(){}
 void MockReadSocket::startRead(){}
 
-void MockReadSocket::asyncRead(Marvin::ContigBuffer::SPtr mb, long timeout_ms, AsyncReadCallback cb)
+void MockReadSocket::async_read(Marvin::ContigBuffer::SPtr mb, long timeout_ms, AsyncReadCallback cb)
 {throw("read with timeout into ContigBuffer not implemented");}
-void MockReadSocket::asyncRead(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallback cb)
+void MockReadSocket::async_read(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallback cb)
 {throw("read with timeout into void* buffer not implemented");}
 //
 // New buffer strategy make the upper level provide the buffer. All we do is check the size
 //
-void MockReadSocket::asyncRead(boost::asio::streambuf& streambuffer, AsyncReadCallback cb)
+void MockReadSocket::async_read(boost::asio::streambuf& streambuffer, AsyncReadCallback cb)
 {
     boost::asio::mutable_buffer mutablebuffer = streambuffer.prepare(1000);
-    asyncRead(mutablebuffer, [&streambuffer, cb](Marvin::ErrorType err, std::size_t bytes_read)
+    async_read(mutablebuffer, [&streambuffer, cb](Marvin::ErrorType err, std::size_t bytes_read)
     {
         streambuffer.commit(bytes_read);
         cb(err, bytes_read);
     });
 }
-void MockReadSocket::asyncRead(boost::asio::mutable_buffer mutablebuffer, AsyncReadCallback cb)
+void MockReadSocket::async_read(boost::asio::mutable_buffer mutablebuffer, AsyncReadCallback cb)
 {
     void* bptr = mutablebuffer.data();
     std::size_t len = mutablebuffer.size();
-    asyncRead(bptr, len, [cb](Marvin::ErrorType err, std::size_t bytes_read)
+    async_read(bptr, len, [cb](Marvin::ErrorType err, std::size_t bytes_read)
     {
         cb(err, bytes_read);
     });
 }
-void MockReadSocket::asyncRead(void* buffer, std::size_t buffer_length, AsyncReadCallback cb)
+void MockReadSocket::async_read(void* buffer, std::size_t buffer_length, AsyncReadCallback cb)
 {   
     TROG_DEBUG("");
     char* buf;
@@ -129,7 +129,7 @@ void MockReadSocket::asyncRead(void* buffer, std::size_t buffer_length, AsyncRea
         }
     } 
 }
-void MockReadSocket::asyncRead(Marvin::ContigBuffer::SPtr mb, AsyncReadCallback cb)
+void MockReadSocket::async_read(Marvin::ContigBuffer::SPtr mb, AsyncReadCallback cb)
 {
     TROG_DEBUG("");
     char* buf;
@@ -198,29 +198,29 @@ void MockReadSocket::asyncRead(Marvin::ContigBuffer::SPtr mb, AsyncReadCallback 
 
     }
 }
-void MockReadSocket::asyncWrite(std::string& str, Marvin::AsyncWriteCallbackType cb){ assert(false);}
-void MockReadSocket::asyncWrite(Marvin::ContigBuffer& fb, Marvin::AsyncWriteCallback){ assert(false);}
-void MockReadSocket::asyncWrite(Marvin::BufferChain::SPtr chain_sptr, Marvin::AsyncWriteCallback){ assert(false);}
-void MockReadSocket::asyncWrite(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb){ assert(false);}
-void MockReadSocket::asyncWrite(boost::asio::streambuf& sb, Marvin::AsyncWriteCallback){ assert(false);}
-void MockReadSocket::asyncWrite(void* buffer, std::size_t buffer_length, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::async_write(std::string& str, Marvin::AsyncWriteCallbackType cb){ assert(false);}
+void MockReadSocket::async_write(Marvin::ContigBuffer& fb, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::async_write(Marvin::BufferChain::SPtr chain_sptr, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::async_write(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb){ assert(false);}
+void MockReadSocket::async_write(boost::asio::streambuf& sb, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::async_write(void* buffer, std::size_t buffer_length, Marvin::AsyncWriteCallback){ assert(false);}
 
-void MockReadSocket::asyncConnect(Marvin::ConnectCallbackType cb){ assert(false);}
-void MockReadSocket::asyncAccept(
+void MockReadSocket::async_connect(Marvin::ConnectCallbackType cb){ assert(false);}
+void MockReadSocket::async_accept(
     boost::asio::ip::tcp::acceptor& acceptor,
     std::function<void(const boost::system::error_code& err)> cb
 ){ assert(false);}
-void MockReadSocket::becomeSecureClient(X509_STORE* certificate_store_ptr){ assert(false);}
-void MockReadSocket::becomeSecureServer(Cert::Identity server_identity){ assert(false);}
-void MockReadSocket::asyncHandshake(std::function<void(const boost::system::error_code& err)> cb){ assert(false);}
-Cert::Certificate MockReadSocket::getServerCertificate()
+void MockReadSocket::become_secure_client(X509_STORE* certificate_store_ptr){ assert(false);}
+void MockReadSocket::become_secure_server(Cert::Identity server_identity){ assert(false);}
+void MockReadSocket::async_handshake(std::function<void(const boost::system::error_code& err)> cb){ assert(false);}
+Cert::Certificate MockReadSocket::get_server_certificate()
 { 
     Cert::Certificate tmp{};
     assert(false);
     return tmp;
 }
 
-void MockReadSocket::setReadTimeout(long interval){assert(false);}
+void MockReadSocket::set_read_timeout(long interval){assert(false);}
 
 void MockReadSocket::shutdown(ISocket::ShutdownType type){ assert(false);}
 void MockReadSocket::close(){ assert(false);}

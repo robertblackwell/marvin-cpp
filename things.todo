@@ -125,7 +125,7 @@ Archive:
  ✔ Needs testing Connection::becomeSecureClient(X509_Store* rootbundle) - must be able to upgrade to secure at least to be a secure client. New method @done (20-04-15 09:14) @project(Forwarding Handler)
  ✔ MessageReader MessageWriter: Probably do not need to be provided with these methods as these objects are constructed with connected ISockets. @done (20-04-15 09:14) @project(Forwarding Handler)
  ✔ Issue - need test bed to work on MessageReader, MessageWrite and Client for https requests. @done (20-04-15 09:14) @project(Forwarding Handler)
- ✔ ISocket will all need becomeSecureClient() becomeSecureServer() methods as this absract class is the interface to Connection. @done (20-04-15 09:14) @project(Forwarding Handler)
+ ✔ ISocket will all need become_secure_client() become_secure_server() methods as this absract class is the interface to Connection. @done (20-04-15 09:14) @project(Forwarding Handler)
  ✔ Consider doing away with ISocket all together - not sure what value it adds. @done (20-04-15 09:14) @project(Forwarding Handler)
  ✔ compare the two implementations and resolve into a single class. Check what tests get broken. @done (20-04-15 09:13) @project(Uri-UriV2)
  ✔ is too complicated - try using the model from the node addin @done (20-04-03 15:08) @project(Logging)

@@ -265,7 +265,7 @@ void Request::asyncWriteLastBodyData(std::string& body_chunk_str, WriteBodyDataC
         return;
         int content_length = m_body_mbuffer_sptr->size();
         m_current_request->header(Http::HeadersV2::ContentLength, std::to_string(content_length));
-        m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this, cb](Marvin::ErrorType err){
+        m_wrtr->async_write(m_current_request, m_body_mbuffer_sptr, [this, cb](Marvin::ErrorType err){
             cb(err);
         });
     } else {
@@ -279,7 +279,7 @@ void Request::asyncWriteLastBodyData(Marvin::ContigBuffer::SPtr body_chunk_sptr,
     if(p_test_not_headers_written()) {
         // compute buffer length, add content-length header
         // send the entire message
-        m_wrtr->asyncWrite(m_current_request, body_chunk_sptr, [this, cb](Marvin::ErrorType err){
+        m_wrtr->async_write(m_current_request, body_chunk_sptr, [this, cb](Marvin::ErrorType err){
             cb(err);
         });
     } else {
@@ -293,7 +293,7 @@ void Request::asyncWriteLastBodyData(Marvin::BufferChain::SPtr body_chunk_chain_
     if(p_test_not_headers_written()) {
         // compute buffer length, add content-length header
         // send the entire message
-        m_wrtr->asyncWrite(m_current_request, body_chunk_chain_sptr, [this, cb](Marvin::ErrorType err){
+        m_wrtr->async_write(m_current_request, body_chunk_chain_sptr, [this, cb](Marvin::ErrorType err){
             cb(err);
         });
     } else {
@@ -340,7 +340,7 @@ void Request::p_internal_write_message()
     
     assert(m_body_mbuffer_sptr != nullptr);
     auto req_str = m_current_request->str();
-    m_wrtr->asyncWrite(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
+    m_wrtr->async_write(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {
             TROG_DEBUG("start read");
             this->m_rdr->readMessage([this](Marvin::ErrorType ec2){

@@ -42,7 +42,7 @@ std::shared_ptr<Client> do_get_request(std::string code, boost::asio::io_service
         auto st = b->status_code();
         REQUIRE(b->status_code() == 200);
     };
-    client->asyncWrite(msg, f);
+    client->async_write(msg, f);
     return client;
 }
 #if 1

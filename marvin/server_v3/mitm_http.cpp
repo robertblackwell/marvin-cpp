@@ -29,7 +29,7 @@ MitmHttp::MitmHttp(
         std::string port,
         ICollectorSPtr collector_sptr
 
-) : m_mitm_app(mitm_app), m_io(socket_sptr->getIO())
+) : m_mitm_app(mitm_app), m_io(socket_sptr->get_io_context())
 {
     m_downstream_rdr_sptr = rdr;
     m_downstream_socket_sptr = socket_sptr;
@@ -38,7 +38,7 @@ MitmHttp::MitmHttp(
     m_upstream_host = host;
     m_upstream_port = port;
     m_collector_sptr = collector_sptr;
-    m_upstream_socket_sptr = socketFactory(mitm_app.m_io, m_upstream_scheme, m_upstream_host, m_upstream_port);
+    m_upstream_socket_sptr = socket_factory(mitm_app.m_io, m_upstream_scheme, m_upstream_host, m_upstream_port);
 }
 MitmHttp::~MitmHttp()
 {
@@ -58,13 +58,13 @@ void MitmHttp::p_initiate_upstream_roundtrip()
         /// get here with a message suitable for transmission to down stream client
         m_downstream_response_sptr = downMsg;
        TROG_TRACE3("for downstream", traceMessage(*downMsg));
-        Marvin::BufferChain::SPtr responseBodySPtr = downMsg->getContentBuffer();
+        Marvin::BufferChain::SPtr responseBodySPtr = downMsg->get_body_buffer_chain();
         /// perform the MITM collection
         
         m_collector_sptr->collect(m_scheme, m_host, m_downstream_rdr_sptr, m_downstream_response_sptr);
         
         /// write response to downstream client
-        m_downstream_wrtr_sptr->asyncWrite(m_downstream_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err) {
+        m_downstream_wrtr_sptr->async_write(m_downstream_response_sptr, responseBodySPtr, [this](Marvin::ErrorType& err) {
             if (err) {
                 m_mitm_app.p_on_downstream_write_error(err);
             } else {
@@ -91,10 +91,10 @@ void MitmHttp::p_roundtrip_upstream(
     /// the MessageBase that will be the up stream request
     m_upstream_request_sptr = std::make_shared<MessageBase>();
     /// format upstream msg for transmission
-    Helpers::makeUpstreamRequest(m_upstream_request_sptr, req);
-    Marvin::BufferChain::SPtr content = req->getContentBuffer();
+    Helpers::make_upstream_request(m_upstream_request_sptr, req);
+    Marvin::BufferChain::SPtr content = req->get_body_buffer_chain();
     
-    m_upstream_client_uptr->asyncWrite(m_upstream_request_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
+    m_upstream_client_uptr->async_write(m_upstream_request_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {
         if (ec || (upstrmRdr == nullptr)) {
             std::string desc = make_error_description(ec);
@@ -104,8 +104,8 @@ void MitmHttp::p_roundtrip_upstream(
         } else {
            TROG_TRACE3("upstream response", traceMessage(*(upstrmRdr.get())));
             m_downstream_response_sptr = std::make_shared<MessageBase>();
-            m_upstream_response_body_sptr = upstrmRdr->getContentBuffer();
-            Helpers::makeDownstreamResponse(m_downstream_response_sptr, upstrmRdr, ec);
+            m_upstream_response_body_sptr = upstrmRdr->get_body_buffer_chain();
+            Helpers::make_downstream_response(m_downstream_response_sptr, upstrmRdr, ec);
             upstreamCb(m_downstream_response_sptr);
         }
     });
@@ -113,14 +113,14 @@ void MitmHttp::p_roundtrip_upstream(
 };
 void MitmHttp::p_downstream_read_message()
 {
-    m_downstream_rdr_sptr->readMessage([this](Marvin::ErrorType err) 
-    {
-        if (err) {
-            m_mitm_app.p_on_downstream_read_error(err);
-        } else {
-            p_initiate_upstream_roundtrip();
-        }
-    });
+    m_downstream_rdr_sptr->async_read_message([this](Marvin::ErrorType err)
+                                              {
+                                                  if (err) {
+                                                      m_mitm_app.p_on_downstream_read_error(err);
+                                                  } else {
+                                                      p_initiate_upstream_roundtrip();
+                                                  }
+                                              });
 }
 
 void MitmHttp::p_on_request_completed()

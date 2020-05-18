@@ -52,11 +52,11 @@ TestCollection& test_data_two_message()
             CHECK(m0->version_major() == 1);
             CHECK(m0->version_minor() == 1);
             CHECK(m0->status_code() == 200);
-            CHECK(h.atKey("CONTENT-LENGTH").get() == "10");
-            CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-            CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
-            auto b0 = m0->getContentBuffer()->to_string();
-            CHECK(m0->getContent()->to_string() == "1234567890");
+            CHECK(h.at_key("CONTENT-LENGTH").get() == "10");
+            CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+            CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
+            auto b0 = m0->get_body_buffer_chain()->to_string();
+            CHECK(m0->get_content()->to_string() == "1234567890");
 
             Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
             REQUIRE(m1 != nullptr);
@@ -64,12 +64,12 @@ TestCollection& test_data_two_message()
             CHECK(m1->version_major() == 1);
             CHECK(m1->version_minor() == 1);
             CHECK(m1->status_code() == 201);
-            CHECK(h.atKey("CONTENT-LENGTH").get() == "11");
-            CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-            CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
+            CHECK(h.at_key("CONTENT-LENGTH").get() == "11");
+            CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+            CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
 
-            auto b1 = m1->getContentBuffer()->to_string();
-            CHECK(m1->getContent()->to_string() == "ABCDEFGHIJK");
+            auto b1 = m1->get_body_buffer_chain()->to_string();
+            CHECK(m1->get_content()->to_string() == "ABCDEFGHIJK");
         }
     };
     ptc["simple_data_set"] = TestSet{
@@ -88,11 +88,11 @@ TestCollection& test_data_two_message()
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
             CHECK(msg_p->method_string() == "GET");
-            CHECK(h.atKey("CONTENT-LENGTH").get() == "10");
-            CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-            CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
-            auto b = msg_p->getContentBuffer()->to_string();
-            CHECK(msg_p->getContent()->to_string() == "9123456789");
+            CHECK(h.at_key("CONTENT-LENGTH").get() == "10");
+            CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+            CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
+            auto b = msg_p->get_body_buffer_chain()->to_string();
+            CHECK(msg_p->get_content()->to_string() == "9123456789");
         }
     };
     
@@ -130,13 +130,13 @@ TestCollection& test_data_two_message()
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
             CHECK(msg_p->status_code() == 201);
-            CHECK(! h.atKey("CONTENT-LENGTH"));
-            CHECK(h.atKey("TRANSFER-ENCODING").get() == "chunked");
-            CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-            CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
-            auto b = msg_p->getContentBuffer()->to_string();
-            CHECK(msg_p->getContent()->to_string() ==
-                (
+            CHECK(! h.at_key("CONTENT-LENGTH"));
+            CHECK(h.at_key("TRANSFER-ENCODING").get() == "chunked");
+            CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+            CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
+            auto b = msg_p->get_body_buffer_chain()->to_string();
+            CHECK(msg_p->get_content()->to_string() ==
+                  (
                 std::string("1234567890") +
                 std::string("1234567890") +
                 std::string("1234567890") +
@@ -184,13 +184,13 @@ TestCollection& test_data_two_message()
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
             CHECK(msg_p->status_code() == 201);
-            CHECK(! h.atKey("CONTENT-LENGTH"));
-            CHECK(h.atKey("TRANSFER-ENCODING").get() == "chunked");
-            CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-            CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
-            auto b = msg_p->getContentBuffer()->to_string();
-            CHECK(msg_p->getContent()->to_string() ==
-                (
+            CHECK(! h.at_key("CONTENT-LENGTH"));
+            CHECK(h.at_key("TRANSFER-ENCODING").get() == "chunked");
+            CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+            CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
+            auto b = msg_p->get_body_buffer_chain()->to_string();
+            CHECK(msg_p->get_content()->to_string() ==
+                  (
                 std::string("1234567890") +
                 std::string("1234567890") +
                 std::string("1234567890") +
@@ -238,13 +238,13 @@ TestCollection& test_data_two_message()
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
             CHECK(msg_p->status_code() == 201);
-            CHECK(! h.atKey("CONTENT-LENGTH"));
-            CHECK(h.atKey("TRANSFER-ENCODING").get() == "chunked");
-            CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-            CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
-            auto b = msg_p->getContentBuffer()->to_string();
-            CHECK(msg_p->getContent()->to_string() ==
-                (
+            CHECK(! h.at_key("CONTENT-LENGTH"));
+            CHECK(h.at_key("TRANSFER-ENCODING").get() == "chunked");
+            CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+            CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
+            auto b = msg_p->get_body_buffer_chain()->to_string();
+            CHECK(msg_p->get_content()->to_string() ==
+                  (
                 std::string("1234567890") +
                 std::string("1234567890") +
                 std::string("1234567890") +

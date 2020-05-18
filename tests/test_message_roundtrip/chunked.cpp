@@ -32,7 +32,7 @@ void Chunked::verifyResponse(ErrorType& er, MessageBaseSPtr response)
 {
     CHECK(!er);
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    BufferChain::SPtr bsp = response->getContentBuffer();
+    BufferChain::SPtr bsp = response->get_body_buffer_chain();
     std::string raw_body = bsp->to_string();
     if (response->status_code() != 200) {
         auto x = response->status_code();
@@ -81,7 +81,7 @@ MessageBaseSPtr Chunked::makeRequest()
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // BufferChain::SPtr bdy = makeBufferChainSPtr(s);
-    // msg->setContent(bdy);
+    // msg->set_body(bdy);
     m_request_sptr = msg;
     return msg;
 }

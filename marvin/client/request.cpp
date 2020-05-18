@@ -2,7 +2,7 @@
 #include <marvin/client/request.hpp>
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
-#include <marvin/connection/socket_factory.hpp>         // for socketFactory
+#include <marvin/connection/socket_factory.hpp>         // for socket_factory
 #include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
@@ -33,7 +33,7 @@ Request::Request(
 ): m_io(io), m_scheme(scheme), m_server(server), m_port(port), m_headers_written(false), m_trailers_written(false)
 {
     std::cout << "Constructor" << std::endl;
-    m_conn_shared_ptr = socketFactory(m_io, m_scheme, m_server, m_port);
+    m_conn_shared_ptr = socket_factory(m_io, m_scheme, m_server, m_port);
     p_create_rdr_wrtr();
     m_current_request->header(Marvin::HeadersV2::Host, m_server+":"+m_port);
     m_is_connected = false;
@@ -45,7 +45,7 @@ Request::Request(
         , m_headers_written(false), m_trailers_written(false)
 {
     assert(false); // need to pass the Url() to connection
-    m_conn_shared_ptr = socketFactory(m_io);
+    m_conn_shared_ptr = socket_factory(m_io);
     p_create_rdr_wrtr();
     m_is_connected = false;
 
@@ -118,11 +118,11 @@ void Request::asyncConnect(std::function<void(Marvin::ErrorType& err)> cb)
         }
         cb(ec);
     };
-    m_conn_shared_ptr->asyncConnect(f);
+    m_conn_shared_ptr->async_connect(f);
 }
 
 //----------------------------------------------------------------------------------------------
-// asyncWriteBodyData - requires that headers NOT already sent and will force chunked encodiing
+// async_write_body_data - requires that headers NOT already sent and will force chunked encodiing
 //-----------------------------------------------------------------------------------------------
 void Request::asyncWriteBodyData(std::string& body_chunk, WriteBodyDataCallbackType cb)
 {
@@ -198,7 +198,7 @@ void Request::asyncWriteLastBodyData(Marvin::ContigBuffer::SPtr body_chunk_sptr,
     if(p_test_not_headers_written()) {
         // compute buffer length, add content-length header
         // send the entire message
-        m_wrtr->asyncWrite(m_current_request, body_chunk_sptr, [this, cb](Marvin::ErrorType err){
+        m_wrtr->async_write(m_current_request, body_chunk_sptr, [this, cb](Marvin::ErrorType err){
             cb(err);
         });
     } else {
@@ -212,7 +212,7 @@ void Request::asyncWriteLastBodyData(Marvin::BufferChain::SPtr body_chunk_chain_
     if(p_test_not_headers_written()) {
         // compute buffer length, add content-length header
         // send the entire message
-        m_wrtr->asyncWrite(m_current_request, body_chunk_chain_sptr, [this, cb](Marvin::ErrorType err){
+        m_wrtr->async_write(m_current_request, body_chunk_chain_sptr, [this, cb](Marvin::ErrorType err){
             cb(err);
         });
     } else {

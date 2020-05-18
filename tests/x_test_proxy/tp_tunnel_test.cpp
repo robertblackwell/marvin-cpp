@@ -176,7 +176,7 @@ namespace  {
         m_client_sptr = std::shared_ptr<Client>(new Client(m_io, m_scheme, m_proxy_host, m_proxy_port));
         auto f = std::bind(&ProxyRequestor::handler, this, std::placeholders::_1, std::placeholders::_2);
         auto buf = m_testcase_sptr->m_msg_sptr->getContentBuffer();
-        m_client_sptr->asyncWrite(m_msg_sptr, buf, f);
+        m_client_sptr->async_write(m_msg_sptr, buf, f);
 
     }
 

@@ -76,9 +76,9 @@ using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err,
 *
 * Two modes of transmission operation are provided for:
 *
-*   -   send the entire request in a single call using asyncWrite. This mode is best when
+*   -   send the entire request in a single call using async_write. This mode is best when
 *       either there is NO message body or the entire message body is available at the time
-*       the request transmission is started. In this mode the handler provided to asyncWrite
+*       the request transmission is started. In this mode the handler provided to async_write
 *       is passed a complete response including any body data.
 *
 *   -   send the request/message piecemeal - headers, followed by multiple chunks of body, followed by trailers.
@@ -101,6 +101,8 @@ using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err,
 class Client
 {
 public:
+    using ResponseHandler = ResponseHandlerCallbackType;
+
 #pragma mark - constructors and destructors
     /**
      * Create a client that is not connected; but provide the info it needs
@@ -138,15 +140,15 @@ public:
     
     MessageReaderSPtr  getResponse();
     
-    void setUrl(std::string url);    
-    void setContent(std::string& contentStr);
+    void set_url(std::string url);
+    void set_content(std::string& contentStr);
     
 #pragma mark - event registration
     /**
     * Sets a handler to be called when a complete response message is received or if
     * an error occurs while receiving a response message.
     */
-    void setOnResponse(ResponseHandlerCallbackType cb );
+    void set_on_response(ResponseHandlerCallbackType cb );
 
     /**
     * Sets a handler to be called when all headers have been received or if
@@ -154,20 +156,20 @@ public:
     *
     * optional
     */
-    void setOnHeaders(ResponseHandlerCallbackType cb);
+    void set_on_headers(ResponseHandlerCallbackType cb);
 
     /**
     * Sets a handler to be called when a chunk of body data is available.
     *
     * optional
     */
-    void setOnData(ClientDataHandlerCallbackType cb);
+    void set_on_data(ClientDataHandlerCallbackType cb);
 
     /**
     * Connects to the target host. If the scheme is https also includes a handshake.
     * If the ISocket is not already connected this method will becalled when the first write call is issued
     */
-    void asyncConnect(std::function<void(ErrorType& err)> cb);
+    void async_connect(std::function<void(ErrorType& err)> cb);
 
     /**
     * \brief Writes the complete message to the connected host including body and trailers (if there are any).
@@ -180,25 +182,25 @@ public:
     *
     * If the request is to have NO body use this method with the requestMessage.body == nullptr;
     */
-    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
+    void async_write(Marvin::MessageBaseSPtr requestMessage,  ResponseHandler cb);
     /**
     * The following are three ways to add a body to a request. The first two take a string or
     * a shared pointer to an ContigBuffer - these are contiguous buffers and can be sent with a single
-    * asyncWrite
+    * async_write
     */
-    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandlerCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::ContigBuffer::SPtr body_sptr, ResponseHandlerCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::BufferChain::SPtr chain_sptr, ResponseHandlerCallbackType cb);
+    void async_write(Marvin::MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandler cb);
+    void async_write(Marvin::MessageBaseSPtr requestMessage,  Marvin::ContigBuffer::SPtr body_sptr, ResponseHandler cb);
+    void async_write(Marvin::MessageBaseSPtr requestMessage,  Marvin::BufferChain::SPtr chain_sptr, ResponseHandler cb);
 
     /**
     * Sends the first line and headers of the request message only
-    * and expects any body data to be sent using asyncWriteBodyData
+    * and expects any body data to be sent using async_write_body_data
     * in which case the body will be "chunk" encoded and the headers
     * will be completed to indicate this.
     *
-    * Dont use this method IF there is no body data, use asyncWrite
+    * Dont use this method IF there is no body data, use async_write
     */
-    void asyncWriteHeaders(Marvin::MessageBaseSPtr requestMessage, WriteHeadersCallbackType cb);
+    void async_write_headers(Marvin::MessageBaseSPtr requestMessage, WriteHeadersCallbackType cb);
     
     /**
     * Transmits a block of body data - the data should NOT be chunk encode
@@ -209,7 +211,7 @@ public:
     *                   chunk trailer should be generated.
     * @param cb     -   handler to be called when operation complete.
     *
-    * @note - asyncWriteBodyData( nullptr, true, ....) is the normal way to
+    * @note - async_write_body_data( nullptr, true, ....) is the normal way to
     *   -   signal end of data, as the caller may not know its e-o-d until
     *       after the last buffer is sent. Such a call still sends data
     *       on the connection
@@ -217,20 +219,20 @@ public:
     *       - the chunk encoding trailer.
     *
     */
-    void asyncWriteBodyData(void* dataBuffer, bool last, WriteBodyDataCallbackType cb);
+    void async_write_body_data(void* dataBuffer, bool last, WriteBodyDataCallbackType cb);
     
     /**
     * not yet implemented
     *
     * This method should only be used if the transmission was started with a
-    * call to asyncWriteHeaders. The method asyncWrite handles trailers automatically.
+    * call to async_write_headers. The method async_write handles trailers automatically.
     *
     * Sends the trailers that are present in the requestMessage - trailers can be added
     * to the message AFTER transmission has started as the internals of this class
     * do not inspect the trailers until this call nor does it keep a copy of the
     * original request
     */
-    void asyncWriteTrailers(Marvin::MessageBaseSPtr requestMessage,  AsyncWriteCallbackType cb);
+    void async_write_trailers(Marvin::MessageBaseSPtr requestMessage, AsyncWriteCallbackType cb);
     
     /**
     * Called to signal end-of-message. This function will
@@ -253,12 +255,10 @@ public:
     friend std::string traceRequestMessage(Marvin::MessageBase& request);
 
 protected:
-    void internalConnect();
-    void internalWrite();
-
+    void p_internal_connect();
+    void p_internal_write();
     void p_async_write(Marvin::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
-    void putHeadersStuffInBuffer();
-    void setContentLength();
+    void p_set_content_length();
     
     std::string m_url; // resource locator
     std::string m_uri; // really path
@@ -271,7 +271,7 @@ protected:
 
     boost::asio::io_service&          m_io;
     Marvin::MessageBaseSPtr           m_current_request;
-    Marvin::ContigBuffer::SPtr               m_body_mbuffer_sptr;
+    Marvin::ContigBuffer::SPtr        m_body_mbuffer_sptr;
     MessageWriterSPtr                 m_wrtr;
     MessageReaderSPtr                 m_rdr;
     ISocketSPtr                       m_conn_shared_ptr;

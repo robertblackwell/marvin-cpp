@@ -2,7 +2,7 @@
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/connection/connection.hpp>
 namespace Marvin {
-ISocketSPtr socketFactory(
+ISocketSPtr socket_factory(
             boost::asio::io_service& io_service,
             const std::string scheme,
             const std::string server,
@@ -12,7 +12,7 @@ ISocketSPtr socketFactory(
     ptr = std::make_shared<Marvin::Connection>(io_service, scheme, server, port);
     return ptr;
 }
-ISocketSPtr socketFactory(boost::asio::io_service& io_service)
+ISocketSPtr socket_factory(boost::asio::io_service& io_service)
 {
     ISocketSPtr ptr;
     ptr = std::make_shared<Connection>(io_service);

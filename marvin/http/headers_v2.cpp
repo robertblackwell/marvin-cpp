@@ -51,7 +51,7 @@ bool isConnectionClose(std::string value)
 // tests whether a header structure has a connection header with a 'keep-alive' substring
 bool isConnectionKeepAlive(Marvin::HeadersV2& h)
 {
-    boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
+    boost::optional<std::string> opt = h.at_key(HeadersV2::Connection);
     if(opt) {
         std::string& s = opt.get();
         return isConnectionKeepAlive(s);
@@ -61,7 +61,7 @@ bool isConnectionKeepAlive(Marvin::HeadersV2& h)
 // tests whether a header structure has a connection header with a 'close' substring
 bool isConnectionClose(Marvin::HeadersV2& h)
 {
-    boost::optional<std::string> opt = h.atKey(HeadersV2::Connection);
+    boost::optional<std::string> opt = h.at_key(HeadersV2::Connection);
     if(opt) {
         std::string& s = opt.get();
         return isConnectionClose(s);
@@ -74,7 +74,7 @@ std::ostream &operator<< (std::ostream &os, HeadersV2& headers)
 {
     int num = headers.size();
     for(int i = 0; i < num; i++) {
-        auto p = headers.atIndex(i);
+        auto p = headers.at_index(i);
         os << " " << p.key << ": " << p.value;
     }
 }
@@ -85,13 +85,13 @@ std::string HeadersV2::str()
     os << (*this);
     return os.str();
 }
-void HeadersV2::copyExcept(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList)
+void HeadersV2::copy_except(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList)
 {
     for(auto it = source.begin(); it != source.end(); it++) {
         std::string k = it->key;
         if( filterList.end() == filterList.find(k) ) {
             /// if not in list copy
-            dest.setAtKey(it->key, it->value);
+            dest.set_at_key(it->key, it->value);
         }
     }
 }
@@ -150,7 +150,7 @@ HeadersV2::HeadersV2(std::vector<std::pair<std::string, std::string>> initialVal
     for(int i = 0; i < initialValue.size(); i++) {
         auto x = initialValue[i];
         std::string tmp_first = toupper_copy(x.first);
-        setAtKey(tmp_first, x.second);
+        set_at_key(tmp_first, x.second);
     }
 }
 
@@ -179,7 +179,7 @@ HeadersV2::Iterator HeadersV2::find(HeadersV2::FieldKeyArg key)
     return this->end();
 }
 
-boost::optional<std::size_t> HeadersV2::findAtIndex(HeadersV2::FieldKeyArg key)
+boost::optional<std::size_t> HeadersV2::find_at_index(FieldKeyArg key)
 {
     std::string s{key};
     std::string key_upper = toupper_copy(s);
@@ -191,7 +191,7 @@ boost::optional<std::size_t> HeadersV2::findAtIndex(HeadersV2::FieldKeyArg key)
     return boost::optional<std::size_t>();
 }
 
-HeadersV2::Field HeadersV2::atIndex(std::size_t index)
+HeadersV2::Field HeadersV2::at_index(std::size_t index)
 {
     if (index >= m_fields_vector.size()) {
         throw HeadersV2::Exception("index is out of bounds accessing headers");
@@ -199,31 +199,31 @@ HeadersV2::Field HeadersV2::atIndex(std::size_t index)
         return m_fields_vector[index];
     }
 }
-boost::optional<std::string> HeadersV2::atKey(HeadersV2::FieldKeyArg k)
+boost::optional<std::string> HeadersV2::at_key(HeadersV2::FieldKeyArg k)
 {
-    boost::optional<std::size_t> index = this->findAtIndex(k);
+    boost::optional<std::size_t> index = this->find_at_index(k);
     if(index) {
         return m_fields_vector[index.get()].value;
     }
     return boost::optional<std::string>();
 }
-void HeadersV2::setAtKey(std::string* k, std::string* v)
+void HeadersV2::set_at_key(std::string* k, std::string* v)
 {
     std::string k_upper = toupper_copy(*k);
     m_fields_vector.emplace_back(Field(&k_upper, v));
 }
-void HeadersV2::setAtKey(HeadersV2::FieldKeyArg k, std::string v)
+void HeadersV2::set_at_key(HeadersV2::FieldKeyArg k, std::string v)
 {
     std::string s{k};
     std::string key_upper = toupper_copy(s);
-    boost::optional<std::size_t> index = this->findAtIndex(k);
+    boost::optional<std::size_t> index = this->find_at_index(k);
     if(index) {
         m_fields_vector[index.get()].value = v;
     } else {
         m_fields_vector.emplace_back(Field(key_upper, v));
     }
 }
-void HeadersV2::eraseAtIndex(std::size_t position)
+void HeadersV2::erase_at_index(std::size_t position)
 {
     if((position >= 0)&&(position < m_fields_vector.size())) {
         for(std::size_t idx = position; idx < m_fields_vector.size() - 1; idx ++ ) {
@@ -234,27 +234,27 @@ void HeadersV2::eraseAtIndex(std::size_t position)
         return;
     }    
 }
-void HeadersV2::removeAtKey(HeadersV2::FieldKeyArg k)
+void HeadersV2::remove_at_key(FieldKeyArg k)
 {
-    boost::optional<std::size_t> index = this->findAtIndex(k);
+    boost::optional<std::size_t> index = this->find_at_index(k);
     if(index) {
-        this->eraseAtIndex(index.get());
+        this->erase_at_index(index.get());
     }
 }
 #if 0
 bool HeadersV2::hasKey(std::string k)
 {
-    return !(!(this->atKey(k)));
+    return !(!(this->at_key(k)));
 }
 #endif
 #if 1
-bool HeadersV2::sameValues(HeadersV2& other)
+bool HeadersV2::same_values(HeadersV2& other)
 {
     if (this->size() != other.size()) return false;
     for (std::size_t index = 0; index < this->size(); index++ ) {
     
         Field this_element = m_fields_vector[index];
-        auto found_optional = other.atKey(this_element.key);
+        auto found_optional = other.at_key(this_element.key);
         if(found_optional) {
             // found it and unwrapped the options
         } else {
@@ -263,12 +263,12 @@ bool HeadersV2::sameValues(HeadersV2& other)
     }
     return true;
 }
-bool HeadersV2::sameOrderAndValues(HeadersV2& other)
+bool HeadersV2::same_order_and_values(HeadersV2& other)
 {
     if (this->size() != other.size()) return false;
     for (std::size_t index = 0; index < this->size(); index++ ) {
     
-        Field other_element = other.atIndex(index);
+        Field other_element = other.at_index(index);
         Field this_element = m_fields_vector[index];
 
         if( (other_element.key != this_element.key) || (other_element.value != this_element.value)) {

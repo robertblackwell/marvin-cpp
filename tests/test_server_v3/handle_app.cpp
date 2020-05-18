@@ -32,7 +32,7 @@ bool is_number(const std::string &s) {
 MessageBaseSPtr make_200_response(std::string body)
 {
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
-    msg->setIsRequest(false);
+    msg->set_is_request(false);
     msg->status_code(200);
     msg->reason("OK");
     msg->version(1, 1);
@@ -40,13 +40,13 @@ MessageBaseSPtr make_200_response(std::string body)
     // BufferChain::SPtr bchain_sptr = makeBufferChainSPtr(body);
     // msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
     msg->header(HeadersV2::ContentType, std::string("plain/text"));
-    msg->setContent(body);
+    msg->set_body(body);
     return msg;
 }
 MessageBaseSPtr make_response(int status_code, std::string status, std::string body)
 {
     MessageBaseSPtr msg = std::shared_ptr<MessageBase>(new MessageBase());
-    msg->setIsRequest(false);
+    msg->set_is_request(false);
     msg->status_code(status_code);
     msg->reason(status);
     msg->version(1, 1);
@@ -78,30 +78,30 @@ void AppHandler::handle(
 }
 void AppHandler::p_internal_handle()
 {
-    m_rdr->readMessage([this](ErrorType err)
-    {
-        if (err) {
-            p_on_read_error(err);
-        } else {
-            std::string path = m_rdr->target();
-            std::vector<std::string> bits;
-            boost::split(bits, path, [](char c){return c == '/';});
-            if (bits.size() < 2) {
-                bits[1] = "";
-            }
-            std::string path_01 = bits[1];
+    m_rdr->async_read_message([this](ErrorType err)
+                              {
+                                  if (err) {
+                                      p_on_read_error(err);
+                                  } else {
+                                      std::string path = m_rdr->target();
+                                      std::vector<std::string> bits;
+                                      boost::split(bits, path, [](char c) { return c == '/'; });
+                                      if (bits.size() < 2) {
+                                          bits[1] = "";
+                                      }
+                                      std::string path_01 = bits[1];
 
-            if (path_01 == "echo") {
-                p_handle_echo();
-            } else if (path_01 == "echosmart") {
-                p_handle_smart_echo();
-            } else if (path_01 == "delay") {
-                p_handle_delay(bits);
-            } else {
-                p_invalid_request();
-            }
-        }
-    });
+                                      if (path_01 == "echo") {
+                                          p_handle_echo();
+                                      } else if (path_01 == "echosmart") {
+                                          p_handle_smart_echo();
+                                      } else if (path_01 == "delay") {
+                                          p_handle_delay(bits);
+                                      } else {
+                                          p_invalid_request();
+                                      }
+                                  }
+                              });
 }
 
 void AppHandler::p_on_completed()
@@ -149,7 +149,7 @@ void AppHandler::p_invalid_request()
     std::string body = "INVALID REQUEST";
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->to_string();
-    m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
+    m_wrtr->async_write(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
             p_on_write_error(err);
@@ -163,7 +163,7 @@ void AppHandler::p_handle_echo()
     std::string body = "THIS IS A RESPONSE BODY";
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->to_string();
-    m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
+    m_wrtr->async_write(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
             p_on_write_error(err);
@@ -177,7 +177,7 @@ void AppHandler::p_handle_smart_echo()
     std::string body = "INVALID REQUEST";
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->to_string();
-    m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
+    m_wrtr->async_write(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
             p_on_write_error(err);
@@ -191,7 +191,7 @@ void AppHandler::p_non_specific_response()
     std::string body = "THIS IS A RESPONSE BODY";
     MessageBaseSPtr response_msg = make_200_response(body);
     auto s = response_msg->to_string();
-    m_wrtr->asyncWrite(response_msg, body, [this](ErrorType& err) 
+    m_wrtr->async_write(response_msg, body, [this](ErrorType& err) 
     {
         if (err) {
             p_on_write_error(err);

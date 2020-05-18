@@ -36,7 +36,7 @@ namespace {
 MessageReaderSPtr makeMock()
 {
     static boost::asio::io_service io;
-    static ISocketSPtr socketSPtr = socketFactory(io);
+    static ISocketSPtr socketSPtr = socket_factory(io);
     MessageReaderSPtr result = std::make_shared<MessageReader>(socketSPtr);
     return result;
 }
@@ -73,7 +73,7 @@ void fillMsgAsResponse_01(MessageBaseSPtr msgRdr)
     msgRdr->header("Transfer-Encoding", " chunk");
     std::string s = "012345678956";
     Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
-    msgRdr->setContentBuffer(bdy);
+    msgRdr->set_body_buffer_chain(bdy);
 }
 
 /// Verify the correctness of the typical response message
@@ -130,7 +130,7 @@ void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
     // proxy mat turn that into a relative url
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // proxy absolute uri
-    Helpers::applyUriProxy(msgRdr, uri);
+    Helpers::apply_uri_proxy(msgRdr, uri);
 //    msgRdr->target("http://example.org/somepath/script.php?parm=123456#fragment");
 //    msgRdr->header(HeadersV2::Host, "example.org");
     msgRdr->header("User-Agent", "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
@@ -145,7 +145,7 @@ void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
     msgRdr->header(HeadersV2::ETag, "1928273tefadseercnbdh");
     std::string s = "012345678956";
     Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
-    msgRdr->setContent(bdy);
+    msgRdr->set_body(bdy);
 }
 
 /// Verify the typical non proxy request
@@ -171,7 +171,7 @@ void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
 {
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // proxy full uri
-    Helpers::applyUriProxy(msgSPtr, uri);
+    Helpers::apply_uri_proxy(msgSPtr, uri);
 }
 
 /// verify request 02 test a proxy request
@@ -186,7 +186,7 @@ void fillMsgRequest_03(MessageBaseSPtr msgSPtr)
 {
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // non proxy relative uri
-    Helpers::applyUriNonProxy(msgSPtr, uri);
+    Helpers::apply_uri_non_proxy(msgSPtr, uri);
 }
 
 /// Verify request 03
@@ -215,12 +215,12 @@ void fillMsgAsRequest(MessageBaseSPtr msgRdr)
 {
     msgRdr->method(HTTP_POST);
     Marvin::Uri uri("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
-    Helpers::applyUriProxy(msgRdr, uri);
+    Helpers::apply_uri_proxy(msgRdr, uri);
 //    Helpers::fillRequestFromUri(*msgRdr, "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
     msgRdr->header(HeadersV2::Connection, HeadersV2::ConnectionKeepAlive);
     std::string s = "012345678956";
     Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
-    msgRdr->setContent(bdy);
+    msgRdr->set_body(bdy);
 }
 
 /// Verify minimum requirements
@@ -239,7 +239,7 @@ bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
     auto hopt = msgSPtr->header(HeadersV2::ContentLength);
     if ((!!hopt) && (hopt.get() != "0")) {
         int cl = std::stoi(hopt.get());
-        auto contentChain = msgSPtr->getContentBuffer();
+        auto contentChain = msgSPtr->get_body_buffer_chain();
             CHECK(contentChain != nullptr);
         if (contentChain != nullptr) {
                 CHECK(contentChain->size() == cl);
@@ -276,7 +276,7 @@ TEST_CASE ("response_01")
     fillMsgAsResponse_01(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     Marvin::ErrorType err = Marvin::make_error_ok();
-    Helpers::makeDownstreamResponse(msgSPtr, msgRdr, err);
+    Helpers::make_downstream_response(msgSPtr, msgRdr, err);
     verifyResponse_01(msgSPtr);
 }
 
@@ -286,7 +286,7 @@ TEST_CASE ("request_01")
     fillMsgAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    Helpers::makeUpstreamRequest(msgSPtr, msgRdr);
+    Helpers::make_upstream_request(msgSPtr, msgRdr);
     verifyRequest_01(msgSPtr);
 }
 
@@ -318,55 +318,55 @@ TEST_CASE ("copy ctor")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
-    msgSPtr->getContentBuffer()->append("01234567890");
+    msgSPtr->get_body_buffer_chain()->append("01234567890");
     // make a copy
     MessageBase tmp_msg{(*msgSPtr)};
     // demonstrate we have two copies of the same value
-        CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
-        CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
+        CHECK(msgSPtr->get_body_buffer_chain()->to_string() == tmp_msg.get_body_buffer_chain()->to_string());
+        CHECK(msgSPtr->get_body_buffer_chain()->size() == tmp_msg.get_body_buffer_chain()->size());
     // now prove the body buffers have been copied and not just two pointers to the same thing
-    tmp_msg.getContentBuffer()->append("XXXX");
-        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
-        CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
+    tmp_msg.get_body_buffer_chain()->append("XXXX");
+        CHECK(tmp_msg.get_body_buffer_chain()->to_string() == "01234567890XXXX");
+        CHECK(msgSPtr->get_body_buffer_chain()->to_string() == "01234567890");
 
     verifyRequest_03(msgSPtr);
     verifyNonPointerRequest_03(tmp_msg);
-    std::string s4 = msgSPtr->getContentBuffer()->block_at(0).toString();
+    std::string s4 = msgSPtr->get_body_buffer_chain()->block_at(0).toString();
 }
 
 TEST_CASE ("copy assignment")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
-    msgSPtr->getContentBuffer()->append("01234567890");
+    msgSPtr->get_body_buffer_chain()->append("01234567890");
     // make a new one and assign
     MessageBase tmp_msg;
     tmp_msg = *msgSPtr;
 
     // demonstrate we have two copies of the same value
-        CHECK(msgSPtr->getContentBuffer()->to_string() == tmp_msg.getContentBuffer()->to_string());
-        CHECK(msgSPtr->getContentBuffer()->size() == tmp_msg.getContentBuffer()->size());
+        CHECK(msgSPtr->get_body_buffer_chain()->to_string() == tmp_msg.get_body_buffer_chain()->to_string());
+        CHECK(msgSPtr->get_body_buffer_chain()->size() == tmp_msg.get_body_buffer_chain()->size());
     // now prove the body buffers have been copied and not just two pointers to the same thing
-    tmp_msg.getContentBuffer()->append("XXXX");
-        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890XXXX");
-        CHECK(msgSPtr->getContentBuffer()->to_string() == "01234567890");
+    tmp_msg.get_body_buffer_chain()->append("XXXX");
+        CHECK(tmp_msg.get_body_buffer_chain()->to_string() == "01234567890XXXX");
+        CHECK(msgSPtr->get_body_buffer_chain()->to_string() == "01234567890");
 
     verifyRequest_03(msgSPtr);
     verifyNonPointerRequest_03(tmp_msg);
-    std::string s4 = msgSPtr->getContentBuffer()->block_at(0).toString();
+    std::string s4 = msgSPtr->get_body_buffer_chain()->block_at(0).toString();
 }
 
 TEST_CASE ("move ctor")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
-    msgSPtr->getContentBuffer()->append("01234567890");
+    msgSPtr->get_body_buffer_chain()->append("01234567890");
     // ctor move
     MessageBase tmp_msg{std::move(*msgSPtr)};
     // demonstrate that it was a move
-        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
-        CHECK(msgSPtr->getContentBuffer()->to_string() == "");
-        CHECK(msgSPtr->getContentBuffer()->size() == 0);
+        CHECK(tmp_msg.get_body_buffer_chain()->to_string() == "01234567890");
+        CHECK(msgSPtr->get_body_buffer_chain()->to_string() == "");
+        CHECK(msgSPtr->get_body_buffer_chain()->size() == 0);
     failedNonPointerRequest_03(*msgSPtr);
     verifyNonPointerRequest_03(tmp_msg);
 }
@@ -375,14 +375,14 @@ TEST_CASE ("move assignment")
 {
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
-    msgSPtr->getContentBuffer()->append("01234567890");
+    msgSPtr->get_body_buffer_chain()->append("01234567890");
     // ctor move
     MessageBase tmp_msg;
     tmp_msg = std::move(*msgSPtr);
     // demonstrate that it was a move
-        CHECK(tmp_msg.getContentBuffer()->to_string() == "01234567890");
-        CHECK(msgSPtr->getContentBuffer()->to_string() == "");
-        CHECK(msgSPtr->getContentBuffer()->size() == 0);
+        CHECK(tmp_msg.get_body_buffer_chain()->to_string() == "01234567890");
+        CHECK(msgSPtr->get_body_buffer_chain()->to_string() == "");
+        CHECK(msgSPtr->get_body_buffer_chain()->size() == 0);
     failedNonPointerRequest_03(*msgSPtr);
     verifyNonPointerRequest_03(tmp_msg);
 }

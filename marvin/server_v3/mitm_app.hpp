@@ -78,7 +78,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
             Marvin::HandlerDoneCallbackType   done
         );
 
-        void handleRequest();
+        void handle_request();
 
         friend class MitmHttps;
         friend class MitmHttp;
@@ -92,7 +92,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
 
         void p_on_completed();
     
-        // methods that are used in handleRequest
+        // methods that are used in handle_request
         void p_read_first_message();
         // void p_read_another_message();
         void p_on_first_message();

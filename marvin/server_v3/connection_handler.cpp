@@ -28,12 +28,12 @@ ConnectionHandler::ConnectionHandler(
     */
     m_connection = conn_sptr;
     m_requesthandler_uptr = m_factory(m_io);
-    m_server_context.server_ptr = connectionManager.getTcpServerPtr();
+    m_server_context.server_ptr = connectionManager.get_tcp_server_ptr();
     m_server_context.connection_handler_ptr = this;
     m_server_context.server_connection_manager_ptr = &connectionManager;
     m_server_context.connection_ptr = conn_sptr.get();
     m_server_context.uuid = m_uuid;
-   TROG_TRACE_FD(m_connection->nativeSocketFD());
+   TROG_TRACE_FD(m_connection->native_socket_fd());
 }
 
 ConnectionHandler::~ConnectionHandler()
@@ -47,9 +47,9 @@ ConnectionHandler::~ConnectionHandler()
 *   Utility method returns the underlying FD for this connection.
 *   Used only for debug racing purposes
 */
-long ConnectionHandler::nativeSocketFD()
+long ConnectionHandler::native_socket_fd()
 {
-    return m_connection->nativeSocketFD();
+    return m_connection->native_socket_fd();
 }
 std::string ConnectionHandler::uuid()
 {
@@ -60,9 +60,9 @@ std::string ConnectionHandler::uuid()
 */
 void ConnectionHandler::serve()
 {
-    TROG_TRACE3("ConnectionHandler Server uuid: ", m_uuid,  " fd:", nativeSocketFD());
+    TROG_TRACE3("ConnectionHandler Server uuid: ", m_uuid, " fd:", native_socket_fd());
     m_requesthandler_uptr->handle(m_server_context, m_connection, [this](){
-       TROG_TRACE3("ConnectionHandler Handler done() call back uuid: ", m_uuid,  " fd:", nativeSocketFD());
+       TROG_TRACE3("ConnectionHandler Handler done() call back uuid: ", m_uuid, " fd:", native_socket_fd());
         m_connectionManager.deregister(this); 
     });
 }

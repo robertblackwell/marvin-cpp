@@ -20,5 +20,5 @@
 TEST_CASE("certificates")
 {
     Marvin::Certificates certificates = Marvin::Certificates::getInstance();
-    CHECK(certificates.getX509StorePtr() != nullptr);
+    CHECK(certificates.get_X509_STORE_ptr() != nullptr);
 }

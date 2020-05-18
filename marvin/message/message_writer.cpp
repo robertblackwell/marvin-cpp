@@ -9,7 +9,7 @@ namespace Marvin {
 
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
-std::string traceWriter(MessageWriter& writer)
+std::string trace_writer(MessageWriter& writer)
 {
     std::stringstream ss;
 //    ss  << traceMessageV2(writer)
@@ -20,7 +20,7 @@ std::string traceWriter(MessageWriter& writer)
     return ss.str();
 }
 
-MessageWriter::MessageWriter(ISocketSPtr write_sock):m_io(write_sock->getIO()), m_write_sock(write_sock)
+MessageWriter::MessageWriter(ISocketSPtr write_sock): m_io(write_sock->get_io_context()), m_write_sock(write_sock)
 {
    TROG_TRACE_CTOR();
     m_current_message = nullptr;
@@ -33,90 +33,94 @@ MessageWriter::~MessageWriter()
 }
 
 #pragma mark - public methods
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb)
+void MessageWriter::async_write(MessageBaseSPtr msg, std::string& body_string, WriteMessageHandler cb)
 {
    
     if(body_string.size() == 0 ) {
-        asyncWrite(msg, cb);
+        async_write(msg, cb);
     } else {
 //        std:: cout << std::endl << "body buffer write: " << body_string << std::endl;
         m_body_buffer_string = body_string;
         m_body_buffer_chain_sptr = Marvin::makeBufferChainSPtr(body_string);
-        asyncWrite(msg, cb);
+        async_write(msg, cb);
     }
 }
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::ContigBuffer::SPtr body_mb_sptr, WriteMessageCallbackType cb)
+void MessageWriter::async_write(MessageBaseSPtr msg, Marvin::ContigBuffer::SPtr body_mb_sptr, WriteMessageHandler cb)
 {
     assert(body_mb_sptr != nullptr);
     m_body_buffer_chain_sptr = Marvin::makeBufferChainSPtr(body_mb_sptr);
-    asyncWrite(msg, cb);
+    async_write(msg, cb);
 }
 
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::BufferChain::SPtr body_chain_sptr, WriteMessageCallbackType cb)
+void MessageWriter::async_write(MessageBaseSPtr msg, Marvin::BufferChain::SPtr body_chain_sptr, WriteMessageHandler cb)
 {
     m_body_buffer_chain_sptr = body_chain_sptr;
-    asyncWrite(msg, cb);
+    async_write(msg, cb);
 }
 
 void
-MessageWriter::asyncWrite(MessageBaseSPtr msg, WriteMessageCallbackType cb)
+MessageWriter::async_write(MessageBaseSPtr msg, WriteMessageHandler cb)
 {
     TROG_DEBUG("");
     MessageBaseSPtr tmp = msg;
     m_current_message = msg;
-    asyncWriteHeaders(msg, [this, cb](Marvin::ErrorType& ec){
+    async_write_headers(msg, [this, cb](Marvin::ErrorType &ec)
+    {
         TROG_DEBUG(" cb: ", (long) &cb);
         // doing a full write of the message
-        if( ec ){
+        if (ec) {
             TROG_DEBUG("", ec.value(), ec.category().name(), ec.category().message(ec.value()));
             cb(ec);
         } else {
-            p_async_write_full_body([this, cb](Marvin::ErrorType& ec2){
-                TROG_DEBUG(" cb: ", (long) &cb);
-                auto pf = std::bind(cb, ec2);
-                cb(ec2);
-            });
+            p_async_write_full_body([this, cb](Marvin::ErrorType &ec2)
+                                    {
+                                        TROG_DEBUG(" cb: ", (long) &cb);
+                                        auto pf = std::bind(cb, ec2);
+                                        cb(ec2);
+                                    });
         }
     });
 }
 
 void
-MessageWriter::asyncWriteHeaders(MessageBaseSPtr msg,  WriteHeadersCallbackType cb)
+MessageWriter::async_write_headers(MessageBaseSPtr msg, WriteHeadersHandler cb)
 {
     p_put_headers_stuff_in_buffer();
-    
-    m_write_sock->asyncWrite(*m_header_buf_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
+
+    m_write_sock->async_write(*m_header_buf_sptr, [this, cb](Marvin::ErrorType &ec, std::size_t bytes_transfered)
+    {
 
         TROG_DEBUG("");
         // TODO need to check and do something about insufficient write
-            auto pf = std::bind(cb, ec);
+        auto pf = std::bind(cb, ec);
         cb(ec);
     });
 }
 
 
-void MessageWriter::asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb)
+void MessageWriter::async_write_body_data(std::string& data, WriteBodyDataHandler cb)
 {
     auto bf = boost::asio::buffer(data);
-    m_write_sock->asyncWrite(bf, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    m_write_sock->async_write(bf, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }
-void MessageWriter::asyncWriteBodyData(Marvin::ContigBuffer& data, WriteBodyDataCallbackType cb)
+void MessageWriter::async_write_body_data(Marvin::ContigBuffer& data, WriteBodyDataHandler cb)
 {
-    m_write_sock->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    m_write_sock->async_write(data, [cb](Marvin::ErrorType &err, std::size_t bytes_transfered)
+    {
         cb(err);
     });
 }
 
-void MessageWriter::asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb)
+void MessageWriter::async_write_body_data(boost::asio::const_buffer data, WriteBodyDataHandler cb)
 {
-    m_write_sock->asyncWrite(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
+    m_write_sock->async_write(data, [cb](Marvin::ErrorType& err, std::size_t bytes_transfered) {
         cb(err);
     });
 }
 
-void MessageWriter::asyncWriteTrailers(MessageBaseSPtr msg,  WriteHeadersCallbackType cb)
+void MessageWriter::async_write_trailers(MessageBaseSPtr msg, WriteHeadersHandler cb)
 {
 }
 
@@ -135,7 +139,7 @@ void MessageWriter::p_put_headers_stuff_in_buffer()
 //
 // writes the entire body - precondition - we have the entire body already
 //
-void MessageWriter::p_async_write_full_body(WriteMessageCallbackType cb)
+void MessageWriter::p_async_write_full_body(WriteMessageHandler cb)
 {
     TROG_DEBUG(" cb: ", (long) &cb);
     if( ( ! m_body_buffer_chain_sptr) || ( m_body_buffer_chain_sptr->size() == 0) ) {
@@ -143,10 +147,12 @@ void MessageWriter::p_async_write_full_body(WriteMessageCallbackType cb)
         auto pf = std::bind(cb, ee);
         m_io.post(pf);
     } else{
-        m_write_sock->asyncWrite(m_body_buffer_chain_sptr, [this, cb](Marvin::ErrorType& ec, std::size_t bytes_transfered){
-        auto pf = std::bind(cb, ec);
-        m_io.post(pf);
-        });
+        m_write_sock->async_write(m_body_buffer_chain_sptr,
+                                  [this, cb](Marvin::ErrorType &ec, std::size_t bytes_transfered)
+                                  {
+                                      auto pf = std::bind(cb, ec);
+                                      m_io.post(pf);
+                                  });
     }
 }
 } // namespace

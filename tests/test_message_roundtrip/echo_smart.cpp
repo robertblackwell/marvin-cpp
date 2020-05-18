@@ -29,7 +29,7 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::MessageBaseSPtr re
 {
     CHECK(!er);
     // std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Marvin::BufferChain::SPtr bsp = response->getContentBuffer();
+    Marvin::BufferChain::SPtr bsp = response->get_body_buffer_chain();
     std::string raw_body = bsp->to_string();
     CHECK(response->status_code() == 200);
 
@@ -89,7 +89,7 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::MessageBaseSPtr re
     
     std::string method_dump = method_j.dump();
     std::string method_value = method_j.get<std::string>();
-    std::string tmp = httpMethodString(m_method);
+    std::string tmp = http_method_string(m_method);
     CHECK(method_value == tmp);// std::string("POST"));
 
     std::string uri_dump = uri_j.dump();
@@ -126,13 +126,13 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::MessageBaseSPtr re
 
     Marvin::HeadersV2 original_headers = this->m_request_sptr->headers();
 
-    std::string orig_content_length = original_headers.atKey("CONTENT-LENGTH").get();
-    std::string orig_accept = original_headers.atKey("ACCEPT").get();
-    std::string orig_accept_charset = original_headers.atKey("ACCEPT-CHARSET").get();
-    std::string orig_accept_language = original_headers.atKey("ACCEPT-LANGUAGE").get();
-    std::string orig_user_agent = original_headers.atKey("USER-AGENT").get();
-    std::string orig_connection = original_headers.atKey("CONNECTION").get();
-    std::string orig_xspecial = original_headers.atKey("X-SPECIAL-HEADER").get();
+    std::string orig_content_length = original_headers.at_key("CONTENT-LENGTH").get();
+    std::string orig_accept = original_headers.at_key("ACCEPT").get();
+    std::string orig_accept_charset = original_headers.at_key("ACCEPT-CHARSET").get();
+    std::string orig_accept_language = original_headers.at_key("ACCEPT-LANGUAGE").get();
+    std::string orig_user_agent = original_headers.at_key("USER-AGENT").get();
+    std::string orig_connection = original_headers.at_key("CONNECTION").get();
+    std::string orig_xspecial = original_headers.at_key("X-SPECIAL-HEADER").get();
 
     CHECK(hdrv_accept == orig_accept);
     CHECK(hdrv_accept_charset == orig_accept_charset);
@@ -169,7 +169,7 @@ Marvin::MessageBaseSPtr EchoSmart::makeRequest()
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
-    // msg->setContent(bdy);
+    // msg->set_body(bdy);
     m_request_sptr = msg;
     return msg;
 }

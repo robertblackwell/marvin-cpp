@@ -42,7 +42,7 @@ CollectorBase::CollectorBase(boost::asio::io_service& io, std::ostream& ofstream
 ** strand. Even if this method does IO-wait operations the other thread will
 ** keep going
 **/
-void CollectorBase::postedCollect(
+void CollectorBase::posted_collect(
         std::string scheme,
         std::string host,
         MessageReaderSPtr req,
@@ -61,7 +61,7 @@ void CollectorBase::postedCollect(
     temp << "HTTP/" << req->version_major() << "." << req->version_minor() << std::endl;
     auto reqHeaders = req->headers();
     req->dumpHeaders(temp);
-    temp << "Body: " << std::endl << (req->getContentBuffer())->to_string();
+    temp << "Body: " << std::endl << (req->get_body_buffer_chain())->to_string();
     temp << std::endl;
     temp << "RESPONSE : ========" << std::endl;
     temp << "HTTP/" << resp->version_major() << "." << resp->version_minor() << " ";
@@ -93,7 +93,7 @@ void CollectorBase::collect(
     ** In here implement the creation the summary records but dont do any IO or sending
     ** leave that for postedCollect
     **/
-    auto pf = m_my_strand.wrap(std::bind(&CollectorBase::postedCollect, this, scheme, host, req, resp));
+    auto pf = m_my_strand.wrap(std::bind(&CollectorBase::posted_collect, this, scheme, host, req, resp));
     m_io.post(pf);
 }
 } // namespace

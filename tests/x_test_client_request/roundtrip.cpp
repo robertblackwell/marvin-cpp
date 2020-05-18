@@ -55,7 +55,7 @@ std::shared_ptr<Client> one_roundtrip(std::string code, boost::asio::io_service&
         }
        
     };
-    client->asyncWrite(msg, f);
+    client->async_write(msg, f);
     return client;
 }
 /// makes a GET request to the url provided and expects status=200/302 and a non empty content
@@ -90,7 +90,7 @@ std::shared_ptr<Client> general_roundtrip(boost::asio::io_service& io, std::stri
         io.stop();
         
     };
-    client->asyncWrite(msg, f);
+    client->async_write(msg, f);
     return client;
 }
 #ifdef WHEN_WE_CAN_HANDLE_HTTPS_TRAFFIC

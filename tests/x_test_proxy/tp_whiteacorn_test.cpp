@@ -147,16 +147,16 @@ namespace  {
 
         auto original_headers = m_testcase_sptr->m_msg_sptr->headers();
         /// these are the headers that should be preserved - they arer [present in every test case just for convenience
-        CHECK( (echoed_headers["ACCEPT"] == original_headers.atKey("ACCEPT").get() ) );
-        CHECK( (echoed_headers["ACCEPT-CHARSET"] == original_headers.atKey("ACCEPT-CHARSET").get() ));
-        CHECK( (echoed_headers["ACCEPT-LANGUAGE"] == original_headers.atKey("ACCEPT-LANGUAGE").get() ));
-        CHECK( (echoed_headers[Marvin::Http::HeadersV2::ContentLength] == original_headers.atKey(Marvin::Http::HeadersV2::ContentLength).get()) );
-        CHECK( (echoed_headers[Marvin::Http::HeadersV2::Host] == original_headers.atKey(Marvin::Http::HeadersV2::Host).get()) );
-        CHECK( (echoed_headers["USER-AGENT"] == original_headers.atKey("USER-AGENT").get()) );
+        CHECK( (echoed_headers["ACCEPT"] == original_headers.at_key("ACCEPT").get() ) );
+        CHECK( (echoed_headers["ACCEPT-CHARSET"] == original_headers.at_key("ACCEPT-CHARSET").get() ));
+        CHECK( (echoed_headers["ACCEPT-LANGUAGE"] == original_headers.at_key("ACCEPT-LANGUAGE").get() ));
+        CHECK( (echoed_headers[Marvin::Http::HeadersV2::ContentLength] == original_headers.at_key(Marvin::Http::HeadersV2::ContentLength).get()) );
+        CHECK( (echoed_headers[Marvin::Http::HeadersV2::Host] == original_headers.at_key(Marvin::Http::HeadersV2::Host).get()) );
+        CHECK( (echoed_headers["USER-AGENT"] == original_headers.at_key("USER-AGENT").get()) );
         /// these headers should be present but changed
         CHECK(echoed_headers.has(Marvin::Http::HeadersV2::Connection));
         /// the proxy only allows connection close
-        std::string sc = boost::to_upper_copy(echoed_headers.atKey(Marvin::Http::HeadersV2::Connection).get());
+        std::string sc = boost::to_upper_copy(echoed_headers.at_key(Marvin::Http::HeadersV2::Connection).get());
         CHECK(boost::to_upper_copy(echoed_headers.get(Marvin::Http::HeadersV2::Connection)) == Marvin::Http::HeadersV2::ConnectionClose);
 
         CHECK(echoed_headers.has(Marvin::Http::HeadersV2::AcceptEncoding));
@@ -186,7 +186,7 @@ namespace  {
     m_testcase_sptr->m_msg_sptr->setContent(tmps);
     #endif
         auto buf = m_testcase_sptr->m_msg_sptr->getContentBuffer();
-        m_client_sptr->asyncWrite(m_msg_sptr, buf, f);
+        m_client_sptr->async_write(m_msg_sptr, buf, f);
 
     }
 

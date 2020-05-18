@@ -29,7 +29,7 @@ using namespace Message;
 //-------------------------------------------------------------------------------------
 // Run a list of testcases (that exercise a MessageReader instance) using a mock socket 
 // (that simulates asyn data arrival with a timer) reading an entire 
-// message -- using MessageReader::readMessage() -- in a single call 
+// message -- using MessageReader::async_read_message() -- in a single call
 // to the messagereader
 //-------------------------------------------------------------------------------------
 void test_fullmessage(std::vector<Testcase> tcs)

@@ -27,7 +27,7 @@ ServerConnectionManager::~ServerConnectionManager()
     TROG_TRACE_CTOR();
     TROG_WARN("num connections: ", m_connections.size());
 }
-void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::AllowAnotherCallback cb)
+void ServerConnectionManager::allow_another_connection(ServerConnectionManager::AllowAnotherCallback cb)
 {
     assert(m_allow_more_callback == nullptr);
    TROG_TRACE3(" num conn: ", m_connections.size(), " max: ", m_maxNumberOfConnections);
@@ -39,7 +39,7 @@ void ServerConnectionManager::allowAnotherConnection(ServerConnectionManager::Al
     }
 }
 
-TcpServer* ServerConnectionManager::getTcpServerPtr()
+TcpServer* ServerConnectionManager::get_tcp_server_ptr()
 {
     return m_parent_server_ptr;
 }
@@ -48,11 +48,11 @@ TcpServer* ServerConnectionManager::getTcpServerPtr()
  * This method is ALWAYS called from the server strand so do not have to post
  * it on that strand.
  */
-void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connHandler)
+void ServerConnectionManager::register_connection_handler(ConnectionHandler* connHandler)
 {
     TROG_DEBUG("");
-    TROG_TRACE3("registerConnectionHandler num connections: ", m_connections.size());
-    long fd = connHandler->nativeSocketFD();
+    TROG_TRACE3("register_connection_handler num connections: ", m_connections.size());
+    long fd = connHandler->native_socket_fd();
     assert(m_fd_list.find(fd) == m_fd_list.end());
     assert(m_connections.find(connHandler) == m_connections.end()); // assert not already there
     assert(verify());
@@ -67,7 +67,7 @@ void ServerConnectionManager::registerConnectionHandler(ConnectionHandler* connH
  */
 void ServerConnectionManager::deregister(ConnectionHandler* ch)
 {
-    TROG_TRACE3("deregister nativeSocket:: ", ch->nativeSocketFD());
+    TROG_TRACE3("deregister nativeSocket:: ", ch->native_socket_fd());
     TROG_TRACE3("deregister num connections:: ", m_connections.size());
     p_deregister(ch);
     // TROG_TRACE3(" num conn: ", m_connection_count, " used FDS: ", getdtablesize());
@@ -79,11 +79,11 @@ void ServerConnectionManager::deregister(ConnectionHandler* ch)
 void ServerConnectionManager::p_deregister(ConnectionHandler* ch)
 {
     TROG_DEBUG("");
-//    std::cout << "_deregister: fd " << ch->nativeSocketFD() << " " << std::hex << ch << std::endl;
+//    std::cout << "_deregister: fd " << ch->native_socket_fd() << " " << std::hex << ch << std::endl;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
-    long fd = ch->nativeSocketFD();
+    long fd = ch->native_socket_fd();
     auto fd1 = m_fd_list.find(fd);
     auto fd2 = m_fd_list.end();
 #pragma clang diagnostic pop

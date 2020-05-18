@@ -55,7 +55,7 @@ MessageBaseSPtr ChunkedError::makeRequest()
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
-    // msg->setContent(bdy);
+    // msg->set_body(bdy);
     m_request_sptr = msg;
     return msg;
 }

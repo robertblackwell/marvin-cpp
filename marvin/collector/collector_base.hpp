@@ -47,7 +47,7 @@ class CollectorBase: public ICollector
         ** strand. Even if this method does IO-wait operations the other thread will
         ** keep going
         **/
-        void postedCollect(
+        void posted_collect(
             std::string scheme,
             std::string host,
             MessageReaderSPtr req,

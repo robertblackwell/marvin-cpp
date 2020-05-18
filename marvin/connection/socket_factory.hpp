@@ -23,13 +23,13 @@ using system::error_code;
 * for priming the connection for https operation. The is once I decide how to provide certificate store
 * or server identity capability.
 */
-ISocketSPtr socketFactory(
+ISocketSPtr socket_factory(
             ::boost::asio::io_service& io_service,
             const std::string scheme,
             const std::string server,
             const std::string port
 );
 
-ISocketSPtr socketFactory(boost::asio::io_service& io_service);
+ISocketSPtr socket_factory(boost::asio::io_service& io_service);
 } // namespace
 #endif

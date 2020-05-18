@@ -81,27 +81,27 @@ void MitmApp::handle(
     m_uuid_str = boost::uuids::to_string(m_uuid);
     m_done_callback = done;
     // Adapterequest(m_socket_sptr, m_wrtr, m_rdr);
-    handleRequest();
+    handle_request();
 }
 void MitmApp::p_on_completed()
 {
     m_io.post(m_done_callback);
 }
 
-void MitmApp::handleRequest()
+void MitmApp::handle_request()
 {
     p_read_first_message();
 }
 void MitmApp::p_read_first_message()
 {
-    m_rdr->readMessage([this](Marvin::ErrorType err) 
-    {
-        if (err) {
-            p_on_downstream_read_error(err);
-        } else {
-            p_on_first_message();
-        }
-    });
+    m_rdr->async_read_message([this](Marvin::ErrorType err)
+                              {
+                                  if (err) {
+                                      p_on_downstream_read_error(err);
+                                  } else {
+                                      p_on_first_message();
+                                  }
+                              });
 }
 
 void MitmApp::p_on_first_message()
@@ -118,7 +118,7 @@ void MitmApp::p_on_first_message()
     HttpMethod method = m_rdr->method();
     auto sss = traceMessage(*m_rdr);
     // important logging point - if it breaks later in processing we need to be able to find out what was requested
-    TROG_TRACE3("UUID: ", m_uuid_str, "FD: ", m_socket_sptr->nativeSocketFD(), "HDRS: ", traceMessage(*m_rdr) );
+    TROG_TRACE3("UUID: ", m_uuid_str, "FD: ", m_socket_sptr->native_socket_fd(), "HDRS: ", traceMessage(*m_rdr) );
 
     if (method == HttpMethod::CONNECT) {
 
@@ -180,7 +180,7 @@ void MitmApp::p_on_tunnel_completed()
 }
 void MitmApp::p_connection_end()
 {
-    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD());
+    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->native_socket_fd());
     p_on_completed(); // comes from the adapter
 }
 
@@ -211,7 +211,7 @@ void MitmApp::p_on_tunnel_error(Marvin::ErrorType& err)
 }
 void MitmApp::p_log_error(std::string label, Marvin::ErrorType err)
 {
-    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->nativeSocketFD());
+    TROG_TRACE3("UUID: ", m_uuid, "FD: ", m_socket_sptr->native_socket_fd());
 }
 /**
  * Determine what to do about a CONNECT request. 

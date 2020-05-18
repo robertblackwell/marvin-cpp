@@ -4,7 +4,7 @@
 #include <marvin/client/request.hpp>
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
-#include <marvin/connection/socket_factory.hpp>         // for socketFactory
+#include <marvin/connection/socket_factory.hpp>         // for socket_factory
 #include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
@@ -27,7 +27,7 @@ using ::boost::asio::io_service;
 using ::boost::asio::streambuf;
 
 //--------------------------------------------------------------------------------
-// asyncWriteHeaders
+// async_write_headers
 //
 //--------------------------------------------------------------------------------
 void Request::asyncWriteHeaders(WriteHeadersCallbackType cb)
@@ -38,7 +38,7 @@ void Request::asyncWriteHeaders(WriteHeadersCallbackType cb)
     // p_add_chunked_encoding_header();
     // p_prep_write_complete_headers();
     // p_check_connected_before_write_headers(cb);
-    // m_wrtr->asyncWriteHeaders(m_current_request, [this, cb](Marvin::ErrorType err){
+    // m_wrtr->async_write_headers(m_current_request, [this, cb](Marvin::ErrorType err){
     //     m_headers_written = true;
     //     cb(err);
     // });
@@ -74,7 +74,8 @@ void Request::p_internal_write_headers(WriteHeadersCallbackType write_headers_cb
     p_prep_write_complete_headers();
     p_check_connected_before_write_headers(write_headers_cb);
 
-    m_wrtr->asyncWriteHeaders(m_current_request, [this, write_headers_cb](Marvin::ErrorType err){
+    m_wrtr->async_write_headers(m_current_request, [this, write_headers_cb](Marvin::ErrorType err)
+    {
         m_headers_written = true;
         write_headers_cb(err);
     });
@@ -85,7 +86,8 @@ void Request::asyncWriteTrailers(WriteHeadersCallbackType cb)
     p_assert_not_trailers_written();
     p_assert_trailers_permitted();
     // trailers only permitted when in chunked mode and headers had a TE
-    m_wrtr->asyncWriteTrailers(m_current_request, [this, cb](Marvin::ErrorType err){
+    m_wrtr->async_write_trailers(m_current_request, [this, cb](Marvin::ErrorType err)
+    {
         m_trailers_written = true;
         cb(err);
     });

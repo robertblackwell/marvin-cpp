@@ -94,42 +94,42 @@ TEST_CASE("headers_add_remove")
 {
     HeadersV2 headers;
     CHECK(headers.size() == 0);
-    headers.setAtKey("Connection", "keep-alive");
+    headers.set_at_key("Connection", "keep-alive");
     CHECK(headers.size() == 1);
-    CHECK( ( !!headers.atKey(HeadersV2::Connection )) );
-    CHECK( ( !!headers.atKey("Connection")) );
-    CHECK( ( !!headers.atKey("conNecTion")) );
-    CHECK( ( !!headers.atKey("CONNECTION")) );
-    CHECK(headers.atKey("Connection").get() == "keep-alive");
-    CHECK(headers.findAtIndex("Connection").get() == 0);
+    CHECK( ( !!headers.at_key(HeadersV2::Connection )) );
+    CHECK( ( !!headers.at_key("Connection")) );
+    CHECK( ( !!headers.at_key("conNecTion")) );
+    CHECK( ( !!headers.at_key("CONNECTION")) );
+    CHECK(headers.at_key("Connection").get() == "keep-alive");
+    CHECK(headers.find_at_index("Connection").get() == 0);
     auto it1 = headers.find("connection");
     auto it2 = headers.end();
     CHECK( !(headers.find("connection") == headers.end()) );
 
-    headers.setAtKey("Content-Length", "33");
+    headers.set_at_key("Content-Length", "33");
     CHECK(headers.size() == 2);
-    CHECK( ( !!headers.atKey(HeadersV2::ContentLength )) );
-    CHECK( ( !!headers.atKey("Content-length")) );
-    CHECK(headers.findAtIndex("content-length").get() == 1);
+    CHECK( ( !!headers.at_key(HeadersV2::ContentLength )) );
+    CHECK( ( !!headers.at_key("Content-length")) );
+    CHECK(headers.find_at_index("content-length").get() == 1);
     CHECK( !!(headers.find("content-length") != headers.end()) );
 
-    CHECK( (! headers.atKey("some-other-key")) );
-    CHECK( (! headers.findAtIndex("someother-keyvalue")) );
+    CHECK( (! headers.at_key("some-other-key")) );
+    CHECK( (!headers.find_at_index("someother-keyvalue")) );
     CHECK( (headers.find("someother-key") == headers.end()) );
-    
-    headers.removeAtKey("connection");
+
+    headers.remove_at_key("connection");
     CHECK(headers.size() == 1);
-    CHECK( ( !headers.atKey("CONNECTION")) );
-    CHECK( ( !headers.findAtIndex("CONNECTION")) );
+    CHECK( ( !headers.at_key("CONNECTION")) );
+    CHECK( ( !headers.find_at_index("CONNECTION")) );
     CHECK( (headers.find("connection") == headers.end()) );
-    CHECK( ( !!headers.atKey("COntent-length")) );
-    CHECK( ( !!headers.findAtIndex("COntent-length")) );
+    CHECK( ( !!headers.at_key("COntent-length")) );
+    CHECK( ( !!headers.find_at_index("COntent-length")) );
     CHECK( !!(headers.find("content-length") != headers.end()) );
 
-    headers.removeAtKey("content-length");
+    headers.remove_at_key("content-length");
     CHECK(headers.size() == 0);
-    CHECK( ( !headers.atKey("COntent-length")) );
-    CHECK( ( !headers.findAtIndex("COntent-length")) );
+    CHECK( ( !headers.at_key("COntent-length")) );
+    CHECK( ( !headers.find_at_index("COntent-length")) );
     CHECK( !!(headers.find("content-length") == headers.end()) );
 
 }
@@ -164,11 +164,11 @@ TEST_CASE("headers_same")
         {"ccc", "CCCCCC"},
     }};
 
-    CHECK(h1.sameValues(h1_dup));
-    CHECK(h1.sameValues(h1_reversed));
+    CHECK(h1.same_values(h1_dup));
+    CHECK(h1.same_values(h1_reversed));
 
-    CHECK(h1.sameOrderAndValues(h1_dup));
-    CHECK( ! h1.sameOrderAndValues(h1_reversed));
+    CHECK(h1.same_order_and_values(h1_dup));
+    CHECK( !h1.same_order_and_values(h1_reversed));
 }
 
 TEST_CASE("header_iskeep_alive")
@@ -286,8 +286,8 @@ TEST_CASE("copy constructor test")
     }};
     HeadersV2 h2{h1};
     std::string bb = "bb";
-    bool x = !!h2.atKey(bb);
-    bool y = !!h1.atKey(bb);
+    bool x = !!h2.at_key(bb);
+    bool y = !!h1.at_key(bb);
     CHECK(x);
     CHECK(y);
     CHECK((h1.size() == h2.size()));
@@ -295,8 +295,8 @@ TEST_CASE("copy constructor test")
     h3 = h1;
     std::string ccc = "ccc";
     CHECK((h3.size() == h1.size()));
-    CHECK(!!h1.atKey(ccc));
-    CHECK(!!h3.atKey(ccc));
+    CHECK(!!h1.at_key(ccc));
+    CHECK(!!h3.at_key(ccc));
 }
 TEST_CASE("move test")
 {
@@ -312,8 +312,8 @@ TEST_CASE("move test")
     std::size_t h1_initial_size = h1.size();
     HeadersV2 h2{std::move(h1)};
     std::string bb = "bb";
-    bool x = !!h2.atKey(bb);
-    bool y = !!h1.atKey(bb);
+    bool x = !!h2.at_key(bb);
+    bool y = !!h1.at_key(bb);
 
     CHECK(x);
     CHECK(!y);
@@ -322,11 +322,11 @@ TEST_CASE("move test")
     HeadersV2 h3{};
     h3 = std::move(h2);
     std::string ccc = "ccc";
-    CHECK(!h1.atKey(ccc));
-    CHECK(!h2.atKey(ccc));
+    CHECK(!h1.at_key(ccc));
+    CHECK(!h2.at_key(ccc));
     CHECK((h2.size() == 0));
     CHECK((h3.size() == h1_initial_size));
-    CHECK(!!h3.atKey(ccc));
+    CHECK(!!h3.at_key(ccc));
 }
 TEST_CASE("field efficient copy")
 {

@@ -35,10 +35,10 @@ public:
     MessageReader(ISocketSPtr readSock);
     ~MessageReader();
 
-    void readMessage(ReadMessageCallback cb);
+    void async_read_message(ReadMessageCallback cb);
 
-    void readHeaders(std::function<void(Marvin::ErrorType err)> cb);
-    void readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)> bodyCb);
+    void asyn_read_headers(std::function<void(Marvin::ErrorType err)> cb);
+    void async_read_body(std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)> bodyCb);
 
 protected:
 

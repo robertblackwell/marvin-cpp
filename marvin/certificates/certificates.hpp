@@ -56,9 +56,9 @@ public:
 	Certificates(boost::filesystem::path marvin_home);
 	~Certificates();
 	
-	X509_STORE* getX509StorePtr();
+	X509_STORE* get_X509_STORE_ptr();
 
-	Cert::Identity buildServerMitmCertificate(std::string host, Cert::Certificate original_cert);
+	Cert::Identity build_server_mitm_certificate(std::string host, Cert::Certificate original_cert);
 
 private:
 	X509_STORE*                     m_X509_store_ptr;

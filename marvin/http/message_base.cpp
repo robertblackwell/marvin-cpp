@@ -222,7 +222,7 @@ HttpMethod MessageBase::method()
     HttpMethod tmp = (HttpMethod) m_method;
     return tmp;
 }
-std::string MessageBase::method_string() {return httpMethodString(m_method);}
+std::string MessageBase::method_string() {return http_method_string(m_method);}
 
 std::string MessageBase::target(){return m_target;}
 void MessageBase::target(std::string target){m_target = target;}
@@ -238,16 +238,16 @@ void MessageBase::header(std::string key, std::string value)
 {
     std::string v(value);
     std::string v2 = boost::algorithm::trim_copy(v);
-    m_headers.setAtKey(key, v2);
+    m_headers.set_at_key(key, v2);
 }
 void MessageBase::header(std::string* k, std::string* v)
 {
-    m_headers.setAtKey(k, v);
+    m_headers.set_at_key(k, v);
 }
 boost::optional<std::string>
 MessageBase::header(std::string key) 
 {
-    boost::optional<std::string> res{m_headers.atKey(key)};
+    boost::optional<std::string> res{m_headers.at_key(key)};
     return res;
 }
 
@@ -256,22 +256,22 @@ void MessageBase::trailer(std::string key, std::string value)
 {
     std::string v(value);
     std::string v2 = boost::algorithm::trim_copy(v);
-    m_headers.setAtKey(key, v2);
+    m_headers.set_at_key(key, v2);
 };
 boost::optional<std::string>
 MessageBase::trailer(std::string key) 
 {
-    boost::optional<std::string> res{m_headers.atKey(key)};
+    boost::optional<std::string> res{m_headers.at_key(key)};
     return res;
 }
 
 bool MessageBase::isRequest(){ return m_is_request; }
 
-void MessageBase::setIsRequest(bool flag){ m_is_request = flag;}
+void MessageBase::set_is_request(bool flag){ m_is_request = flag;}
 
 void MessageBase::remove_header( std::string keyIn)
 {
-    m_headers.removeAtKey(keyIn);
+    m_headers.remove_at_key(keyIn);
 }
 
 boost::optional<std::size_t>
@@ -300,25 +300,25 @@ ContigBuffer::SPtr MessageBase::serialize_headers()
  {
      return Marvin::serialize_headers(*this)->toString();
  }
-Marvin::BufferChain::SPtr MessageBase::getContentBuffer()
+Marvin::BufferChain::SPtr MessageBase::get_body_buffer_chain()
 {
     return m_body_chain_sptr;
 }
-void MessageBase::setContentBuffer(Marvin::BufferChain::SPtr bufSPtr)
+void MessageBase::set_body_buffer_chain(Marvin::BufferChain::SPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
 }
-Marvin::BufferChain::SPtr MessageBase::getContent()
+Marvin::BufferChain::SPtr MessageBase::get_content()
 {
     return m_body_chain_sptr;
 }
-void MessageBase::setContent(Marvin::BufferChain::SPtr bufSPtr)
+void MessageBase::set_body(Marvin::BufferChain::SPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
     remove_header(Marvin::HeadersV2::TransferEncoding);
     header(Marvin::HeadersV2::ContentLength, std::to_string(bufSPtr->size()));
 }
-void MessageBase::setContent(std::string content)
+void MessageBase::set_body(std::string content)
 {
     m_body_chain_sptr = Marvin::makeBufferChainSPtr(content);
     remove_header(Marvin::HeadersV2::TransferEncoding);

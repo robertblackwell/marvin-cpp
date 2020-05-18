@@ -53,13 +53,13 @@ class ServerConnectionManager
         * so that the ConnectionManager does not need to know how to create
         * ConnectionHandler, RequestHandler
         */
-        void allowAnotherConnection(AllowAnotherCallback cb);
+        void allow_another_connection(AllowAnotherCallback cb);
     
         /**
         ** \brief Register a connection handler in a table so that it stays around to process request/response
         ** and increments the count of connection handler active
         */
-        void registerConnectionHandler(ConnectionHandler* connHandler);
+        void register_connection_handler(ConnectionHandler* connHandler);
      
         /**
         * \brief deregister the specified connection, removes from the table and decrements
@@ -71,7 +71,7 @@ class ServerConnectionManager
         */
         void deregister(ConnectionHandler* ch);
 
-        TcpServer* getTcpServerPtr();
+        TcpServer* get_tcp_server_ptr();
 
         /**
         ** Stop all connections.

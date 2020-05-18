@@ -6,7 +6,7 @@
 #include <marvin/client/request.hpp>
 #include <cassert>                                      // for assert
 #include <istream>                                      // for string
-#include <marvin/connection/socket_factory.hpp>         // for socketFactory
+#include <marvin/connection/socket_factory.hpp>         // for socket_factory
 #include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
 #include <marvin/message/message_reader.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
@@ -59,7 +59,8 @@ void Request::p_hbc_write(BufferChain::SPtr body_chunk_chain_sptr, WriteBodyData
     p_add_chunked_encoding_header();
     p_prep_write_complete_headers();
 
-    m_wrtr->asyncWriteHeaders(m_current_request, [this, write_headers_cb](Marvin::ErrorType err){
+    m_wrtr->async_write_headers(m_current_request, [this, write_headers_cb](Marvin::ErrorType err)
+    {
         m_headers_written = true;
         write_headers_cb(err);
     });

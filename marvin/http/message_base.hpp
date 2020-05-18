@@ -76,23 +76,23 @@ public:
     
     // std::string  str();
 
-    void    setIsRequest(bool flag);
+    void    set_is_request(bool flag);
     bool    isRequest();
     
     /// \brief return the current dechunked content buffer
-    ::Marvin::BufferChain::SPtr getContentBuffer();
+    ::Marvin::BufferChain::SPtr get_body_buffer_chain();
     /// Sets the dechunked content buffer but does not set the CONTENT-LENGTH headers;
     /// this is because even for chunked incoming messages the de-chunked buffer is attached
-    void setContentBuffer(::Marvin::BufferChain::SPtr bufSPtr);
+    void set_body_buffer_chain(::Marvin::BufferChain::SPtr bufSPtr);
 
-    /// Returns the current dechunked conent buffer
-    ::Marvin::BufferChain::SPtr getContent();
+    /// Returns the current dechunked content buffer
+    ::Marvin::BufferChain::SPtr get_content();
     /// Sets the dechunked content buffer and also updates the content-length field;
     /// use this method when preparing an outgoing message
-    void setContent(::Marvin::BufferChain::SPtr bufSPtr);
+    void set_body(::Marvin::BufferChain::SPtr bufSPtr);
     /// Sets the dechunked content buffer and aslo updates the content-length field;
     /// use this method when preparing an outgoing message
-    void setContent(std::string content);
+    void set_body(std::string content);
 
     std::string to_string();
 #if 1

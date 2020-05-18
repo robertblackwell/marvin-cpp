@@ -70,7 +70,7 @@ bool checkHeaders(Marvin::Http::HeadersV2& h1, Marvin::Http::HeadersV2 h2)
         result = result && d;
         INFO("k " + k + " not in other_h");
         CHECK(d);
-        auto x = h2.atKey(k).get();
+        auto x = h2.at_key(k).get();
 //        std::cout << k << std::endl;
     }
     return result;

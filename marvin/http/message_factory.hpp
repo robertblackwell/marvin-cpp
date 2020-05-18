@@ -18,13 +18,13 @@ namespace Marvin {
 	* \ingroup http
 	* \brief construct http messages of various types.
 	*/
-    void makeRequest(MessageBase& msg, HttpMethod method, Marvin::Uri& uri);
-    void makeProxyRequest(MessageBase& msg, HttpMethod method,  Marvin::Uri& uri);
-    void makeProxyConnectRequest(MessageBase& msg, std::string server, std::string port);
+    void make_request(MessageBase& msg, HttpMethod method, Marvin::Uri& uri);
+    void make_proxy_request(MessageBase& msg, HttpMethod method, Marvin::Uri& uri);
+    void make_proxy_connect_request(MessageBase& msg, std::string server, std::string port);
 
-    void makeResponse403Forbidden(MessageBase& msg);
-    void makeResponse200OKConnected(MessageBase& msg);
-    void makeResponse502Badgateway(MessageBase& msg);
+    void make_response_403_forbidden(MessageBase& msg);
+    void make_response_200_OK_connected(MessageBase& msg);
+    void make_response_502_badgateway(MessageBase& msg);
     
 } // namespace Marvin
 #endif /* http_request_hpp */

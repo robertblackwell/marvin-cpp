@@ -171,22 +171,22 @@ void verify_result(std::vector<Marvin::MessageBase*> messages)
     CHECK(m0->version_major() == 1);
     CHECK(m0->version_minor() == 1);
     CHECK(m0->status_code() == 200);
-    CHECK(h.atKey("CONTENT-LENGTH").get() == "10");
-    CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-    CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
-    auto b0 = m0->getContentBuffer()->to_string();
-    CHECK(m0->getContent()->to_string() == "1234567890");
+    CHECK(h.at_key("CONTENT-LENGTH").get() == "10");
+    CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+    CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
+    auto b0 = m0->get_body_buffer_chain()->to_string();
+    CHECK(m0->get_content()->to_string() == "1234567890");
     Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
     Marvin::HeadersV2& h2 = m1->headers();
     REQUIRE(m1 != nullptr);
     CHECK(m1->version_major() == 1);
     CHECK(m1->version_minor() == 1);
     CHECK(m1->status_code() == 201);
-    CHECK(h2.atKey("CONTENT-LENGTH").get() == "11");
-    CHECK(h2.atKey("CONNECTION").get() == "keep-alive");
-    CHECK(h2.atKey("PROXY-CONNECTION").get() == "keep-alive");
-    auto b1 = m1->getContentBuffer()->to_string();
-    CHECK(m1->getContent()->to_string() == "ABCDEFGHIJK");
+    CHECK(h2.at_key("CONTENT-LENGTH").get() == "11");
+    CHECK(h2.at_key("CONNECTION").get() == "keep-alive");
+    CHECK(h2.at_key("PROXY-CONNECTION").get() == "keep-alive");
+    auto b1 = m1->get_body_buffer_chain()->to_string();
+    CHECK(m1->get_content()->to_string() == "ABCDEFGHIJK");
 }
 void verify_eof_test(std::vector<Marvin::MessageBase*> messages)
 {
@@ -195,10 +195,10 @@ void verify_eof_test(std::vector<Marvin::MessageBase*> messages)
     CHECK(m0->version_major() == 1);
     CHECK(m0->version_minor() == 1);
     CHECK(m0->status_code() == 200);
-    CHECK(h.atKey("CONNECTION").get() == "keep-alive");
-    CHECK(h.atKey("PROXY-CONNECTION").get() == "keep-alive");
-    auto b0 = m0->getContentBuffer()->to_string();
-    CHECK(m0->getContent()->to_string() == "1234567890");
+    CHECK(h.at_key("CONNECTION").get() == "keep-alive");
+    CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
+    auto b0 = m0->get_body_buffer_chain()->to_string();
+    CHECK(m0->get_content()->to_string() == "1234567890");
 
 }
 } // anonymous namespace
@@ -351,7 +351,7 @@ TEST_CASE("two messages")
                     case Marvin::Parser::ReturnCode::end_of_header:
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((parser_ptr->currentMessage()));
+                        messages.push_back((parser_ptr->current_message()));
                         parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
@@ -406,7 +406,7 @@ TEST_CASE("two messages")
                     case Marvin::Parser::ReturnCode::end_of_header:
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((parser_ptr->currentMessage()));
+                        messages.push_back((parser_ptr->current_message()));
                         parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
@@ -465,7 +465,7 @@ TEST_CASE("two messages")
                         headers_done = true;
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((parser_ptr->currentMessage()));
+                        messages.push_back((parser_ptr->current_message()));
                         parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
@@ -500,7 +500,7 @@ TEST_CASE("two messages")
                         headers_done = true;
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((parser_ptr->currentMessage()));
+                        messages.push_back((parser_ptr->current_message()));
                         parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
@@ -536,7 +536,7 @@ TEST_CASE("eof")
                     case Marvin::Parser::ReturnCode::end_of_header:
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
-                        messages.push_back((parser_ptr->currentMessage()));
+                        messages.push_back((parser_ptr->current_message()));
                         parser_ptr->begin(new Marvin::MessageBase());
                     break;
                 }
