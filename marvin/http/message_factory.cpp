@@ -14,7 +14,7 @@ namespace {
             msg->target(uri.absolutePath());
         else
             msg->target(uri.relativePath());
-        msg->header(HeadersV2::Host, uri.host_and_port());
+        msg->header(HeaderFields::Host, uri.host_and_port());
     }
     void applyUriProxy(MessageBaseSPtr msgSPtr, Uri& uri)
     {
@@ -30,13 +30,13 @@ namespace {
     {
         msg.method(method);
         msg.target(uri.relativePath());
-        msg.header(HeadersV2::Host, uri.host_and_port());
+        msg.header(HeaderFields::Host, uri.host_and_port());
     }
     void make_proxy_request(MessageBase& msg, HttpMethod method, Uri& uri)
     {
         msg.method(method);
         msg.target(uri.absolutePath());
-        msg.header(HeadersV2::Host, uri.host_and_port());
+        msg.header(HeaderFields::Host, uri.host_and_port());
     }
     void make_proxy_connect_request(MessageBase& msg, std::string server, std::string port)
     {
@@ -45,7 +45,7 @@ namespace {
         std::string host_port = trim_left_copy(trim_right_copy(server)) + ":" + trim_left_copy(trim_right_copy(port));
         msg.method(HttpMethod::CONNECT);
         msg.target(host_port);
-        msg.header(HeadersV2::Host, host_port);
+        msg.header(HeaderFields::Host, host_port);
         msg.set_body(std::string(""));
     }
 

@@ -13,17 +13,17 @@
 
 namespace Marvin {
 
-class HeadersV2;
+class HeaderFields;
 
 // test a string for a token 'keep-alive' case insensitive
-bool isConnectionKeepAlive(std::string value);
+bool is_connection_keep_alive(std::string value);
 // test a string for a token 'close' case insensitive
-bool isConnectionClose(std::string value);
+bool is_connection_close(std::string value);
 
 // tests whether a header structure has a connection header with a 'keep-alive' substring
-bool isConnectionKeepAlive(Marvin::HeadersV2& h);
+bool is_connection_keep_alive(Marvin::HeaderFields& h);
 // tests whether a header structure has a connection header with a 'close' substring
-bool isConnectionClose(Marvin::HeadersV2& h);
+bool is_connection_close(Marvin::HeaderFields& h);
 
 
 /**
@@ -43,13 +43,13 @@ bool isConnectionClose(Marvin::HeadersV2& h);
  * variations are considered.  
  * 
  */
-class HeadersV2
+class HeaderFields
 {
     public:
 
         /// \ingroup HttpMessage
         /// \brief  Filters a header map to remove all headers whose keys are IN the filterList
-        static void copy_except(HeadersV2& source, HeadersV2& dest, std::set<std::string> filterList);
+        static void copy_except(HeaderFields& source, HeaderFields& dest, std::set<std::string> filterList);
         
         class Exception: public std::exception
         {
@@ -85,7 +85,7 @@ class HeadersV2
         class Iterator
         {
             public:
-                explicit Iterator(HeadersV2& headers, long index = 0) : m_headers(headers), m_index(index){ }
+                explicit Iterator(HeaderFields& headers, long index = 0) : m_headers(headers), m_index(index){ }
             
                 Iterator operator++();
                 Iterator const operator++(int junk);
@@ -95,7 +95,7 @@ class HeadersV2
                 bool operator==(const Iterator& rhs);
                 bool operator!=(const Iterator& rhs);
             private:
-                HeadersV2& m_headers;
+                HeaderFields& m_headers;
                 // std::vector<std::Field<std::string, std::string>>& m_vector;
                 long     m_index;
         };
@@ -120,17 +120,17 @@ class HeadersV2
         // important connect header values
         static const std::string ConnectionClose;
         static const std::string ConnectionKeepAlive;
-        HeadersV2();
-        HeadersV2(HeadersV2& other);
-        HeadersV2(HeadersV2&& other) noexcept ;
-        HeadersV2& operator =(HeadersV2 const& other);
-        HeadersV2& operator =(HeadersV2&& other);
+        HeaderFields();
+        HeaderFields(HeaderFields& other);
+        HeaderFields(HeaderFields&& other) noexcept ;
+        HeaderFields& operator =(HeaderFields const& other);
+        HeaderFields& operator =(HeaderFields&& other);
 
         /**
-         * \brief This constructor provide a means of initializing a HeadersV2 object
+         * \brief This constructor provide a means of initializing a HeaderFields object
          * using a literal value; specifically a vector of Fields of string values.
          */
-         explicit HeadersV2(std::vector<std::pair<std::string, std::string>> initialValue);
+         explicit HeaderFields(std::vector<std::pair<std::string, std::string>> initialValue);
 
         /** Returns the number of header key-value Fields*/
         std::size_t size() const;
@@ -170,11 +170,11 @@ class HeadersV2
         Iterator begin();
         Iterator end();
         std::string str();
-        friend std::ostream &operator<< (std::ostream &os, HeadersV2 &headers);
+        friend std::ostream &operator<< (std::ostream &os, HeaderFields &headers);
 
         /// used for testing
-        bool same_values(HeadersV2& other);
-        bool same_order_and_values(HeadersV2& other);
+        bool same_values(HeaderFields& other);
+        bool same_order_and_values(HeaderFields& other);
 
     private:
         void erase_at_index(std::size_t position);

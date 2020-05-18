@@ -166,7 +166,7 @@ void verify_result(std::vector<Marvin::MessageBase*> messages)
 {
     REQUIRE(messages.size() > 0);
     Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-    Marvin::HeadersV2& h = m0->headers();
+    Marvin::HeaderFields& h = m0->headers();
     REQUIRE(m0 != nullptr);
     CHECK(m0->version_major() == 1);
     CHECK(m0->version_minor() == 1);
@@ -175,9 +175,9 @@ void verify_result(std::vector<Marvin::MessageBase*> messages)
     CHECK(h.at_key("CONNECTION").get() == "keep-alive");
     CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
     auto b0 = m0->get_body_buffer_chain()->to_string();
-    CHECK(m0->get_content()->to_string() == "1234567890");
+    CHECK(m0->get_body()->to_string() == "1234567890");
     Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
-    Marvin::HeadersV2& h2 = m1->headers();
+    Marvin::HeaderFields& h2 = m1->headers();
     REQUIRE(m1 != nullptr);
     CHECK(m1->version_major() == 1);
     CHECK(m1->version_minor() == 1);
@@ -186,19 +186,19 @@ void verify_result(std::vector<Marvin::MessageBase*> messages)
     CHECK(h2.at_key("CONNECTION").get() == "keep-alive");
     CHECK(h2.at_key("PROXY-CONNECTION").get() == "keep-alive");
     auto b1 = m1->get_body_buffer_chain()->to_string();
-    CHECK(m1->get_content()->to_string() == "ABCDEFGHIJK");
+    CHECK(m1->get_body()->to_string() == "ABCDEFGHIJK");
 }
 void verify_eof_test(std::vector<Marvin::MessageBase*> messages)
 {
     Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-    Marvin::HeadersV2& h = m0->headers();
+    Marvin::HeaderFields& h = m0->headers();
     CHECK(m0->version_major() == 1);
     CHECK(m0->version_minor() == 1);
     CHECK(m0->status_code() == 200);
     CHECK(h.at_key("CONNECTION").get() == "keep-alive");
     CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
     auto b0 = m0->get_body_buffer_chain()->to_string();
-    CHECK(m0->get_content()->to_string() == "1234567890");
+    CHECK(m0->get_body()->to_string() == "1234567890");
 
 }
 } // anonymous namespace

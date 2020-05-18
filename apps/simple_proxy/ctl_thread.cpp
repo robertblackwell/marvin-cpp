@@ -40,8 +40,8 @@ MessageBaseSPtr make_200_response(std::string body)
     msg->version(1, 1);
 
     // BufferChain::SPtr bchain_sptr = makeBufferChainSPtr(body);
-    // msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
-    msg->header(HeadersV2::ContentType, std::string("plain/text"));
+    // msg->header(HeaderFields::ContentLength, std::to_string(body.length() ));
+    msg->header(HeaderFields::ContentType, std::string("plain/text"));
     msg->set_body(body);
     return msg;
 }
@@ -54,7 +54,7 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->version(1, 1);
 
     BufferChain::SPtr bchain_sptr = makeBufferChainSPtr(body);
-    msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
+    msg->header(HeaderFields::ContentLength, std::to_string(body.length() ));
     return msg;
 }
 CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThread* ctl_thread_ptr)
@@ -163,7 +163,7 @@ void CtlApp::p_req_resp_cycle_complete()
     TROG_WARN("CtlApp::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
-    auto hopt = m_rdr->header(HeadersV2::Connection);
+    auto hopt = m_rdr->header(HeaderFields::Connection);
     if (hopt) {
         std::string conhdr = hopt.get();
         keep_alive = (conhdr == "Keep-Alive");

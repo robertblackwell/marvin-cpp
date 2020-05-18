@@ -40,17 +40,17 @@ void Chunked::verifyResponse(ErrorType& er, MessageBaseSPtr response)
     }
     CHECK(response->status_code() == 200);
     
-    bool te_check = (!!response->header(HeadersV2::TransferEncoding));
+    bool te_check = (!!response->header(HeaderFields::TransferEncoding));
     CHECK(te_check);
     if (te_check) {
-        std::string te = response->header(HeadersV2::TransferEncoding).get();
+        std::string te = response->header(HeaderFields::TransferEncoding).get();
         CHECK(te == "chunked");
     }
 
-    bool cl_check = (!!response->header(HeadersV2::ContentLength));
+    bool cl_check = (!!response->header(HeaderFields::ContentLength));
     CHECK(!cl_check);
 
-    std::string tech = response->header(HeadersV2::TransferEncoding).get();
+    std::string tech = response->header(HeaderFields::TransferEncoding).get();
     TROG_DEBUG("Body of response is : ", raw_body);
     bool test = raw_body == "abcdefghijklmnopqrstuvwxyz1234567890ABCEDFGHIJKLMNOPQRSTUVWXYZ";
     
@@ -68,16 +68,16 @@ MessageBaseSPtr Chunked::makeRequest()
     MessageBaseSPtr msg = std::make_shared<MessageBase>();
     msg->method(HTTP_POST);
     msg->target(m_path);
-    msg->header(HeadersV2::Host, m_host);
+    msg->header(HeaderFields::Host, m_host);
     msg->header("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
     msg->header(
         "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
     msg->header("Accept-Language","en");
     msg->header("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    msg->header(HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+    msg->header(HeaderFields::AcceptEncoding, "deflate, gzip, x-gzip, identity, *;q=0");
 
-    msg->header(HeadersV2::Connection,"Close");
-    msg->header(HeadersV2::ETag,"1928273tefadseercnbdh");
+    msg->header(HeaderFields::Connection, "Close");
+    msg->header(HeaderFields::ETag, "1928273tefadseercnbdh");
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // BufferChain::SPtr bdy = makeBufferChainSPtr(s);

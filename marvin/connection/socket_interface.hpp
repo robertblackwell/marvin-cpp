@@ -6,7 +6,6 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/callback_typedefs.hpp>
 #include <cert/cert_identity.hpp>
 #include <cert/cert_certificate.hpp>
 #include <marvin/error/marvin_error.hpp>
@@ -36,6 +35,11 @@ class ISocket //: public IReadSocket, public IWriteSocket
 {
     public:
     using SPtr = std::shared_ptr<ISocket>;
+    using ConstBoostErrRefHandler = std::function<void(const boost::system::error_code& err)>;
+    using ErrRefAndBytesHandler  = std::function<void(ErrorType& err, std::size_t bytes_transfered)>;
+    using ReadHandler = ErrRefAndBytesHandler ;
+    using WriteHandler = ErrRefAndBytesHandler ;
+    using ConnectHandler = std::function<void(ErrorType& err, ISocket* socket)>;
 
     enum ShutdownType {
         ShutdownSend = boost::asio::ip::tcp::socket::shutdown_send,
@@ -45,7 +49,7 @@ class ISocket //: public IReadSocket, public IWriteSocket
 
 
     virtual long native_socket_fd() = 0;
-    virtual void async_connect(ConnectCallbackType cb) = 0;
+    virtual void async_connect(ConnectHandler cb) = 0;
     virtual void async_accept(
         boost::asio::ip::tcp::acceptor& acceptor,
         std::function<void(const boost::system::error_code& err)> cb
@@ -56,23 +60,23 @@ class ISocket //: public IReadSocket, public IWriteSocket
     
     virtual Cert::Certificate get_server_certificate() =0 ;
 
-    virtual void async_read(Marvin::ContigBuffer::SPtr mb, AsyncReadCallback cb) = 0;
-    virtual void async_read(boost::asio::streambuf& buffer, AsyncReadCallback cb) = 0;
-    virtual void async_read(boost::asio::mutable_buffer buffer, AsyncReadCallback cb) = 0;
-    virtual void async_read(void* buf, std::size_t length, AsyncReadCallback cb) = 0;
+    virtual void async_read(Marvin::ContigBuffer::SPtr mb, ReadHandler cb) = 0;
+    virtual void async_read(boost::asio::streambuf& buffer, ReadHandler cb) = 0;
+    virtual void async_read(boost::asio::mutable_buffer buffer, ReadHandler cb) = 0;
+    virtual void async_read(void* buf, std::size_t length, ReadHandler cb) = 0;
 
-    virtual void async_read(Marvin::ContigBuffer::SPtr buffer, long timeout_ms, AsyncReadCallbackType cb) = 0;
-    virtual void async_read(void* buffer, std::size_t length, long timeout_ms, AsyncReadCallbackType cb) = 0;
+    virtual void async_read(Marvin::ContigBuffer::SPtr buffer, long timeout_ms, ReadHandler cb) = 0;
+    virtual void async_read(void* buffer, std::size_t length, long timeout_ms, ReadHandler cb) = 0;
     
-    virtual void async_write(std::string& str, AsyncWriteCallbackType cb) = 0;
+    virtual void async_write(std::string& str, WriteHandler cb) = 0;
     
-    virtual void async_write(Marvin::BufferChain::SPtr chain_sptr, AsyncWriteCallback) = 0;
-    virtual void async_write(Marvin::ContigBuffer& fb, AsyncWriteCallback) = 0;
+    virtual void async_write(Marvin::BufferChain::SPtr chain_sptr, WriteHandler) = 0;
+    virtual void async_write(Marvin::ContigBuffer& fb, WriteHandler) = 0;
     
-    virtual void async_write(boost::asio::streambuf& sb, AsyncWriteCallback) = 0;
-    virtual void async_write(boost::asio::const_buffer buf, AsyncWriteCallback cb) = 0;
+    virtual void async_write(boost::asio::streambuf& sb, WriteHandler) = 0;
+    virtual void async_write(boost::asio::const_buffer buf, WriteHandler cb) = 0;
 
-    virtual void async_write(void* buffer, std::size_t buffer_length, AsyncWriteCallback) = 0;
+    virtual void async_write(void* buffer, std::size_t buffer_length, WriteHandler) = 0;
 
 
     virtual void set_read_timeout(long millisecs) = 0;

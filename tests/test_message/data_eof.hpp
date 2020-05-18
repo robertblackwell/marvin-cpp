@@ -44,12 +44,12 @@ TestCollection& test_data_eof()
             CHECK(m0->version_minor() == 1);
             CHECK(m0->status_code() == 200);
             
-            HeadersV2& h = m0->headers();
+            HeaderFields& h = m0->headers();
 
             CHECK(h.at_key("CONNECTION").get() == "keep-alive");
             CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
             auto b0 = m0->get_body_buffer_chain()->to_string();
-            CHECK(m0->get_content()->to_string() == "1234567890");
+            CHECK(m0->get_body()->to_string() == "1234567890");
 
         }
     };
@@ -73,13 +73,13 @@ TestCollection& test_data_eof()
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
                 CHECK((m1->reason() == "OK 11Reason Phrase"));
-                HeadersV2& h = m1->headers();
-                CHECK( (!!h.at_key(HeadersV2::Host)));
-                CHECK( (!!h.at_key(HeadersV2::Connection)));
-                CHECK( (!!h.at_key(HeadersV2::ProxyConnection)));
-                CHECK(h.at_key(HeadersV2::Host).get() == "ahost");
-                CHECK(h.at_key(HeadersV2::Connection).get() == "keep-alive");
-                CHECK(h.at_key(HeadersV2::ProxyConnection).get() == "keep-alive");
+                HeaderFields& h = m1->headers();
+                CHECK( (!!h.at_key(HeaderFields::Host)));
+                CHECK( (!!h.at_key(HeaderFields::Connection)));
+                CHECK( (!!h.at_key(HeaderFields::ProxyConnection)));
+                CHECK(h.at_key(HeaderFields::Host).get() == "ahost");
+                CHECK(h.at_key(HeaderFields::Connection).get() == "keep-alive");
+                CHECK(h.at_key(HeaderFields::ProxyConnection).get() == "keep-alive");
                 CHECK(m1->get_body_buffer_chain()->to_string() == "01234567890");
         }
     };
@@ -102,13 +102,13 @@ TestCollection& test_data_eof()
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
                 CHECK((m1->reason() == "OK 11Reason Phrase"));
-                HeadersV2& h = m1->headers();
-                CHECK(h.at_key(HeadersV2::Host));
-                CHECK(h.at_key(HeadersV2::Connection));
-                CHECK(h.at_key(HeadersV2::ProxyConnection));
-                CHECK(h.at_key(HeadersV2::Host).get() == "ahost");
-                CHECK(h.at_key(HeadersV2::Connection).get() == "keep-alive");
-                CHECK(h.at_key(HeadersV2::ProxyConnection).get() == "keep-alive");
+                HeaderFields& h = m1->headers();
+                CHECK(h.at_key(HeaderFields::Host));
+                CHECK(h.at_key(HeaderFields::Connection));
+                CHECK(h.at_key(HeaderFields::ProxyConnection));
+                CHECK(h.at_key(HeaderFields::Host).get() == "ahost");
+                CHECK(h.at_key(HeaderFields::Connection).get() == "keep-alive");
+                CHECK(h.at_key(HeaderFields::ProxyConnection).get() == "keep-alive");
                 CHECK(m1->get_body_buffer_chain()->to_string() == "01234567890");
         }
     };
@@ -128,17 +128,17 @@ TestCollection& test_data_eof()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            HeadersV2& h = m1->headers();
+            HeaderFields& h = m1->headers();
 
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
                 CHECK((m1->reason() == "OK 11Reason Phrase"));
-                CHECK(h.at_key(HeadersV2::Host));
-                CHECK(h.at_key(HeadersV2::Connection));
-                CHECK(h.at_key(HeadersV2::ProxyConnection));
-                CHECK(h.at_key(HeadersV2::Host).get() == "ahost");
-                CHECK(h.at_key(HeadersV2::Connection).get() == "keep-alive");
-                CHECK(h.at_key(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.at_key(HeaderFields::Host));
+                CHECK(h.at_key(HeaderFields::Connection));
+                CHECK(h.at_key(HeaderFields::ProxyConnection));
+                CHECK(h.at_key(HeaderFields::Host).get() == "ahost");
+                CHECK(h.at_key(HeaderFields::Connection).get() == "keep-alive");
+                CHECK(h.at_key(HeaderFields::ProxyConnection).get() == "keep-alive");
                 CHECK(m1->get_body_buffer_chain()->to_string() == "");
         }
     };
@@ -158,16 +158,16 @@ TestCollection& test_data_eof()
         [](std::vector<MessageBase *> messages)
         {
             MessageBase *m1 = messages[0];
-            HeadersV2& h = m1->headers();
+            HeaderFields& h = m1->headers();
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
                 CHECK((m1->reason() == "OK 11Reason Phrase"));
-                CHECK(h.at_key(HeadersV2::Host));
-                CHECK(h.at_key(HeadersV2::Connection));
-                CHECK(h.at_key(HeadersV2::ProxyConnection));
-                CHECK(h.at_key(HeadersV2::Host).get() == "ahost");
-                CHECK(h.at_key(HeadersV2::Connection).get() == "keep-alive , TE, somethingelse");
-                CHECK(h.at_key(HeadersV2::ProxyConnection).get() == "keep-alive");
+                CHECK(h.at_key(HeaderFields::Host));
+                CHECK(h.at_key(HeaderFields::Connection));
+                CHECK(h.at_key(HeaderFields::ProxyConnection));
+                CHECK(h.at_key(HeaderFields::Host).get() == "ahost");
+                CHECK(h.at_key(HeaderFields::Connection).get() == "keep-alive , TE, somethingelse");
+                CHECK(h.at_key(HeaderFields::ProxyConnection).get() == "keep-alive");
                 CHECK(m1->get_body_buffer_chain()->to_string() == "01234567890");
         }
     };

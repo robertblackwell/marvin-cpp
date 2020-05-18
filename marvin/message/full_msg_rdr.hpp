@@ -8,7 +8,6 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/connection/socket_interface.hpp>
-#include <marvin/callback_typedefs.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 
@@ -59,7 +58,7 @@ public:
             return m_header_buffer;
         } else {
             if (m_current_body_buffer_size == 0) {
-                auto clopt = partial_msg.header(HeadersV2::ContentLength);
+                auto clopt = partial_msg.header(HeaderFields::ContentLength);
                 if( clopt ) {
                     // if there is a content length header try for a buffer that
                     // size but dont make it bigger than the system r_mem_max

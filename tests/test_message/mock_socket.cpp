@@ -36,14 +36,14 @@ long MockReadSocket::get_read_timeout(){return 99;}
 void MockReadSocket::cancel(){}
 void MockReadSocket::startRead(){}
 
-void MockReadSocket::async_read(Marvin::ContigBuffer::SPtr mb, long timeout_ms, AsyncReadCallback cb)
+void MockReadSocket::async_read(Marvin::ContigBuffer::SPtr mb, long timeout_ms, ISocket::ReadHandler cb)
 {throw("read with timeout into ContigBuffer not implemented");}
-void MockReadSocket::async_read(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallback cb)
+void MockReadSocket::async_read(void* buffer, std::size_t buffer_length, long timeout_ms, ISocket::ReadHandler cb)
 {throw("read with timeout into void* buffer not implemented");}
 //
 // New buffer strategy make the upper level provide the buffer. All we do is check the size
 //
-void MockReadSocket::async_read(boost::asio::streambuf& streambuffer, AsyncReadCallback cb)
+void MockReadSocket::async_read(boost::asio::streambuf& streambuffer, ISocket::ReadHandler cb)
 {
     boost::asio::mutable_buffer mutablebuffer = streambuffer.prepare(1000);
     async_read(mutablebuffer, [&streambuffer, cb](Marvin::ErrorType err, std::size_t bytes_read)
@@ -52,7 +52,7 @@ void MockReadSocket::async_read(boost::asio::streambuf& streambuffer, AsyncReadC
         cb(err, bytes_read);
     });
 }
-void MockReadSocket::async_read(boost::asio::mutable_buffer mutablebuffer, AsyncReadCallback cb)
+void MockReadSocket::async_read(boost::asio::mutable_buffer mutablebuffer, ISocket::ReadHandler cb)
 {
     void* bptr = mutablebuffer.data();
     std::size_t len = mutablebuffer.size();
@@ -61,7 +61,7 @@ void MockReadSocket::async_read(boost::asio::mutable_buffer mutablebuffer, Async
         cb(err, bytes_read);
     });
 }
-void MockReadSocket::async_read(void* buffer, std::size_t buffer_length, AsyncReadCallback cb)
+void MockReadSocket::async_read(void* buffer, std::size_t buffer_length, ISocket::ReadHandler cb)
 {   
     TROG_DEBUG("");
     char* buf;
@@ -129,7 +129,7 @@ void MockReadSocket::async_read(void* buffer, std::size_t buffer_length, AsyncRe
         }
     } 
 }
-void MockReadSocket::async_read(Marvin::ContigBuffer::SPtr mb, AsyncReadCallback cb)
+void MockReadSocket::async_read(Marvin::ContigBuffer::SPtr mb, ISocket::ReadHandler cb)
 {
     TROG_DEBUG("");
     char* buf;
@@ -198,14 +198,14 @@ void MockReadSocket::async_read(Marvin::ContigBuffer::SPtr mb, AsyncReadCallback
 
     }
 }
-void MockReadSocket::async_write(std::string& str, Marvin::AsyncWriteCallbackType cb){ assert(false);}
+void MockReadSocket::async_write(std::string& str, Marvin::ISocket::WriteHandler cb){ assert(false);}
 void MockReadSocket::async_write(Marvin::ContigBuffer& fb, Marvin::AsyncWriteCallback){ assert(false);}
 void MockReadSocket::async_write(Marvin::BufferChain::SPtr chain_sptr, Marvin::AsyncWriteCallback){ assert(false);}
 void MockReadSocket::async_write(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb){ assert(false);}
 void MockReadSocket::async_write(boost::asio::streambuf& sb, Marvin::AsyncWriteCallback){ assert(false);}
 void MockReadSocket::async_write(void* buffer, std::size_t buffer_length, Marvin::AsyncWriteCallback){ assert(false);}
 
-void MockReadSocket::async_connect(Marvin::ConnectCallbackType cb){ assert(false);}
+void MockReadSocket::async_connect(ISocket::ConnectHandler cb){ assert(false);}
 void MockReadSocket::async_accept(
     boost::asio::ip::tcp::acceptor& acceptor,
     std::function<void(const boost::system::error_code& err)> cb

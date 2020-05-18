@@ -57,7 +57,7 @@ void MitmHttp::p_initiate_upstream_roundtrip()
     p_roundtrip_upstream(m_downstream_rdr_sptr, [this](MessageBaseSPtr downMsg){
         /// get here with a message suitable for transmission to down stream client
         m_downstream_response_sptr = downMsg;
-       TROG_TRACE3("for downstream", traceMessage(*downMsg));
+       TROG_TRACE3("for downstream", trace_message(*downMsg));
         Marvin::BufferChain::SPtr responseBodySPtr = downMsg->get_body_buffer_chain();
         /// perform the MITM collection
         
@@ -102,7 +102,7 @@ void MitmHttp::p_roundtrip_upstream(
             m_mitm_app.p_on_upstream_roundtrip_error(ec);
             // TODO: how to handle error
         } else {
-           TROG_TRACE3("upstream response", traceMessage(*(upstrmRdr.get())));
+           TROG_TRACE3("upstream response", trace_message(*(upstrmRdr.get())));
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             m_upstream_response_body_sptr = upstrmRdr->get_body_buffer_chain();
             Helpers::make_downstream_response(m_downstream_response_sptr, upstrmRdr, ec);
@@ -125,7 +125,7 @@ void MitmHttp::p_downstream_read_message()
 
 void MitmHttp::p_on_request_completed()
 {
-    if ((isConnectionKeepAlive(*m_downstream_rdr_sptr) && isConnectionKeepAlive(*m_downstream_response_sptr))) {
+    if ((is_connection_keep_alive(*m_downstream_rdr_sptr) && is_connection_keep_alive(*m_downstream_response_sptr))) {
         p_downstream_read_message();
     } else {
         m_mitm_app.p_connection_end();

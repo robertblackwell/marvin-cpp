@@ -60,14 +60,14 @@ void CollectorBase::posted_collect(
     temp << req->method_string() << " " << req->target() << " ";
     temp << "HTTP/" << req->version_major() << "." << req->version_minor() << std::endl;
     auto reqHeaders = req->headers();
-    req->dumpHeaders(temp);
+    req->dump_headers(temp);
     temp << "Body: " << std::endl << (req->get_body_buffer_chain())->to_string();
     temp << std::endl;
     temp << "RESPONSE : ========" << std::endl;
     temp << "HTTP/" << resp->version_major() << "." << resp->version_minor() << " ";
     temp << resp->status_code() << " " << resp->reason() << std::endl;
     auto respHeaders = resp->headers();
-    resp->dumpHeaders(temp);
+    resp->dump_headers(temp);
 #if 0
      if (resp->getContentBuffer() != nullptr) {
          auto s = resp->getContentBuffer()->to_string();

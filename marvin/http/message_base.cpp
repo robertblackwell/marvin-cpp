@@ -9,7 +9,7 @@
 
 namespace Marvin{
 
-std::string traceMessage(MessageBase& msg)
+std::string trace_message(MessageBase& msg)
 {
     std::stringstream ss;
     ss << std::endl << "MSG[" << std::hex << &msg << std::dec << "]: ";
@@ -88,7 +88,7 @@ void serialize_headers(MessageBase& msg, std::string& str)
     str = os.str();
 }
 
-void serialize_header_lines(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
+void serialize_header_lines(Marvin::HeaderFields& hdrs, ContigBuffer::SPtr mb)
 {
     for(auto const& h : hdrs) {
         mb->append((void*)h.key.c_str(), h.key.size());
@@ -133,13 +133,13 @@ ContigBuffer::SPtr serialize_headers(MessageBase& msg)
     return mb;
 }
 
-bool isConnectionKeepAlive(Marvin::MessageBase& msg)
+bool is_connection_keep_alive(Marvin::MessageBase& msg)
 {
-    auto hopt = msg.header(HeadersV2::Connection);
+    auto hopt = msg.header(HeaderFields::Connection);
     if (hopt) {
-        if (isConnectionKeepAlive(hopt.get())) {
+        if (is_connection_keep_alive(hopt.get())) {
             return true;
-        } else if (isConnectionClose(hopt.get())) {
+        } else if (is_connection_close(hopt.get())) {
             return false;
         }
     }
@@ -233,7 +233,7 @@ void MessageBase::version_minor(int minor){m_http_minor = minor;}
 int  MessageBase::version_major(){return m_http_major;}
 int  MessageBase::version_minor(){return m_http_minor;}
 
-HeadersV2& MessageBase::headers(){return m_headers;}
+HeaderFields& MessageBase::headers(){return m_headers;}
 void MessageBase::header(std::string key, std::string value)
 {
     std::string v(value);
@@ -251,7 +251,7 @@ MessageBase::header(std::string key)
     return res;
 }
 
-HeadersV2& MessageBase::trailers(){return m_trailers;}
+HeaderFields& MessageBase::trailers(){return m_trailers;}
 void MessageBase::trailer(std::string key, std::string value)
 {
     std::string v(value);
@@ -275,9 +275,9 @@ void MessageBase::remove_header( std::string keyIn)
 }
 
 boost::optional<std::size_t>
-MessageBase::contentLength()
+MessageBase::content_length()
 {
-    auto s = header(HeadersV2::ContentLength);
+    auto s = header(HeaderFields::ContentLength);
     if(s) {
         int v = std::atoi(s.get().c_str());
         return (std::size_t)v;
@@ -308,26 +308,26 @@ void MessageBase::set_body_buffer_chain(Marvin::BufferChain::SPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
 }
-Marvin::BufferChain::SPtr MessageBase::get_content()
+Marvin::BufferChain::SPtr MessageBase::get_body()
 {
     return m_body_chain_sptr;
 }
 void MessageBase::set_body(Marvin::BufferChain::SPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
-    remove_header(Marvin::HeadersV2::TransferEncoding);
-    header(Marvin::HeadersV2::ContentLength, std::to_string(bufSPtr->size()));
+    remove_header(Marvin::HeaderFields::TransferEncoding);
+    header(Marvin::HeaderFields::ContentLength, std::to_string(bufSPtr->size()));
 }
 void MessageBase::set_body(std::string content)
 {
     m_body_chain_sptr = Marvin::makeBufferChainSPtr(content);
-    remove_header(Marvin::HeadersV2::TransferEncoding);
-    header(Marvin::HeadersV2::ContentLength, std::to_string(m_body_chain_sptr->size()));
+    remove_header(Marvin::HeaderFields::TransferEncoding);
+    header(Marvin::HeaderFields::ContentLength, std::to_string(m_body_chain_sptr->size()));
 }
 
-void MessageBase::dumpHeaders(std::ostream& os)
+void MessageBase::dump_headers(std::ostream& os)
 {
-    HeadersV2::Iterator it = m_headers.begin();
+    HeaderFields::Iterator it = m_headers.begin();
     while(it != m_headers.end()) {
         os<<it->key <<" : "<<it->value<<std::endl;
         it++;

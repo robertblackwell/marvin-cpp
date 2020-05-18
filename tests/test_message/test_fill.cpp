@@ -59,7 +59,7 @@ void fillMsgAsResponse_01(MessageBaseSPtr msgRdr)
 {
     msgRdr->reason("OK");
     msgRdr->status_code(200);
-    msgRdr->header(HeadersV2::Connection, HeadersV2::ConnectionClose);
+    msgRdr->header(HeaderFields::Connection, HeaderFields::ConnectionClose);
     msgRdr->header("Cache-Control", " max-age=604800");
     msgRdr->header("Content-Type", " text/html");
     msgRdr->header("Date", " Sun, 24 Nov 2013 01:38:41 GMT");
@@ -85,22 +85,22 @@ void verifyResponse_01(MessageBaseSPtr msg)
     };
         REQUIRE(msg->reason() == "OK");
         REQUIRE(msg->status_code() == 200);
-        REQUIRE(msg->header(HeadersV2::Connection).get() == HeadersV2::ConnectionClose);
+        REQUIRE(msg->header(HeaderFields::Connection).get() == HeaderFields::ConnectionClose);
     auto xx = msg->header("Cache-Control").get();
         REQUIRE(msg->header("Cache-Control").get() == trim(" max-age=604800"));
         REQUIRE(msg->header("Content-Type").get() == trim(" text/html"));
         REQUIRE(msg->header("Date").get() == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
-        REQUIRE(msg->header(HeadersV2::Date).get() == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
+        REQUIRE(msg->header(HeaderFields::Date).get() == trim(" Sun, 24 Nov 2013 01:38:41 GMT"));
     /// ETag just not passed down
         REQUIRE(!msg->header("Etag"));
-        REQUIRE(!msg->header(HeadersV2::ETag));
+        REQUIRE(!msg->header(HeaderFields::ETag));
     /// proxy transforms chunked encoding to content-length style
         REQUIRE(!msg->header("Transfer-Encoding"));
-        REQUIRE(!msg->header(HeadersV2::TransferEncoding));
+        REQUIRE(!msg->header(HeaderFields::TransferEncoding));
         REQUIRE(msg->header("Content-Length"));
-        REQUIRE(msg->header(HeadersV2::ContentLength));
+        REQUIRE(msg->header(HeaderFields::ContentLength));
     /// and we force connection close
-        REQUIRE(msg->header(HeadersV2::Connection).get() == HeadersV2::ConnectionClose);
+        REQUIRE(msg->header(HeaderFields::Connection).get() == HeaderFields::ConnectionClose);
 
         REQUIRE(msg->header("Expires").get() == trim(" Sun, 01 Dec 2013 01:38:41 GMT"));
         REQUIRE(msg->header("Last-Modified").get() == trim(" Fri, 09 Aug 2013 23:54:35 GMT"));
@@ -132,17 +132,17 @@ void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
     // proxy absolute uri
     Helpers::apply_uri_proxy(msgRdr, uri);
 //    msgRdr->target("http://example.org/somepath/script.php?parm=123456#fragment");
-//    msgRdr->header(HeadersV2::Host, "example.org");
+//    msgRdr->header(HeaderFields::Host, "example.org");
     msgRdr->header("User-Agent", "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
     msgRdr->header("Accept",
                       "text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
     msgRdr->header("Accept-Language", "en");
     msgRdr->header("Accept-Charset", "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    msgRdr->header(HeadersV2::AcceptEncoding, "deflate, gzip, x-gzip, identity, *;q=0");
-    msgRdr->header(HeadersV2::Connection, "Keep-Alive, TE");
+    msgRdr->header(HeaderFields::AcceptEncoding, "deflate, gzip, x-gzip, identity, *;q=0");
+    msgRdr->header(HeaderFields::Connection, "Keep-Alive, TE");
     msgRdr->header("TE", "deflate, gzip, chunked, trailer");
-    msgRdr->header(HeadersV2::TransferEncoding, "chunked");
-    msgRdr->header(HeadersV2::ETag, "1928273tefadseercnbdh");
+    msgRdr->header(HeaderFields::TransferEncoding, "chunked");
+    msgRdr->header(HeaderFields::ETag, "1928273tefadseercnbdh");
     std::string s = "012345678956";
     Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
     msgRdr->set_body(bdy);
@@ -154,16 +154,16 @@ void verifyRequest_01(MessageBaseSPtr msgSPtr)
     /// relative url
         REQUIRE(msgSPtr->target() == "/somepath/script.php?parm=123456#fragment");
     /// host name has port
-        REQUIRE(msgSPtr->header(HeadersV2::Host).get() == "example.org:9999");
-        REQUIRE(msgSPtr->header(HeadersV2::AcceptEncoding).get() == "identity");
-        REQUIRE(msgSPtr->header(HeadersV2::Connection).get() == HeadersV2::ConnectionClose);
-        REQUIRE(msgSPtr->header(HeadersV2::TE).get() == "");
+        REQUIRE(msgSPtr->header(HeaderFields::Host).get() == "example.org:9999");
+        REQUIRE(msgSPtr->header(HeaderFields::AcceptEncoding).get() == "identity");
+        REQUIRE(msgSPtr->header(HeaderFields::Connection).get() == HeaderFields::ConnectionClose);
+        REQUIRE(msgSPtr->header(HeaderFields::TE).get() == "");
         REQUIRE(msgSPtr->header("User-Agent").get() ==
                 "Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
         REQUIRE(msgSPtr->header("Accept-Language").get() == "en");
         REQUIRE(msgSPtr->header("Accept-Charset").get() == "iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-        REQUIRE(!msgSPtr->header(HeadersV2::TransferEncoding));
-        REQUIRE(!msgSPtr->header(HeadersV2::ETag));
+        REQUIRE(!msgSPtr->header(HeaderFields::TransferEncoding));
+        REQUIRE(!msgSPtr->header(HeaderFields::ETag));
 }
 
 /// request 02 test a proxy request
@@ -178,7 +178,7 @@ void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
 void verifyRequest_02(MessageBaseSPtr msgSPtr)
 {
         REQUIRE(msgSPtr->target() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
-        REQUIRE(msgSPtr->header(HeadersV2::Host).get() == "example.org:9999");
+        REQUIRE(msgSPtr->header(HeaderFields::Host).get() == "example.org:9999");
 }
 
 /// Request 03 non proxy request
@@ -193,21 +193,21 @@ void fillMsgRequest_03(MessageBaseSPtr msgSPtr)
 void verifyRequest_03(MessageBaseSPtr msgSPtr)
 {
         REQUIRE(msgSPtr->target() == "/somepath/script.php?parm=123456#fragment");
-        REQUIRE(msgSPtr->header(HeadersV2::Host).get() == "example.org:9999");
+        REQUIRE(msgSPtr->header(HeaderFields::Host).get() == "example.org:9999");
 }
 
 /// Verify request 03 using reference not pointer
 void verifyNonPointerRequest_03(MessageBase &msg)
 {
         REQUIRE(msg.target() == "/somepath/script.php?parm=123456#fragment");
-        REQUIRE(msg.header(HeadersV2::Host).get() == "example.org:9999");
+        REQUIRE(msg.header(HeaderFields::Host).get() == "example.org:9999");
 }
 
 /// Verify request 03 using reference not pointer
 void failedNonPointerRequest_03(MessageBase &msg)
 {
         REQUIRE(msg.target() != "/somepath/script.php?parm=123456#fragment");
-        REQUIRE(!msg.header(HeadersV2::Host));
+        REQUIRE(!msg.header(HeaderFields::Host));
 }
 
 /// Fill minimum requirements for a request
@@ -217,7 +217,7 @@ void fillMsgAsRequest(MessageBaseSPtr msgRdr)
     Marvin::Uri uri("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
     Helpers::apply_uri_proxy(msgRdr, uri);
 //    Helpers::fillRequestFromUri(*msgRdr, "http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
-    msgRdr->header(HeadersV2::Connection, HeadersV2::ConnectionKeepAlive);
+    msgRdr->header(HeaderFields::Connection, HeaderFields::ConnectionKeepAlive);
     std::string s = "012345678956";
     Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
     msgRdr->set_body(bdy);
@@ -230,13 +230,13 @@ bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
         CHECK_FALSE(meth == "");
     auto uri = msgSPtr->target();
         CHECK_FALSE(uri == "");
-        CHECK(msgSPtr->header(HeadersV2::Host));
-        CHECK(msgSPtr->header(HeadersV2::Connection));
+        CHECK(msgSPtr->header(HeaderFields::Host));
+        CHECK(msgSPtr->header(HeaderFields::Connection));
     {
-        auto bb = ((msgSPtr->header(HeadersV2::ContentLength)) || (msgSPtr->header(HeadersV2::TransferEncoding)));
+        auto bb = ((msgSPtr->header(HeaderFields::ContentLength)) || (msgSPtr->header(HeaderFields::TransferEncoding)));
             CHECK(bb);
     }
-    auto hopt = msgSPtr->header(HeadersV2::ContentLength);
+    auto hopt = msgSPtr->header(HeaderFields::ContentLength);
     if ((!!hopt) && (hopt.get() != "0")) {
         int cl = std::stoi(hopt.get());
         auto contentChain = msgSPtr->get_body_buffer_chain();
@@ -310,7 +310,7 @@ TEST_CASE ("min_requirement_request_01")
     fillMsgAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
     MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
-    std::cout << traceMessage(*msgSPtr) << std::endl;
+    std::cout << trace_message(*msgSPtr) << std::endl;
     std::cout << *msgSPtr << std::endl;
 }
 
@@ -480,7 +480,7 @@ void my_memcpy_string(ContigBuffer::SPtr mb, std::string const& str)
 {
     memcpy(mb->nextAvailable(), str.c_str(), str.size()); mb->setSize(mb->size()+str.size());
 }
-void fmtHeaders2(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
+void fmtHeaders2(Marvin::HeaderFields& hdrs, ContigBuffer::SPtr mb)
 {
     static const std::string lfcr = "\r\n";
     static const std::string colon{": "};
@@ -493,7 +493,7 @@ void fmtHeaders2(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
     my_memcpy_string(mb, lfcr);
 }
 
-void fmtHeaders1(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
+void fmtHeaders1(Marvin::HeaderFields& hdrs, ContigBuffer::SPtr mb)
 {
     for(auto const& h : hdrs) {
         memcpy(mb->nextAvailable(), h.key.c_str(), h.key.size());
@@ -508,7 +508,7 @@ void fmtHeaders1(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
     memcpy(mb->nextAvailable(), (char*)"\r\n", 2); mb->setSize(mb->size() + 2);
 }
 
-void fmtHeaders3(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
+void fmtHeaders3(Marvin::HeaderFields& hdrs, ContigBuffer::SPtr mb)
 {
     for(auto const& h : hdrs) {
         mb->append((void*)h.key.c_str(), h.key.size());
@@ -522,7 +522,7 @@ void fmtMsg(Marvin::MessageBaseSPtr msg_sptr, ContigBuffer::SPtr mb)
 {
 
 }
-void fmtHeaders4(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
+void fmtHeaders4(Marvin::HeaderFields& hdrs, ContigBuffer::SPtr mb)
 {
     static const std::string lfcr = "\r\n";
     static const std::string colon{": "};

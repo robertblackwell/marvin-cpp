@@ -9,7 +9,6 @@
 #include <marvin/message/message_writer.hpp>       // for MessageWriterSPtr
 #include <memory>                                  // for shared_ptr, unique...
 #include <boost/asio/io_service.hpp>               // for io_service
-#include <marvin/callback_typedefs.hpp>            // for AsyncWriteCallback...
 #include <marvin/connection/socket_interface.hpp>  // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>           // for ErrorType
 #include <marvin/http/message_base.hpp>            // for MessageBaseSPtr
@@ -17,7 +16,6 @@
 #include <string>                                       // for to_string
 #include <boost/asio/io_service.hpp>                    // for io_service
 #include <marvin/buffer/buffer.hpp>               // for BufferChain
-#include <marvin/callback_typedefs.hpp>                 // for ErrorOnlyCall...
 #include <marvin/connection/socket_interface.hpp>       // for ISocketSPtr
 #include <marvin/error/marvin_error.hpp>                // for ErrorType
 #include <marvin/http/message_base.hpp>                 // for MessageBaseSPtr
@@ -102,6 +100,9 @@ class Client
 {
 public:
     using ResponseHandler = ResponseHandlerCallbackType;
+    using ConnectHandler = std::function<void()>;
+    using WriteHeadersHandler = MessageWriter::WriteHeadersHandler;
+    using WriteBodyDataHandler = MessageWriter::WriteBodyDataHandler;
 
 #pragma mark - constructors and destructors
     /**
@@ -200,7 +201,7 @@ public:
     *
     * Dont use this method IF there is no body data, use async_write
     */
-    void async_write_headers(Marvin::MessageBaseSPtr requestMessage, WriteHeadersCallbackType cb);
+    void async_write_headers(Marvin::MessageBaseSPtr requestMessage, WriteHeadersHandler cb);
     
     /**
     * Transmits a block of body data - the data should NOT be chunk encode
@@ -219,7 +220,7 @@ public:
     *       - the chunk encoding trailer.
     *
     */
-    void async_write_body_data(void* dataBuffer, bool last, WriteBodyDataCallbackType cb);
+    void async_write_body_data(void* dataBuffer, bool last, WriteBodyDataHandler cb);
     
     /**
     * not yet implemented
@@ -232,7 +233,7 @@ public:
     * do not inspect the trailers until this call nor does it keep a copy of the
     * original request
     */
-    void async_write_trailers(Marvin::MessageBaseSPtr requestMessage, AsyncWriteCallbackType cb);
+    void async_write_trailers(Marvin::MessageBaseSPtr requestMessage, ISocket::WriteHandler cb);
     
     /**
     * Called to signal end-of-message. This function will

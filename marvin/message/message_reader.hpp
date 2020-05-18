@@ -8,7 +8,6 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/connection/socket_interface.hpp>
-#include <marvin/callback_typedefs.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 #include <marvin/message/full_msg_rdr.hpp>
@@ -31,11 +30,14 @@ public:
 
     using ReadMessageCallback = std::function<void(Marvin::ErrorType err)>;
     using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)>;
+    using ReadMessageHandler = std::function<void(Marvin::ErrorType err)>;
+    using ReadHeadersHandler = std::function<void(Marvin::ErrorType err)>;
+    using ReadBodyHandler  = std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)>;
 
     MessageReader(ISocketSPtr readSock);
     ~MessageReader();
 
-    void async_read_message(ReadMessageCallback cb);
+    void async_read_message(ReadMessageHandler cb);
 
     void asyn_read_headers(std::function<void(Marvin::ErrorType err)> cb);
     void async_read_body(std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)> bodyCb);

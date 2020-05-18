@@ -63,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "21"
             endingLineNumber = "21"
-            landmarkName = "traceMessage(MessageBase&amp; msg)"
+            landmarkName = "trace_message(MessageBase&amp; msg)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

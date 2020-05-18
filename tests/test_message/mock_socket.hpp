@@ -46,19 +46,19 @@ public:
 
     long native_socket_fd() override;
 
-    void async_write(std::string &str, Marvin::AsyncWriteCallbackType cb) override;
+    void async_write(std::string &str, ISocket::WriteHandler cb) override;
 
-    void async_write(Marvin::ContigBuffer &fb, Marvin::AsyncWriteCallback) override;
+    void async_write(Marvin::ContigBuffer &fb, ISocket::WriteHandler cb) override;
 
-    void async_write(Marvin::BufferChain::SPtr chain_sptr, Marvin::AsyncWriteCallback) override;
+    void async_write(Marvin::BufferChain::SPtr chain_sptr, ISocket::WriteHandler cb) override;
 
-    void async_write(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb) override;
+    void async_write(boost::asio::const_buffer buf, ISocket::WriteHandler cb) override;
 
-    void async_write(boost::asio::streambuf &sb, Marvin::AsyncWriteCallback) override;
+    void async_write(boost::asio::streambuf &sb, ISocket::WriteHandler) override;
 
-    void async_write(void *buffer, std::size_t buffer_length, Marvin::AsyncWriteCallback) override;
+    void async_write(void *buffer, std::size_t buffer_length, ISocket::WriteHandler) override;
 
-    void async_connect(Marvin::ConnectCallbackType cb) override;
+    void async_connect(ISocket::ConnectHandler cb) override;
 
     void async_accept(
             boost::asio::ip::tcp::acceptor &acceptor,

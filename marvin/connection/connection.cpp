@@ -4,7 +4,6 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/callback_typedefs.hpp>
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/configure_trog.hpp>
 TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace4)
@@ -163,7 +162,7 @@ void Connection::async_accept(
     });
 }
 
-void Connection::async_connect(ConnectCallbackType cb)
+void Connection::async_connect(ConnectHandler cb)
 {
     m_connect_cb = cb; // save the connect callback
 
@@ -260,27 +259,27 @@ Cert::Certificate Connection::get_server_certificate()
 */
 
 /** not implemented*/
-void Connection::async_read(boost::asio::streambuf& streambuffer, AsyncReadCallbackType cb)
+void Connection::async_read(boost::asio::streambuf& streambuffer, ReadHandler cb)
 {
     MARVIN_THROW("not implemented yet");
 }
 /** read some into a Marvin ContigBuffer  and update the size property*/
-void Connection::async_read(Marvin::ContigBuffer::SPtr buffer, AsyncReadCallbackType cb)
+void Connection::async_read(Marvin::ContigBuffer::SPtr buffer, ReadHandler cb)
 {
     async_read(buffer, m_read_timeout_interval_ms, cb);
 }
 /** read some into a boost::asio::mutable buffer*/
-void Connection::async_read(boost::asio::mutable_buffer buffer, AsyncReadCallbackType cb)
+void Connection::async_read(boost::asio::mutable_buffer buffer, ReadHandler cb)
 {
     async_read(buffer.data(), buffer.size(), cb);
 }
 /** read some into a buffer .egnth pair */
-void Connection::async_read(void* buffer, std::size_t length, AsyncReadCallbackType cb)
+void Connection::async_read(void* buffer, std::size_t length, ReadHandler cb)
 {
     async_read(buffer, length, m_read_timeout_interval_ms, cb);
 }
 /** read some with explicit timeout into a Marvin ContigBuffer and update its size property*/
-void Connection::async_read(Marvin::ContigBuffer::SPtr mbuffer, long timeout_ms, AsyncReadCallbackType cb)
+void Connection::async_read(Marvin::ContigBuffer::SPtr mbuffer, long timeout_ms, ReadHandler cb)
 {
     async_read(mbuffer->data(), mbuffer->capacity(), timeout_ms, 
     [this, mbuffer, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered)
@@ -291,7 +290,7 @@ void Connection::async_read(Marvin::ContigBuffer::SPtr mbuffer, long timeout_ms,
     });
 }
 /** the heavy lifting - read with explicit timeout into a pointer length pair */
-void Connection::async_read(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb)
+void Connection::async_read(void* buffer, std::size_t buffer_length, long timeout_ms, ReadHandler cb)
 {
     /// a bit of explanation -
     /// -   set a time out with a handler, the handler knows what to do, in this case cancel outstanding
@@ -340,7 +339,7 @@ void Connection::async_write(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWrit
     }
 }
 
-void Connection::async_write(Marvin::ContigBuffer& buffer, AsyncWriteCallbackType cb)
+void Connection::async_write(Marvin::ContigBuffer& buffer, WriteHandler cb)
 {
     p_async_write((void*)buffer.data(), buffer.size(), cb);
 }
@@ -581,7 +580,7 @@ void Connection::p_post_accept_cb(std::function<void(boost::system::error_code& 
     cb(err);
     #endif
 }
-void Connection::p_post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ISocket* conn)
+void Connection::p_post_connect_cb(ConnectHandler cb, Marvin::ErrorType err, ISocket* conn)
 {
     ISocket* tmp = (err) ? nullptr : this;
     #if USE_POST
@@ -591,7 +590,7 @@ void Connection::p_post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType er
     m_connect_cb(err, tmp);
     #endif
 }
-void Connection::p_post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered)
+void Connection::p_post_read_cb(ReadHandler cb, Marvin::ErrorType err, std::size_t bytes_transfered)
 {
     #if USE_POST
     auto c = std::bind(cb, err, bytes_transfered);
@@ -600,7 +599,7 @@ void Connection::p_post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err,
     cb(err, bytes_transfered);
     #endif
 }
-void Connection::p_post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType err, std::size_t  bytes_transfered)
+void Connection::p_post_write_cb(WriteHandler cb, Marvin::ErrorType err, std::size_t  bytes_transfered)
 {
     #if USE_POST
     auto c = std::bind(cb, err, bytes_transfered);

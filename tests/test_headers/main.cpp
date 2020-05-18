@@ -36,7 +36,7 @@ using namespace Marvin;
 // std::regex r_keep_alive(R"(\s*,\s*|\s*;\s*|\s*)keep-malive(\s*,\s*|\s*;\s*|\s*))", std::regex::icase);
 void testHeaderKeepAlive(std::string test_value, bool expected)
 {
-    HeadersV2 h1_1{{
+    HeaderFields h1_1{{
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
         {"11","1111111"},
@@ -45,11 +45,11 @@ void testHeaderKeepAlive(std::string test_value, bool expected)
         {"11","1111111"},
         {"22","2222222"}
     }};
-    CHECK( (expected == isConnectionKeepAlive(h1_1)));
+    CHECK( (expected == is_connection_keep_alive(h1_1)));
 }
 void testHeaderConnectionClose(std::string test_value, bool expected)
 {
-    HeadersV2 h1_1{{
+    HeaderFields h1_1{{
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
         {"11","1111111"},
@@ -58,7 +58,7 @@ void testHeaderConnectionClose(std::string test_value, bool expected)
         {"11","1111111"},
         {"22","2222222"}
     }};
-    CHECK( (expected == isConnectionClose(h1_1)));
+    CHECK( (expected == is_connection_close(h1_1)));
 }
 void testMessageConnectionKeepAlive(std::string test_value, int minor_version, bool expected)
 {
@@ -72,7 +72,7 @@ void testMessageConnectionKeepAlive(std::string test_value, int minor_version, b
     msg.header("11","1111111");
     msg.header("22","2222222");
 
-    CHECK( (expected == isConnectionKeepAlive(msg)));
+    CHECK( (expected == is_connection_keep_alive(msg)));
 }
 void testMessageConnectionClose(std::string test_value, int minor_version, bool expected)
 {
@@ -86,17 +86,17 @@ void testMessageConnectionClose(std::string test_value, int minor_version, bool 
     msg.header("11","1111111");
     msg.header("22","2222222");
 
-    CHECK( (expected != isConnectionKeepAlive(msg)));
+    CHECK( (expected != is_connection_keep_alive(msg)));
 }
 
 
 TEST_CASE("headers_add_remove")
 {
-    HeadersV2 headers;
+    HeaderFields headers;
     CHECK(headers.size() == 0);
     headers.set_at_key("Connection", "keep-alive");
     CHECK(headers.size() == 1);
-    CHECK( ( !!headers.at_key(HeadersV2::Connection )) );
+    CHECK( ( !!headers.at_key(HeaderFields::Connection )) );
     CHECK( ( !!headers.at_key("Connection")) );
     CHECK( ( !!headers.at_key("conNecTion")) );
     CHECK( ( !!headers.at_key("CONNECTION")) );
@@ -108,7 +108,7 @@ TEST_CASE("headers_add_remove")
 
     headers.set_at_key("Content-Length", "33");
     CHECK(headers.size() == 2);
-    CHECK( ( !!headers.at_key(HeadersV2::ContentLength )) );
+    CHECK( ( !!headers.at_key(HeaderFields::ContentLength )) );
     CHECK( ( !!headers.at_key("Content-length")) );
     CHECK(headers.find_at_index("content-length").get() == 1);
     CHECK( !!(headers.find("content-length") != headers.end()) );
@@ -135,7 +135,7 @@ TEST_CASE("headers_add_remove")
 }
 TEST_CASE("headers_same")
 {
-    HeadersV2 h1{{
+    HeaderFields h1{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -144,7 +144,7 @@ TEST_CASE("headers_same")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    HeadersV2 h1_dup{{
+    HeaderFields h1_dup{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -153,7 +153,7 @@ TEST_CASE("headers_same")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    HeadersV2 h1_reversed{{
+    HeaderFields h1_reversed{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"44","4444444"},
         {"33","3333333"},
@@ -173,7 +173,7 @@ TEST_CASE("headers_same")
 
 TEST_CASE("header_iskeep_alive")
 {
-    HeadersV2 h1{{
+    HeaderFields h1{{
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
         {"11","1111111"},
@@ -182,21 +182,21 @@ TEST_CASE("header_iskeep_alive")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    CHECK(isConnectionKeepAlive(std::string(" this has keep-alive embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this has Keep-alive embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this, has, Keep-Alive, embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this, has, KEEP-ALIVE, embedded")));
-    CHECK(! isConnectionKeepAlive(std::string(" this, has, Close, embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this has ,keep-alive, embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this has,Keep-alive,embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this, has, Keep-Alive , embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this, has, KEEP-ALIVE     embedded")));
-    CHECK(! isConnectionKeepAlive(std::string(" this, has, keep-aliveembedded")));
-    CHECK(! isConnectionKeepAlive(std::string(" this, haskeepalive, embedded")));
-    CHECK(isConnectionKeepAlive(std::string(" this, has, keep-alive;, embedded")));
-    CHECK(isConnectionKeepAlive(std::string("keep-alive;, embedded")));
-    CHECK(isConnectionKeepAlive(std::string("thi keep-alive")));
-    CHECK(isConnectionKeepAlive(std::string("keep-alive")));
+    CHECK(is_connection_keep_alive(std::string(" this has keep-alive embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this has Keep-alive embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this, has, Keep-Alive, embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this, has, KEEP-ALIVE, embedded")));
+    CHECK(!is_connection_keep_alive(std::string(" this, has, Close, embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this has ,keep-alive, embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this has,Keep-alive,embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this, has, Keep-Alive , embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this, has, KEEP-ALIVE     embedded")));
+    CHECK(!is_connection_keep_alive(std::string(" this, has, keep-aliveembedded")));
+    CHECK(!is_connection_keep_alive(std::string(" this, haskeepalive, embedded")));
+    CHECK(is_connection_keep_alive(std::string(" this, has, keep-alive;, embedded")));
+    CHECK(is_connection_keep_alive(std::string("keep-alive;, embedded")));
+    CHECK(is_connection_keep_alive(std::string("thi keep-alive")));
+    CHECK(is_connection_keep_alive(std::string("keep-alive")));
 
     testHeaderKeepAlive(" this has keep-alive embedded", true); 
     testHeaderKeepAlive(" this, has, Keep-Alive, embedded", true);
@@ -216,21 +216,21 @@ TEST_CASE("header_iskeep_alive")
 TEST_CASE("header_connectionclose")
 {
 
-    CHECK(isConnectionClose(std::string(" this has close embedded")));
-    CHECK(isConnectionClose(std::string(" this has close embedded")));
-    CHECK(isConnectionClose(std::string(" this, has, cloSe, embedded")));
-    CHECK(isConnectionClose(std::string(" this, has, CLOSE, embedded")));
-    CHECK(! isConnectionClose(std::string(" this, has, keep-alive, embedded")));
-    CHECK(isConnectionClose(std::string(" this has ,close, embedded")));
-    CHECK(isConnectionClose(std::string(" this has,Close,embedded")));
-    CHECK(isConnectionClose(std::string(" this, has, Close , embedded")));
-    CHECK(isConnectionClose(std::string(" this, has, CLOSE     embedded")));
-    CHECK(! isConnectionClose(std::string(" this, has, closeembedded")));
-    CHECK(! isConnectionClose(std::string(" this, hasclose, embedded")));
-    CHECK(isConnectionClose(std::string(" this, has, close;, embedded")));
-    CHECK(isConnectionClose(std::string("close;, embedded")));
-    CHECK(isConnectionClose(std::string("thi close")));
-    CHECK(isConnectionClose(std::string("close")));
+    CHECK(is_connection_close(std::string(" this has close embedded")));
+    CHECK(is_connection_close(std::string(" this has close embedded")));
+    CHECK(is_connection_close(std::string(" this, has, cloSe, embedded")));
+    CHECK(is_connection_close(std::string(" this, has, CLOSE, embedded")));
+    CHECK(!is_connection_close(std::string(" this, has, keep-alive, embedded")));
+    CHECK(is_connection_close(std::string(" this has ,close, embedded")));
+    CHECK(is_connection_close(std::string(" this has,Close,embedded")));
+    CHECK(is_connection_close(std::string(" this, has, Close , embedded")));
+    CHECK(is_connection_close(std::string(" this, has, CLOSE     embedded")));
+    CHECK(!is_connection_close(std::string(" this, has, closeembedded")));
+    CHECK(!is_connection_close(std::string(" this, hasclose, embedded")));
+    CHECK(is_connection_close(std::string(" this, has, close;, embedded")));
+    CHECK(is_connection_close(std::string("close;, embedded")));
+    CHECK(is_connection_close(std::string("thi close")));
+    CHECK(is_connection_close(std::string("close")));
 
     testHeaderConnectionClose(" this has close embedded" , true);
     testHeaderConnectionClose(" this has close embedded" , true);
@@ -275,7 +275,7 @@ TEST_CASE("message_connection_keep_alive")
 }
 TEST_CASE("copy constructor test")
 {
-    HeadersV2 h1{{
+    HeaderFields h1{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -284,14 +284,14 @@ TEST_CASE("copy constructor test")
         {"33","3333333"},
         {"44","4444444"}
     }};
-    HeadersV2 h2{h1};
+    HeaderFields h2{h1};
     std::string bb = "bb";
     bool x = !!h2.at_key(bb);
     bool y = !!h1.at_key(bb);
     CHECK(x);
     CHECK(y);
     CHECK((h1.size() == h2.size()));
-    HeadersV2 h3{};
+    HeaderFields h3{};
     h3 = h1;
     std::string ccc = "ccc";
     CHECK((h3.size() == h1.size()));
@@ -300,7 +300,7 @@ TEST_CASE("copy constructor test")
 }
 TEST_CASE("move test")
 {
-    HeadersV2 h1{{
+    HeaderFields h1{{
         {"Connection", "Keep-Alive, another1, another2"},
         {"bb","BBBBB"},
         {"ccc", "CCCCCC"},
@@ -310,7 +310,7 @@ TEST_CASE("move test")
         {"44","4444444"}
     }};
     std::size_t h1_initial_size = h1.size();
-    HeadersV2 h2{std::move(h1)};
+    HeaderFields h2{std::move(h1)};
     std::string bb = "bb";
     bool x = !!h2.at_key(bb);
     bool y = !!h1.at_key(bb);
@@ -319,7 +319,7 @@ TEST_CASE("move test")
     CHECK(!y);
     CHECK((h1.size() == 0));
     CHECK((h2.size() == h1_initial_size));
-    HeadersV2 h3{};
+    HeaderFields h3{};
     h3 = std::move(h2);
     std::string ccc = "ccc";
     CHECK(!h1.at_key(ccc));
@@ -334,10 +334,10 @@ TEST_CASE("field efficient copy")
     std::string v = "this is a long value";
     auto k_p = (void*)k.c_str();
     auto v_p = (void*)v.c_str();
-//    std::vector<Marvin::HeadersV2::Field> fields;
-//    Marvin::HeadersV2::Field f(std::move(k),std::move(v));
+//    std::vector<Marvin::HeaderFields::Field> fields;
+//    Marvin::HeaderFields::Field f(std::move(k),std::move(v));
 
-    Marvin::HeadersV2::Field f(&(k), &(v));
+    Marvin::HeaderFields::Field f(&(k), &(v));
 
     auto key_p = (void*)f.key.c_str();
     auto value_p = (void*)f.value.c_str();

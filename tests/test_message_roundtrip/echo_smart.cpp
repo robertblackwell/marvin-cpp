@@ -124,7 +124,7 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::MessageBaseSPtr re
     std::string hdrv_connection = header_values["CONNECTION"];
     std::string hdrv_xspecial = header_values["X-SPECIAL-HEADER"];
 
-    Marvin::HeadersV2 original_headers = this->m_request_sptr->headers();
+    Marvin::HeaderFields original_headers = this->m_request_sptr->headers();
 
     std::string orig_content_length = original_headers.at_key("CONTENT-LENGTH").get();
     std::string orig_accept = original_headers.at_key("ACCEPT").get();
@@ -156,16 +156,16 @@ Marvin::MessageBaseSPtr EchoSmart::makeRequest()
     Marvin::MessageBaseSPtr msg = std::make_shared<Marvin::MessageBase>();
     msg->method(m_method);
     msg->target(m_path);
-    msg->header(Marvin::HeadersV2::Host, m_host);
+    msg->header(Marvin::HeaderFields::Host, m_host);
     msg->header("User-Agent","Opera/9.80 (X11; Linux x86_64; Edition Next) Presto/2.12.378 Version/12.50");
     msg->header(
         "Accept","text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
     msg->header("Accept-Language","en");
     msg->header("Accept-Charset","iso-8859-1, utf-8, utf-16, utf-32, *;q=0.1");
-    msg->header(Marvin::HeadersV2::AcceptEncoding,"deflate, gzip, x-gzip, identity, *;q=0");
+    msg->header(Marvin::HeaderFields::AcceptEncoding, "deflate, gzip, x-gzip, identity, *;q=0");
 
-    msg->header(Marvin::HeadersV2::Connection,"Close");
-    msg->header(Marvin::HeadersV2::ETag,"1928273tefadseercnbdh");
+    msg->header(Marvin::HeaderFields::Connection, "Close");
+    msg->header(Marvin::HeaderFields::ETag, "1928273tefadseercnbdh");
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
     // Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);

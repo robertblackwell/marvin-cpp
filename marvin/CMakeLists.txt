@@ -9,7 +9,6 @@ set(EXTSRC ${MARVIN_VENDOR_SRCDIR})
 
 set(MARVIN_LIBRARY_HEADER_FILES 
 	boost_stuff.hpp 
-	callback_typedefs.hpp 
 
 	buffer/buffer.hpp
 	buffer/buffer_allocator.hpp
@@ -21,7 +20,7 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	certificates/env_utils.hpp
 
 	client/client.hpp
-	client/request.hpp 
+#	client/request.hpp
 
 	collector/collector_base.hpp
 	collector/pipe_collector.hpp
@@ -85,12 +84,12 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	certificates/env_utils.cpp
 
 	client/client.cpp  	
-	client/request.cpp 	
-	client/request_headers.cpp 			
-	client/request_msg.cpp 			
-	client/request_hbc.cpp 			
-	client/request_response.cpp 			
-	client/request_chunk.cpp 			
+#	client/request.cpp
+#	client/request_headers.cpp
+#	client/request_msg.cpp
+#	client/request_hbc.cpp
+#	client/request_response.cpp
+#	client/request_chunk.cpp
 	
 	collector/collector_base.cpp
 	collector/collector_interface.cpp

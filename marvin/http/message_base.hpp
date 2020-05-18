@@ -13,12 +13,12 @@ namespace Marvin {
 class MessageBase;
 
 using MessageBaseSPtr = std::shared_ptr<MessageBase>;
-std::string traceMessage(MessageBase& msg);
+std::string trace_message(MessageBase& msg);
 
 void serialize_headers(MessageBase& msg, std::string& string);
 void serialize_headers(MessageBase& msg, ContigBuffer::SPtr mb);
 ContigBuffer::SPtr serialize_headers(MessageBase& msg);
-bool isConnectionKeepAlive(Marvin::MessageBase& msg);
+bool is_connection_keep_alive(Marvin::MessageBase& msg);
 
 /**
 * \brief A class that can represent a http message either standalone or as a mixin for other classes; See MessageReader for an example.
@@ -56,18 +56,18 @@ public:
     int  version_minor();
     int  version_major();
 
-    HeadersV2& headers();
+    HeaderFields& headers();
     boost::optional<std::string> header(std::string key);
     void header(std::string key, std::string value);
     void header(std::string* k, std::string* v);
     void remove_header( std::string key);
-    boost::optional<std::size_t> contentLength();
+    boost::optional<std::size_t> content_length();
     
-    HeadersV2& trailers();
+    HeaderFields& trailers();
     boost::optional<std::string> trailer(std::string key);
     void trailer(std::string key, std::string value);
 
-    void dumpHeaders(std::ostream& os);
+    void dump_headers(std::ostream& os);
 
     /** serialize the message prefix = firstline + headers lines*/
     void serialize_headers(ContigBuffer::SPtr mb);
@@ -86,7 +86,7 @@ public:
     void set_body_buffer_chain(::Marvin::BufferChain::SPtr bufSPtr);
 
     /// Returns the current dechunked content buffer
-    ::Marvin::BufferChain::SPtr get_content();
+    ::Marvin::BufferChain::SPtr get_body();
     /// Sets the dechunked content buffer and also updates the content-length field;
     /// use this method when preparing an outgoing message
     void set_body(::Marvin::BufferChain::SPtr bufSPtr);
@@ -104,7 +104,7 @@ public:
     friend void serialize_headers(MessageBase& msg, ContigBuffer::SPtr mb);
     friend ContigBuffer::SPtr serialize_headers(MessageBase& msg);
 #endif
-    friend std::string traceMessage(MessageBase& msg);
+    friend std::string trace_message(MessageBase& msg);
     friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);
 
 protected:
@@ -118,9 +118,9 @@ protected:
     std::string					m_reason;
     int							m_http_major;
     int							m_http_minor;
-    Marvin::HeadersV2           m_headers;
-    Marvin::HeadersV2           m_trailers;
-    Marvin::BufferChain::SPtr     m_body_chain_sptr;
+    Marvin::HeaderFields           m_headers;
+    Marvin::HeaderFields           m_trailers;
+    Marvin::BufferChain::SPtr   m_body_chain_sptr;
     
 };
 

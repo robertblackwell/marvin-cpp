@@ -12,7 +12,6 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/callback_typedefs.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/connection/timeout.hpp>
@@ -49,10 +48,11 @@ or accept a connection (and even echange traffic) nonsecure and then
 class Connection : public ISocket
 {
     public:
-    using ConstBoostErrRefHandler = std::function<void(const boost::system::error_code& err)>;
-    using ErrRefAndBytesHandler  = std::function<void(ErrorType& err, std::size_t bytes_transfered)>;
-    using ReadHandler = ErrRefAndBytesHandler ;
-    using WriteHandler = ErrRefAndBytesHandler ;
+//    using ConstBoostErrRefHandler = std::function<void(const boost::system::error_code& err)>;
+//    using ErrRefAndBytesHandler  = std::function<void(ErrorType& err, std::size_t bytes_transfered)>;
+//    using ReadHandler = ErrRefAndBytesHandler ;
+//    using WriteHandler = ErrRefAndBytesHandler ;
+
     enum Mode {
         NOTSECURE,
         SECURE_CLIENT,
@@ -99,7 +99,7 @@ class Connection : public ISocket
     );
     
     ~Connection();
-    void async_connect(ConnectCallbackType cb) override;
+    void async_connect(ConnectHandler cb) override;
     void async_accept(boost::asio::ip::tcp::acceptor& acceptor, std::function<void(const boost::system::error_code& err)> cb) override;
     
     void become_secure_client(X509_STORE* certificate_store_ptr) override;
@@ -107,10 +107,10 @@ class Connection : public ISocket
     void async_handshake(std::function<void(const boost::system::error_code& err)> cb) override;
     Cert::Certificate get_server_certificate() override;
 
-    void async_write(std::string& str, AsyncWriteCallbackType cb) override;
+    void async_write(std::string& str, WriteHandler cb) override;
     
     void async_write(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWriteCallback cb) override;
-    void async_write(Marvin::ContigBuffer& buffer, AsyncWriteCallbackType cb) override;
+    void async_write(Marvin::ContigBuffer& buffer, WriteHandler cb) override;
     
     void async_write(boost::asio::streambuf& sb, AsyncWriteCallback) override;
     void async_write(boost::asio::const_buffer buf, AsyncWriteCallback cb) override;
@@ -118,13 +118,13 @@ class Connection : public ISocket
     void async_write(void* buffer, std::size_t buffer_length, AsyncWriteCallback cb) override;
 
     /// read with default timeout
-    void async_read(boost::asio::streambuf& streambuf,  AsyncReadCallbackType cb) override;
-    void async_read(boost::asio::mutable_buffer buffer,  AsyncReadCallbackType cb) override;
-    void async_read(void* buffer, std::size_t buffer_length,  AsyncReadCallbackType cb) override;
-    void async_read(Marvin::ContigBuffer::SPtr mb,  AsyncReadCallbackType cb) override;
+    void async_read(boost::asio::streambuf& streambuf,  ReadHandler cb) override;
+    void async_read(boost::asio::mutable_buffer buffer,  ReadHandler cb) override;
+    void async_read(void* buffer, std::size_t buffer_length,  ReadHandler cb) override;
+    void async_read(Marvin::ContigBuffer::SPtr mb,  ReadHandler cb) override;
     /// same as async_read except that can set the read timeout specifically for this read
-    void async_read(Marvin::ContigBuffer::SPtr buffer, long timeout_ms, AsyncReadCallbackType cb);
-    void async_read(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallbackType cb);
+    void async_read(Marvin::ContigBuffer::SPtr buffer, long timeout_ms, ReadHandler cb);
+    void async_read(void* buffer, std::size_t buffer_length, long timeout_ms, ReadHandler cb);
 
     void shutdown(ISocket::ShutdownType type) override;
     void cancel() override;
@@ -160,9 +160,9 @@ public:
     void completeWithSuccess();
     
     void p_post_accept_cb(std::function<void(boost::system::error_code& err)> cb, Marvin::ErrorType err);
-    void p_post_connect_cb(ConnectCallbackType  cb, Marvin::ErrorType err, ISocket* conn);
-    void p_post_read_cb(AsyncReadCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
-    void p_post_write_cb(AsyncWriteCallbackType cb, Marvin::ErrorType err, std::size_t bytes_transfered);
+    void p_post_connect_cb(ConnectHandler  cb, Marvin::ErrorType err, ISocket* conn);
+    void p_post_read_cb(ReadHandler cb, Marvin::ErrorType err, std::size_t bytes_transfered);
+    void p_post_write_cb(WriteHandler cb, Marvin::ErrorType err, std::size_t bytes_transfered);
     
     void resolveCompleteWithSuccess();
     void connectionCompleteWithSuccess();
@@ -181,7 +181,7 @@ public:
     std::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>    m_ssl_stream_sptr;
     boost::asio::ip::tcp::socket                                                m_tcp_socket;
     
-    ConnectCallbackType             m_connect_cb;
+    ConnectHandler                  m_connect_cb;
 
     X509_STORE*                     m_certificate_store_ptr;
     Cert::Identity                  m_server_identity;

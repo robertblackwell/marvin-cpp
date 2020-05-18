@@ -94,7 +94,7 @@ public:
     void http_exec(T& testcase)
     {
         MessageBaseSPtr request_sptr = testcase.makeRequest();
-        request_sptr->header(HeadersV2::Connection,"Keep-Alive");
+        request_sptr->header(HeaderFields::Connection, "Keep-Alive");
         Marvin::BufferChain::SPtr body = testcase.makeBody();
         m_host = testcase.getHost();
         m_port = testcase.getPort();
@@ -156,9 +156,9 @@ public:
         MessageBaseSPtr request_sptr = m_testcase.makeRequest();
         Marvin::BufferChain::SPtr body = m_testcase.makeBody();
         if (m_times == 1) {
-            request_sptr->header(HeadersV2::Connection,"Close");
+            request_sptr->header(HeaderFields::Connection, "Close");
         } else {
-            request_sptr->header(HeadersV2::Connection,"Keep-Alive");
+            request_sptr->header(HeaderFields::Connection, "Keep-Alive");
         }
         m_client_sptr->async_write(request_sptr, body, [this](ErrorType& err,  MessageBaseSPtr response_sptr) {
             m_testcase.verifyResponse(err, response_sptr);

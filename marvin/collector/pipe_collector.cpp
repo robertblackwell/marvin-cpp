@@ -31,7 +31,7 @@ bool bodyIsCollectable(MessageBase& msg, std::vector<std::regex>& regexs)
 {
     bool capture = false;
     std::string hv;
-    if( auto hopt = msg.header(Marvin::HeadersV2::ContentType) ){
+    if( auto hopt = msg.header(Marvin::HeaderFields::ContentType) ){
         hv = hopt.get();
         capture = headerValueMatched(hv, regexs);
     }
@@ -116,7 +116,7 @@ void PipeCollector::posted_collect(
     temp << req->method_string() << " " << req->target() << " ";
     temp << "HTTP/" << req->version_major() << "." << req->version_minor() << std::endl;
     auto reqHeaders = req->headers();
-    req->dumpHeaders(temp);
+    req->dump_headers(temp);
     if( bodyIsCollectable(*req, regexs) ){
         temp << (req->get_body_buffer_chain())->to_string();
     }
@@ -125,7 +125,7 @@ void PipeCollector::posted_collect(
     temp << "HTTP/" << resp->version_major() << "." << resp->version_minor() << " ";
     temp << resp->status_code() << " " << resp->reason() << std::endl;
     auto respHeaders = resp->headers();
-    resp->dumpHeaders(temp);
+    resp->dump_headers(temp);
     if( bodyIsCollectable(*resp, regexs) ){
         if (resp->get_body_buffer_chain() != nullptr) {
             auto s = resp->get_body_buffer_chain()->to_string();

@@ -46,7 +46,7 @@ TestCollection& test_data_two_message()
         {
             REQUIRE(messages.size() > 0);
             Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-            HeadersV2& h = m0->headers();
+            HeaderFields& h = m0->headers();
 
             REQUIRE(m0 != nullptr);
             CHECK(m0->version_major() == 1);
@@ -56,7 +56,7 @@ TestCollection& test_data_two_message()
             CHECK(h.at_key("CONNECTION").get() == "keep-alive");
             CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
             auto b0 = m0->get_body_buffer_chain()->to_string();
-            CHECK(m0->get_content()->to_string() == "1234567890");
+            CHECK(m0->get_body()->to_string() == "1234567890");
 
             Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
             REQUIRE(m1 != nullptr);
@@ -69,7 +69,7 @@ TestCollection& test_data_two_message()
             CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
 
             auto b1 = m1->get_body_buffer_chain()->to_string();
-            CHECK(m1->get_content()->to_string() == "ABCDEFGHIJK");
+            CHECK(m1->get_body()->to_string() == "ABCDEFGHIJK");
         }
     };
     ptc["simple_data_set"] = TestSet{
@@ -84,7 +84,7 @@ TestCollection& test_data_two_message()
         [](std::vector<Marvin::MessageBase*> messages)
         {
             Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-            HeadersV2& h = msg_p->headers();
+            HeaderFields& h = msg_p->headers();
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
             CHECK(msg_p->method_string() == "GET");
@@ -92,7 +92,7 @@ TestCollection& test_data_two_message()
             CHECK(h.at_key("CONNECTION").get() == "keep-alive");
             CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
             auto b = msg_p->get_body_buffer_chain()->to_string();
-            CHECK(msg_p->get_content()->to_string() == "9123456789");
+            CHECK(msg_p->get_body()->to_string() == "9123456789");
         }
     };
     
@@ -125,7 +125,7 @@ TestCollection& test_data_two_message()
         [](std::vector<Marvin::MessageBase*> messages)
         {
             Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-            HeadersV2& h = msg_p->headers();
+            HeaderFields& h = msg_p->headers();
 
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
@@ -135,7 +135,7 @@ TestCollection& test_data_two_message()
             CHECK(h.at_key("CONNECTION").get() == "keep-alive");
             CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
             auto b = msg_p->get_body_buffer_chain()->to_string();
-            CHECK(msg_p->get_content()->to_string() ==
+            CHECK(msg_p->get_body()->to_string() ==
                   (
                 std::string("1234567890") +
                 std::string("1234567890") +
@@ -180,7 +180,7 @@ TestCollection& test_data_two_message()
         [](std::vector<Marvin::MessageBase*> messages)
         {
             Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-            HeadersV2& h = msg_p->headers();
+            HeaderFields& h = msg_p->headers();
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
             CHECK(msg_p->status_code() == 201);
@@ -189,7 +189,7 @@ TestCollection& test_data_two_message()
             CHECK(h.at_key("CONNECTION").get() == "keep-alive");
             CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
             auto b = msg_p->get_body_buffer_chain()->to_string();
-            CHECK(msg_p->get_content()->to_string() ==
+            CHECK(msg_p->get_body()->to_string() ==
                   (
                 std::string("1234567890") +
                 std::string("1234567890") +
@@ -234,7 +234,7 @@ TestCollection& test_data_two_message()
         [](std::vector<Marvin::MessageBase*> messages)
         {
             Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
-            HeadersV2& h = msg_p->headers();
+            HeaderFields& h = msg_p->headers();
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
             CHECK(msg_p->status_code() == 201);
@@ -243,7 +243,7 @@ TestCollection& test_data_two_message()
             CHECK(h.at_key("CONNECTION").get() == "keep-alive");
             CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
             auto b = msg_p->get_body_buffer_chain()->to_string();
-            CHECK(msg_p->get_content()->to_string() ==
+            CHECK(msg_p->get_body()->to_string() ==
                   (
                 std::string("1234567890") +
                 std::string("1234567890") +
