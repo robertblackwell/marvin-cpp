@@ -55,6 +55,9 @@ class  Parser
 public:
 
     using SPtr = std::shared_ptr<Parser>;
+    // buffer strategy
+    using BodyBufferStrategy = BodyAllocator;
+    static std::size_t const HEADER_RESERVE_SIZE = 200;
     Parser();
     ~Parser();
     
@@ -213,9 +216,11 @@ protected:
     /*
      * These are required to run the parser
      */
-    http_parser*            m_http_parser_ptr;
-    http_parser_settings*   m_http_parser_settings_ptr;
-    MessageBase*            m_current_message_ptr;
+    http_parser*             m_http_parser_ptr;
+    http_parser_settings*    m_http_parser_settings_ptr;
+    MessageBase*             m_current_message_ptr;
+    BodyBufferStrategy       m_buffer_strategy;
+    ContigBufferFactoryT     m_factory;
     
     ///////////////////////////////////////////////////////////////////////////////////
     //

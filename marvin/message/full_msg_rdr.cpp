@@ -11,7 +11,7 @@
 #include <marvin/connection/socket_interface.hpp>
 
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+TROG_SET_FILE_LEVEL(Trog::LogLevelDebug|Trog::LogLevelTrace4|Trog::LogLevelTrace3)
 
 namespace Marvin {
 
@@ -67,9 +67,10 @@ void FullMessageReader::p_read_some()
      */
     std::size_t buf_size = recommended_buffer_size(*m_current_message_ptr, m_parser);
     auto mutablebuffer = m_streambuffer.prepare(buf_size);
-    m_read_sock_sptr->asyncRead(mutablebuffer, [this](Marvin::ErrorType& err, std::size_t bytes_transfered)
+    m_read_sock_sptr->asyncRead(mutablebuffer, [buf_size, this](Marvin::ErrorType& err, std::size_t bytes_transfered)
     {
         // TODO - do I need to call streambuffer.commmit()
+        TROG_TRACE4("bytes read : ", bytes_transfered, " buf_size: ", buf_size)
         if (err) {
             TROG_DEBUG(err.message());
             // need to check for end of file - any error an zero bytes

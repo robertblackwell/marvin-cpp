@@ -20,6 +20,7 @@ class HalfTunnel;
 */
 class HalfTunnel
 {
+    using BufferStrategy = TunnelAllocator;
     public:
         HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd, long firstReadTimeoutMillisecs, long subsequentReadTimeoutMillisecs);
         void start(std::function<void(Marvin::ErrorType& err)> cb);
@@ -28,10 +29,12 @@ class HalfTunnel
         void p_handle_read(Marvin::ErrorType& err, std::size_t bytes_transfered);
         void p_handle_write(Marvin::ErrorType& err, std::size_t bytes_transfered);
     
-        long            m_first_read_timeout_millisecs;
-        long            m_subsequent_read_timeout_millisecs;
-        ISocketSPtr     m_read_end;
-        ISocketSPtr     m_write_end;
+        long                    m_first_read_timeout_millisecs;
+        long                    m_subsequent_read_timeout_millisecs;
+        ISocketSPtr             m_read_end;
+        ISocketSPtr             m_write_end;
+        BufferStrategy          m_strategy;
+        ContigBufferFactoryT    m_factory;
         std::function<void(Marvin::ErrorType& err)> m_callback;
 //        Marvin::ContigBufferUPtr                 m_bufferUPtr;
         Marvin::ContigBuffer::SPtr                 m_bufferSPtr;

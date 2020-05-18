@@ -1,6 +1,7 @@
 #ifndef marvin_server_v3_mitm_tunnel_hpp
 #define marvin_server_v3_mitm_tunnel_hpp
 
+#include <marvin/buffer/buffer.hpp>
 #include <marvin/server_v3/mitm_app.hpp>
 
 namespace Marvin {
@@ -12,7 +13,7 @@ namespace Marvin {
     class MitmTunnel
 {
 public:
-
+    using BufferStrategy = TunnelAllocator;
     MitmTunnel(
         MitmApp& mitm_app,
         ISocketSPtr socket_sptr,
@@ -33,6 +34,8 @@ private:
 
     MitmApp&                    m_mitm_app;
     boost::asio::io_service&    m_io;
+    BufferStrategy              m_strategy;
+    ContigBufferFactoryT        m_factory;
     ISocketSPtr                 m_downstream_socket_sptr;
     MessageReaderSPtr           m_downstream_rdr_sptr;
     MessageWriterSPtr           m_downstream_wrtr_sptr;

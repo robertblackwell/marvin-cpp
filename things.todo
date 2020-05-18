@@ -15,20 +15,22 @@ Overall plan for the remainder of the projec:
     ☐ coding standards
 
 Polishing:
+  ☐ CLEANUP - callback typedefs are a mess cleanup
+  ☐ CLEANUP - in conjunction with callback typedefs - change to snake case on public methods
+  ☐ CLEANUP - all the stuff that tries to turn objects into strings for tracing purposes - its a mess
   ☐ need a documentation build step and start putting in comments
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
-  ☐ callback typedefs are a mess cleanup
-  ☐ formalize buffer strategy - for streambuf and ContigBuffer
+  ☐ amend buffer strategies to consider the size of successful reads as it make no sense allocate buffers much bigger than the largest successful read
   ☐ review message writer - simplify like we have done with message reader
   ☐ parsing needs to test parse errors, connect and upgrade
   ☐ command interface to simple_mitm - finish up the first phase of this - its close
   ☐ implement https hosts update on the fly - and ensure that MitmApp uses the info - maybe add an all/none flag to prevent unnecessary regex matches
-  ☐ make logging level a cli option for simple_proxy this means fix the global filter in Trog
+  ☐ IMPORTANT - make logging level a cli option for simple_proxy this means fix the global filter in Trog
+  ☐ IMPORTANT - change trog to print file name as callbacks using lambdas are usesless
   ☐ remove the signal handling stuff from tcp_server and make available to simple_proxy to use for all threads.
   ☐ remove raw pointer to connection handler from tcp_server - this is a related issue decide about uuid in the mitm_app currently not initialized
-  ☐ cleanup all the stuff that tries to turn objects into strings - its a mess
   ☐ need to permit tunnel requests for any port as it might be a websocket
   ☐ should only do https_upstream if the port is 443 and even then should check the first message for upgrade and reject
   ☐ default mode for both https be tunnel and the url filter should be mitm on match
@@ -54,6 +56,7 @@ Bugs:
 ☐ messagereader does not read trailers
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ formalize buffer strategy - for streambuf and ContigBuffer @done (20-05-18 10:34) @project(Next step)
  ✔ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader. @done (20-05-16 15:25)
  ✔ upstream roundtrip does not adequately configure headers. Particularly https upstream @done (20-05-16 15:19) @project(Next step)
  ✔ simple_buffer and Parser - the way buffer life time is managed is poor - find a better way. Maybe bring simple_buffer into the app and use shared pointers. Simple_buffer does not need to be a separate repo - integrate with marvin/buffer and maybe combine with mbuffer @done (20-05-16 15:18) @project(Next step)

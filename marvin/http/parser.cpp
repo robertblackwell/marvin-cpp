@@ -24,7 +24,7 @@ int headers_complete_cb(http_parser* parser);//, const char* aptr, size_t remain
 int body_data_cb(http_parser* parser, const char* at, size_t length);
 int message_complete_cb(http_parser* parser);
 
-Parser::Parser()
+Parser::Parser(): m_buffer_strategy(BodyAllocator()), m_factory(m_buffer_strategy)
 {
     message_done = false;
     header_done = false;
@@ -239,7 +239,7 @@ int Parser::p_on_header_value_data(http_parser* parser, const char* at, size_t l
     int state = header_state;
     if( state == kHEADER_STATE_FIELD ){
         value_stringbuf.clear();
-        value_stringbuf.reserve(200);
+        value_stringbuf.reserve(HEADER_RESERVE_SIZE);
         value_stringbuf.append((char*)at, length);
     } else if( state == kHEADER_STATE_VALUE){
         value_stringbuf.append((char*)at, length);
@@ -274,7 +274,7 @@ int Parser::p_on_body_data(http_parser* parser, const char* at, size_t length)
 {
     BufferChain::SPtr chain_sptr = this->m_current_message_ptr->getContentBuffer();
     if (chain_sptr == nullptr) {
-        ContigBuffer::SPtr mb_sptr = makeContigBufferSPtr(10000);
+        ContigBuffer::SPtr mb_sptr = m_factory.makeSPtr();
         chain_sptr = makeBufferChainSPtr(mb_sptr);
         m_current_message_ptr->setContentBuffer(chain_sptr);
     }

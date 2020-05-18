@@ -28,7 +28,7 @@ MitmTunnel::MitmTunnel(
         std::string host,
         std::string port
 
-) : m_mitm_app(mitm_app), m_io(socket_sptr->getIO())
+) : m_mitm_app(mitm_app), m_io(socket_sptr->getIO()), m_strategy(TunnelAllocator()), m_factory(m_strategy)
 {
     TROG_TRACE_CTOR();
     m_downstream_rdr_sptr = rdr;

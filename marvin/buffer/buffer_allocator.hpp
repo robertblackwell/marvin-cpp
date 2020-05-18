@@ -85,5 +85,18 @@ public:
     }
 
 };
+// only used in half_tunnel
+class TunnelAllocator: public BufferMallocator
+{
+public:
+    TunnelAllocator(): BufferMallocator(1024*128)
+    {};
+    std::size_t reallocate_size(std::size_t original_size, std::size_t new_size) override
+    {
+        if (new_size > m_max_size) MARVIN_THROW("requested allocation too big");
+        return std::max(new_size, std::min(m_max_size, 2*original_size));
+    }
+
+};
 } //namespace Marvin
 #endif

@@ -42,6 +42,7 @@ private:
 
     MitmApp&                    m_mitm_app;
     boost::asio::io_service&    m_io;
+
     ISocketSPtr                 m_downstream_socket_sptr;
     MessageReaderSPtr           m_downstream_rdr_sptr;
     MessageWriterSPtr           m_downstream_wrtr_sptr;
