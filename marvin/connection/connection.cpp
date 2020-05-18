@@ -265,7 +265,7 @@ void Connection::asyncRead(boost::asio::streambuf& streambuffer, AsyncReadCallba
     MARVIN_THROW("not implemented yet");
 }
 /** read some into a Marvin ContigBuffer  and update the size property*/
-void Connection::asyncRead(Marvin::ContigBufferSPtr buffer, AsyncReadCallbackType cb)
+void Connection::asyncRead(Marvin::ContigBuffer::SPtr buffer, AsyncReadCallbackType cb)
 {
     asyncRead(buffer, m_read_timeout_interval_ms, cb);
 }
@@ -280,7 +280,7 @@ void Connection::asyncRead(void* buffer, std::size_t length, AsyncReadCallbackTy
     asyncRead(buffer, length, m_read_timeout_interval_ms, cb);
 }
 /** read some with explicit timeout into a Marvin ContigBuffer and update its size property*/
-void Connection::asyncRead(Marvin::ContigBufferSPtr mbuffer, long timeout_ms, AsyncReadCallbackType cb)
+void Connection::asyncRead(Marvin::ContigBuffer::SPtr mbuffer, long timeout_ms, AsyncReadCallbackType cb)
 {
     asyncRead(mbuffer->data(), mbuffer->capacity(), timeout_ms, 
     [this, mbuffer, cb](const Marvin::ErrorType& err, std::size_t bytes_transfered)
@@ -320,7 +320,7 @@ void Connection::asyncRead(void* buffer, std::size_t buffer_length, long timeout
  * write
  */
 
-void Connection::asyncWrite(Marvin::BufferChainSPtr buf_chain_sptr, AsyncWriteCallback cb)
+void Connection::asyncWrite(Marvin::BufferChain::SPtr buf_chain_sptr, AsyncWriteCallback cb)
 {
     /// this took a while to work out - change buffer code at your peril
     TROG_DEBUG(" bchain: ", buf_chain_sptr->to_string());

@@ -187,8 +187,8 @@ public:
     * asyncWrite
     */
     void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  std::string& body_str, ResponseHandlerCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::ContigBufferSPtr body_sptr, ResponseHandlerCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::BufferChainSPtr chain_sptr, ResponseHandlerCallbackType cb);
+    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::ContigBuffer::SPtr body_sptr, ResponseHandlerCallbackType cb);
+    void asyncWrite(Marvin::MessageBaseSPtr requestMessage,  Marvin::BufferChain::SPtr chain_sptr, ResponseHandlerCallbackType cb);
 
     /**
     * Sends the first line and headers of the request message only
@@ -271,7 +271,7 @@ protected:
 
     boost::asio::io_service&          m_io;
     Marvin::MessageBaseSPtr           m_current_request;
-    Marvin::ContigBufferSPtr               m_body_mbuffer_sptr;
+    Marvin::ContigBuffer::SPtr               m_body_mbuffer_sptr;
     MessageWriterSPtr                 m_wrtr;
     MessageReaderSPtr                 m_rdr;
     ISocketSPtr                       m_conn_shared_ptr;

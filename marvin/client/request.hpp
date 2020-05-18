@@ -33,7 +33,7 @@ using RequestSPtr = std::shared_ptr<Request>;
 using RequestUPtr = std::unique_ptr<Request>;
 using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)>;
 
-using RequestDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err, Marvin::BufferChainSPtr buf_chain)>;
+using RequestDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err, Marvin::BufferChain::SPtr buf_chain)>;
 
 #define REQUEST_RDR_WRTR_ONESHOT 1
 
@@ -129,12 +129,12 @@ public:
     void asyncWriteTrailers(WriteHeadersCallbackType cb);
 
     void asyncWriteBodyData(std::string& body_str, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(Marvin::ContigBufferSPtr body_sptr, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(Marvin::BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(Marvin::ContigBuffer::SPtr body_sptr, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(Marvin::BufferChain::SPtr chain_sptr, WriteBodyDataCallbackType cb);
 
     void asyncWriteLastBodyData(std::string& body_str, WriteBodyDataCallbackType  cb);
-    void asyncWriteLastBodyData(Marvin::ContigBufferSPtr body_sptr, WriteBodyDataCallbackType  cb);
-    void asyncWriteLastBodyData(Marvin::BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
+    void asyncWriteLastBodyData(Marvin::ContigBuffer::SPtr body_sptr, WriteBodyDataCallbackType  cb);
+    void asyncWriteLastBodyData(Marvin::BufferChain::SPtr chain_sptr, WriteBodyDataCallbackType cb);
     void asyncConnect(std::function<void(Marvin::ErrorType& err)> cb);
     void end();
     
@@ -171,18 +171,18 @@ public:
     void p_set_content_length();
     void p_add_chunked_encoding_header();
     // sequence for writing headers and a body chunk
-    void p_hbc_check_connected(BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
-    void p_hbc_connect(BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
-    void p_hbc_write(BufferChainSPtr chain_sptr, WriteBodyDataCallbackType cb);
+    void p_hbc_check_connected(BufferChain::SPtr chain_sptr, WriteBodyDataCallbackType cb);
+    void p_hbc_connect(BufferChain::SPtr chain_sptr, WriteBodyDataCallbackType cb);
+    void p_hbc_write(BufferChain::SPtr chain_sptr, WriteBodyDataCallbackType cb);
 
     // steps in writing a body chunk.
-    void p_internal_write_headers_and_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
-    void p_internal_write_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
+    void p_internal_write_headers_and_body_chunk(Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
+    void p_internal_write_body_chunk(Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb);
 
     // steps in writing a full message in one go
-    void p_msg_check_connected(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
-    void p_msg_connect(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
-    void p_msg_write(MessageBaseSPtr msg, ContigBufferSPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_check_connected(MessageBaseSPtr msg, ContigBuffer::SPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_connect(MessageBaseSPtr msg, ContigBuffer::SPtr mbuf_sptr, WriteMessageCallbackType cb);
+    void p_msg_write(MessageBaseSPtr msg, ContigBuffer::SPtr mbuf_sptr, WriteMessageCallbackType cb);
     // general write error handler
     void p_write_error();
     // @TODO need to determine role of this method
@@ -191,14 +191,14 @@ public:
     void p_read_response_headers();
     void p_read_response_body();
     void p_read_response_body_next();
-    void p_read_response_handle_buffer(Marvin::BufferChainSPtr buf_sptr);
+    void p_read_response_handle_buffer(Marvin::BufferChain::SPtr buf_sptr);
     void p_response_complete();
     void p_response_error(Marvin::ErrorType err);
 
     // event handler utility funcs
     void p_resp_on_error(Marvin::ErrorType& ec2);
     void p_resp_on_headers(Marvin::ErrorType& ec2, MessageReaderSPtr msg);
-    void p_resp_on_data(Marvin::ErrorType& err, BufferChainSPtr buf);
+    void p_resp_on_data(Marvin::ErrorType& err, BufferChain::SPtr buf);
     void p_resp_on_complete(Marvin::ErrorType& ec2, MessageReaderSPtr msg);
 
     ResponseHandlerCallbackType m_on_response_complete_cb;
@@ -219,7 +219,7 @@ public:
 
     boost::asio::io_service&                        m_io;
     Marvin::MessageBaseSPtr                   m_current_request;
-    Marvin::ContigBufferSPtr                             m_body_mbuffer_sptr;
+    Marvin::ContigBuffer::SPtr                             m_body_mbuffer_sptr;
     MessageWriterSPtr                               m_wrtr;
     MessageReaderSPtr                               m_rdr;
     ISocketSPtr                                     m_conn_shared_ptr;

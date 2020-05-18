@@ -62,7 +62,7 @@ TEST_CASE("request new")
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         on_headers_flag = true;
     });
-    req->setOnData([&on_data_flag](Marvin::ErrorType err, Marvin::BufferChainSPtr buffer_chain) {
+    req->setOnData([&on_data_flag](Marvin::ErrorType err, Marvin::BufferChain::SPtr buffer_chain) {
         std::string s =  Marvin::make_error_description(err);
         std::string s2 = buffer_chain->to_string();
         std::cout << __PRETTY_FUNCTION__ << " error : " << s << std::endl;

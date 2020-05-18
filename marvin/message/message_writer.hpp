@@ -37,13 +37,13 @@ public:
     
     void asyncWrite(Marvin::MessageBaseSPtr msg, WriteMessageCallbackType cb);
     void asyncWrite(Marvin::MessageBaseSPtr msg, std::string& body_string, WriteMessageCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr msg, Marvin::ContigBufferSPtr body_mb_sptr, WriteMessageCallbackType cb);
-    void asyncWrite(Marvin::MessageBaseSPtr msg, Marvin::BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb);
+    void asyncWrite(Marvin::MessageBaseSPtr msg, Marvin::ContigBuffer::SPtr body_mb_sptr, WriteMessageCallbackType cb);
+    void asyncWrite(Marvin::MessageBaseSPtr msg, Marvin::BufferChain::SPtr body_chain_sptr, WriteMessageCallbackType cb);
 
     void asyncWriteHeaders(Marvin::MessageBaseSPtr msg, WriteHeadersCallbackType cb);
     void asyncWriteBodyData(std::string& data, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(Marvin::ContigBuffer& data, WriteBodyDataCallbackType cb);
-    void asyncWriteBodyData(Marvin::BufferChainSPtr chain_ptr, WriteBodyDataCallbackType cb);
+    void asyncWriteBodyData(Marvin::BufferChain::SPtr chain_ptr, WriteBodyDataCallbackType cb);
     void asyncWriteBodyData(boost::asio::const_buffer data, WriteBodyDataCallbackType cb);
 
     void asyncWriteTrailers(Marvin::MessageBaseSPtr msg, WriteHeadersCallbackType cb);
@@ -59,10 +59,10 @@ protected:
     boost::asio::io_service&    m_io;
     ISocketSPtr                     m_write_sock;
     Marvin::MessageBaseSPtr   m_current_message;
-    Marvin::ContigBufferSPtr             m_header_buf_sptr;
-    Marvin::ContigBufferSPtr             m_body_mbuffer_sptr;
+    Marvin::ContigBuffer::SPtr             m_header_buf_sptr;
+    Marvin::ContigBuffer::SPtr             m_body_mbuffer_sptr;
     std::string                     m_body_buffer_string;
-    Marvin::BufferChainSPtr         m_body_buffer_chain_sptr;
+    Marvin::BufferChain::SPtr         m_body_buffer_chain_sptr;
     
 };
 } // namespcae

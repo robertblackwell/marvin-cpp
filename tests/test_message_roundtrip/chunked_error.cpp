@@ -30,10 +30,10 @@ void ChunkedError::verifyResponse(Marvin::ErrorType& er, MessageBaseSPtr respons
 {
     CHECK(er);
 }
-Marvin::BufferChainSPtr ChunkedError::makeBody()
+Marvin::BufferChain::SPtr ChunkedError::makeBody()
 {
     using namespace Marvin;
-    BufferChainSPtr chain_sptr  = BufferChain::makeSPtr(m_body);
+    BufferChain::SPtr chain_sptr  = makeBufferChainSPtr(m_body);
     return chain_sptr;
 }
 MessageBaseSPtr ChunkedError::makeRequest()
@@ -54,7 +54,7 @@ MessageBaseSPtr ChunkedError::makeRequest()
     msg->header(HeadersV2::ETag,"1928273tefadseercnbdh");
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
-    // Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
+    // Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
     // msg->setContent(bdy);
     m_request_sptr = msg;
     return msg;

@@ -1,5 +1,5 @@
 #ifndef marvin_contig_buffer_factory_t_hpp
-#define marvin_contig_buffer_tfactory_t_hpp
+#define marvin_contig_buffer_factory_t_hpp
 #include <stddef.h>
 #include <memory>
 #include <iostream>
@@ -7,21 +7,21 @@
 #include <boost/asio/buffer.hpp>
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/buffer/buffer_allocator.hpp>
-#include <marvin/buffer/contig_buffer_t.hpp>
+#include <marvin/buffer/contig_buffer.hpp>
 namespace Marvin {
 /**
- * Factory for constructing shared pointers to ContigBufferT objects.
+ * Factory for constructing shared pointers to ContigBuffer objects.
  * The factory injects a BufferStrategy conforming to ConfigBufferInterface
- * into each ContigBufferT constructed.
+ * into each ContigBuffer constructed.
  */
 class ContigBufferFactoryT
 {
 protected:
     using S = BufferStrategyInterface;
     S& m_strategy;
-    using BufType = typename Marvin::ContigBufferT;
-    using BufSPtr = typename Marvin::ContigBufferT::SPtr;
-    using BufPtr = typename Marvin::ContigBufferT*;
+    using BufType = typename Marvin::ContigBuffer;
+    using BufSPtr = typename Marvin::ContigBuffer::SPtr;
+    using BufPtr = typename Marvin::ContigBuffer*;
 public:
     ContigBufferFactoryT(S& s): m_strategy(s)
     {}
@@ -31,8 +31,7 @@ public:
     }
     BufSPtr makeSPtr(std::size_t capacity)
     {
-        std::size_t sz = (capacity > BufType::min_buffer_size) ? capacity : BufType::min_buffer_size ;
-        return std::make_shared<BufType>(m_strategy, (sz));
+        return std::make_shared<BufType>(m_strategy, (capacity));
     }
     BufSPtr makeSPtr(std::string s)
     {

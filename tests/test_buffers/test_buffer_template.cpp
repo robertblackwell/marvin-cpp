@@ -53,8 +53,8 @@ struct XStrategy
 };
 
 
-using ContigHeaderBuffer = Marvin::ContigBufferT;
-using ContigBodyBuffer = Marvin::ContigBufferT;
+using ContigHeaderBuffer = Marvin::ContigBuffer;
+using ContigBodyBuffer = Marvin::ContigBuffer;
 int main()
 {
     BufferMallocator buf_mallocator;
@@ -74,7 +74,7 @@ int main()
     bb->append(s2);
     std::string s22 = std::string(std::size_t(33000), 'B');
     bb2->append(s22);
-    BufferChainT bc{body_factory};
+    BufferChain bc{body_factory};
     // holy grail - contig buffers with different strategies but still on the same chain
     // the cost - a buffer chain must have a factory
     // and we have one class hierachy using runtime inheritance BufferStrategyInterface

@@ -41,18 +41,18 @@ void MessageWriter::asyncWrite(MessageBaseSPtr msg, std::string& body_string, Wr
     } else {
 //        std:: cout << std::endl << "body buffer write: " << body_string << std::endl;
         m_body_buffer_string = body_string;
-        m_body_buffer_chain_sptr = Marvin::BufferChain::makeSPtr(body_string);
+        m_body_buffer_chain_sptr = Marvin::makeBufferChainSPtr(body_string);
         asyncWrite(msg, cb);
     }
 }
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::ContigBufferSPtr body_mb_sptr, WriteMessageCallbackType cb)
+void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::ContigBuffer::SPtr body_mb_sptr, WriteMessageCallbackType cb)
 {
     assert(body_mb_sptr != nullptr);
-    m_body_buffer_chain_sptr = Marvin::BufferChain::makeSPtr(body_mb_sptr);
+    m_body_buffer_chain_sptr = Marvin::makeBufferChainSPtr(body_mb_sptr);
     asyncWrite(msg, cb);
 }
 
-void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::BufferChainSPtr body_chain_sptr, WriteMessageCallbackType cb)
+void MessageWriter::asyncWrite(MessageBaseSPtr msg, Marvin::BufferChain::SPtr body_chain_sptr, WriteMessageCallbackType cb)
 {
     m_body_buffer_chain_sptr = body_chain_sptr;
     asyncWrite(msg, cb);

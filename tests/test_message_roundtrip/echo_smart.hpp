@@ -21,7 +21,7 @@ public:
     );
     void verifyResponse(Marvin::ErrorType& err, Marvin::MessageBaseSPtr response);
     MessageBaseSPtr makeRequest();
-    BufferChainSPtr makeBody();
+    BufferChain::SPtr makeBody();
     std::string getHost();
     std::string getPort();
 protected:

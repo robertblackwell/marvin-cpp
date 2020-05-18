@@ -272,10 +272,10 @@ int Parser::p_on_headers_complete(http_parser* parser) //, const char* aptr, siz
 }
 int Parser::p_on_body_data(http_parser* parser, const char* at, size_t length)
 {
-    BufferChainSPtr chain_sptr = this->m_current_message_ptr->getContentBuffer();
+    BufferChain::SPtr chain_sptr = this->m_current_message_ptr->getContentBuffer();
     if (chain_sptr == nullptr) {
-        ContigBufferSPtr mb_sptr = ContigBuffer::makeSPtr(10000);
-        chain_sptr = BufferChain::makeSPtr(mb_sptr);
+        ContigBuffer::SPtr mb_sptr = makeContigBufferSPtr(10000);
+        chain_sptr = makeBufferChainSPtr(mb_sptr);
         m_current_message_ptr->setContentBuffer(chain_sptr);
     }
     chain_sptr->append((void*)at, length);

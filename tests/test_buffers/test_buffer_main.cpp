@@ -24,7 +24,7 @@ TEST_CASE("buffer_chain_assignment")
     std::string stmp = "GH";
 
     for( int i = 0; i < 10; i++) {
-        ContigBufferSPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
+        ContigBuffer::SPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
         stmp += "GH";
         mb->append((void*) stmp.c_str(), stmp.size());
         chain1.push_back(mb);
@@ -41,7 +41,7 @@ TEST_CASE("buffer_chain_makeboostbuffer")
     std::string stmp = "GH";
 
     for( int i = 0; i < 10; i++) {
-        ContigBufferSPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
+        ContigBuffer::SPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
         stmp += "GH";
         mb->append((void*) stmp.c_str(), stmp.size());
         chain1.push_back(mb);

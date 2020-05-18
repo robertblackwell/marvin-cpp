@@ -91,7 +91,7 @@ namespace  {
     void ProxyRequestor::handler(Marvin::ErrorType& er, MessageReaderSPtr rdr)
     {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
-        Marvin::BufferChainSPtr bsp = rdr->getContentBuffer();
+        Marvin::BufferChain::SPtr bsp = rdr->getContentBuffer();
         std::string raw_body = bsp->to_string();
     //    std::cout << raw_body << std::endl;
         /// check correct status
@@ -215,7 +215,7 @@ namespace  {
     //        msg->header(Marvin::Http::HeadersV2::TransferEncoding,"chunked");
             msg->header(Marvin::Http::HeadersV2::ETag,"1928273tefadseercnbdh");
             std::string s = "012345678956";
-            Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
+            Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
             msg->setContent(bdy);
 
             tc = std::make_shared<tp::Testcase>(msg, proxyScheme, proxyHost, proxyPort);

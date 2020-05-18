@@ -61,7 +61,7 @@ class SslApp : public RequestHandlerInterface
                         m_response_msg_sptr->header(HeadersV2::Connection, "Close");
                         std::string body{"This is a legitimate response"};
                         m_response_msg_sptr->setContent(body);
-                        BufferChainSPtr buffer_sptr = BufferChain::makeSPtr(body);
+                        BufferChain::SPtr buffer_sptr = makeBufferChainSPtr(body);
                         m_wrtr_sptr->asyncWrite(m_response_msg_sptr, body, [this](ErrorType& err)
                         {
                             if(err) {

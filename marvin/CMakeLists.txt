@@ -12,8 +12,10 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	callback_typedefs.hpp 
 
 	buffer/buffer.hpp
+	buffer/buffer_allocator.hpp
 	buffer/buffer_chain.hpp
 	buffer/contig_buffer.hpp
+	buffer/contig_buffer_factory.hpp
 	
 	certificates/certificates.hpp
 	certificates/env_utils.hpp
@@ -76,8 +78,8 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	${EXTSRC}/uri-parser/UriCodec.cpp
 	${EXTSRC}/http-parser/http_parser.c
 
-	buffer/buffer_chain.cpp			
-	buffer/contig_buffer.cpp				
+	# buffer/buffer_chain.cpp			
+	# buffer/contig_buffer.cpp				
 	
 	certificates/certificates.cpp
 	certificates/env_utils.cpp

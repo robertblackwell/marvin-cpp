@@ -203,8 +203,8 @@ void Request::asyncWriteTrailers(WriteHeadersCallbackType cb)
 void Request::asyncWriteBodyData(std::string& body_chunk, WriteBodyDataCallbackType cb)
 {
     //assert body_chunk != ""
-    m_body_mbuffer_sptr = Marvin::ContigBuffer::makeSPtr(body_chunk);
-    BufferChainSPtr body_chunk_chain_sptr = BufferChain::makeSPtr(body_chunk);
+    m_body_mbuffer_sptr = Marvin::makeContigBufferSPtr(body_chunk);
+    BufferChain::SPtr body_chunk_chain_sptr = makeBufferChainSPtr(body_chunk);
     if (p_test_not_headers_written()) {
         p_add_chunked_encoding_header();
         p_prep_write_complete_headers();
@@ -215,11 +215,11 @@ void Request::asyncWriteBodyData(std::string& body_chunk, WriteBodyDataCallbackT
         // send the buffer chunk encoded
     }
 }
-void Request::asyncWriteBodyData(Marvin::ContigBufferSPtr mbuf_sptr, WriteBodyDataCallbackType cb)
+void Request::asyncWriteBodyData(Marvin::ContigBuffer::SPtr mbuf_sptr, WriteBodyDataCallbackType cb)
 {
     // assert body_chunk_ptr != nullptr and not empty
     m_body_mbuffer_sptr = mbuf_sptr;
-    BufferChainSPtr body_chunk_chain_sptr = BufferChain::makeSPtr(mbuf_sptr);
+    BufferChain::SPtr body_chunk_chain_sptr = makeBufferChainSPtr(mbuf_sptr);
     if (p_test_not_headers_written()) {
         p_add_chunked_encoding_header();
         p_prep_write_complete_headers();
@@ -230,7 +230,7 @@ void Request::asyncWriteBodyData(Marvin::ContigBufferSPtr mbuf_sptr, WriteBodyDa
         // send the buffer chunk encoded
     }
 }
-void Request::asyncWriteBodyData(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::asyncWriteBodyData(Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
     // assert body_chunk_chain_ptr != nullptr and not empty
     m_body_mbuffer_sptr = body_chunk_chain_sptr->amalgamate();
@@ -257,7 +257,7 @@ void Request::asyncWriteBodyData(Marvin::BufferChainSPtr body_chunk_chain_sptr, 
 //--------------------------------------------------------------------------------
 void Request::asyncWriteLastBodyData(std::string& body_chunk_str, WriteBodyDataCallbackType  cb)
 {
-    m_body_mbuffer_sptr = Marvin::ContigBuffer::makeSPtr(body_chunk_str);
+    m_body_mbuffer_sptr = Marvin::makeContigBufferSPtr(body_chunk_str);
     if(p_test_not_headers_written()) {
         // compute buffer length, add content-length header
         // send the entire message
@@ -273,7 +273,7 @@ void Request::asyncWriteLastBodyData(std::string& body_chunk_str, WriteBodyDataC
         //  send chunk encoding final sequence after the buffer is gone
     }
 }
-void Request::asyncWriteLastBodyData(Marvin::ContigBufferSPtr body_chunk_sptr, WriteBodyDataCallbackType  cb)
+void Request::asyncWriteLastBodyData(Marvin::ContigBuffer::SPtr body_chunk_sptr, WriteBodyDataCallbackType  cb)
 {
     m_body_mbuffer_sptr = body_chunk_sptr;
     if(p_test_not_headers_written()) {
@@ -287,7 +287,7 @@ void Request::asyncWriteLastBodyData(Marvin::ContigBufferSPtr body_chunk_sptr, W
         //  send chunk encoding final sequence after the buffer is gone
     }
 }
-void Request::asyncWriteLastBodyData(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::asyncWriteLastBodyData(Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
     m_body_mbuffer_sptr = body_chunk_chain_sptr->amalgamate();
     if(p_test_not_headers_written()) {
@@ -361,7 +361,7 @@ void Request::p_internal_write_message()
 // start sequence of functions to write a the headers and a single body buffer.
 // hbc = headers_and_body_chunk
 //--------------------------------------------------------------------------------
-void Request::p_hbc_check_connected(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::p_hbc_check_connected(BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
     if(m_is_connected) {
         p_hbc_write(body_chunk_chain_sptr, cb);
@@ -369,7 +369,7 @@ void Request::p_hbc_check_connected(BufferChainSPtr body_chunk_chain_sptr, Write
         p_hbc_connect(body_chunk_chain_sptr, cb);
     }
 }
-void Request::p_hbc_connect(::Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::p_hbc_connect(::Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
     TROG_INFO("", (long)this);
     using namespace Marvin;
@@ -382,7 +382,7 @@ void Request::p_hbc_connect(::Marvin::BufferChainSPtr body_chunk_chain_sptr, Wri
         }
     });
 }
-void Request::p_hbc_write(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType write_headers_cb)
+void Request::p_hbc_write(BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType write_headers_cb)
 {
     p_assert_not_headers_written();
     p_add_chunked_encoding_header();
@@ -397,7 +397,7 @@ void Request::p_hbc_write(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCa
 //--------------------------------------------------------------------------------
 // start sequence of functions to write a the headers and a single body buffer.
 //--------------------------------------------------------------------------------
-void Request::p_internal_write_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::p_internal_write_body_chunk(Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
 
 }
@@ -431,7 +431,7 @@ void Request::p_read_response_headers()
 }
 void Request::p_read_response_body()
 {
-    this->m_rdr->readBody([this](Marvin::ErrorType err, Marvin::BufferChainSPtr buf_sptr){
+    this->m_rdr->readBody([this](Marvin::ErrorType err, Marvin::BufferChain::SPtr buf_sptr){
         auto ex = err.value();
         if(err) {
             p_response_error(err);
@@ -450,7 +450,7 @@ void Request::p_read_response_body_next()
 {
 
 }
-void Request::p_read_response_handle_buffer(Marvin::BufferChainSPtr buf_sptr)
+void Request::p_read_response_handle_buffer(Marvin::BufferChain::SPtr buf_sptr)
 {
 
 }

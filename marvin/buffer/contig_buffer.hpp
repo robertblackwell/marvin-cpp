@@ -14,11 +14,11 @@ namespace Marvin {
 /**
 *
 * \ingroup buffers
-* \brief ContigBufferT provides a template class representing a contiguous expanding block of memory.r
+* \brief ContigBuffer provides a template class representing a contiguous expanding block of memory.r
 *
-* ContigBufferT class wraps a contigous buffer and provides manipulation methods.
+* ContigBuffer class wraps a contigous buffer and provides manipulation methods.
 * Once constructed the ContigBuffer instance "own" the raw memory.
-* ContigBufferT destructor releases the raw memory.
+* ContigBuffer destructor releases the raw memory.
 * The template parameter is a strategy for how much to allocate initially and realloc
 * when expansion is required.
 * S should be 
@@ -30,7 +30,7 @@ namespace Marvin {
 *   -   void* free(void* p)
 */
 //template<typename S=BufferStrategyInterface>
-class ContigBufferT
+class ContigBuffer
 {
 protected:
     using S = BufferStrategyInterface;
@@ -41,35 +41,35 @@ protected:
     std::size_t m_capacity;  /// the capacity of the buffer, the value used for the malloc call
     std::size_t m_size;      /// size of the currently filled portion of the memory slab
 public:
-    using SPtr = std::shared_ptr<ContigBufferT>;
+    using SPtr = std::shared_ptr<ContigBuffer>;
     static std::size_t min_buffer_size;
 #if 0
     static SPtr makeSPtr(std::size_t capacity)
     {
-        std::size_t sz = (capacity > ContigBufferT<S>::min_buffer_size) ? capacity : ContigBufferT<S>::min_buffer_size ;
-        SPtr mbp = std::make_shared<ContigBufferT>((sz));
+        std::size_t sz = (capacity > ContigBuffer<S>::min_buffer_size) ? capacity : ContigBuffer<S>::min_buffer_size ;
+        SPtr mbp = std::make_shared<ContigBuffer>((sz));
         return mbp;
     }
     static SPtr makeSPtr(std::string s)
     {
-        SPtr mbp = std::make_shared<ContigBufferT>((s.size()));
+        SPtr mbp = std::make_shared<ContigBuffer>((s.size()));
         mbp->append((void*) s.c_str(), s.size());
         return mbp;
     }
     static SPtr makeSPtr(void* mem, std::size_t size)
     {
-        SPtr mbp = std::make_shared<ContigBufferT>((size));
+        SPtr mbp = std::make_shared<ContigBuffer>((size));
         mbp->append(mem, size);
         return mbp;
     }
-    static SPtr makeSPtr(ContigBufferT& mb)
+    static SPtr makeSPtr(ContigBuffer& mb)
     {
-        SPtr mbp = std::make_shared<ContigBufferT>((mb.capacity()));
+        SPtr mbp = std::make_shared<ContigBuffer>((mb.capacity()));
         mbp->append(mb.data(), mb.size());
         return mbp;
     }
 #endif
-    ContigBufferT(S& strategy): m_strategy(strategy)
+    ContigBuffer(S& strategy): m_strategy(strategy)
     {
         std::size_t tmp_cap = m_strategy.min_size();
         m_memPtr = m_strategy.allocate(tmp_cap);
@@ -78,7 +78,7 @@ public:
         m_size = 0;
         m_capacity = tmp_cap;
     }
-    ContigBufferT(S& strategy, const std::size_t cap): m_strategy(strategy)
+    ContigBuffer(S& strategy, const std::size_t cap): m_strategy(strategy)
     {
         std::size_t tmp_cap = std::max(cap, m_strategy.min_size());
         m_memPtr = m_strategy.allocate(tmp_cap);
@@ -87,11 +87,11 @@ public:
         m_size = 0;
         m_capacity = tmp_cap;
     }
-    ContigBufferT(S& strategy, std::string str): ContigBufferT(strategy, str.size())
+    ContigBuffer(S& strategy, std::string str): ContigBuffer(strategy, str.size())
     {
         this->append((void*)str.c_str(), str.size());
     }
-    ContigBufferT(ContigBufferT& other): m_strategy(other.m_strategy)
+    ContigBuffer(ContigBuffer& other): m_strategy(other.m_strategy)
     {
         m_capacity = other.m_capacity;
         m_memPtr = m_strategy.allocate(m_capacity);
@@ -99,7 +99,7 @@ public:
         m_size = other.m_size;
         memcpy(m_memPtr, other.m_memPtr, other.m_size);
     }
-    ContigBufferT& operator =(ContigBufferT& other)
+    ContigBuffer& operator =(ContigBuffer& other)
     {
         if (&other == this) {
             return *this;
@@ -112,16 +112,16 @@ public:
         memcpy(m_memPtr, other.m_memPtr, other.m_size);
         return *this;
     }
-    ContigBufferT(ContigBufferT&& other): m_strategy(other.m_strategy)
+    ContigBuffer(ContigBuffer&& other): m_strategy(other.m_strategy)
     {
         m_strategy = other.m_strategy;
         m_capacity = other.m_capacity;
         m_memPtr = other.m_memPtr;
         m_cPtr = (char*) m_memPtr;
         m_size = other.m_size;
-        other = ContigBufferT(m_strategy, m_capacity);
+        other = ContigBuffer(m_strategy, m_capacity);
     }
-    ContigBufferT& operator =(ContigBufferT&& other)
+    ContigBuffer& operator =(ContigBuffer&& other)
     {
         if (&other == this) {
             return *this;
@@ -131,10 +131,10 @@ public:
         m_cPtr = other.m_cPtr;
         m_capacity = other.m_capacity;
         m_size = other.m_size;
-        other = ContigBufferT(m_strategy, m_capacity);
+        other = ContigBuffer(m_strategy, m_capacity);
     }
 
-    ~ContigBufferT()
+    ~ContigBuffer()
     {
         if( (m_memPtr != nullptr) && (m_capacity > 0) ){
             m_strategy.deallocate(m_memPtr);
@@ -246,15 +246,28 @@ public:
     /**
      * converts an ContigBuffer to a boost::asio::const_buffer
      */
-    friend boost::asio::const_buffer mb_as_const_buffer(ContigBufferT& cbt);
-
+    friend boost::asio::const_buffer mb_as_const_buffer(ContigBuffer& mb)
+    {
+        return boost::asio::const_buffer(mb.data(), mb.size());
+    }
     /**
      * converts an ContigBuffer to a boost::asio::mutable_buffer
      */
-    friend boost::asio::mutable_buffer mb_as_mutable_buffer(ContigBufferT& cbt);
-//    friend boost::asio::const_buffer_1 mb_as_asio_const_buffer(ContigBuffer& mb);
-
-    friend std::ostream &operator<< (std::ostream &os, ContigBufferT &b);
+    friend boost::asio::mutable_buffer mb_as_mutable_buffer(ContigBuffer& mb)
+    {
+        return boost::asio::mutable_buffer(mb.data(), mb.size());
+    }
+    friend std::ostream &operator<< (std::ostream &os, ContigBuffer &b)
+    {
+        if(b.m_length == 0){
+            os << "Empty ";
+        }else{
+            const std::size_t sz = b.size();
+            std::string s((char*)b.m_memPtr, sz);
+            os << "\r\nContigBuffer{ length: " << b.m_length << "content: [" << s << "]}";
+        }
+        return os;
+    }
 
 };
 

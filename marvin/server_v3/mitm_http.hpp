@@ -51,7 +51,7 @@ private:
     std::string                 m_upstream_port;
     ISocketSPtr                 m_upstream_socket_sptr;
     MessageBaseSPtr             m_upstream_request_sptr;
-    BufferChainSPtr             m_upstream_response_body_sptr;
+    BufferChain::SPtr             m_upstream_response_body_sptr;
     ::Cert::Certificate         m_server_certificate;
     ::Cert::Identity            m_mitm_identity;
     ClientSPtr                  m_upstream_client_uptr;

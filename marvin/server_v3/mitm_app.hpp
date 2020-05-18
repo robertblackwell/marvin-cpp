@@ -171,7 +171,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         // properties for upstream request/response
         // ISocketSPtr                         m_upstream_connection_sptr;
         // ClientUPtr                          m_upstream_client_uptr;
-        // BufferChainSPtr                     m_upstream_response_body_sptr;
+        // BufferChain::SPtr                     m_upstream_response_body_sptr;
         // MessageBaseSPtr                     m_upstream_request_sptr;
 
         // response to downstream client - used for each of the original request types

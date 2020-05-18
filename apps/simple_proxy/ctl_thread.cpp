@@ -39,7 +39,7 @@ MessageBaseSPtr make_200_response(std::string body)
     msg->reason("OK");
     msg->version(1, 1);
 
-    // BufferChainSPtr bchain_sptr = BufferChain::makeSPtr(body);
+    // BufferChain::SPtr bchain_sptr = makeBufferChainSPtr(body);
     // msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
     msg->header(HeadersV2::ContentType, std::string("plain/text"));
     msg->setContent(body);
@@ -53,7 +53,7 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->reason(status);
     msg->version(1, 1);
 
-    BufferChainSPtr bchain_sptr = BufferChain::makeSPtr(body);
+    BufferChain::SPtr bchain_sptr = makeBufferChainSPtr(body);
     msg->header(HeadersV2::ContentLength, std::to_string(body.length() ));
     return msg;
 }

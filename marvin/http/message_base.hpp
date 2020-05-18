@@ -16,8 +16,8 @@ using MessageBaseSPtr = std::shared_ptr<MessageBase>;
 std::string traceMessage(MessageBase& msg);
 
 void serialize_headers(MessageBase& msg, std::string& string);
-void serialize_headers(MessageBase& msg, ContigBufferSPtr mb);
-ContigBufferSPtr serialize_headers(MessageBase& msg);
+void serialize_headers(MessageBase& msg, ContigBuffer::SPtr mb);
+ContigBuffer::SPtr serialize_headers(MessageBase& msg);
 bool isConnectionKeepAlive(Marvin::MessageBase& msg);
 
 /**
@@ -70,9 +70,9 @@ public:
     void dumpHeaders(std::ostream& os);
 
     /** serialize the message prefix = firstline + headers lines*/
-    void serialize_headers(ContigBufferSPtr mb);
+    void serialize_headers(ContigBuffer::SPtr mb);
     /** serialize the message prefix = firstline + headers lines*/
-    ContigBufferSPtr serialize_headers();
+    ContigBuffer::SPtr serialize_headers();
     
     // std::string  str();
 
@@ -80,16 +80,16 @@ public:
     bool    isRequest();
     
     /// \brief return the current dechunked content buffer
-    ::Marvin::BufferChainSPtr getContentBuffer();
+    ::Marvin::BufferChain::SPtr getContentBuffer();
     /// Sets the dechunked content buffer but does not set the CONTENT-LENGTH headers;
     /// this is because even for chunked incoming messages the de-chunked buffer is attached
-    void setContentBuffer(::Marvin::BufferChainSPtr bufSPtr);
+    void setContentBuffer(::Marvin::BufferChain::SPtr bufSPtr);
 
     /// Returns the current dechunked conent buffer
-    ::Marvin::BufferChainSPtr getContent();
+    ::Marvin::BufferChain::SPtr getContent();
     /// Sets the dechunked content buffer and also updates the content-length field;
     /// use this method when preparing an outgoing message
-    void setContent(::Marvin::BufferChainSPtr bufSPtr);
+    void setContent(::Marvin::BufferChain::SPtr bufSPtr);
     /// Sets the dechunked content buffer and aslo updates the content-length field;
     /// use this method when preparing an outgoing message
     void setContent(std::string content);
@@ -97,12 +97,12 @@ public:
     std::string to_string();
 #if 1
     // friend void serialize_headers(MessageBase& msg, ::Marvin::ContigBuffer& buf);
-    // friend Marvin::ContigBufferSPtr serialize_headers(MessageBase& msg);
+    // friend Marvin::ContigBuffer::SPtr serialize_headers(MessageBase& msg);
     // friend std::string serialize_headers(MessageBase& msg);
     friend void serialize_headers(MessageBase& msg, std::string& str);
-    // friend void serialize_headers(MessageBase& msg, BufferChainSPtr bchain_sptr);
-    friend void serialize_headers(MessageBase& msg, ContigBufferSPtr mb);
-    friend ContigBufferSPtr serialize_headers(MessageBase& msg);
+    // friend void serialize_headers(MessageBase& msg, BufferChain::SPtr bchain_sptr);
+    friend void serialize_headers(MessageBase& msg, ContigBuffer::SPtr mb);
+    friend ContigBuffer::SPtr serialize_headers(MessageBase& msg);
 #endif
     friend std::string traceMessage(MessageBase& msg);
     friend std::ostream &operator<< (std::ostream &os, MessageBase &msg);
@@ -120,7 +120,7 @@ protected:
     int							m_http_minor;
     Marvin::HeadersV2           m_headers;
     Marvin::HeadersV2           m_trailers;
-    Marvin::BufferChainSPtr     m_body_chain_sptr;
+    Marvin::BufferChain::SPtr     m_body_chain_sptr;
     
 };
 

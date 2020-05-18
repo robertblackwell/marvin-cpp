@@ -34,7 +34,7 @@ private:
     std::function<void(ErrorType err)> m_callback;
     ISocketSPtr                 m_socket_sptr;
     MessageBaseSPtr             m_upstream_request_sptr;
-    BufferChainSPtr             m_upstream_response_body_sptr;
+    BufferChain::SPtr             m_upstream_response_body_sptr;
     ::Cert::Certificate         m_server_certificate;
     ::Cert::Identity            m_mitm_identity;
 

@@ -37,7 +37,7 @@ public:
     void http_exec(T& testcase)
     {
         MessageBaseSPtr request_sptr = testcase.makeRequest();
-        Marvin::BufferChainSPtr body = testcase.makeBody();
+        Marvin::BufferChain::SPtr body = testcase.makeBody();
         m_host = testcase.getHost();
         m_port = testcase.getPort();
         std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -63,7 +63,7 @@ public:
     void http_exec(T& testcase)
     {
         MessageBaseSPtr request_sptr = testcase.makeRequest();
-        Marvin::BufferChainSPtr body = testcase.makeBody();
+        Marvin::BufferChain::SPtr body = testcase.makeBody();
         m_host = testcase.getHost();
         m_port = testcase.getPort();
         std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -91,7 +91,7 @@ public:
     {
         MessageBaseSPtr request_sptr = testcase.makeRequest();
         request_sptr->header(HeadersV2::Connection,"Keep-Alive");
-        Marvin::BufferChainSPtr body = testcase.makeBody();
+        Marvin::BufferChain::SPtr body = testcase.makeBody();
         m_host = testcase.getHost();
         m_port = testcase.getPort();
         std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -100,7 +100,7 @@ public:
             m_client_sptr->asyncWrite(request_sptr, body, [this, &testcase](ErrorType& err,  MessageBaseSPtr response_sptr) {
                 testcase.verifyResponse(err, response_sptr);
                 MessageBaseSPtr another_request_sptr = testcase.makeRequest();
-                Marvin::BufferChainSPtr another_body = testcase.makeBody();
+                Marvin::BufferChain::SPtr another_body = testcase.makeBody();
                 m_client_sptr->asyncWrite(another_request_sptr, another_body, [this, &testcase](ErrorType& err,  MessageBaseSPtr another_response_sptr) {
                     REQUIRE(!err);
                     testcase.verifyResponse(err, another_response_sptr);
@@ -138,7 +138,7 @@ public:
     void p_one_request()
     {
         MessageBaseSPtr request_sptr = m_testcase.makeRequest();
-        Marvin::BufferChainSPtr body = m_testcase.makeBody();
+        Marvin::BufferChain::SPtr body = m_testcase.makeBody();
         if (m_times == 1) {
             request_sptr->header(HeadersV2::Connection,"Close");
         } else {

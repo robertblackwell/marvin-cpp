@@ -10,8 +10,8 @@
 using namespace Marvin;
 TEST_CASE("append")
 {
-    ContigBufferSPtr mbsptr = Marvin::ContigBuffer::makeSPtr("thisisastring");
-    BufferChainSPtr bc_sptr = Marvin::BufferChain::makeSPtr();
+    ContigBuffer::SPtr mbsptr = Marvin::makeContigBufferSPtr("thisisastring");
+    BufferChain::SPtr bc_sptr = Marvin::makeBufferChainSPtr();
     bc_sptr->push_back(mbsptr);
     bc_sptr->append("1234567890");
     Marvin::BufferChain::AsioConstBufferSeq const_buf_seq =  bc_sptr->asio_buffer_sequence();
@@ -20,8 +20,9 @@ TEST_CASE("append")
 }
 TEST_CASE("m_buffer append_realloc")
 {
-    ContigBuffer mb{0};
-    CHECK(mb.capacity() == ContigBuffer::min_buffer_size);
+    BufferMallocator mallocator;
+    ContigBuffer mb{mallocator, 0};
+    CHECK(mb.capacity() == mallocator.min_size());
     std::string big_str = "";
     for(int j = 0; j<100; j++) {
         big_str += "0123456789ABCDEF";
@@ -39,19 +40,21 @@ TEST_CASE("m_buffer append_realloc")
     mb.append("thisisatemporary");
     mb.append(std::string("thisisanothertemporary"));
     mb.append(std::move(std::string("thisisanothertemporary")));
-    CHECK(mb.capacity() > ContigBuffer::min_buffer_size);
+    CHECK(mb.capacity() > mallocator.min_size());
     std::cout << __func__ << std::endl;
 }
 TEST_CASE("buffer_chain_assignment")
 {
-    ContigBuffer mb(100);
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+    ContigBuffer mb(mallocator, 100);
     boost::asio::mutable_buffer bt = boost::asio::buffer(mb.data(), mb.capacity());
-    BufferChain chain1;
-    BufferChain chain2;
+    BufferChain chain1{factory};
+    BufferChain chain2{factory};
     std::string stmp = "GH";
 
     for( int i = 0; i < 10; i++) {
-        ContigBufferSPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
+        ContigBuffer::SPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(mallocator, i*10 + 10));
         stmp += "GH";
         mb->append((void*) stmp.c_str(), stmp.size());
         chain1.push_back(mb);
@@ -63,12 +66,14 @@ TEST_CASE("buffer_chain_assignment")
 }
 TEST_CASE("buffer_chain_makeboostbuffer")
 {
-    BufferChain chain1;
-    BufferChain chain2;
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+    BufferChain chain1{factory};
+    BufferChain chain2{factory};
     std::string stmp = "GH";
 
     for( int i = 0; i < 10; i++) {
-        ContigBufferSPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(i*10 + 10));
+        ContigBuffer::SPtr mb = std::shared_ptr<ContigBuffer>(new ContigBuffer(mallocator, i*10 + 10));
         stmp += "GH";
         mb->append((void*) stmp.c_str(), stmp.size());
         chain1.push_back(mb);
@@ -88,6 +93,9 @@ TEST_CASE("buffer_chain_makeboostbuffer")
 #pragma mark - testcase_mbuffer
 TEST_CASE("mbuffer_01")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     std::vector<std::string> v {
         "1234567890",
         "",
@@ -97,7 +105,7 @@ TEST_CASE("mbuffer_01")
         "1234567890"
     };
     
-    ContigBuffer* mb = new ContigBuffer(1000);
+    ContigBuffer* mb = new ContigBuffer(mallocator, 1000);
     for( std::string& s: v) {
         mb->append((void*)s.c_str(), s.size());
     }
@@ -119,8 +127,11 @@ TEST_CASE("mbuffer_01")
 }
 TEST_CASE("copy constructor")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     // demonstrate copy not reference
-    BufferChain bc1{};
+    BufferChain bc1{factory};
     bc1.append("1111Thisisthefirstbuffer");
     bc1.append("222Thisisthesecondbuffer");
     BufferChain bc2{bc1};
@@ -136,8 +147,11 @@ TEST_CASE("copy constructor")
 }
 TEST_CASE("copy constructor")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     // demonstrate copy not reference
-    BufferChain bc1{};
+    BufferChain bc1{factory};
     bc1.append("1111Thisisthefirstbuffer");
     bc1.append("222Thisisthesecondbuffer");
     BufferChain bc2{bc1};
@@ -165,11 +179,14 @@ TEST_CASE("copy constructor")
 }
 TEST_CASE("copy assignment")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     // demonstrate copy not reference
-    BufferChain bc1{};
+    BufferChain bc1{factory};
     bc1.append("1111Thisisthefirstbuffer");
     bc1.append("222Thisisthesecondbuffer");
-    BufferChain bc2{};
+    BufferChain bc2{factory};
     bc2 = bc1;
 
     // demonstrate bc1 and bc2 have the same value
@@ -195,8 +212,11 @@ TEST_CASE("copy assignment")
 }
 TEST_CASE("move")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     // demonstrate copy not reference
-    BufferChain bc1{};
+    BufferChain bc1{factory};
     bc1.append("1111Thisisthefirstbuffer");
     bc1.append("222Thisisthesecondbuffer");
     // this causes a move
@@ -204,7 +224,7 @@ TEST_CASE("move")
     CHECK(bc1.size() == 0);
     CHECK(bc2.size() != 0);
     std::string stmp = "0123456789";
-    BufferChainSPtr bc_sptr_2 = BufferChain::makeSPtr(stmp);
+    BufferChain::SPtr bc_sptr_2 = makeBufferChainSPtr(stmp);
     // this causes a copy not a move
     BufferChain bc3 = (*bc_sptr_2);
     auto x = bc3.size();
@@ -217,22 +237,28 @@ TEST_CASE("move")
 }
 TEST_CASE("move with pointers 1")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     // another move
     std::string stmp = "0123456789";
-    BufferChainSPtr bc_sptr_1 = BufferChain::makeSPtr(stmp);
+    BufferChain::SPtr bc_sptr_1 = makeBufferChainSPtr(stmp);
     CHECK((bc_sptr_1->size() != 0));
-    BufferChainSPtr bc_sptr_2 = std::make_shared<BufferChain>(std::move(*bc_sptr_1));
+    BufferChain::SPtr bc_sptr_2 = std::make_shared<BufferChain>(std::move(*bc_sptr_1));
     CHECK((bc_sptr_1->size() == 0));
     CHECK((bc_sptr_2->size() != 0));
 
 }
 TEST_CASE("move with pointers 2")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     // another move
     std::string stmp = "0123456789";
-    BufferChainSPtr bc_sptr_1 = BufferChain::makeSPtr(stmp);
+    BufferChain::SPtr bc_sptr_1 = makeBufferChainSPtr(stmp);
     CHECK((bc_sptr_1->size() != 0));
-    BufferChainSPtr bc_sptr_2 = std::make_shared<BufferChain>();
+    BufferChain::SPtr bc_sptr_2 = std::make_shared<BufferChain>(factory);
     *bc_sptr_2 = std::move(*bc_sptr_1);
     CHECK((bc_sptr_1->size() == 0));
     CHECK((bc_sptr_2->size() != 0));
@@ -240,11 +266,14 @@ TEST_CASE("move with pointers 2")
 }
 TEST_CASE("move with makeSPtr()")
 {
+    BufferMallocator mallocator;
+    ContigBufferFactoryT factory{mallocator};
+
     // another move
     std::string stmp = "0123456789";
-    BufferChainSPtr bc_sptr_1 = BufferChain::makeSPtr(stmp);
+    BufferChain::SPtr bc_sptr_1 = makeBufferChainSPtr(stmp);
     CHECK((bc_sptr_1->size() != 0));
-    BufferChainSPtr bc_sptr_2 = BufferChain::makeSPtr(std::move(*bc_sptr_1));
+    BufferChain::SPtr bc_sptr_2 = makeBufferChainSPtr(std::move(*bc_sptr_1));
     CHECK((bc_sptr_1->size() == 0));
     CHECK((bc_sptr_2->size() != 0));
 

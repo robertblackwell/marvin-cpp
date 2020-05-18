@@ -30,7 +30,7 @@ class MessageReader : public Marvin::MessageBase
 public:
 
     using ReadMessageCallback = std::function<void(Marvin::ErrorType err)>;
-    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChainSPtr chunkSPtr)>;
+    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)>;
 
     MessageReader(ISocketSPtr readSock);
     ~MessageReader();
@@ -38,7 +38,7 @@ public:
     void readMessage(ReadMessageCallback cb);
 
     void readHeaders(std::function<void(Marvin::ErrorType err)> cb);
-    void readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChainSPtr chunkSPtr)> bodyCb);
+    void readBody(std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)> bodyCb);
 
 protected:
 

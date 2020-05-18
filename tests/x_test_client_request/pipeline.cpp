@@ -33,7 +33,7 @@ void Pipeline::handler(Marvin::ErrorType err, MessageReaderSPtr rdr)
 {
     if(!err) {
         MessageReaderSPtr b = m_client_sptr->getResponse();
-        Marvin::BufferChainSPtr buf_chain_sptr = b->getContentBuffer();
+        Marvin::BufferChain::SPtr buf_chain_sptr = b->getContentBuffer();
         std::string bdy = buf_chain_sptr->to_string();
         std::string sss = err.message();
 //        std::cout << bdy << std::endl;

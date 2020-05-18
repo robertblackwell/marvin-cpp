@@ -56,7 +56,7 @@ void Request::p_read_response_headers()
 }
 void Request::p_read_response_body()
 {
-    this->m_rdr->readBody([this](Marvin::ErrorType err, Marvin::BufferChainSPtr buf_sptr){
+    this->m_rdr->readBody([this](Marvin::ErrorType err, Marvin::BufferChain::SPtr buf_sptr){
         auto ex = err.value();
         if(err) {
             p_response_error(err);
@@ -75,7 +75,7 @@ void Request::p_read_response_body_next()
 {
 
 }
-void Request::p_read_response_handle_buffer(Marvin::BufferChainSPtr buf_sptr)
+void Request::p_read_response_handle_buffer(Marvin::BufferChain::SPtr buf_sptr)
 {
 
 }

@@ -36,7 +36,7 @@ long MockReadSocket::getReadTimeout(){return 99;}
 void MockReadSocket::cancel(){}
 void MockReadSocket::startRead(){}
 
-void MockReadSocket::asyncRead(Marvin::ContigBufferSPtr mb, long timeout_ms, AsyncReadCallback cb)
+void MockReadSocket::asyncRead(Marvin::ContigBuffer::SPtr mb, long timeout_ms, AsyncReadCallback cb)
 {throw("read with timeout into ContigBuffer not implemented");}
 void MockReadSocket::asyncRead(void* buffer, std::size_t buffer_length, long timeout_ms, AsyncReadCallback cb)
 {throw("read with timeout into void* buffer not implemented");}
@@ -129,7 +129,7 @@ void MockReadSocket::asyncRead(void* buffer, std::size_t buffer_length, AsyncRea
         }
     } 
 }
-void MockReadSocket::asyncRead(Marvin::ContigBufferSPtr mb, AsyncReadCallback cb)
+void MockReadSocket::asyncRead(Marvin::ContigBuffer::SPtr mb, AsyncReadCallback cb)
 {
     TROG_DEBUG("");
     char* buf;
@@ -200,7 +200,7 @@ void MockReadSocket::asyncRead(Marvin::ContigBufferSPtr mb, AsyncReadCallback cb
 }
 void MockReadSocket::asyncWrite(std::string& str, Marvin::AsyncWriteCallbackType cb){ assert(false);}
 void MockReadSocket::asyncWrite(Marvin::ContigBuffer& fb, Marvin::AsyncWriteCallback){ assert(false);}
-void MockReadSocket::asyncWrite(Marvin::BufferChainSPtr chain_sptr, Marvin::AsyncWriteCallback){ assert(false);}
+void MockReadSocket::asyncWrite(Marvin::BufferChain::SPtr chain_sptr, Marvin::AsyncWriteCallback){ assert(false);}
 void MockReadSocket::asyncWrite(boost::asio::const_buffer buf, Marvin::AsyncWriteCallback cb){ assert(false);}
 void MockReadSocket::asyncWrite(boost::asio::streambuf& sb, Marvin::AsyncWriteCallback){ assert(false);}
 void MockReadSocket::asyncWrite(void* buffer, std::size_t buffer_length, Marvin::AsyncWriteCallback){ assert(false);}

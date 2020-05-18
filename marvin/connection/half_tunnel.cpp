@@ -10,7 +10,7 @@ HalfTunnel::HalfTunnel(ISocketSPtr readEnd, ISocketSPtr writeEnd, long firstRead
 {
     m_read_end = readEnd;
     m_write_end = writeEnd;
-    m_bufferSPtr = Marvin::ContigBuffer::makeSPtr(20000);
+    m_bufferSPtr = Marvin::makeContigBufferSPtr(20000);
 //    m_bufferUPtr = std::unique_ptr<Marvin::ContigBuffer>(m_bufferPtr);
 }
 void HalfTunnel::start(std::function<void(Marvin::ErrorType& err)> cb)

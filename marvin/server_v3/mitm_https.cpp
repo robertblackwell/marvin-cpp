@@ -168,7 +168,7 @@ void MitmHttps::p_initiate_upstream_roundtrip()
                     TROG_WARN("STATUS_CODE:", downMsg->status_code())
                 }
                 TROG_TRACE3("for downstream", traceMessage(*downMsg));
-                Marvin::BufferChainSPtr responseBodySPtr = downMsg->getContentBuffer();
+                Marvin::BufferChain::SPtr responseBodySPtr = downMsg->getContentBuffer();
                 /// perform the MITM collection
                 
                 m_collector_sptr->collect(m_scheme, m_host, m_downstream_rdr_sptr, m_downstream_response_sptr);
@@ -206,7 +206,7 @@ void MitmHttps::p_roundtrip_upstream(
     m_upstream_request_sptr = std::make_shared<MessageBase>();
     /// format upstream msg for transmission
     Helpers::makeUpstreamHttpsRequest(m_upstream_request_sptr, req);
-    Marvin::BufferChainSPtr content = req->getContentBuffer();
+    Marvin::BufferChain::SPtr content = req->getContentBuffer();
     TROG_TRACE3("start roundtrip upstream")
     m_upstream_client_uptr->asyncWrite(m_upstream_request_sptr, content, [this, upstreamCb](Marvin::ErrorType& ec, MessageReaderSPtr upstrmRdr)
     {

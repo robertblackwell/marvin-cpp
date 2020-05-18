@@ -29,7 +29,7 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::MessageBaseSPtr re
 {
     CHECK(!er);
     // std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Marvin::BufferChainSPtr bsp = response->getContentBuffer();
+    Marvin::BufferChain::SPtr bsp = response->getContentBuffer();
     std::string raw_body = bsp->to_string();
     CHECK(response->status_code() == 200);
 
@@ -144,10 +144,10 @@ void EchoSmart::verifyResponse(Marvin::ErrorType& er, Marvin::MessageBaseSPtr re
 
     return;
 }
-Marvin::BufferChainSPtr EchoSmart::makeBody()
+Marvin::BufferChain::SPtr EchoSmart::makeBody()
 {
     using namespace Marvin;
-    BufferChainSPtr chain_sptr  = BufferChain::makeSPtr(m_body);
+    BufferChain::SPtr chain_sptr  = makeBufferChainSPtr(m_body);
     return chain_sptr;
 }
 Marvin::MessageBaseSPtr EchoSmart::makeRequest()
@@ -168,7 +168,7 @@ Marvin::MessageBaseSPtr EchoSmart::makeRequest()
     msg->header(Marvin::HeadersV2::ETag,"1928273tefadseercnbdh");
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
-    // Marvin::BufferChainSPtr bdy = Marvin::BufferChain::makeSPtr(s);
+    // Marvin::BufferChain::SPtr bdy = Marvin::makeBufferChainSPtr(s);
     // msg->setContent(bdy);
     m_request_sptr = msg;
     return msg;

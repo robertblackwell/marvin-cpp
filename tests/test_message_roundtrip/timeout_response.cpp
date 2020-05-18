@@ -38,10 +38,10 @@ void TimeoutResponse::verifyResponse(ErrorType& er, MessageBaseSPtr response)
     CHECK(er.message() == "Operation canceled");
     std::cout << __PRETTY_FUNCTION__ << " : " << er.message() << std::endl;
 }
-BufferChainSPtr TimeoutResponse::makeBody()
+BufferChain::SPtr TimeoutResponse::makeBody()
 {
     using namespace Marvin;
-    BufferChainSPtr chain_sptr  = BufferChain::makeSPtr(m_body);
+    BufferChain::SPtr chain_sptr  = makeBufferChainSPtr(m_body);
     return chain_sptr;
 }
 MessageBaseSPtr TimeoutResponse::makeRequest()
@@ -62,7 +62,7 @@ MessageBaseSPtr TimeoutResponse::makeRequest()
     msg->header(HeadersV2::ETag,"1928273tefadseercnbdh");
     msg->header("X-SPECIAL-HEADER", "proof of passthru");
     // std::string s = "012345678956";
-    // BufferChainSPtr bdy = BufferChain::makeSPtr(s);
+    // BufferChain::SPtr bdy = makeBufferChainSPtr(s);
     // msg->setContent(bdy);
     m_request_sptr = msg;
     return msg;

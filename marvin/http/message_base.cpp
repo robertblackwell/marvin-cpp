@@ -54,11 +54,11 @@ void serialize_headers(MessageBase& msg, Marvin::ContigBuffer& mb)
 //    std::cout << __FUNCTION__ << ":" << ss << std::endl;
     
 }
-Marvin::ContigBufferSPtr serialize_headers(MessageBase& msg)
+Marvin::ContigBuffer::SPtr serialize_headers(MessageBase& msg)
 {
     std::string h = "";
     serialize_headers(msg, h);
-    return Marvin::ContigBuffer::makeSPtr(h);
+    return Marvin::makeContigBufferSPtr(h);
 }
 std::string serialize_headers(MessageBase& msg)
 {
@@ -88,7 +88,7 @@ void serialize_headers(MessageBase& msg, std::string& str)
     str = os.str();
 }
 
-void serialize_header_lines(Marvin::HeadersV2& hdrs, ContigBufferSPtr mb)
+void serialize_header_lines(Marvin::HeadersV2& hdrs, ContigBuffer::SPtr mb)
 {
     for(auto const& h : hdrs) {
         mb->append((void*)h.key.c_str(), h.key.size());
@@ -97,7 +97,7 @@ void serialize_header_lines(Marvin::HeadersV2& hdrs, ContigBufferSPtr mb)
         mb->append((void*)(char*)"\r\n", 2);
     }
 }
-void serialize_headers(MessageBase& msg, ContigBufferSPtr mb)
+void serialize_headers(MessageBase& msg, ContigBuffer::SPtr mb)
 {
     static std::string const req_vers1_0 = " HTTP/1.0\r\n";
     static std::string const req_vers1_1 = " HTTP/1.1\r\n";
@@ -126,9 +126,9 @@ void serialize_headers(MessageBase& msg, ContigBufferSPtr mb)
     serialize_header_lines(msg.m_headers, mb);
     mb->append((void*)(char*)"\r\n", 2);
 }
-ContigBufferSPtr serialize_headers(MessageBase& msg)
+ContigBuffer::SPtr serialize_headers(MessageBase& msg)
 {
-    ContigBufferSPtr mb = ContigBuffer::makeSPtr(256*4*8);
+    ContigBuffer::SPtr mb = makeContigBufferSPtr(256*4*8);
     serialize_headers(msg, mb);
     return mb;
 }
@@ -157,7 +157,7 @@ MessageBase::MessageBase()
     this->m_is_request = true;
     this->m_http_major = 1;
     this->m_http_minor = 1;
-    this->m_body_chain_sptr = std::make_shared<BufferChain>();
+    this->m_body_chain_sptr = makeBufferChainSPtr();
 }
 MessageBase::MessageBase(MessageBase& other)
 {
@@ -202,7 +202,7 @@ MessageBase& MessageBase::operator =(MessageBase&& other)
     m_headers       = std::move(other.m_headers);
     m_trailers      = std::move(other.m_trailers);
     m_body_chain_sptr = other.m_body_chain_sptr;
-    other.m_body_chain_sptr = BufferChain::makeSPtr();
+    other.m_body_chain_sptr = makeBufferChainSPtr();
 }
 
 MessageBase::~MessageBase(){}
@@ -285,12 +285,12 @@ MessageBase::contentLength()
         return boost::none;
     }
 }
-void MessageBase::serialize_headers(ContigBufferSPtr mb)
+void MessageBase::serialize_headers(ContigBuffer::SPtr mb)
 {
     // force use of friend
     Marvin::serialize_headers(*this, mb);
 }
-ContigBufferSPtr MessageBase::serialize_headers()
+ContigBuffer::SPtr MessageBase::serialize_headers()
 {
     // force use of friend
     return Marvin::serialize_headers(*this);
@@ -300,19 +300,19 @@ ContigBufferSPtr MessageBase::serialize_headers()
  {
      return Marvin::serialize_headers(*this)->toString();
  }
-Marvin::BufferChainSPtr MessageBase::getContentBuffer()
+Marvin::BufferChain::SPtr MessageBase::getContentBuffer()
 {
     return m_body_chain_sptr;
 }
-void MessageBase::setContentBuffer(Marvin::BufferChainSPtr bufSPtr)
+void MessageBase::setContentBuffer(Marvin::BufferChain::SPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
 }
-Marvin::BufferChainSPtr MessageBase::getContent()
+Marvin::BufferChain::SPtr MessageBase::getContent()
 {
     return m_body_chain_sptr;
 }
-void MessageBase::setContent(Marvin::BufferChainSPtr bufSPtr)
+void MessageBase::setContent(Marvin::BufferChain::SPtr bufSPtr)
 {
     m_body_chain_sptr = bufSPtr;
     remove_header(Marvin::HeadersV2::TransferEncoding);
@@ -320,7 +320,7 @@ void MessageBase::setContent(Marvin::BufferChainSPtr bufSPtr)
 }
 void MessageBase::setContent(std::string content)
 {
-    m_body_chain_sptr = Marvin::BufferChain::makeSPtr(content);
+    m_body_chain_sptr = Marvin::makeBufferChainSPtr(content);
     remove_header(Marvin::HeadersV2::TransferEncoding);
     header(Marvin::HeadersV2::ContentLength, std::to_string(m_body_chain_sptr->size()));
 }
@@ -336,7 +336,7 @@ void MessageBase::dumpHeaders(std::ostream& os)
     
 std::ostream &operator<< (std::ostream &os, MessageBase &msg)
 {
-    ContigBufferSPtr mb_h = msg.serialize_headers();
+    ContigBuffer::SPtr mb_h = msg.serialize_headers();
     os << mb_h->toString() ;
     return os;
 }

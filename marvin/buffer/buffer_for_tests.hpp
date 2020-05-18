@@ -2,80 +2,79 @@
 #define marvin_buffer_for_tests_hpp
 
 #include <marvin/buffer/buffer_allocator.hpp>
-#include <marvin/buffer/contig_buffer_t.hpp>
-#include <marvin/buffer/contig_buffer_factory_t.hpp>
-#include <marvin/buffer/buffer_chain_t.hpp>
+#include <marvin/buffer/contig_buffer.hpp>
+#include <marvin/buffer/contig_buffer_factory.hpp>
+#include <marvin/buffer/buffer_chain.hpp>
 namespace Marvin {
 /**
  * These functons provides a conveniently accessible strategy and factory for testing purposes
  * using the old interface that does not require an explicit strategy. This saved me
  * hundereds of edits of the unit test code
  */
-ContigBufferFactoryT &getTestFactory()
+inline ContigBufferFactoryT &getTestFactory()
 {
     static BufferMallocator strategy;
     static ContigBufferFactoryT factory(strategy);
     return factory;
 }
 
-BufferChainT::SPtr makeBufferChainSPtr()
+inline BufferChain::SPtr makeBufferChainSPtr()
 {
-    return std::make_shared<BufferChainT>(getTestFactory());
+    return std::make_shared<BufferChain>(getTestFactory());
 }
-BufferChainT::SPtr makeBufferChainSPtr(ContigBufferFactoryT& factory)
+inline BufferChain::SPtr makeBufferChainSPtr(ContigBufferFactoryT& factory)
 {
-    BufferChainT::SPtr sp = std::make_shared<BufferChainT>(getTestFactory());
+    BufferChain::SPtr sp = std::make_shared<BufferChain>(getTestFactory());
     return sp;
 }
-BufferChainT::SPtr makeBufferChainSPtr(BufferChainT&& other)
+inline BufferChain::SPtr makeBufferChainSPtr(BufferChain&& other)
 {
-    BufferChainT::SPtr sp = std::make_shared<BufferChainT>(std::move(other));
+    BufferChain::SPtr sp = std::make_shared<BufferChain>(std::move(other));
     return sp;
 }
-BufferChainT::SPtr makeBufferChainSPtr(std::string& s)
+inline BufferChain::SPtr makeBufferChainSPtr(std::string& s)
 {
-    BufferChainT::SPtr sp = std::make_shared<BufferChainT>(getTestFactory());
+    BufferChain::SPtr sp = std::make_shared<BufferChain>(getTestFactory());
     sp->push_back(getTestFactory().makeSPtr(s));
     return sp;
 }
-BufferChainT::SPtr makeBufferChainSPtr(ContigBufferT& cb)
+inline BufferChain::SPtr makeBufferChainSPtr(ContigBuffer& cb)
 {
-    BufferChainT::SPtr sp = std::make_shared<BufferChainT>(getTestFactory());
+    BufferChain::SPtr sp = std::make_shared<BufferChain>(getTestFactory());
     sp->push_back(getTestFactory().makeSPtr(cb));
     return sp;
 }
-BufferChainT::SPtr makeBufferChainSPtr(ContigBufferT::SPtr cb_sptr)
+inline BufferChain::SPtr makeBufferChainSPtr(ContigBuffer::SPtr cb_sptr)
 {
-    BufferChainT::SPtr sp = std::make_shared<BufferChainT>(getTestFactory());
+    BufferChain::SPtr sp = std::make_shared<BufferChain>(getTestFactory());
     sp->push_back(cb_sptr);
     return sp;
 }
 
-ContigBufferT::SPtr makeContigBufferTSPtr()
+inline ContigBuffer::SPtr makeContigBufferSPtr()
 {
     return getTestFactory().makeSPtr();
 }
-ContigBufferT::SPtr makeContigBufferTSPtr(std::size_t capacity)
+inline ContigBuffer::SPtr makeContigBufferSPtr(std::size_t capacity)
 {
-    std::size_t sz = (capacity > ContigBufferT::min_buffer_size) ? capacity : ContigBufferT::min_buffer_size ;
-    return getTestFactory().makeSPtr((sz));
+    return getTestFactory().makeSPtr((capacity));
 }
-ContigBufferT::SPtr makeContigBufferTSPtr(std::string s)
+inline ContigBuffer::SPtr makeContigBufferSPtr(std::string s)
 {
-    ContigBufferT::SPtr mbp = getTestFactory().makeSPtr(s.size());
-    mbp->append((void*) s.c_str(), s.size());
+    ContigBuffer::SPtr mbp = getTestFactory().makeSPtr(s);
+//    mbp->append((void*) s.c_str(), s.size());
     return mbp;
 }
-ContigBufferT::SPtr makeContigBufferTSPtr(void* mem, std::size_t size)
+inline ContigBuffer::SPtr makeContigBufferSPtr(void* mem, std::size_t size)
 {
-    ContigBufferT::SPtr mbp = getTestFactory().makeSPtr(size);
-    mbp->append(mem, size);
+    ContigBuffer::SPtr mbp = getTestFactory().makeSPtr(mem, size);
+//    mbp->append(mem, size);
     return mbp;
 }
-ContigBufferT::SPtr makeContigBufferTSPtr(ContigBufferT& mb)
+inline ContigBuffer::SPtr makeContigBufferSPtr(ContigBuffer& mb)
 {
-    ContigBufferT::SPtr mbp = getTestFactory().makeSPtr(mb.capacity());
-    mbp->append(mb.data(), mb.size());
+    ContigBuffer::SPtr mbp = getTestFactory().makeSPtr(mb);
+//    mbp->append(mb.data(), mb.size());
     return mbp;
 }
 

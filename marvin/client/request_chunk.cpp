@@ -29,7 +29,7 @@ using ::boost::asio::streambuf;
 //--------------------------------------------------------------------------------
 // start sequence of functions to write a the headers and a single body buffer.
 //--------------------------------------------------------------------------------
-void Request::p_internal_write_body_chunk(Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::p_internal_write_body_chunk(Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
 
 }

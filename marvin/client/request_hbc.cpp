@@ -32,7 +32,7 @@ using ::boost::asio::streambuf;
 // start sequence of functions to write a the headers and a single body buffer.
 // hbc = headers_and_body_chunk
 //--------------------------------------------------------------------------------
-void Request::p_hbc_check_connected(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::p_hbc_check_connected(BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
     if(m_is_connected) {
         p_hbc_write(body_chunk_chain_sptr, cb);
@@ -40,7 +40,7 @@ void Request::p_hbc_check_connected(BufferChainSPtr body_chunk_chain_sptr, Write
         p_hbc_connect(body_chunk_chain_sptr, cb);
     }
 }
-void Request::p_hbc_connect(::Marvin::BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
+void Request::p_hbc_connect(::Marvin::BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType cb)
 {
     TROG_INFO("", (long)this);
     using namespace Marvin;
@@ -53,7 +53,7 @@ void Request::p_hbc_connect(::Marvin::BufferChainSPtr body_chunk_chain_sptr, Wri
         }
     });
 }
-void Request::p_hbc_write(BufferChainSPtr body_chunk_chain_sptr, WriteBodyDataCallbackType write_headers_cb)
+void Request::p_hbc_write(BufferChain::SPtr body_chunk_chain_sptr, WriteBodyDataCallbackType write_headers_cb)
 {
     p_assert_not_headers_written();
     p_add_chunked_encoding_header();

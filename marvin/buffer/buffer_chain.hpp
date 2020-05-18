@@ -6,16 +6,17 @@
 #include <vector>
 #include <boost/asio/buffer.hpp>
 #include <marvin/buffer/contig_buffer.hpp>
+#include <marvin/buffer/contig_buffer_factory.hpp>
 
 namespace Marvin {
-using AsioConstBufferSeq = std::vector<boost::asio::const_buffer>;
-using AsioMutableBufferSeq = std::vector<boost::asio::mutable_buffer>;
 
-class BufferChainT
+class BufferChain
 {
     public:
-        using SPtr = std::shared_ptr<BufferChainT>;
-        using CBuf = ContigBufferT;
+        using SPtr = std::shared_ptr<BufferChain>;
+        using CBuf = ContigBuffer;
+        using AsioConstBufferSeq = std::vector<boost::asio::const_buffer>;
+        using AsioMutableBufferSeq = std::vector<boost::asio::mutable_buffer>;
 
     private:
         using Factory = ContigBufferFactoryT;
@@ -30,58 +31,58 @@ class BufferChainT
 #if 0
         SPtr makeSPtr(ContigBufferFactoryT& factory)
         {
-            SPtr sp = std::make_shared<BufferChainT>(m_buf_factory);
+            SPtr sp = std::make_shared<BufferChain>(m_buf_factory);
             return sp;
         }
-        SPtr makeSPtr(BufferChainT&& other)
+        SPtr makeSPtr(BufferChain&& other)
         {
-            SPtr sp = std::make_shared<BufferChainT>(std::move(other));
+            SPtr sp = std::make_shared<BufferChain>(std::move(other));
             return sp;
         }
         SPtr makeSPtr(ContigBufferFactoryT& factory, std::string& s)
         {
-            SPtr sp = std::make_shared<BufferChainT>();
+            SPtr sp = std::make_shared<BufferChain>();
             sp->push_back(m_buf_factory.makeSPtr(s));
             return sp;
         }
         SPtr makeSPtr(ContigBufferFactoryT& factory, CBuf& cb)
         {
-            SPtr sp = std::make_shared<BufferChainT>();
+            SPtr sp = std::make_shared<BufferChain>();
             sp->push_back(m_buf_factory.makeSPtr(cb));
             return sp;
         }
         SPtr makeSPtr(ContigBufferFactoryT& factory, CBuf::SPtr cb_sptr)
         {
-            SPtr sp = std::make_shared<BufferChainT>();
+            SPtr sp = std::make_shared<BufferChain>();
             sp->push_back(cb_sptr);
             return sp;
         }
 #endif
-        /** constructors adnassignment operators */    
-        BufferChainT(Factory& factory): m_buf_factory(factory)
+        /** constructors and assignment operators */
+        BufferChain(Factory& factory): m_buf_factory(factory)
         {
-            m_chain = std::vector<ContigBufferT::SPtr>();
+            m_chain = std::vector<ContigBuffer::SPtr>();
             m_size = 0;
         }
-        BufferChainT(BufferChainT& other): m_buf_factory(other.m_buf_factory)
+        BufferChain(BufferChain& other): m_buf_factory(other.m_buf_factory)
         {
             m_size = 0;
-            for (ContigBufferT::SPtr mb_sptr: other.m_chain) {
+            for (ContigBuffer::SPtr mb_sptr: other.m_chain) {
                 this->push_back(m_buf_factory.makeSPtr(*mb_sptr));
             }
         }
-        BufferChainT& operator =(BufferChainT& other)
+        BufferChain& operator =(BufferChain& other)
         {
             if(&other == this) {
                 return *this;
             }
             m_size = 0;
-            for (ContigBufferT::SPtr mb_sptr: other.m_chain) {
+            for (ContigBuffer::SPtr mb_sptr: other.m_chain) {
                 this->push_back(m_buf_factory.makeSPtr(*mb_sptr));
             }
             return *this;
         }
-        BufferChainT(BufferChainT&& other): m_buf_factory(other.m_buf_factory)
+        BufferChain(BufferChain&& other): m_buf_factory(other.m_buf_factory)
         {
             m_size = other.m_size;
             m_chain = std::move(other.m_chain);
@@ -91,7 +92,7 @@ class BufferChainT
             // m_chain = std::move(other.m_chain);
             // other.m_size = 0;
         }
-        BufferChainT& operator =(BufferChainT&& other)
+        BufferChain& operator =(BufferChain&& other)
         {
             if (&other == this) {
                 return *this;
@@ -155,7 +156,7 @@ class BufferChainT
         {
             return m_chain.size();
         }
-        ContigBufferT& block_at(std::size_t index)
+        ContigBuffer& block_at(std::size_t index)
         {
             if (index >= m_chain.size()) {
                     MARVIN_THROW("index out of range");
@@ -192,7 +193,7 @@ class BufferChainT
         #endif
         }
 
-        friend std::ostream& operator <<(std::ostream &os, BufferChainT& b)
+        friend std::ostream& operator <<(std::ostream &os, BufferChain& b)
         {
             if(b.size() == 0){
                 os << "Empty ";
@@ -211,12 +212,12 @@ class BufferChainT
             createAsioBufferSequence();
             return this->m_asio_chain;
         }
-        friend AsioConstBufferSeq& buffer_chain_to_const_buffer_sequence(BufferChainT& bchain)
+        friend AsioConstBufferSeq& buffer_chain_to_const_buffer_sequence(BufferChain& bchain)
         {
             bchain.createAsioBufferSequence();
             return bchain.m_asio_chain;
         }
-        friend AsioConstBufferSeq& buffer_chain_to_mutable_buffer_sequence(BufferChainT& bchain)
+        friend AsioConstBufferSeq& buffer_chain_to_mutable_buffer_sequence(BufferChain& bchain)
         {
             bchain.createAsioBufferSequence();
             return bchain.m_asio_chain;
@@ -224,7 +225,7 @@ class BufferChainT
 
 };
 
-inline std::string buffersequence_to_string(AsioConstBufferSeq& mutbufs)
+inline std::string buffersequence_to_string(BufferChain::AsioConstBufferSeq& mutbufs)
 {
     std::string s;
     for(auto& m: mutbufs) {
