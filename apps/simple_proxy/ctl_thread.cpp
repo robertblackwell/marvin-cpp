@@ -58,8 +58,8 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->header(HeaderFields::ContentLength, std::to_string(body.length() ));
     return msg;
 }
-CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThread* ctl_thread_ptr)
-: m_io(io), m_mitm_thread_ref(mitm_thread_ref), m_ctl_thread_ptr(ctl_thread_ptr)
+CtlApp::CtlApp(boost::asio::io_service& io, MitmThread::SPtr mitm_thread_sptr, CtlThread* ctl_thread_ptr)
+: m_io(io), m_mitm_thread_sptr(mitm_thread_sptr), m_ctl_thread_ptr(ctl_thread_ptr)
 {
     m_dispatch_table.add(std::regex("/stop"),[this](MessageReaderSPtr rdr) 
     {
@@ -231,7 +231,7 @@ void CtlApp::p_handle_stop(std::vector<std::string>& bits)
         if (err) {
             p_on_write_error(err);
         } else {
-            m_mitm_thread_ref.terminate();
+            m_mitm_thread_sptr->terminate();
             m_ctl_thread_ptr->terminate();
             p_req_resp_cycle_complete();
         }
@@ -241,8 +241,8 @@ void CtlApp::p_handle_list_filters(std::vector<std::string>& bits)
 {
     std::string body = "stop not yet implemented";
     std::ostringstream os;
-    std::vector<int>& ports = m_mitm_thread_ref.get_https_ports();
-    std::vector<std::string>& hosts = m_mitm_thread_ref.get_https_hosts();
+    std::vector<int>& ports = m_mitm_thread_sptr->get_https_ports();
+    std::vector<std::string>& hosts = m_mitm_thread_sptr->get_https_hosts();
     os << "Https ports: " << std::endl;
     for(int i = 0; i < ports.size(); i++) {
         os << "port: " << ports[i] << std::endl; 

@@ -75,15 +75,15 @@ int main(int argc, const char * argv[])
         https_ports_opt = boost::none;
     }
 
-//    CaptureFilter::SPtr capture_filter_sptr;
+    CaptureFilter::SPtr capture_filter_sptr;
 
     if(app.count("--https-mitm-regexes")) {
         https_regexes_opt = (https_mitm_regexes);
-//        capture_filter_sptr = std::make_shared<CaptureFilter>(https_mitm_regexes);
+        capture_filter_sptr = std::make_shared<CaptureFilter>(https_mitm_regexes);
     } else {
         https_regexes_opt = boost::none;
         std::vector<std::string> dummy{".*"};
-//        capture_filter_sptr = std::make_shared<CaptureFilter>(dummy);
+        capture_filter_sptr = std::make_shared<CaptureFilter>(dummy);
     }
 
     auto xx =  app.count("--ctl-port");
@@ -97,19 +97,22 @@ int main(int argc, const char * argv[])
     std::cout << "\tMarvin home : " << marvin_home << std::endl;
 
     std::cout << "Simple proxy starting - listen on port" << proxy_port << std::endl;
-    Marvin::MitmThread mitm_thread(
-        proxy_port,
-        marvin_home,
-        https_regexes_opt,
-        https_ports_opt
-    );
 
-    Marvin::CtlThread ctl_thread(
-        ctl_port,
-        mitm_thread
-        );
+//    Marvin::MitmThread::SPtr mitm_thread_sptr;
+//
+//    Marvin::MitmThread mitm_thread(
+//        proxy_port,
+//        marvin_home,
+//        https_regexes_opt,
+//        https_ports_opt
+//    );
+
+    Marvin::CtlThread ctl_thread(ctl_port, proxy_port, marvin_home, capture_filter_sptr);
+
+//    mitm_thread.start();
+    ctl_thread.start();
 
     ctl_thread.join();
-    mitm_thread.join();
+//    mitm_thread.join();
 
 }

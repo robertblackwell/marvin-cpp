@@ -37,7 +37,12 @@ public:
     using Filters = std::list<std::string>;
 
     CaptureFilter(Filters initial): m_filters(initial){}
-    CaptureFilter(std::vector<std::string> strings);
+    CaptureFilter(std::vector<std::string> strings)
+    {
+        for(std::string& s: strings) {
+            m_filters.push_back(s);
+        }
+    }
 
     CaptureFilter(CaptureFilter const&)   = delete;
     void operator=(CaptureFilter const&)  = delete;
