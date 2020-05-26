@@ -48,12 +48,8 @@ public:
     void async_write_body_data(Marvin::ContigBuffer& data, WriteBodyDataHandler cb);
     void async_write_body_data(Marvin::BufferChain::SPtr chain_ptr, WriteBodyDataHandler cb);
     void async_write_body_data(boost::asio::const_buffer data, WriteBodyDataHandler cb);
-
     void async_write_trailers(Marvin::MessageBaseSPtr msg, WriteHeadersHandler cb);
-    
     void end();
-    
-    friend std::string trace_writer(MessageWriter& wrtr);
 
 protected:
     void p_async_write_full_body(WriteMessageHandler cb);

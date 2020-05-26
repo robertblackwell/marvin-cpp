@@ -12,8 +12,7 @@
 #include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
@@ -336,8 +335,6 @@ void Request::p_internal_write_message()
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     p_set_content_length();
-    TROG_INFO("",traceWriter(*m_wrtr));
-    
     assert(m_body_mbuffer_sptr != nullptr);
     auto req_str = m_current_request->str();
     m_wrtr->async_write(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){

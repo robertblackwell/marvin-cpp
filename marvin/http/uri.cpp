@@ -1,13 +1,9 @@
-//
-//  marvin_uri.cpp
-//  marvin
-//
-//  Created by ROBERT BLACKWELL on 1/2/18.
-//  Copyright © 2018 Blackwellapps. All rights reserved.
-//
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 #include <marvin/http/uri.hpp>
+
 using namespace Marvin;
 namespace Marvin{
     Uri::Uri(std::string uri_in)

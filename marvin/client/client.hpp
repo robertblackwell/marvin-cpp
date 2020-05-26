@@ -249,12 +249,6 @@ public:
     * @TODO - not sure we need this - just delete the client object
     */
     void close();
-    
-#pragma mark - friend utility functions
-   
-    friend std::string traceClient(Client& client);
-    friend std::string traceRequestMessage(Marvin::MessageBase& request);
-
 protected:
     void p_internal_connect();
     void p_internal_write();

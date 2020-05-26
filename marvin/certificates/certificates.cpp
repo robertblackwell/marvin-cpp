@@ -1,3 +1,6 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
 
 #include <marvin/certificates/certificates.hpp>
 #include <openssl/x509.h>                   // for X509_STORE_load_locations
@@ -8,9 +11,6 @@
 #include <boost/filesystem/path.hpp>        // for path
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
-
 #include <cert/cert_authority.hpp>          // for AuthoritySPtr
 #include <cert/cert_builder.hpp>            // for Builder
 #include <cert/cert_certificate.hpp>        // for Certificate

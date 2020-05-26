@@ -148,9 +148,6 @@ public:
     void close();
     
 #pragma mark - friend utility functions
-   
-    friend std::string traceRequest(Request& request);
-    friend std::string traceRequestMessage(Marvin::MessageBase& request);
 
 public:
     // internal paranoid tests    

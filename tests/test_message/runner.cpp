@@ -1,8 +1,7 @@
 
 #include <marvin/http/message_base.hpp>
 #include <marvin/message/message_reader.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 #include "runner.hpp"
 
 #include <doctest/doctest.h>
@@ -27,7 +26,6 @@ Testrunner::Testrunner(boost::asio::io_service& io, Marvin::ISocketSPtr rd_sock,
     : m_io(io),
     m_tcObj(tcObj)
 {
-    TROG_DEBUG("");
     m_conn = rd_sock;
     m_rdr = std::make_shared<Marvin::MessageReader>(m_conn);
     m_body = std::string("");
@@ -36,11 +34,9 @@ Testrunner::Testrunner(boost::asio::io_service& io, Marvin::ISocketSPtr rd_sock,
 }
 Testrunner::~Testrunner()
 {
-    TROG_DEBUG("");
 }
 void Testrunner::onMessage(Marvin::ErrorType er)
 {
-    TROG_DEBUG("");
     Marvin::ErrorType expected_err = m_tcObj.result_onheaders_err();
     std::string exp_s = expected_err.message();
     std::string ers = er.message();
@@ -69,7 +65,6 @@ void Testrunner::onMessage(Marvin::ErrorType er)
 */
 void Testrunner::run_FullMessageRead()
 {
-    TROG_DEBUG("getting started");
     m_rdr->readMessage([this](Marvin::ErrorType err)
     {
         Marvin::MessageBase msg{*m_rdr};

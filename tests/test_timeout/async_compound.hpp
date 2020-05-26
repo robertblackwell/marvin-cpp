@@ -7,8 +7,6 @@
 #include <marvin/connection/timeout.hpp>
 #include <doctest/doctest.h>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/configure_trog.hpp>
-// TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 class AsyncComposedOp
 {
@@ -85,10 +83,8 @@ public:
     {
         boost::system::error_code ec = err;
         std::string s = Marvin::make_error_description(ec);
-        TROG_DEBUG(" err: ", s);
         m_timeout.cancel_timeout(m_strand.wrap([this, err, ec, s]()
                                                {
-                                                   TROG_DEBUG(" err: ", s);
                                                    if (!err) {
                                                        m_result += m_op_2_result;
                                                        m_io.post(std::bind(m_composed_handler, m_result, err));

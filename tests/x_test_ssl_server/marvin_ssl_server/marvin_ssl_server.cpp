@@ -15,9 +15,6 @@
 #include <marvin/collector/collector_base.hpp>
 #include <marvin/server_v3/mitm_app.hpp>
 #include <marvin/http/message_factory.hpp>
-#include <marvin/configure_trog.hpp>
-
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 namespace Marvin {
 
 using namespace ::boost::filesystem;
@@ -114,7 +111,6 @@ typedef std::unique_ptr<SslApp> SslAppUPtr;
 int main( int argc, char* argv[] )
 {
     using namespace Marvin;
-    TROG_TRACE3("hello");
 
     std::vector<std::regex> re{std::regex("^ssllabs(.)*$")};
     std::vector<int> ports{443, 9443};

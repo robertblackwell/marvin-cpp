@@ -1,21 +1,24 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/connection/tunnel_handler.hpp>
 
 #include <memory>
 
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/connection/half_tunnel.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 
 namespace Marvin {
 
-std::string traceTunnel(TunnelHandlerUPtr t_ptr)
+std::string trace_tunnel(TunnelHandler::UPtr t_ptr)
 {
     std::stringstream ss;
     ss << "TNLH[" << std::hex << (long)(void*)t_ptr.get() << std::dec << "]: ";
     return ss.str();
 }
-std::string traceTunnel(TunnelHandlerSPtr t_ptr)
+std::string trace_tunnel(TunnelHandler::SPtr t_ptr)
 {
     std::stringstream ss;
     ss << "TNLH[" << std::hex << (long)(void*)t_ptr.get() << std::dec << "]: ";

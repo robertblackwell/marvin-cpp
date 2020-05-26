@@ -1,8 +1,4 @@
 
-#include <marvin/configure_trog.hpp>
-
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
-
 #include "connection.hpp"
 #include "client_connection_manager.hpp"
 
@@ -49,7 +45,6 @@ void ConnectionManager::asyncGetConnection(
 }
 void ConnectionManager::releaseConnection(Connection* conn)
 {
-    TROG_DEBUG("");
     delete conn;
 }
 void ConnectionManager::postSuccess(ConnectCallbackType cb, Connection* conn)

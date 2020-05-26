@@ -1,9 +1,12 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/server_v3/server_connection_manager.hpp>
 
 #include <unistd.h>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 
 namespace Marvin {
 

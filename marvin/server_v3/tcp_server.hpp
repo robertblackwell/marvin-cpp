@@ -84,6 +84,9 @@ public:
     ** when the server becomes fully functional.
     */
     void listen(long port, std::function<void()> ready_cb = nullptr);
+
+    boost::asio::io_context& get_io_context();
+
     void terminate();
 private:
 

@@ -10,12 +10,10 @@
 namespace Marvin {
 
 class TunnelHandler;
-/// \ingroup SocketIO
 using TunnelHandlerSPtr = std::shared_ptr<TunnelHandler> ;
-/// \ingroup SocketIO
 using TunnelHandlerUPtr = std::unique_ptr<TunnelHandler>;
-std::string traceTunnel(TunnelHandlerUPtr);
-std::string traceTunnel(TunnelHandlerSPtr);
+std::string trace_tunnel(TunnelHandlerUPtr);
+std::string trace_tunnel(TunnelHandlerSPtr);
 /**
 * \ingroup connection
 * \brief Combines two HalfTunnel objects to provide bi directional pipe between two end points.
@@ -23,6 +21,8 @@ std::string traceTunnel(TunnelHandlerSPtr);
 class TunnelHandler
 {
     public:
+        using SPtr = std::shared_ptr<TunnelHandler>;
+        using UPtr = std::unique_ptr<TunnelHandler>;
         TunnelHandler(
             boost::asio::io_service&    io,
             ISocketSPtr                 downStreamConnection,

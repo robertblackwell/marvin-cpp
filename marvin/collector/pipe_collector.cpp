@@ -1,3 +1,7 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/collector/pipe_collector.hpp>
 
 #include <iostream>
@@ -9,8 +13,6 @@
 #include <marvin/boost_stuff.hpp>
 #include <regex>
 #include <marvin/error_handler/error_handler.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 

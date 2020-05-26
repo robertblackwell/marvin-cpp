@@ -1,3 +1,7 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/message/full_msg_rdr.hpp>
 
 #include <iostream>
@@ -10,8 +14,7 @@
 
 #include <marvin/connection/socket_interface.hpp>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelDebug|Trog::LogLevelTrace4|Trog::LogLevelTrace3)
+
 
 namespace Marvin {
 

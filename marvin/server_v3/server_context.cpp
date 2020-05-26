@@ -1,10 +1,6 @@
-//
-//  server_context.cpp
-//  MarvinCpp
-//
-//  Created by ROBERT BLACKWELL on 12/10/17.
-//  Copyright © 2017 Blackwellapps. All rights reserved.
-//
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
 
 #include <marvin/server_v3/server_context.hpp>
 using namespace Marvin;

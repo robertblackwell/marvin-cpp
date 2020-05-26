@@ -2,6 +2,19 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/CLI11" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/CLI11/tests/mesonTest/subprojects/CLI11" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/Catch2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/cxxurl" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/doctest" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/http-parser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/json" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/trog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/urlparser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/clone/x509_certificate_library" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/stage/external_src/cxxurl" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/stage/external_src/http-parser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.smpl_cache/stage/external_src/urlparser" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/scripts/cloned_repos/CLI11" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/scripts/cloned_repos/CLI11/tests/mesonTest/subprojects/CLI11" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/scripts/cloned_repos/Catch2" vcs="Git" />
@@ -13,5 +26,6 @@
     <mapping directory="$PROJECT_DIR$/scripts/cloned_repos/simple_buffer" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/scripts/cloned_repos/trog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/scripts/cloned_repos/urlparser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor-2020_05_25_12_02/src/http-parser" vcs="Git" />
   </component>
 </project>

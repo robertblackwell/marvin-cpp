@@ -17,8 +17,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest/doctest.h>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 #include <marvin/connection/timeout.hpp>
 #define USE_STRANDx
 

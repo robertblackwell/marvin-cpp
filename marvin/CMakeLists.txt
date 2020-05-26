@@ -25,6 +25,8 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	collector/collector_base.hpp
 	collector/pipe_collector.hpp
 	collector/collector_interface.hpp
+	collector/capture_collector.hpp
+	collector/capture_filter.hpp
 
 
 	connection/half_tunnel.hpp
@@ -94,6 +96,7 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	collector/collector_base.cpp
 	collector/collector_interface.cpp
 	collector/pipe_collector.cpp
+	collector/capture_collector.cpp
 
 	connection/half_tunnel.cpp     		
 	connection/socket_factory.cpp		

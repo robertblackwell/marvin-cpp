@@ -1,12 +1,14 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/connection/timeout.hpp>
 
 #include <string>
 #include <cassert>
 
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/configure_trog.hpp>
 
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 using ::boost::asio::ip::tcp;

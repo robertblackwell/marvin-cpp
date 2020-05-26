@@ -1,7 +1,9 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/helpers/mitm.hpp>
 #include <boost/algorithm/string/trim.hpp>
-
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin::Helpers {
 
@@ -109,39 +111,6 @@ void make_upstream_request(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  r
     result->method(req->method());
 
     request_transform_common(result, req);
-    return;
-    // copy the headers
-    auto hdrs = req->headers();
-    std::set<std::string> dontCopyList{
-        Marvin::HeaderFields::Host,
-        Marvin::HeaderFields::ProxyConnection,
-        Marvin::HeaderFields::ProxyAuthorization,
-        Marvin::HeaderFields::ProxyAuthentication,
-        Marvin::HeaderFields::Connection,
-        Marvin::HeaderFields::ETag,
-        Marvin::HeaderFields::TransferEncoding,
-        Marvin::HeaderFields::TE,
-        Marvin::HeaderFields::Trailer,
-        Marvin::HeaderFields::Upgrade
-    };
-    // copy all headers except those in dontCopyList
-    HeaderFields::copy_except(hdrs, result->headers(), dontCopyList);
- 
-    if (auto hdropt = req->header(Marvin::HeaderFields::Connection)) {
-        std::string cv = hdropt.get();
-        remove_hop_by_hop(result, cv);
-    }
-
-    // no keep alive
-    result->header(Marvin::HeaderFields::Connection, Marvin::HeaderFields::ConnectionClose);
-    // no compression
-    result->header(Marvin::HeaderFields::AcceptEncoding, "identity");
-    result->header(Marvin::HeaderFields::TE, "");
-    // Http versions defaults to 1.1, so force it to the same as the request
-    result->version_minor(req->version_minor());
-    result->set_body(req->get_body_buffer_chain());
-//    result->header(Marvin::HeaderFields::ContentLength, std::to_string(req->getBody()->size()));
-
 }
 // https is a little different because when in mitm mode the client thinks
 // they have a direct connection rather than through proxy and hence the
@@ -160,56 +129,7 @@ void make_upstream_https_request(MessageBaseSPtr upstreamRequest, MessageReaderS
     }
     result->header(HeaderFields::Host, req->header(HeaderFields::Host).get());
     request_transform_common(result, req);
-    return;
-    int nh = req->headers().size();
-    for(int i = 0; i < nh; i++ ) {
-        auto y = req->headers().at_index(i);
-        result->header(y.key, y.value);
-    }
-    auto cb = req->get_body_buffer_chain();
-    result->set_body_buffer_chain(cb);
-    return;
-    Marvin::Uri tmp_uri(req->target());
-
-    apply_uri_non_proxy(upstreamRequest, tmp_uri);
-//    helpers::fillRequestFromUri(*upstreamRequest, tmp_url);
-    // filter out upgrade requests
-    assert( ! req->header("Upgrade") );
-    
-    // set the method
-    result->method(req->method());
-    // copy the headers
-    // should also test for manditory Host header
-    //
-    auto hdrs = req->headers();
-    std::set<std::string> dontCopyList{
-        Marvin::HeaderFields::Host,
-        Marvin::HeaderFields::ProxyConnection,
-        Marvin::HeaderFields::Connection,
-        Marvin::HeaderFields::ETag,
-        Marvin::HeaderFields::TransferEncoding
-    };
-    // copy all headers except those in dontCopyList
-    HeaderFields::copy_except(hdrs, result->headers(), dontCopyList);
-    //    Headers::filterNotInList(hdrs, dontCopyList, [result]( Marvin::Headers& hdrs, std::string k, std::string v) {
-//        result->header(k,v);
-//    });
-    if (auto hopt = req->header(Marvin::HeaderFields::Connection)) {
-        std::string cv = hopt.get();
-        remove_hop_by_hop(result, cv);
-    }
-    // set the uri and host header
-    // no keep alive
-    result->header(Marvin::HeaderFields::Connection, Marvin::HeaderFields::ConnectionClose);
-    result->header(Marvin::HeaderFields::AcceptEncoding, "identity");
-    result->header(Marvin::HeaderFields::TE, "");
-    // Http versions defaults to 1.1, so force it to the same as the request
-    result->version_minor(req->version_minor());
-    result->set_body(req->get_body_buffer_chain());
-//    result->header(Marvin::HeaderFields::ContentLength, std::to_string(req->getBody()->size()));
-
 }
-
 
 void make_downstream_good_response(MessageBaseSPtr downstream, MessageReaderSPtr responseSPtr )
 {

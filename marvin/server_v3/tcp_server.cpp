@@ -1,11 +1,14 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/server_v3/tcp_server.hpp>
 
 #include <thread>
 
 #include <marvin/error_handler/error_handler.hpp>
 #include <marvin/connection/socket_factory.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 
 namespace Marvin {
 
@@ -38,6 +41,8 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
 {
    TROG_TRACE_CTOR();
 }
+
+
 /**
 ** init
 */
@@ -70,6 +75,10 @@ TcpServer::TcpServer(RequestHandlerUPtrFactory factory):
 TcpServer::~TcpServer()
 {
    TROG_TRACE_CTOR();
+}
+boost::asio::io_context& TcpServer::get_io_context()
+{
+     return m_io;
 }
 void TcpServer::terminate()
 {

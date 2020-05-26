@@ -1,4 +1,7 @@
-//
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/client/client.hpp>
 
 #include <cassert>                                      // for assert
@@ -14,8 +17,6 @@
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
 #include <marvin/error_handler/error_handler.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }
@@ -145,8 +146,7 @@ void Client::p_internal_write()
     // we are about to write the entire request message
     // so make sure we have the content-length correct
     p_set_content_length();
-    TROG_INFO("", trace_writer(*m_wrtr));
-    
+
     assert(m_body_mbuffer_sptr != nullptr);
     m_wrtr->async_write(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
         if (!ec) {

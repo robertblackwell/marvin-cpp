@@ -1,6 +1,6 @@
-//
-// The main entry point for Marvin - a mitm proxy for http/https 
-//
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
 
 
 #include <iostream>
@@ -14,10 +14,6 @@
 #include <cert/cert_store.hpp>
 #include <marvin/certificates/certificates.hpp>
 #include <marvin/certificates/env_utils.hpp>
-
-#include <marvin/configure_trog.hpp>
-TROG_SET_GLOBAL_LEVEL(Trog::LogLevelVerbose)
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 
 int main(int argc, const char * argv[])

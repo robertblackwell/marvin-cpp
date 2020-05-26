@@ -1,3 +1,8 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+#include <marvin/server_v3/adapter.hpp>
+
 
 #include <iostream>
 #include <sstream>
@@ -6,8 +11,7 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <json/json.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include<uri-parser/UriParser.hpp>
@@ -16,7 +20,6 @@ TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/server_v3/http_server.hpp>
 #include <marvin/server_v3/request_handler_interface.hpp>
-#include <marvin/server_v3/adapter.hpp>
 
 using namespace Marvin;
 using namespace Http;

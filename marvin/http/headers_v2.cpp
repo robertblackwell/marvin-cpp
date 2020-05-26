@@ -1,8 +1,13 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
+#include <marvin/http/headers_v2.hpp>
+
 #include <set>
 #include <regex>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
-#include <marvin/http/headers_v2.hpp>
 
 namespace {
     void toupper(std::string& s ) {

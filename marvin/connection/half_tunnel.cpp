@@ -1,7 +1,8 @@
-#include <marvin/connection/half_tunnel.hpp>
-
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
 #include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
+#include <marvin/connection/half_tunnel.hpp>
 
 namespace Marvin {
 

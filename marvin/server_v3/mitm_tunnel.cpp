@@ -1,3 +1,7 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
 #include <openssl/ossl_typ.h>           // for X509_STORE
@@ -13,8 +17,7 @@
 #include <marvin/helpers/mitm.hpp>
 #include <marvin/http/message_factory.hpp>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 
 
 namespace Marvin {

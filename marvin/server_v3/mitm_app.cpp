@@ -1,3 +1,7 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+#include <regex>
 #include <marvin/server_v3/mitm_app.hpp>
 #include <vector>
 #include <marvin/http/message_factory.hpp>
@@ -8,11 +12,6 @@
 #include <marvin/server_v3/mitm_http.hpp>
 #include <marvin/server_v3/mitm_tunnel.hpp>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
-
-
-
 namespace Marvin {
 
 enum class ConnectAction{
@@ -22,42 +21,46 @@ enum class ConnectAction{
 };
 
 
-std::vector<std::regex> MitmApp::s_https_hosts = std::vector<std::regex>();
-std::vector<std::string> MitmApp::s_https_host_strings = std::vector<std::string>();
-std::vector<int> MitmApp::s_https_ports = std::vector<int>();
+std::vector<std::string> MitmApp::s_https_host_strings = {
+    ".*hackernoon\\.com",
+    ".*youtube.*",
+    ".*geeksforgeeks.*",
+    ".*bankofamerica.*",
+    ".*github.*"
+};
 
-void MitmApp::configSet_HttpsHosts(std::vector<std::regex> re)
-{
-    s_https_hosts = re;
-}
+//void MitmApp::configSet_HttpsHosts(std::vector<std::regex> re)
+//{
+//    s_https_hosts = re;
+//}
 void MitmApp::configSet_HttpsHosts(std::vector<std::string> re_strings)
 {
     s_https_host_strings = re_strings;
     std::vector<std::regex> regexes;
-    for( auto s: re_strings) {
-        regexes.push_back(std::regex(s));
-    }
-    s_https_hosts = regexes;
+//    for( auto s: re_strings) {
+//        regexes.push_back(std::regex(s));
+//    }
+//    s_https_hosts = regexes;
 }
 std::vector<std::string>& MitmApp::configGet_HttpsHosts()
 {
     return s_https_host_strings;
 }
 
-void MitmApp::configSet_HttpsPorts(std::vector<int> ports)
-{
-    s_https_ports = ports;
-}
-std::vector<int>& MitmApp::configGet_HttpsPorts()
-{
-    return s_https_ports;
-} 
+//void MitmApp::configSet_HttpsPorts(std::vector<int> ports)
+//{
+//    s_https_ports = ports;
+//}
+//std::vector<int>& MitmApp::configGet_HttpsPorts()
+//{
+//    return s_https_ports;
+//}
 MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_io(io)
 {
    TROG_INFO("constructor");
    TROG_TRACE_CTOR();
-    m_https_hosts = s_https_hosts;
-    m_https_ports = s_https_ports;
+//    m_https_hosts = s_https_hosts;
+//    m_https_ports = s_https_ports;
     m_collector_sptr = collector_sptr;
 }
 
@@ -228,32 +231,39 @@ void MitmApp::p_log_error(std::string label, Marvin::ErrorType err)
  */
 ConnectAction MitmApp::p_determine_action(std::string host, std::string port)
 {
-    return ConnectAction::MITM;
-    std::vector<std::regex>  regexs = this->m_https_hosts;
-    std::vector<int>         ports  = this->m_https_ports;
-    std::vector<std::string> mitm_hosts{
-        "hackernoon.com",
-        "www.youtube.com",
-        "geeksforgeeks.org",
-        "www.geeksforgeeks.org",
-        "www.bankofamerica.com",
-        "bankofamerica.com",
-        "www.github.com",
-        "github.com"
-    };
-    int index;
-    bool found = false;
-    for(index = 0; index < mitm_hosts.size(); index++){
-        if (mitm_hosts[index] == host) {
-            found = true;
-            break;
+//    return ConnectAction::MITM;
+    std::vector<std::string>  regex_strs = this->s_https_host_strings;
+    for( auto re_str: regex_strs) {
+        std::regex e{re_str};
+        if (std::regex_match(host, e)) {
+            return ConnectAction::MITM;
         }
     }
-    /// !!! this needs to be upgraded
-    if ((std::stoi(port) == 443) && found) {
-        return ConnectAction::MITM;
-    }
     return ConnectAction::TUNNEL;
+//    std::vector<int>         ports  = this->m_https_ports;
+//    std::vector<std::string> mitm_hosts{
+//        "hackernoon.com",
+//        "www.youtube.com",
+//        "geeksforgeeks.org",
+//        "www.geeksforgeeks.org",
+//        "www.bankofamerica.com",
+//        "bankofamerica.com",
+//        "www.github.com",
+//        "github.com"
+//    };
+//    int index;
+//    bool found = false;
+//    for(index = 0; index < mitm_hosts.size(); index++){
+//        if (mitm_hosts[index] == host) {
+//            found = true;
+//            break;
+//        }
+//    }
+//    /// !!! this needs to be upgraded
+//    if ((std::stoi(port) == 443) && found) {
+//        return ConnectAction::MITM;
+//    }
+//    return ConnectAction::TUNNEL;
 }
 
 } // namespace Marvin

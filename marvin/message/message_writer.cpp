@@ -1,24 +1,14 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include <marvin/message/message_writer.hpp>
 
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <exception>
-#include <marvin/configure_trog.hpp>
 
 namespace Marvin {
-
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
-
-std::string trace_writer(MessageWriter& writer)
-{
-    std::stringstream ss;
-//    ss  << traceMessageV2(writer)
-//        << "[" << writer._haveContent << "]"
-//        << " body.len: " << writer._bodyContent.size() ;
-//    std::stringstream ss;
-//    ss << "Just testing";
-    return ss.str();
-}
 
 MessageWriter::MessageWriter(ISocketSPtr write_sock): m_io(write_sock->get_io_context()), m_write_sock(write_sock)
 {

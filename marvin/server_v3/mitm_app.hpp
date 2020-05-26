@@ -144,8 +144,6 @@ class MitmApp : public Marvin::RequestHandlerInterface
         // void p_response502Badgateway(MessageWriter& writer);
 
         static std::vector<std::string>     s_https_host_strings;
-        static std::vector<std::regex>      s_https_hosts;
-        static std::vector<int>             s_https_ports;
         /// regexs to define hosts that require mitm not tunnel
         std::vector<std::regex>             m_https_hosts;
         /// list of port numbers that can be https mitm'd rather than tunneled

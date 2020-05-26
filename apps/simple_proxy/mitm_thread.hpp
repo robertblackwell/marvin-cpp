@@ -27,11 +27,10 @@ class MitmThread
     {
         long port = proxy_port;
 
-        std::vector<std::string> re_strs{std::string("^ssllabs(.)*$")};
-        std::vector<int> ports{443, 9443};
-        MitmApp::configSet_HttpsPorts(ports);
-        MitmApp::configSet_HttpsHosts(re_strs);
-
+//        std::vector<std::string> re_strs{std::string("^ssllabs(.)*$")};
+//        std::vector<int> ports{443, 9443};
+//        MitmApp::configSet_HttpsPorts(ports);
+//        MitmApp::configSet_HttpsHosts(re_strs);
 
         std::function<void(void*)> proxy_thread_func = [this, port](void* param) {
             m_server_uptr = std::make_unique<Marvin::TcpServer>([](boost::asio::io_service& io) {
@@ -61,7 +60,8 @@ class MitmThread
     }
     std::vector<int>& get_https_ports()
     {
-        return MitmApp::configGet_HttpsPorts();
+        static std::vector<int> x{};
+        return x; //return MitmApp::configGet_HttpsPorts();
     }
     void terminate() {
         m_server_uptr->terminate();

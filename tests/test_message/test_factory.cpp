@@ -7,8 +7,7 @@
 #include <doctest/doctest.h>
 
 #include <marvin/http/message_base.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 
 #include <marvin/http/uri.hpp>
 #include <marvin/http/message_base.hpp>

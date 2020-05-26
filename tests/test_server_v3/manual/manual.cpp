@@ -15,8 +15,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/server_v3/adapter.hpp>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn | Trog::LogLevelCTorTrace | Trog::LogLevelTrace3)
+
 
 #include <marvin/server_v3/timer.hpp>
 

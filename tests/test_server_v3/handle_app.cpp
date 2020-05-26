@@ -8,8 +8,7 @@
 #include <json/json.hpp>
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include<uri-parser/UriParser.hpp>
@@ -111,8 +110,6 @@ void AppHandler::p_on_completed()
 /// determine whether to callback to the server or start another read/write cycle
 void AppHandler::p_req_resp_cycle_complete()
 {
-    // assume all connections are persistent
-    TROG_WARN("AppHandler::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
     auto hopt = m_rdr->header(HeaderFields::Connection);
@@ -131,13 +128,11 @@ void AppHandler::p_req_resp_cycle_complete()
 }
 void AppHandler::p_on_read_error(ErrorType err)
 {
-    TROG_WARN("Adapter p_on_read_error : ", err.message());
     // m_socket_sptr->close();
     m_done_callback();
 }
 void AppHandler::p_on_write_error(ErrorType err)
 {
-    TROG_WARN("Adapter p_on_write_error : ", err.message());
     // m_socket_sptr->close();
     m_done_callback();
 }

@@ -1,3 +1,7 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
 #include "mock_socket.hpp"
 
 #include <iostream>
@@ -7,8 +11,8 @@
 #include <marvin/configure_trog.hpp>
 #include <openssl/x509.h>
 #include <cert/cert_certificate.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelDebug)
 #include "testcase.hpp"
+
 namespace Marvin {
 namespace Tests {
 namespace Message {

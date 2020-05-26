@@ -1,0 +1,40 @@
+{
+
+  "project_name": "marvin++",
+  "source_dir_name": "marvin",
+  "dependencies": [
+    {
+      "name": "doctest", "version": "2.3.7"
+    },
+    { 
+      "name": "catch2", "version": "v2.12.1"
+    },
+    { 
+      "name": "cli11", "version": "v1.9.0"
+    },
+    { 
+      "name": "nlohmann_json", "version": "v3.7.3"
+    },
+    { 
+      "name": "cxxurl", "version": "xx"
+    },
+    { 
+      "name": "nodejs_http_parser", "version": "v2.9.4"
+    },
+    {
+      "name": "uri-parser", "version": "xx"
+    },
+    { 
+      "name": "trog", "version": "v2.0.0"
+    },
+    { 
+      "name": "openssl", "version": "1.1.1f"
+    },
+    { 
+      "name": "boost", "version": "1.71.0"
+    },
+    { 
+      "name": "cert_lib", "version": "v0.1.0"
+    }
+  ]
+}

@@ -15,14 +15,11 @@ Overall plan for the remainder of the projec:
     ☐ coding standards
 
 Polishing:
-  ☐ CLEANUP - callback typedefs are a mess cleanup
-  ☐ CLEANUP - in conjunction with callback typedefs - change to snake case on public methods
-  ☐ CLEANUP - all the stuff that tries to turn objects into strings for tracing purposes - its a mess
   ☐ need a documentation build step and start putting in comments
   ☐ keep tidying the code MBuffer/BufferChain still uses variable_ or _variable, simple_buffer still looks strange mixed in with all the C++
   ☐ Need a good readme
 Next step:
-  ☐ amend buffer strategies to consider the size of successful reads as it make no sense allocate buffers much bigger than the largest successful read
+  ☐ AMEND buffer strategies to consider the size of successful reads as it make no sense allocate buffers much bigger than the largest successful read. Based on observations my dev machine does not deliver read_some results greater than 25,000 bytes. Hence the current upper limit of buffer size is way too big. Essential to tune based on experience.
   ☐ review message writer - simplify like we have done with message reader
   ☐ parsing needs to test parse errors, connect and upgrade
   ☐ command interface to simple_mitm - finish up the first phase of this - its close
@@ -37,7 +34,7 @@ Next step:
   ☐ need to detect and deny upgrade requests. Might be good to distinguish between http/2 and websocket upgrades
 
 Complete-make a usefull app:
-  ☐ make a websocket servce inside simple_proxy with a cache of collected exchanges
+  ☐ make a websocket service inside simple_proxy with a cache of collected exchanges
   ☐ Collector - run in another thread so that can spend time doing filtering and formatting
   ☐ use a browser - its the simplest think about a script/app for watcing the output
   ☐ pretty print json, html, xml - have a dynamic list of content types to pretty print
@@ -56,6 +53,11 @@ Bugs:
 ☐ messagereader does not read trailers
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ upgrade to latests Trog v2.0.0 @done (20-05-25 12:27) @project(Next step)
+ ✔ smpl.py - setup in marvin++ and do a build - transition to smpl.py @done (20-05-25 12:27) @project(Next step)
+ ✔ CLEANUP - in conjunction with callback typedefs - change to snake case on public methods @done (20-05-18 14:11) @project(Polishing)
+ ✔ CLEANUP - callback typedefs are a mess cleanup @done (20-05-18 14:11) @project(Polishing)
+ ✔ CLEANUP - all the stuff that tries to turn objects into strings for tracing purposes - its a mess @done (20-05-18 14:11) @project(Polishing)
  ✔ formalize buffer strategy - for streambuf and ContigBuffer @done (20-05-18 10:34) @project(Next step)
  ✔ add shutdown write to connection and meassage rdr wrtr and research adding - peek for zero bytes to test a connection is open - this would be added to a reader. @done (20-05-16 15:25)
  ✔ upstream roundtrip does not adequately configure headers. Particularly https upstream @done (20-05-16 15:19) @project(Next step)

@@ -17,8 +17,7 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/message_factory.hpp>
 #include <marvin/client/client.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/socket_factory.hpp>

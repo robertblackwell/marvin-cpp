@@ -12,8 +12,7 @@
 #include <doctest/doctest.h>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/headers_v2.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
+
 namespace Http {
     class HeadersIter;
 

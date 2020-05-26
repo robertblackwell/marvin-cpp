@@ -1,3 +1,8 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
+
 #include <marvin/message/message_reader.hpp>
 
 #include <iostream>
@@ -8,9 +13,7 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
 #include <marvin/error_handler/error_handler.hpp>
-#include <marvin/configure_trog.hpp>
 
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 #include <marvin/connection/socket_interface.hpp>
 

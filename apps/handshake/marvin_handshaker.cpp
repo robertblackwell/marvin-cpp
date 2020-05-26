@@ -1,3 +1,6 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
 
 #include "marvin_handshaker.hpp"
 
@@ -14,8 +17,6 @@
 #include <marvin/certificates/certificates.hpp>
 #include <marvin/helpers/mitm.hpp>
 #include <marvin/http/message_factory.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace3)
 
 
 namespace Marvin {

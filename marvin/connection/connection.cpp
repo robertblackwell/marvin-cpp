@@ -1,3 +1,9 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
+
+#include <marvin/connection/connection.hpp>
+
 #include <ostream>
 #include <string>
 #include <cassert>
@@ -5,10 +11,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/error_handler/error_handler.hpp>
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn|Trog::LogLevelTrace4)
 
-#include <marvin/connection/connection.hpp>
 namespace Marvin {
 using ::boost::asio::ip::tcp;
 using ::boost::bind;

@@ -2,6 +2,9 @@
 // The main entry point for Marvin - a mitm proxy for http/https 
 //
 
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
 
 #include <marvin/collector/collector_base.hpp>
 
@@ -16,8 +19,6 @@
 #include <boost/asio/detail/impl/strand_service.hpp>    // for strand_servic...
 #include <boost/asio/impl/io_context.hpp>               // for io_context::post
 #include <marvin/buffer/buffer.hpp>               
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 
 namespace Marvin {
 

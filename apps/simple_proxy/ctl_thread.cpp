@@ -1,3 +1,6 @@
+#include <trog/loglevel.hpp>
+#define TROG_FILE_LEVEL TROG_LEVEL_WARN
+#include <marvin/configure_trog.hpp>
 
 #include "ctl_thread.hpp"
 #include "mitm_thread.hpp"
@@ -10,8 +13,6 @@
 #include <json/json.hpp>
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/configure_trog.hpp>
-TROG_SET_FILE_LEVEL(Trog::LogLevelWarn)
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include<uri-parser/UriParser.hpp>

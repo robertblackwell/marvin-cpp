@@ -11,11 +11,13 @@
 #include <boost/filesystem.hpp>
 #include <CLI/CLI.hpp>
 #include <marvin/certificates/certificates.hpp>
+#include <marvin/collector//capture_filter.hpp>
+#include <marvin//collector//capture_collector.hpp>
 #include "ctl_thread.hpp"
 #include "mitm_thread.hpp"
 
 namespace bf = boost::filesystem;
-
+using namespace Marvin;
 
 int main(int argc, const char * argv[])
 { 
@@ -49,7 +51,6 @@ int main(int argc, const char * argv[])
     if(!app.count("--proxy-port")) {
         proxy_port = 9992;
     }
-
     auto x = app.count("--marvin-home");
     if(!app.count("--marvin-home")) {
         std::cout << "Error: a value is mandatory for the option --marvin-home. "  << std::endl;
@@ -73,10 +74,16 @@ int main(int argc, const char * argv[])
     } else {
         https_ports_opt = boost::none;
     }
+
+//    CaptureFilter::SPtr capture_filter_sptr;
+
     if(app.count("--https-mitm-regexes")) {
         https_regexes_opt = (https_mitm_regexes);
+//        capture_filter_sptr = std::make_shared<CaptureFilter>(https_mitm_regexes);
     } else {
         https_regexes_opt = boost::none;
+        std::vector<std::string> dummy{".*"};
+//        capture_filter_sptr = std::make_shared<CaptureFilter>(dummy);
     }
 
     auto xx =  app.count("--ctl-port");
@@ -97,7 +104,10 @@ int main(int argc, const char * argv[])
         https_ports_opt
     );
 
-    Marvin::CtlThread ctl_thread(ctl_port, mitm_thread);
+    Marvin::CtlThread ctl_thread(
+        ctl_port,
+        mitm_thread
+        );
 
     ctl_thread.join();
     mitm_thread.join();
