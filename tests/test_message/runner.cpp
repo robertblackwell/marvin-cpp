@@ -1,6 +1,6 @@
 
 #include <marvin/http/message_base.hpp>
-#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 
 #include "runner.hpp"
 

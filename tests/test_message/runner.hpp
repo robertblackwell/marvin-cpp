@@ -10,7 +10,7 @@
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 #include "testcase.hpp"
 #include "mock_socket.hpp"
 
@@ -30,13 +30,14 @@ class Testrunner
 {
 
 public:
-    Marvin::MessageReaderSPtr  m_rdr;
-    Marvin::ISocketSPtr        m_conn;
-    boost::asio::io_service&   m_io;
-    std::string                m_body;
-    std::ostringstream         m_bodyStream;
-    Testcase                   m_tcObj;
-    std::string                m_body_accumulator;
+    Marvin::MessageReaderV2::SPtr  m_rdr;
+    Marvin::MessageBase::SPtr      m_msg_sptr;
+    Marvin::ISocketSPtr            m_conn;
+    boost::asio::io_service&       m_io;
+    std::string                    m_body;
+    std::ostringstream             m_bodyStream;
+    Testcase                       m_tcObj;
+    std::string                    m_body_accumulator;
 
     /**
     * Constructor - tcIndex is an index into the set of testcases

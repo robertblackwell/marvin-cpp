@@ -25,8 +25,8 @@ namespace Marvin {
 MitmTunnel::MitmTunnel(
         MitmApp& mitm_app,
         ISocketSPtr socket_sptr,
-        MessageReaderSPtr rdr,
-        MessageWriterSPtr wrtr,
+        MessageReaderV2::SPtr rdr,
+        MessageWriter::SPtr wrtr,
         std::string scheme,
         std::string host,
         std::string port
@@ -55,71 +55,58 @@ void MitmTunnel::p_initiate_tunnel()
 {
    TROG_TRACE3("scheme:", m_upstream_scheme, " host:", m_upstream_host, " port:", m_upstream_port);
 
-    m_upstream_connection_sptr = socket_factory(m_io, m_upstream_scheme, m_upstream_host, m_upstream_port);
-    m_upstream_connection_sptr->async_connect([this](Marvin::ErrorType &err, ISocket *conn)
-                                              {
-                                                  if (err) {
-                                                      TROG_WARN("initiateTunnel: FAILED scheme:",
-                                                                this->m_upstream_scheme, " host:",
-                                                                this->m_upstream_host, " port:", this->m_upstream_port);
-                                                      m_downstream_response_sptr = std::make_shared<MessageBase>();
-                                                      make_response_502_badgateway(*m_downstream_response_sptr);
+    m_upstream_connection_sptr = socket_factory (m_io, m_upstream_scheme, m_upstream_host, m_upstream_port);
+    m_upstream_connection_sptr->async_connect ([this] (Marvin::ErrorType &err, ISocket *conn)
+    {
+        if (err) {
+            TROG_WARN("initiateTunnel: FAILED scheme:",
+            this->m_upstream_scheme, " host:",
+            this->m_upstream_host, " port:", this->m_upstream_port);
+            m_downstream_response_sptr = std::make_shared<MessageBase> ();
+            make_response_502_badgateway (*m_downstream_response_sptr);
 
-                                                      m_downstream_wrtr_sptr->async_write(m_downstream_response_sptr,
-                                                                                         [this](Marvin::ErrorType &err)
-                                                                                         {
-                                                                                             TROG_INFO("");
-                                                                                             if (err) {
-                                                                                                 TROG_WARN("error: ",
-                                                                                                           err.value(),
-                                                                                                           err.category().name(),
-                                                                                                           err.category().message(
-                                                                                                               err.value()));
-                                                                                                 m_mitm_app.p_on_downstream_write_error(
-                                                                                                     err);
-                                                                                             } else {
-                                                                                                 m_mitm_app.p_on_tunnel_completed();
-                                                                                             }
-                                                                                         });
-                                                  } else {
-                                                      TROG_TRACE3("initiateTunnel: connection SUCCEEDED scheme:",
-                                                                  " scheme:", this->m_upstream_scheme, " host:",
-                                                                  this->m_upstream_host, " port:",
-                                                                  this->m_upstream_port);
-                                                      m_downstream_response_sptr = std::make_shared<MessageBase>();
-                                                      make_response_200_OK_connected(*m_downstream_response_sptr);
-                                                      m_downstream_wrtr_sptr->async_write(m_downstream_response_sptr,
-                                                                                         [this](Marvin::ErrorType &err)
-                                                                                         {
-                                                                                             TROG_INFO("");
-                                                                                             if (err) {
-                                                                                                 TROG_WARN("error: ",
-                                                                                                           err.value(),
-                                                                                                           err.category().name(),
-                                                                                                           err.category().message(
-                                                                                                               err.value()));
-                                                                                                 m_mitm_app.p_on_downstream_write_error(
-                                                                                                     err);
-                                                                                             } else {
-                                                                                                 m_tunnel_handler_sptr = std::make_shared<TunnelHandler>(
-                                                                                                     m_io,
-                                                                                                     m_downstream_socket_sptr,
-                                                                                                     m_upstream_connection_sptr);
-                                                                                                 m_tunnel_handler_sptr->start(
-                                                                                                     [this](
-                                                                                                         Marvin::ErrorType &err)
-                                                                                                     {
-                                                                                                         if (err) {
-                                                                                                             m_mitm_app.p_on_tunnel_error(
-                                                                                                                 err);
-                                                                                                         } else {
-                                                                                                             m_mitm_app.p_on_tunnel_completed();
-                                                                                                         }
-                                                                                                     });
-                                                                                             }
-                                                                                         });
-                                                  }
-                                              });
+            m_downstream_wrtr_sptr->async_write (m_downstream_response_sptr, [this] (Marvin::ErrorType &err)
+            {
+                TROG_INFO("");
+                if (err) {
+                    TROG_WARN("error: ", err.value (), err.category ().name (), err.category ().message (err.value ()));
+                    m_mitm_app.p_on_downstream_write_error (err);
+                } else {
+                    m_mitm_app.p_on_tunnel_completed ();
+                }
+            });
+        } else {
+            TROG_TRACE3("initiateTunnel: connection SUCCEEDED scheme:",
+            " scheme:", this->m_upstream_scheme, " host:",
+            this->m_upstream_host, " port:",
+            this->m_upstream_port);
+            m_downstream_response_sptr = std::make_shared<MessageBase> ();
+            make_response_200_OK_connected (*m_downstream_response_sptr);
+            m_downstream_wrtr_sptr->async_write (m_downstream_response_sptr, [this] (Marvin::ErrorType &err)
+            {
+                TROG_INFO("");
+                if (err) {
+                    TROG_WARN("error: ", err.value (), err.category ().name (), err.category ().message (err.value ()));
+                    m_mitm_app.p_on_downstream_write_error (err);
+                } else {
+                    m_tunnel_handler_sptr = std::make_shared<TunnelHandler> (
+                    m_io,
+                    m_downstream_socket_sptr,
+                    m_upstream_connection_sptr);
+                    m_tunnel_handler_sptr->start (
+                    [this] (
+                    Marvin::ErrorType &err)
+                    {
+                        if (err) {
+                            m_mitm_app.p_on_tunnel_error (err);
+                        } else {
+                            m_mitm_app.p_on_tunnel_completed ();
+                        }
+                    });
+                }
+            });
+        }
+    });
 }
 
 void MitmTunnel::p_on_request_completed()

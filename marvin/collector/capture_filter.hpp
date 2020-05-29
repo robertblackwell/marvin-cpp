@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 #include <marvin/message/message_writer.hpp>
 #include <marvin/configure_trog.hpp>
 
@@ -50,8 +50,8 @@ public:
     bool is_collectable(
         std::string scheme,
         std::string host,
-        MessageReaderSPtr req,
-        MessageBaseSPtr resp)
+        MessageBase::SPtr req,
+        MessageBase::SPtr resp)
     {
         for(auto f: m_filters) {
             std::regex e{f};

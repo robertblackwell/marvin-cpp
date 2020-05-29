@@ -27,20 +27,24 @@ typedef std::unique_ptr<MessageReader> MessageReaderUPtr;
 class MessageReader : public Marvin::MessageBase
 {
 public:
-
-    using ReadMessageCallback = std::function<void(Marvin::ErrorType err)>;
-    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)>;
-    using ReadMessageHandler = std::function<void(Marvin::ErrorType err)>;
-    using ReadHeadersHandler = std::function<void(Marvin::ErrorType err)>;
-    using ReadBodyHandler  = std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)>;
+    
+    using SPtr = std::shared_ptr<MessageReader>;
 
     MessageReader(ISocketSPtr readSock);
     ~MessageReader();
 
+    using ReadMessageCallback = std::function<void(Marvin::ErrorType err)>;
+    using ReadMessageHandler = std::function<void(Marvin::ErrorType err)>;
     void async_read_message(ReadMessageHandler cb);
 
+// have not deviced how to implement streaning read yet
+#ifdef  MARVIN_MSGREADER_PARTIAL_READ
+    using ReadBodyCallback = std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)>;
+    using ReadHeadersHandler = std::function<void(Marvin::ErrorType err)>;
+    using ReadBodyHandler  = std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)>;
     void asyn_read_headers(std::function<void(Marvin::ErrorType err)> cb);
     void async_read_body(std::function<void(Marvin::ErrorType err, Marvin::BufferChain::SPtr chunkSPtr)> bodyCb);
+#endif
 
 protected:
 

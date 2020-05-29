@@ -30,6 +30,9 @@ typedef std::unique_ptr<MessageWriter> MessageWriterUPtr;
 class MessageWriter
 {
 public:
+
+    using SPtr = std::shared_ptr<MessageWriter>;
+
     using ErrRefHandler = std::function<void(ErrorType& err)>;
     using WriteMessageHandler = ErrRefHandler ;
     using WriteHeadersHandler = ErrRefHandler ;

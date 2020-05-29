@@ -100,8 +100,8 @@ void PipeCollector::configSet_PipePath(std::string path)
 void PipeCollector::posted_collect(
     std::string scheme,
     std::string host,
-    MessageReaderSPtr req,
-    MessageBaseSPtr resp)
+    MessageBase::SPtr req,
+    MessageBase::SPtr resp)
 {
     
     std::vector<std::regex> regexs;
@@ -154,8 +154,8 @@ void PipeCollector::posted_collect(
 void PipeCollector::collect(
     std::string scheme,
     std::string host,
-    MessageReaderSPtr req,
-    MessageBaseSPtr resp)
+    MessageBase::SPtr req,
+    MessageBase::SPtr resp)
 {
     /**
     ** In here implement the creation the summary records but dont do any IO or sending

@@ -42,10 +42,10 @@ TestCollection& test_data_two_message()
             (char*) "ABCDEFGHIJK\0      ",
             NULL
             },
-        [](std::vector<Marvin::MessageBase*> messages)
+        [](std::vector<Marvin::MessageBase::SPtr> messages)
         {
             REQUIRE(messages.size() > 0);
-            Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+            Marvin::MessageBase::SPtr m0 = messages[0];
             HeaderFields& h = m0->headers();
 
             REQUIRE(m0 != nullptr);
@@ -58,7 +58,7 @@ TestCollection& test_data_two_message()
             auto b0 = m0->get_body_buffer_chain()->to_string();
             CHECK(m0->get_body()->to_string() == "1234567890");
 
-            Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
+            Marvin::MessageBase::SPtr m1 = messages[1];
             REQUIRE(m1 != nullptr);
             h = m1->headers();
             CHECK(m1->version_major() == 1);
@@ -81,9 +81,9 @@ TestCollection& test_data_two_message()
         (char*) "9123456789",
         NULL
         },
-        [](std::vector<Marvin::MessageBase*> messages)
+        [](std::vector<Marvin::MessageBase::SPtr> messages)
         {
-            Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+            Marvin::MessageBase::SPtr msg_p = messages[0];
             HeaderFields& h = msg_p->headers();
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
@@ -122,9 +122,9 @@ TestCollection& test_data_two_message()
             (char*) "\r\n",
             NULL
         },
-        [](std::vector<Marvin::MessageBase*> messages)
+        [](std::vector<Marvin::MessageBase::SPtr> messages)
         {
-            Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+            Marvin::MessageBase::SPtr msg_p = messages[0];
             HeaderFields& h = msg_p->headers();
 
             CHECK(msg_p->version_major() == 1);
@@ -177,9 +177,9 @@ TestCollection& test_data_two_message()
             (char*) "\r\n",
             NULL
         },
-        [](std::vector<Marvin::MessageBase*> messages)
+        [](std::vector<Marvin::MessageBase::SPtr> messages)
         {
-            Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+            Marvin::MessageBase::SPtr msg_p = messages[0];
             HeaderFields& h = msg_p->headers();
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);
@@ -231,9 +231,9 @@ TestCollection& test_data_two_message()
             (char*) "\r\n",
             NULL
         },
-        [](std::vector<Marvin::MessageBase*> messages)
+        [](std::vector<Marvin::MessageBase::SPtr> messages)
         {
-            Marvin::MessageBase* msg_p = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+            Marvin::MessageBase::SPtr msg_p = messages[0];
             HeaderFields& h = msg_p->headers();
             CHECK(msg_p->version_major() == 1);
             CHECK(msg_p->version_minor() == 1);

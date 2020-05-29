@@ -5,7 +5,7 @@
 #include <istream>                                 // for string
 #include <marvin/http/headers_v2.hpp>             // for Headers, Headers::...
 #include <marvin/http/uri.hpp>                     // for Uri
-#include <marvin/message/message_reader.hpp>       // for MessageReaderSPtr
+#include <marvin/message/message_reader_v2.hpp>       // for MessageReaderSPtr
 #include <marvin/message/message_writer.hpp>       // for MessageWriterSPtr
 #include <memory>                                  // for shared_ptr, unique...
 #include <boost/asio/io_service.hpp>               // for io_service

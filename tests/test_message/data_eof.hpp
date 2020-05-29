@@ -37,9 +37,9 @@ TestCollection& test_data_eof()
                 NULL
         },
 
-        [](std::vector<Marvin::MessageBase*> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+            MessageBase::SPtr m0 = messages[0];
             CHECK(m0->version_major() == 1);
             CHECK(m0->version_minor() == 1);
             CHECK(m0->status_code() == 200);
@@ -67,9 +67,9 @@ TestCollection& test_data_eof()
             (char *) "eof",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
                 CHECK((m1->reason() == "OK 11Reason Phrase"));
@@ -96,9 +96,9 @@ TestCollection& test_data_eof()
             (char *) "close",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
                 CHECK((m1->reason() == "OK 11Reason Phrase"));
@@ -125,9 +125,9 @@ TestCollection& test_data_eof()
             (char *) "close",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
 
             auto x = m1->status_code();
@@ -155,9 +155,9 @@ TestCollection& test_data_eof()
             (char *) "eof",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));

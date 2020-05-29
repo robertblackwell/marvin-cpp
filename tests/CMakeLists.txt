@@ -38,6 +38,7 @@ add_subdirectory(test_message)
  add_subdirectory(test_uri)
  add_subdirectory(test_subcommands)
  add_subdirectory(test_param_passing)
+add_subdirectory(test_console)
 
 if (OFF)
 endif()

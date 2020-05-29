@@ -58,12 +58,12 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->header(HeaderFields::ContentLength, std::to_string(body.length() ));
     return msg;
 }
-CtlApp::CtlApp(boost::asio::io_service& io, MitmThread::SPtr mitm_thread_sptr, CtlThread* ctl_thread_ptr)
-: m_io(io), m_mitm_thread_sptr(mitm_thread_sptr), m_ctl_thread_ptr(ctl_thread_ptr)
+CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThread* ctl_thread_ptr)
+: m_io(io), m_mitm_thread_ref(mitm_thread_ref), m_ctl_thread_ptr(ctl_thread_ptr)
 {
-    m_dispatch_table.add(std::regex("/stop"),[this](MessageReaderSPtr rdr) 
+    m_dispatch_table.add(std::regex("/stop"),[this](MessageBase::SPtr msg)
     {
-        std::string path = rdr->target();
+        std::string path = msg->target();
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
         if (bits.size() < 2) {
@@ -72,9 +72,9 @@ CtlApp::CtlApp(boost::asio::io_service& io, MitmThread::SPtr mitm_thread_sptr, C
         p_handle_stop(bits);
 
     });
-    m_dispatch_table.add(std::regex("/list.*"),[this](MessageReaderSPtr rdr) 
+    m_dispatch_table.add(std::regex("/list.*"),[this](MessageBase::SPtr msg)
     {
-        std::string path = rdr->target();
+        std::string path = msg->target();
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
         if (bits.size() < 2) {
@@ -83,9 +83,9 @@ CtlApp::CtlApp(boost::asio::io_service& io, MitmThread::SPtr mitm_thread_sptr, C
         p_handle_list_filters(bits);
 
     });
-    m_dispatch_table.add(std::regex("/echo"),[this](MessageReaderSPtr rdr) 
+    m_dispatch_table.add(std::regex("/echo"),[this](MessageBase::SPtr msg)
     {
-        std::string path = rdr->target();
+        std::string path = msg->target();
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
         if (bits.size() < 2) {
@@ -106,7 +106,7 @@ void CtlApp::handle(
 )
 {
     m_socket_sptr = socket_sptr;
-    m_rdr = std::make_shared<MessageReader>(socket_sptr);
+    m_rdr = std::make_shared<MessageReaderV2>(socket_sptr);
     m_wrtr = std::make_shared<MessageWriter>(socket_sptr);
     m_done_callback = done;
     // Adapterequest(m_socket_sptr, m_wrtr, m_rdr);
@@ -115,42 +115,43 @@ void CtlApp::handle(
 void CtlApp::p_internal_handle()
 {
     m_rdr->async_read_message([this](ErrorType err)
-                              {
-                                  if (err) {
-                                      p_on_read_error(err);
-                                  } else {
-                                      std::string path = m_rdr->target();
-                                      boost::optional<HttpRequestHandler> h = m_dispatch_table.find(path);
-                                      if (h) {
-                                          h.get()(m_rdr);
-                                      } else {
-                                          p_invalid_request();
-                                      }
+    {
+        if (err) {
+            p_on_read_error (err);
+        } else {
+            m_request_sptr = m_rdr->get_message_sptr();
+            std::string path = m_request_sptr->target ();
+            boost::optional<HttpRequestHandler> h = m_dispatch_table.find (path);
+            if (h) {
+                h.get () (m_request_sptr);
+            } else {
+                p_invalid_request ();
+            }
 #if DIABLED
-                                      return;
-                                      std::vector<std::string> bits;
-                                      boost::split(bits, path, [](char c){return c == '/';});
-                                      if (bits.size() < 2) {
-                                          bits[1] = "";
-                                      }
-                                      std::string path_01 = bits[1];
+            return;
+            std::vector<std::string> bits;
+            boost::split(bits, path, [](char c){return c == '/';});
+            if (bits.size() < 2) {
+                bits[1] = "";
+            }
+            std::string path_01 = bits[1];
 
-                                      if (path_01 == "echo") {
-                                          p_handle_echo();
-                                      } else if (path_01 == "echosmart") {
-                                          p_handle_smart_echo();
-                                      } else if (path_01 == "delay") {
-                                          p_handle_delay(bits);
-                                      } else if (path_01 == "stop") {
-                                          p_handle_stop(bits);
-                                      } else if (path_01 == "list_filters") {
-                                          p_handle_list_filters(bits);
-                                      } else {
-                                          p_invalid_request();
-                                      }
+            if (path_01 == "echo") {
+                p_handle_echo();
+            } else if (path_01 == "echosmart") {
+                p_handle_smart_echo();
+            } else if (path_01 == "delay") {
+                p_handle_delay(bits);
+            } else if (path_01 == "stop") {
+                p_handle_stop(bits);
+            } else if (path_01 == "list_filters") {
+                p_handle_list_filters(bits);
+            } else {
+                p_invalid_request();
+            }
 #endif
-                                  }
-                              });
+        }
+    });
 }
 
 void CtlApp::p_on_completed()
@@ -164,7 +165,7 @@ void CtlApp::p_req_resp_cycle_complete()
     TROG_WARN("CtlApp::p_req_resp_cycle_complete");
     bool keep_alive = false;
     /// @TODO - this is a hack
-    auto hopt = m_rdr->header(HeaderFields::Connection);
+    auto hopt = m_request_sptr->header(HeaderFields::Connection);
     if (hopt) {
         std::string conhdr = hopt.get();
         keep_alive = (conhdr == "Keep-Alive");
@@ -231,7 +232,7 @@ void CtlApp::p_handle_stop(std::vector<std::string>& bits)
         if (err) {
             p_on_write_error(err);
         } else {
-            m_mitm_thread_sptr->terminate();
+            m_mitm_thread_ref.terminate();
             m_ctl_thread_ptr->terminate();
             p_req_resp_cycle_complete();
         }
@@ -241,8 +242,8 @@ void CtlApp::p_handle_list_filters(std::vector<std::string>& bits)
 {
     std::string body = "stop not yet implemented";
     std::ostringstream os;
-    std::vector<int>& ports = m_mitm_thread_sptr->get_https_ports();
-    std::vector<std::string>& hosts = m_mitm_thread_sptr->get_https_hosts();
+    std::vector<int>& ports = m_mitm_thread_ref.get_https_ports();
+    std::vector<std::string>& hosts = m_mitm_thread_ref.get_https_hosts();
     os << "Https ports: " << std::endl;
     for(int i = 0; i < ports.size(); i++) {
         os << "port: " << ports[i] << std::endl; 

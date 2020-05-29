@@ -6,7 +6,7 @@
 #include <boost/asio/io_context_strand.hpp>          // for io_context::strand
 #include <boost/asio/io_service.hpp>                 // for io_service
 #include <marvin/http/message_base.hpp>              // for MessageBaseSPtr
-#include <marvin/message/message_reader.hpp>         // for MessageReaderSPtr
+#include <marvin/message/message_reader_v2.hpp>         // for MessageReaderSPtr
 namespace Marvin {
 /**
 * \defgroup collector Collectors
@@ -39,7 +39,7 @@ class CollectorBase: public ICollector
         /**
         ** Interface method for client code to call collect
         **/
-        void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::MessageBaseSPtr resp);
+        void collect(std::string scheme, std::string host, MessageBase::SPtr req, Marvin::MessageBase::SPtr resp);
     
     private:
         /**
@@ -50,8 +50,8 @@ class CollectorBase: public ICollector
         void posted_collect(
             std::string scheme,
             std::string host,
-            MessageReaderSPtr req,
-            Marvin::MessageBaseSPtr resp);
+            MessageBase::SPtr req,
+            Marvin::MessageBase::SPtr resp);
 
         boost::asio::io_context::strand         m_my_strand;
         boost::asio::io_service&                m_io;

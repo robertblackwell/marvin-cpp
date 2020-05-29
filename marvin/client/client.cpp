@@ -8,7 +8,7 @@
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socket_factory
 #include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
-#include <marvin/message/message_reader.hpp>            // for MessageReader
+#include <marvin/message/message_reader_v2.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
@@ -36,12 +36,12 @@ Client::Client(
     std::string port
 ): m_io(io), m_scheme(scheme), m_server(server), m_port(port)
 {}
+
 Client::Client(
     boost::asio::io_service& io, 
     Marvin::Uri uri
 ): m_io(io), m_scheme(uri.scheme()), m_server(uri.server()), m_port(std::to_string(uri.port()))
 {
-
 }
 
 Client::Client(
@@ -118,16 +118,16 @@ void Client::p_async_write(MessageBaseSPtr requestMessage,  ResponseHandlerCallb
 }
 void Client::p_internal_connect()
 {
-    TROG_INFO("", (long)this);
-    async_connect([this](Marvin::ErrorType &ec)
-                  {
-                      TROG_DEBUG("cb-connect");
-                      if (!ec) {
-                          p_internal_write();
-                      } else {
-                          m_response_handler(ec, m_rdr);
-                      }
-                  });
+    TROG_INFO("", (long) this);
+    async_connect ([this] (Marvin::ErrorType &ec)
+    {
+        TROG_DEBUG("cb-connect");
+        if (!ec) {
+            p_internal_write ();
+        } else {
+            m_response_handler (ec, nullptr);
+        }
+    });
 }
 //--------------------------------------------------------------------------------
 // come here to do a write of the full message
@@ -139,7 +139,7 @@ void Client::p_internal_write()
 #ifdef RDR_WRTR_ONESHOT
     // set up the read of the response
     // create a MessageReader with a read socket
-    this->m_rdr = std::shared_ptr<MessageReader>(new MessageReader(m_conn_shared_ptr));
+    this->m_rdr = std::make_shared<MessageReaderV2>(m_conn_shared_ptr);
     // get a writer
     this->m_wrtr = std::shared_ptr<MessageWriter>(new MessageWriter(m_conn_shared_ptr));
 #endif
@@ -148,20 +148,21 @@ void Client::p_internal_write()
     p_set_content_length();
 
     assert(m_body_mbuffer_sptr != nullptr);
-    m_wrtr->async_write(m_current_request, m_body_mbuffer_sptr, [this](Marvin::ErrorType& ec){
+    m_wrtr->async_write (m_current_request, m_body_mbuffer_sptr, [this] (Marvin::ErrorType &ec)
+    {
         if (!ec) {
             TROG_DEBUG("start read");
-            this->m_rdr->async_read_message([this](Marvin::ErrorType ec)
-                                            {
-                                                if (!ec) {
-                                                    this->m_response_handler(ec, m_rdr);
-                                                } else {
-                                                    std::string s = ec.message();
-                                                    this->m_response_handler(ec, m_rdr);
-                                                }
-                                            });
+            this->m_rdr->async_read_message ([this] (Marvin::ErrorType ec)
+            {
+                if (!ec) {
+                    this->m_response_handler (ec, m_rdr->get_message_sptr ());
+                } else {
+                    std::string s = ec.message ();
+                    this->m_response_handler (ec, nullptr);
+                }
+            });
         } else {
-            this->m_response_handler(ec, m_rdr);
+            this->m_response_handler (ec, nullptr);
         }
     });
 }
@@ -171,9 +172,6 @@ void Client::close()
     m_rdr = nullptr;
     m_wrtr = nullptr;
     m_conn_shared_ptr = nullptr;
-}
-void Client::end()
-{
 }
 
 void Client::p_set_content_length()
@@ -185,8 +183,8 @@ void Client::p_set_content_length()
     }
     msg->header(Marvin::HeaderFields::ContentLength, std::to_string(len));
 }
-MessageReaderSPtr Client::getResponse()
+MessageBase::SPtr Client::getResponse()
 {
-    return m_rdr;
+    return m_rdr->get_message_sptr();
 }
 } // namespace

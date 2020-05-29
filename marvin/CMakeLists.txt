@@ -57,9 +57,10 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	http/uri_query.hpp
 
 	message/full_msg_rdr.hpp
-	message/message_reader.hpp 
-	message/message_writer.hpp 
-	
+#	message/message_reader.hpp
+	message/message_reader_v2.hpp
+	message/message_writer.hpp
+
 	server_v3/adapter.hpp 
 	server_v3/connection_handler.hpp 
 	server_v3/tcp_server.hpp 
@@ -121,8 +122,9 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	http/uri_query.cpp
 	
 	message/full_msg_rdr.cpp
-	message/message_reader.cpp 	
-	message/message_writer.cpp 	
+#	message/message_reader.cpp
+	message/message_reader_v2.cpp
+	message/message_writer.cpp
 
 	server_v3/connection_handler.cpp 
 	server_v3/tcp_server.cpp 

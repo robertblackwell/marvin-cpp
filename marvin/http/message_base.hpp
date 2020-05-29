@@ -25,6 +25,9 @@ bool is_connection_keep_alive(Marvin::MessageBase& msg);
 */class MessageBase
 {
 public:
+
+    using SPtr = std::shared_ptr<MessageBase>;
+
     MessageBase();
     MessageBase(MessageBase& other);
     MessageBase(MessageBase&& other);

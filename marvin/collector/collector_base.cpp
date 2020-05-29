@@ -46,8 +46,8 @@ CollectorBase::CollectorBase(boost::asio::io_service& io, std::ostream& ofstream
 void CollectorBase::posted_collect(
         std::string scheme,
         std::string host,
-        MessageReaderSPtr req,
-        Marvin::MessageBaseSPtr resp)
+        MessageBase::SPtr req,
+        MessageBase::SPtr resp)
 {
     
     /**
@@ -87,8 +87,8 @@ void CollectorBase::posted_collect(
 void CollectorBase::collect(
         std::string scheme,
         std::string host,
-        MessageReaderSPtr req,
-        Marvin::MessageBaseSPtr resp)
+        MessageBase::SPtr req,
+        MessageBase::SPtr resp)
 {
     /**
     ** In here implement the creation the summary records but dont do any IO or sending

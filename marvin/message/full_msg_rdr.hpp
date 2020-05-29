@@ -88,8 +88,6 @@ public:
     FullMessageReader(ISocketSPtr read_socket_sptr);
     ~FullMessageReader();
 
-    void async_read_message(MessageBase& message, DoneCallback cb);
-    void async_read_message(MessageBase* message, DoneCallback cb);
     void async_read_message(MessageBaseSPtr message, DoneCallback cb);
 
 protected:
@@ -107,7 +105,7 @@ protected:
     ISocketSPtr                  m_read_sock_sptr;
     Parser                       m_parser;
     boost::asio::streambuf       m_streambuffer;
-    MessageBase*                 m_current_message_ptr;
+    MessageBase::SPtr            m_current_message_sptr;
     DoneCallback                 m_read_cb;
 };
 } // namespcae

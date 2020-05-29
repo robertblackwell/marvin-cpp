@@ -30,9 +30,9 @@ TestCollection& single_message_test_data_2()
             (char *) "01234567890",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
@@ -59,9 +59,9 @@ TestCollection& single_message_test_data_2()
             (char *) "11234567890",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 200));
@@ -87,9 +87,9 @@ TestCollection& single_message_test_data_2()
             (char *) "CDEFGHIJ",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 201));
@@ -118,9 +118,9 @@ TestCollection& single_message_test_data_2()
             (char *) "\r\n\r\nABCDEFGHIJ",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = m1->status_code();
                 CHECK((m1->status_code() == 201));
@@ -153,9 +153,9 @@ TestCollection& single_message_test_data_2()
             (char *) "\r\n",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = h.at_key(HeaderFields::TransferEncoding);
                 CHECK((m1->status_code() == 201));
@@ -190,9 +190,9 @@ TestCollection& single_message_test_data_2()
             (char *) "\r\n",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = h.at_key(HeaderFields::TransferEncoding);
                 CHECK((m1->status_code() == 201));
@@ -229,9 +229,9 @@ TestCollection& single_message_test_data_2()
             (char *) "\r\n",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = h.at_key(HeaderFields::TransferEncoding);
                 CHECK((m1->status_code() == 201));
@@ -269,9 +269,9 @@ TestCollection& single_message_test_data_2()
             (char *) "\r\n",
             NULL
         },
-        [](std::vector<MessageBase *> messages)
+        [](std::vector<MessageBase::SPtr> messages)
         {
-            MessageBase *m1 = messages[0];
+            MessageBase::SPtr m1 = messages[0];
             HeaderFields& h = m1->headers();
             auto x = h.at_key(HeaderFields::TransferEncoding);
                 CHECK((m1->status_code() == 201));

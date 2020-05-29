@@ -3,21 +3,13 @@
 // threads make a number of requests from the server.
 //
 #include <iostream>
-#include <sstream>
 #include <string>
-#include <unistd.h>
-#include <pthread.h>
 
 #include <doctest/doctest.h>
 
-#include <marvin/boost_stuff.hpp>
-
-#include <marvin/message/message_reader.hpp>
-#include "repeating_timer.hpp"
+#include <marvin/message/message_reader_v2.hpp>
 #include "mock_socket.hpp"
 #include "testcase.hpp"
-#include "testcase_defs.hpp"
-#include "runner.hpp"
 #include "helper_types.hpp"
 #include "data_single.hpp"
 #include "data_two.hpp"

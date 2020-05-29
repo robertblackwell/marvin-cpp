@@ -8,7 +8,7 @@
 #include <istream>                                      // for string
 #include <marvin/connection/socket_factory.hpp>         // for socket_factory
 #include <marvin/configure_trog.hpp>  // for LogInfo, LogD...
-#include <marvin/message/message_reader.hpp>            // for MessageReader
+#include <marvin/message/message_reader_v2.hpp>            // for MessageReader
 #include <memory>                                       // for operator!=
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf

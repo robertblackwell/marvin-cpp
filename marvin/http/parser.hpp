@@ -108,8 +108,7 @@ public:
 	 */
 	int appendBytes(void* buffer,  unsigned length);
 
-    void begin(MessageBase& msg);
-    void begin(MessageBase* msg_ptr);
+    void begin(MessageBaseSPtr msg_sptr);
     /**
      * These functions will consume bytes in the given buffer and return an instance of ReturnValue
      * to indicate the state of the parsing process.
@@ -180,7 +179,7 @@ public:
 	/** 
 	 * Returns the the Message currently being parsed or just parsed. 
 	 */
-    MessageBase* current_message();
+    MessageBase::SPtr current_message();
     
     /**
     * C parser class callback functions that interface with the C language parser
@@ -218,7 +217,7 @@ protected:
      */
     http_parser*             m_http_parser_ptr;
     http_parser_settings*    m_http_parser_settings_ptr;
-    MessageBase*             m_current_message_ptr;
+    MessageBase::SPtr        m_current_message_sptr;
     BodyBufferStrategy       m_buffer_strategy;
     ContigBufferFactoryT     m_factory;
     

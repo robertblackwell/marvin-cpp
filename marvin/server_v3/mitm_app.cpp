@@ -78,7 +78,7 @@ void MitmApp::handle(
 )
 {
     m_socket_sptr = socket_sptr;
-    m_rdr = std::make_shared<MessageReader>(socket_sptr);
+    m_rdr = std::make_shared<MessageReaderV2>(socket_sptr);
     m_wrtr = std::make_shared<MessageWriter>(socket_sptr);
     m_uuid = server_context.uuid;
     m_uuid_str = boost::uuids::to_string(m_uuid);
@@ -98,18 +98,19 @@ void MitmApp::handle_request()
 void MitmApp::p_read_first_message()
 {
     m_rdr->async_read_message([this](Marvin::ErrorType err)
-                              {
-                                  if (err) {
-                                      p_on_downstream_read_error(err);
-                                  } else {
-                                      p_on_first_message();
-                                  }
-                              });
+    {
+    if (err) {
+        p_on_downstream_read_error(err);
+    } else {
+        m_request_msg_sptr = m_rdr->get_message_sptr();
+        p_on_first_message();
+    }
+    });
 }
 
 void MitmApp::p_on_first_message()
 {   
-    std::string tmp_url = m_rdr->target();
+    std::string tmp_url = m_request_msg_sptr->target();
     // the Uri() constructor steals the input - I think this is fixed but better safe than sorry
     std::string tmp_url_safe = tmp_url;
     Uri tmp_uri = Uri(tmp_url_safe);
@@ -118,8 +119,8 @@ void MitmApp::p_on_first_message()
     m_host = tmp_uri.host_no_port(); // tmp_uri.host() would have the port number on the end this is not what we want for a proxy
     m_port = std::to_string(tmp_uri.port());
 
-    HttpMethod method = m_rdr->method();
-    auto sss = trace_message(*m_rdr);
+    HttpMethod method = m_request_msg_sptr->method();
+    auto sss = trace_message(*m_request_msg_sptr);
     // important logging point - if it breaks later in processing we need to be able to find out what was requested
     TROG_TRACE3("UUID: ", m_uuid_str, "FD: ", m_socket_sptr->native_socket_fd(), "HDRS: ", trace_message(*m_rdr) );
 

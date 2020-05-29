@@ -14,9 +14,9 @@ std::string base64Encode(std::string& source)
     return "["+source+"]";
 }
 
-http::url decodeUri(MessageReaderSPtr requestSPtr)
+http::url decodeUri(MessageBase::SPtr request_sptr)
 {
-    std::string tmp_url = requestSPtr->target();
+    std::string tmp_url = request_sptr->target();
     http::url tmp_u = http::ParseHttpUrl(tmp_url);
     return tmp_u;
 }
@@ -56,9 +56,9 @@ void remove_hop_by_hop(MessageBaseSPtr msgSPtr, std::string connectionValue)
 // Elements that are common between http and https in the transforming of a client
 // request into a form to send upstream to the end server.
 //
-void request_transform_common(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr)
+void request_transform_common(MessageBaseSPtr upstreamRequest, MessageBase::SPtr  requestSPtr)
 {
-    MessageReaderSPtr req = requestSPtr;
+    MessageBase::SPtr req = requestSPtr;
     MessageBaseSPtr result = upstreamRequest;
 
     // copy the headers
@@ -94,9 +94,9 @@ void request_transform_common(MessageBaseSPtr upstreamRequest, MessageReaderSPtr
 //    result->header(Marvin::HeaderFields::ContentLength, std::to_string(req->getBody()->size()));
 
 }
-void make_upstream_request(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr)
+void make_upstream_request(MessageBaseSPtr upstreamRequest, MessageBase::SPtr  requestSPtr)
 {
-    MessageReaderSPtr req = requestSPtr;
+    MessageBase::SPtr req = requestSPtr;
     MessageBaseSPtr result = upstreamRequest;
     
     Marvin::Uri tmp_uri(req->target());
@@ -116,9 +116,9 @@ void make_upstream_request(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  r
 // they have a direct connection rather than through proxy and hence the
 // request will be different to that of a http request
 // the target field will be a relative path not an absolue path
-void make_upstream_https_request(MessageBaseSPtr upstreamRequest, MessageReaderSPtr  requestSPtr)
+void make_upstream_https_request(MessageBaseSPtr upstreamRequest, MessageBase::SPtr  requestSPtr)
 {
-    MessageReaderSPtr req = requestSPtr;
+    MessageBase::SPtr req = requestSPtr;
     MessageBaseSPtr result = upstreamRequest;
     
     result->target(req->target());
@@ -131,10 +131,10 @@ void make_upstream_https_request(MessageBaseSPtr upstreamRequest, MessageReaderS
     request_transform_common(result, req);
 }
 
-void make_downstream_good_response(MessageBaseSPtr downstream, MessageReaderSPtr responseSPtr )
+void make_downstream_good_response(MessageBaseSPtr downstream, MessageBase::SPtr responseSPtr )
 {
     TROG_INFO("");
-    MessageReaderSPtr resp = responseSPtr;
+    MessageBase::SPtr resp = responseSPtr;
     MessageBaseSPtr result = downstream;
         // copy the headers
     auto hdrs = resp->headers();
@@ -167,7 +167,7 @@ void make_downstream_good_response(MessageBaseSPtr downstream, MessageReaderSPtr
 
 }
 
-void make_downstream_error_response(MessageBaseSPtr msg, MessageReaderSPtr resp, Marvin::ErrorType& err)
+void make_downstream_error_response(MessageBaseSPtr msg, MessageBase::SPtr resp, Marvin::ErrorType& err)
 {
     TROG_DEBUG("");
     // bad gateway 502
@@ -176,7 +176,7 @@ void make_downstream_error_response(MessageBaseSPtr msg, MessageReaderSPtr resp,
     msg->header(Marvin::HeaderFields::ContentLength, std::to_string(0));
     std::string n("");
 }
-void make_downstream_response(MessageBaseSPtr msg_sptr, MessageReaderSPtr resp, Marvin::ErrorType& err)
+void make_downstream_response(MessageBaseSPtr msg_sptr, MessageBase::SPtr resp, Marvin::ErrorType& err)
 {
     if( err ){
         make_downstream_error_response(msg_sptr, resp, err);
@@ -187,13 +187,13 @@ void make_downstream_response(MessageBaseSPtr msg_sptr, MessageReaderSPtr resp, 
     }
 }
 
-bool apply_connection_close(MessageReaderSPtr req, MessageBaseSPtr response)
+bool apply_connection_close(MessageBase::SPtr req, MessageBaseSPtr response)
 {
     response->header(Marvin::HeaderFields::Connection, Marvin::HeaderFields::ConnectionClose);
     return false;
 }
 
-bool apply_keepalive_rules(MessageReaderSPtr req, MessageBaseSPtr response)
+bool apply_keepalive_rules(MessageBase::SPtr req, MessageBaseSPtr response)
 {
     /// correctly handle keep-alive/close
     bool keep_alive;

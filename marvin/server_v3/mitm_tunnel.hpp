@@ -17,7 +17,7 @@ public:
     MitmTunnel(
         MitmApp& mitm_app,
         ISocketSPtr socket_sptr,
-        MessageReaderSPtr rdr,
+        MessageReaderV2::SPtr rdr,
         MessageWriterSPtr wrtr,
         std::string scheme,
         std::string host,
@@ -37,12 +37,12 @@ private:
     BufferStrategy              m_strategy;
     ContigBufferFactoryT        m_factory;
     ISocketSPtr                 m_downstream_socket_sptr;
-    MessageReaderSPtr           m_downstream_rdr_sptr;
-    MessageWriterSPtr           m_downstream_wrtr_sptr;
+    MessageReaderV2::SPtr       m_downstream_rdr_sptr;
+    MessageWriter::SPtr         m_downstream_wrtr_sptr;
     // std::string                 m_scheme;
     // std::string                 m_host;
     // std::string                 m_port;
-    MessageBaseSPtr             m_downstream_response_sptr;
+    MessageBase::SPtr           m_downstream_response_sptr;
     std::string                 m_upstream_scheme;
     std::string                 m_upstream_host;
     std::string                 m_upstream_port;

@@ -53,10 +53,14 @@ CaptureCollector::CaptureCollector(boost::asio::io_service& io, CaptureFilter::S
 void CaptureCollector::posted_collect(
     std::string scheme,
     std::string host,
-    MessageReaderSPtr req,
-    MessageBaseSPtr resp)
+    MessageBase::SPtr req,
+    MessageBase::SPtr resp)
 {
 
+}
+CapturedTraffic CaptureCollector::get_captures()
+{
+    return m_captured_traffic;
 }
 /**
 ** Interface method for client code to call collect
@@ -64,14 +68,38 @@ void CaptureCollector::posted_collect(
 void CaptureCollector::collect(
     std::string scheme,
     std::string host,
-    MessageReaderSPtr req,
-    MessageBaseSPtr resp)
+    MessageBase::SPtr req,
+    MessageBase::SPtr resp)
 {
     /**
     ** In here implement the creation the summary records but dont do any IO or sending
     ** leave that for postedCollect
     **/
-
+    CapturedExchange::SPtr ex_sptr = std::make_shared<CapturedExchange>();
+    ex_sptr->scheme = scheme;
+    ex_sptr->host = host;
+    ex_sptr->req = nullptr;
+    ex_sptr->resp = nullptr;
+    m_io.post([this, ex_sptr]()
+    {
+        for(auto item: m_captured_traffic) {
+            if (item->host == ex_sptr->host) {
+                while (item->exchanges.size() > 10) {
+                    item->exchanges.pop_front();
+                }
+                item->exchanges.push_back(ex_sptr);
+                return;
+            }
+        }
+        // host not present
+        HostCaptures::SPtr host_cap_sptr = std::make_shared<HostCaptures>();
+        host_cap_sptr->host = ex_sptr->host;
+        host_cap_sptr->exchanges.push_back(ex_sptr);
+        while (m_captured_traffic.size() > 10) {
+            m_captured_traffic.pop_front();
+        }
+        m_captured_traffic.push_back(host_cap_sptr);
+    });
 
 }
 } // namespace    

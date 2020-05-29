@@ -28,12 +28,10 @@
 using namespace Marvin;
 namespace {
 
-/// Create a MessageReaderSPtr to be filled during various tests
-MessageReaderSPtr makeMock()
+/// Create a MessageBase::SPtr to be filled during various tests
+MessageBase::SPtr makeMock()
 {
-    static boost::asio::io_service io;
-    static ISocketSPtr socketSPtr = socket_factory(io);
-    MessageReaderSPtr result = std::make_shared<MessageReader>(socketSPtr);
+    MessageBase::SPtr result = std::make_shared<MessageBase>();
     return result;
 }
 
@@ -51,7 +49,7 @@ MessageReaderSPtr makeMock()
 //Content-Length: 1270
 
 /// Make a typical response message
-void fillMsgAsResponse_01(MessageBaseSPtr msgRdr)
+void fillMsgAsResponse_01(MessageBase::SPtr msgRdr)
 {
     msgRdr->reason("OK");
     msgRdr->status_code(200);
@@ -73,7 +71,7 @@ void fillMsgAsResponse_01(MessageBaseSPtr msgRdr)
 }
 
 /// Verify the correctness of the typical response message
-void verifyResponse_01(MessageBaseSPtr msg)
+void verifyResponse_01(MessageBase::SPtr msg)
 {
     auto trim = [](std::string s) -> std::string
     {
@@ -110,7 +108,7 @@ void verifyResponse_01(MessageBaseSPtr msg)
 }
 
 /// Fill a typical pstream non proxy request
-void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
+void fillMsgAsRequest_01(MessageBase::SPtr msgRdr)
 {
 // GET / HTTPS/1.1
 // Host: example.org
@@ -145,7 +143,7 @@ void fillMsgAsRequest_01(MessageBaseSPtr msgRdr)
 }
 
 /// Verify the typical non proxy request
-void verifyRequest_01(MessageBaseSPtr msgSPtr)
+void verifyRequest_01(MessageBase::SPtr msgSPtr)
 {
     /// relative url
         REQUIRE(msgSPtr->target() == "/somepath/script.php?parm=123456#fragment");
@@ -163,7 +161,7 @@ void verifyRequest_01(MessageBaseSPtr msgSPtr)
 }
 
 /// request 02 test a proxy request
-void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
+void fillMsgRequest_02(MessageBase::SPtr msgSPtr)
 {
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // proxy full uri
@@ -171,14 +169,14 @@ void fillMsgRequest_02(MessageBaseSPtr msgSPtr)
 }
 
 /// verify request 02 test a proxy request
-void verifyRequest_02(MessageBaseSPtr msgSPtr)
+void verifyRequest_02(MessageBase::SPtr msgSPtr)
 {
         REQUIRE(msgSPtr->target() == "http://example.org:9999/somepath/script.php?parm=123456#fragment");
         REQUIRE(msgSPtr->header(HeaderFields::Host).get() == "example.org:9999");
 }
 
 /// Request 03 non proxy request
-void fillMsgRequest_03(MessageBaseSPtr msgSPtr)
+void fillMsgRequest_03(MessageBase::SPtr msgSPtr)
 {
     Marvin::Uri uri("http://example.org:9999/somepath/script.php?parm=123456#fragment");
     // non proxy relative uri
@@ -186,7 +184,7 @@ void fillMsgRequest_03(MessageBaseSPtr msgSPtr)
 }
 
 /// Verify request 03
-void verifyRequest_03(MessageBaseSPtr msgSPtr)
+void verifyRequest_03(MessageBase::SPtr msgSPtr)
 {
         REQUIRE(msgSPtr->target() == "/somepath/script.php?parm=123456#fragment");
         REQUIRE(msgSPtr->header(HeaderFields::Host).get() == "example.org:9999");
@@ -207,7 +205,7 @@ void failedNonPointerRequest_03(MessageBase &msg)
 }
 
 /// Fill minimum requirements for a request
-void fillMsgAsRequest(MessageBaseSPtr msgRdr)
+void fillMsgAsRequest(MessageBase::SPtr msgRdr)
 {
     msgRdr->method(HTTP_POST);
     Marvin::Uri uri("http://username:password@somewhere.com/subdirpath/index.php?a=1111#fragment");
@@ -220,7 +218,7 @@ void fillMsgAsRequest(MessageBaseSPtr msgRdr)
 }
 
 /// Verify minimum requirements
-bool verifyRequest_MimimumRequirements(MessageBaseSPtr msgSPtr)
+bool verifyRequest_MimimumRequirements(MessageBase::SPtr msgSPtr)
 {
     auto meth = msgSPtr->method_string();
         CHECK_FALSE(meth == "");
@@ -261,16 +259,16 @@ TEST_CASE ("Helpers_Example")
 
 TEST_CASE ("Uri")
 {
-    MessageReaderSPtr msg = makeMock();
+    MessageBase::SPtr msg = makeMock();
     fillMsgAsRequest(msg);
     verifyRequest_MimimumRequirements(msg);
 }
 
 TEST_CASE ("response_01")
 {
-    MessageReaderSPtr msgRdr = makeMock();
+    MessageBase::SPtr msgRdr = makeMock();
     fillMsgAsResponse_01(msgRdr);
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     Marvin::ErrorType err = Marvin::make_error_ok();
     Helpers::make_downstream_response(msgSPtr, msgRdr, err);
     verifyResponse_01(msgSPtr);
@@ -278,41 +276,41 @@ TEST_CASE ("response_01")
 
 TEST_CASE ("request_01")
 {
-    MessageReaderSPtr msgRdr = makeMock();
+    MessageBase::SPtr msgRdr = makeMock();
     fillMsgAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     Helpers::make_upstream_request(msgSPtr, msgRdr);
     verifyRequest_01(msgSPtr);
 }
 
 TEST_CASE ("request_02")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_02(msgSPtr);
     verifyRequest_02(msgSPtr);
 }
 
 TEST_CASE ("request_03")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
     verifyRequest_03(msgSPtr);
 }
 
 TEST_CASE ("min_requirement_request_01")
 {
-    MessageReaderSPtr msgRdr = makeMock();
+    MessageBase::SPtr msgRdr = makeMock();
     fillMsgAsRequest_01(msgRdr);
     verifyRequest_MimimumRequirements(msgRdr);
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     std::cout << trace_message(*msgSPtr) << std::endl;
     std::cout << *msgSPtr << std::endl;
 }
 
 TEST_CASE ("copy ctor")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
     msgSPtr->get_body_buffer_chain()->append("01234567890");
     // make a copy
@@ -332,7 +330,7 @@ TEST_CASE ("copy ctor")
 
 TEST_CASE ("copy assignment")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
     msgSPtr->get_body_buffer_chain()->append("01234567890");
     // make a new one and assign
@@ -354,7 +352,7 @@ TEST_CASE ("copy assignment")
 
 TEST_CASE ("move ctor")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
     msgSPtr->get_body_buffer_chain()->append("01234567890");
     // ctor move
@@ -369,7 +367,7 @@ TEST_CASE ("move ctor")
 
 TEST_CASE ("move assignment")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgRequest_03(msgSPtr);
     msgSPtr->get_body_buffer_chain()->append("01234567890");
     // ctor move
@@ -384,7 +382,7 @@ TEST_CASE ("move assignment")
 }
 TEST_CASE("serialize 1")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     for(int i = 0; i < 10000; i++) {
@@ -397,7 +395,7 @@ TEST_CASE("serialize 1")
 }
 //TEST_CASE("serialize 2")
 //{
-//    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+//    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
 //    fillMsgAsResponse_01(msgSPtr);
 //    auto start = std::chrono::high_resolution_clock::now();
 //    for(int i = 0; i < 10000; i++) {
@@ -411,7 +409,7 @@ TEST_CASE("serialize 1")
 //}
 TEST_CASE("header_serialize 1")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     for(int i = 0; i < 10000; i++)
@@ -434,7 +432,7 @@ TEST_CASE("header_serialize 1")
 }
 TEST_CASE("header_serialize_2")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     for(int i = 0; i < 10000; i++)
@@ -459,7 +457,7 @@ TEST_CASE("header_serialize_2")
     std::cout << "headers serialize 2" << " duration(millisecs): " << duration.count() << std::endl;
     std::cout << "headers serialize 2" << " duration(millisecs): " << duration.count() << std::endl;
 }
-std::string fmt_headers_stream(MessageBaseSPtr msgSPtr)
+std::string fmt_headers_stream(MessageBase::SPtr msgSPtr)
 {
     std::string str = "";
     std::ostringstream os;
@@ -514,7 +512,7 @@ void fmtHeaders3(Marvin::HeaderFields& hdrs, ContigBuffer::SPtr mb)
     }
     mb->append((void*)(char*)"\r\n", 2);
 }
-void fmtMsg(Marvin::MessageBaseSPtr msg_sptr, ContigBuffer::SPtr mb)
+void fmtMsg(Marvin::MessageBase::SPtr msg_sptr, ContigBuffer::SPtr mb)
 {
 
 }
@@ -532,7 +530,7 @@ void fmtHeaders4(Marvin::HeaderFields& hdrs, ContigBuffer::SPtr mb)
 }
 TEST_CASE("header_serialize_3")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
@@ -563,7 +561,7 @@ TEST_CASE("header_serialize_3")
 }
 TEST_CASE("header_serialize_4")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
@@ -587,7 +585,7 @@ TEST_CASE("header_serialize_4")
 }
 TEST_CASE("header_serialize_5")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
@@ -611,7 +609,7 @@ TEST_CASE("header_serialize_5")
 }
 TEST_CASE("header_serialize_6")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
@@ -635,7 +633,7 @@ TEST_CASE("header_serialize_6")
 }
 TEST_CASE("header_serialize_7")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
@@ -659,7 +657,7 @@ TEST_CASE("header_serialize_7")
 }
 TEST_CASE("message_serialize_8")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();
@@ -684,7 +682,7 @@ TEST_CASE("message_serialize_8")
 // this give a typical measurement of 17millisecs the previous give 73
 TEST_CASE("message_serialize_9")
 {
-    MessageBaseSPtr msgSPtr = std::make_shared<MessageBase>();
+    MessageBase::SPtr msgSPtr = std::make_shared<MessageBase>();
     fillMsgAsResponse_01(msgSPtr);
     auto start = std::chrono::high_resolution_clock::now();
     auto hdrs = msgSPtr->headers();

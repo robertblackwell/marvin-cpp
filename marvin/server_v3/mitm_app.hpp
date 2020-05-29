@@ -16,6 +16,7 @@
 #include<uri-parser/UriParser.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 #include <marvin/server_v3/request_handler_interface.hpp>
 #include <marvin/collector/collector_interface.hpp>
 #include <marvin/server_v3/adapter.hpp>
@@ -157,8 +158,8 @@ class MitmApp : public Marvin::RequestHandlerInterface
         ICollectorSPtr                      m_collector_sptr;
         ISocketSPtr                         m_socket_sptr;
         MessageWriterSPtr                   m_wrtr;
-        MessageReaderSPtr                   m_rdr;
-        MessageBaseSPtr       m_msg;
+        MessageReaderV2::SPtr               m_rdr;
+        MessageBase::SPtr                   m_request_msg_sptr;
         std::string                         m_body;
         Marvin::HandlerDoneCallbackType     m_done;
         ATimerSPtr                          m_timer_sptr;

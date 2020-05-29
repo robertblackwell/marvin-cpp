@@ -41,9 +41,9 @@ Parser::~Parser()
     if (m_http_parser_ptr != NULL) {free(m_http_parser_ptr);m_http_parser_ptr = NULL;}
     if (m_http_parser_ptr != NULL) {free(m_http_parser_settings_ptr); m_http_parser_settings_ptr = NULL;}
 }
-MessageBase* Parser::current_message()
+MessageBase::SPtr Parser::current_message()
 {
-    return m_current_message_ptr;
+    return m_current_message_sptr;
 }
 int Parser::appendBytes(void *buffer, unsigned length)
 {
@@ -51,15 +51,10 @@ int Parser::appendBytes(void *buffer, unsigned length)
     size_t nparsed = http_parser_execute(m_http_parser_ptr, m_http_parser_settings_ptr, (char*)buffer, (int)length);
     return (int)nparsed;
 }
-void Parser::begin(MessageBase& message_ref)
+void Parser::begin(MessageBase::SPtr message_sptr)
 {
     p_initialize();
-    this->m_current_message_ptr = std::addressof<MessageBase>(message_ref);
-}
-void Parser::begin(MessageBase* message_ptr)
-{
-    p_initialize();
-    this->m_current_message_ptr = message_ptr;
+    this->m_current_message_sptr = message_sptr;
 }
 Parser::ReturnValue Parser::consume(boost::asio::streambuf& streambuffer, bool only_header)
 {
@@ -206,14 +201,14 @@ int Parser::p_on_message_begin(http_parser* parser)
 }
 int Parser::p_on_url_data(http_parser* parser, const char* at, size_t length)
 {
-    MessageBase* message = current_message();
+    MessageBase::SPtr message = current_message();
     message->set_is_request(true);
     url_stringbuf.append((char*)at, length);
     return 0;
 }
 int Parser::p_on_status_data(http_parser* parser, const char* at, size_t length)
 {
-    MessageBase* message = current_message();
+    MessageBase::SPtr message = current_message();
     message->set_is_request(false);
     message->status_code(m_http_parser_ptr->status_code);
     status_stringbuf.append((char*)at, length);
@@ -254,7 +249,7 @@ int Parser::p_on_header_value_data(http_parser* parser, const char* at, size_t l
 }
 int Parser::p_on_headers_complete(http_parser* parser) //, const char* aptr, size_t remainder)
 {
-    MessageBase* message = current_message();
+    MessageBase::SPtr message = current_message();
     if(name_stringbuf.size() != 0) {
         message->header(name_stringbuf, value_stringbuf);
         name_stringbuf.clear();
@@ -275,11 +270,11 @@ int Parser::p_on_headers_complete(http_parser* parser) //, const char* aptr, siz
 }
 int Parser::p_on_body_data(http_parser* parser, const char* at, size_t length)
 {
-    BufferChain::SPtr chain_sptr = this->m_current_message_ptr->get_body_buffer_chain();
+    BufferChain::SPtr chain_sptr = this->m_current_message_sptr->get_body_buffer_chain();
     if (chain_sptr == nullptr) {
         ContigBuffer::SPtr mb_sptr = m_factory.makeSPtr();
         chain_sptr = makeBufferChainSPtr(mb_sptr);
-        m_current_message_ptr->set_body_buffer_chain(chain_sptr);
+        m_current_message_sptr->set_body_buffer_chain(chain_sptr);
     }
     chain_sptr->append((void*)at, length);
     return 0;
@@ -319,7 +314,7 @@ void Parser::p_initialize()
     started = false;
     message_done = false;
     header_done = false;
-    m_current_message_ptr = nullptr;
+    m_current_message_sptr = nullptr;
     if (m_http_parser_ptr != NULL) {
         free(m_http_parser_ptr);
     }

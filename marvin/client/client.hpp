@@ -1,24 +1,20 @@
 
 #ifndef marvin_client_client_hpp
 #define marvin_client_client_hpp
-#include <functional>                              // for function
-#include <istream>                                 // for string
-#include <marvin/http/headers_v2.hpp>             // for Headers, Headers::...
-#include <marvin/http/uri.hpp>                     // for Uri
-#include <marvin/message/message_reader.hpp>       // for MessageReaderSPtr
-#include <marvin/message/message_writer.hpp>       // for MessageWriterSPtr
-#include <memory>                                  // for shared_ptr, unique...
-#include <boost/asio/io_service.hpp>               // for io_service
-#include <marvin/connection/socket_interface.hpp>  // for ISocketSPtr
-#include <marvin/error/marvin_error.hpp>           // for ErrorType
-#include <marvin/http/message_base.hpp>            // for MessageBaseSPtr
-#include <memory>                                       // for operator!=
-#include <string>                                       // for to_string
-#include <boost/asio/io_service.hpp>                    // for io_service
-#include <marvin/buffer/buffer.hpp>               // for BufferChain
-#include <marvin/connection/socket_interface.hpp>       // for ISocketSPtr
-#include <marvin/error/marvin_error.hpp>                // for ErrorType
-#include <marvin/http/message_base.hpp>                 // for MessageBaseSPtr
+#include <functional>
+#include <istream>
+#include <string>
+#include <memory>
+#include <boost/asio/io_service.hpp>
+#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/uri.hpp>
+#include <marvin/connection/socket_interface.hpp>
+#include <marvin/message/message_reader_v2.hpp>
+#include <marvin/message/message_writer.hpp>
+#include <marvin/error/marvin_error.hpp>
+#include <marvin/http/message_base.hpp>
+#include <marvin/buffer/buffer.hpp>
+#include <marvin/connection/socket_interface.hpp>
 namespace boost { namespace asio { namespace ip { class tcp; } } }
 namespace boost { namespace system { class error_code; } }  // lines 19-19
 
@@ -37,7 +33,7 @@ using ClientUPtr = std::unique_ptr<Client>;
 * \brief This is the type signature of callbacks that receive a fully or partially complete
 * response
 */
-using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageReaderSPtr msg)>;
+using ResponseHandlerCallbackType = std::function<void(Marvin::ErrorType& err, MessageBase::SPtr msg)>;
 
 /**
 * \ingroup client
@@ -56,45 +52,6 @@ using ClientDataHandlerCallbackType = std::function<void(Marvin::ErrorType& err,
 * \brief This class implements an http client that can send a request message and wait for a response;
 *  and can manage one or more such `round trips` to a server.
 *
-* This class connects to a server, then
-*  -   sends a message (MessageBase instance) to the server, and waits for a response in the
-*      form of a MessageReader instance.  This is a `round trip`.
-*  -   The connection is only established once and multiple independent round trips can be
-*      performed on that connection.
-*  -   each round trip requires the caller to provide an request in the form of a MessageBase
-*      instance and receives a response in the form of a MessageReadeer instance.
-*  -   the class can perform round trips directly to a server or via a proxy
-*  -   the request (MessageBase) provided by the caller must have a uri and host header
-*      that is compatible with the connected host and with the use or non use of a proxy.
-*  -   the Client instance DOES NOT check or modify the request MessageBase instance in any
-*      way(see exception below), getting the request correct is the callers responsibility.
-*  -   exception to the previous point is the content length header which some of the writeAsync
-*      set.
-*  -   @note the caller is responsible for managing connection keep-alive and close
-*
-* Two modes of transmission operation are provided for:
-*
-*   -   send the entire request in a single call using async_write. This mode is best when
-*       either there is NO message body or the entire message body is available at the time
-*       the request transmission is started. In this mode the handler provided to async_write
-*       is passed a complete response including any body data.
-*
-*   -   send the request/message piecemeal - headers, followed by multiple chunks of body, followed by trailers.
-*       This mode is intended to handle streaming of the body data to avoid latency or buffering large body. In this
-*       mode the handler for the incoming response message is provide by the setOnResponseHandler. The response handler
-*       should be set before any transmission is started. A complete response including body data is provided
-*       to this handler.
-*
-* Constructors
-*   -   two will construct a non-connected client for which an explicit or implicit
-*       connect call will be required.
-*   -   the other creates a client with an established connection.
-*
-* HTTPS - the interface does not yet provide a means of giving the Client a certificate bundle which is required
-*       to establish a secure connection. The plan is to make the cert bundle always be explicit rather than
-*       using the openssl/os default bundle
-* Design note:
-*   contemplating makiing the MessageBase instance internal to this class 
 */
 class Client
 {
@@ -109,17 +66,12 @@ public:
      * Create a client that is not connected; but provide the info it needs
      * to try and establish a connection; if connectiing through a proxy the host/port
      * should point at the proxy.
-     *
-     * @param io - an io service
-     * @param scheme of type HttpHeader::SchemeType
-     * @param server - a string like google.com
-     * @param port - a string like "443"
      * \deprecated
      */
     Client(boost::asio::io_service& io, std::string scheme, std::string server, std::string port);
     
     /**
-     * Conosttruct an not-yet-connected client instance and provide target host
+     * Construct a not-yet-connected client instance and provide target host
      * information in the form of a Marvin::Uri instance.
      *
      * @param io - an io service
@@ -139,33 +91,11 @@ public:
     
 #pragma mark - getters and setters
     
-    MessageReaderSPtr  getResponse();
+    MessageBase::SPtr  getResponse();
     
     void set_url(std::string url);
     void set_content(std::string& contentStr);
     
-#pragma mark - event registration
-    /**
-    * Sets a handler to be called when a complete response message is received or if
-    * an error occurs while receiving a response message.
-    */
-    void set_on_response(ResponseHandlerCallbackType cb );
-
-    /**
-    * Sets a handler to be called when all headers have been received or if
-    * an error occurs while receiving a response message headers.
-    *
-    * optional
-    */
-    void set_on_headers(ResponseHandlerCallbackType cb);
-
-    /**
-    * Sets a handler to be called when a chunk of body data is available.
-    *
-    * optional
-    */
-    void set_on_data(ClientDataHandlerCallbackType cb);
-
     /**
     * Connects to the target host. If the scheme is https also includes a handshake.
     * If the ISocket is not already connected this method will becalled when the first write call is issued
@@ -194,54 +124,6 @@ public:
     void async_write(Marvin::MessageBaseSPtr requestMessage,  Marvin::BufferChain::SPtr chain_sptr, ResponseHandler cb);
 
     /**
-    * Sends the first line and headers of the request message only
-    * and expects any body data to be sent using async_write_body_data
-    * in which case the body will be "chunk" encoded and the headers
-    * will be completed to indicate this.
-    *
-    * Dont use this method IF there is no body data, use async_write
-    */
-    void async_write_headers(Marvin::MessageBaseSPtr requestMessage, WriteHeadersHandler cb);
-    
-    /**
-    * Transmits a block of body data - the data should NOT be chunk encode
-    * that will be done within the call.
-    *
-    * @param dataBuffer (type TBD) can also be nullptr
-    * @param last bool - signals this is the last dataBuffer and that the
-    *                   chunk trailer should be generated.
-    * @param cb     -   handler to be called when operation complete.
-    *
-    * @note - async_write_body_data( nullptr, true, ....) is the normal way to
-    *   -   signal end of data, as the caller may not know its e-o-d until
-    *       after the last buffer is sent. Such a call still sends data
-    *       on the connection
-    *
-    *       - the chunk encoding trailer.
-    *
-    */
-    void async_write_body_data(void* dataBuffer, bool last, WriteBodyDataHandler cb);
-    
-    /**
-    * not yet implemented
-    *
-    * This method should only be used if the transmission was started with a
-    * call to async_write_headers. The method async_write handles trailers automatically.
-    *
-    * Sends the trailers that are present in the requestMessage - trailers can be added
-    * to the message AFTER transmission has started as the internals of this class
-    * do not inspect the trailers until this call nor does it keep a copy of the
-    * original request
-    */
-    void async_write_trailers(Marvin::MessageBaseSPtr requestMessage, ISocket::WriteHandler cb);
-    
-    /**
-    * Called to signal end-of-message. This function will
-    * (if necessary) add the chunk-encoding trailer.
-    */
-    void end();
-    
-    /**
     * close - called to signal that connection::close has been received
     * and that the net round trip should use a different connection
     * for the next message. This invalidates m_connection, m_rdr, m_wrtr
@@ -255,25 +137,23 @@ protected:
     void p_async_write(Marvin::MessageBaseSPtr requestMessage,  ResponseHandlerCallbackType cb);
     void p_set_content_length();
     
-    std::string m_url; // resource locator
-    std::string m_uri; // really path
-    std::string m_scheme;    // http or https
-    std::string m_server;  // this is without the port localhost for example
-    std::string m_host;           // as used in the headers eg localhost:9991 for example
-    std::string m_host_with_port; // as used in the headers eg localhost:9991 for example
+    std::string m_url;
+    std::string m_uri;
+    std::string m_scheme;
+    std::string m_server;
+    std::string m_host;
+    std::string m_host_with_port;
     std::string m_port;
     std::string m_path;
 
     boost::asio::io_service&          m_io;
     Marvin::MessageBaseSPtr           m_current_request;
     Marvin::ContigBuffer::SPtr        m_body_mbuffer_sptr;
-    MessageWriterSPtr                 m_wrtr;
-    MessageReaderSPtr                 m_rdr;
+    MessageWriter::SPtr               m_wrtr;
+    MessageReaderV2::SPtr             m_rdr;
     ISocketSPtr                       m_conn_shared_ptr;
     ResponseHandlerCallbackType       m_response_handler;
-    ResponseHandlerCallbackType       m_on_headers_handler;
-    ClientDataHandlerCallbackType     m_on_data_handler;
-    
+
 };
 } // namespaace
 #endif

@@ -9,7 +9,7 @@
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 namespace Marvin {
 
 /**
@@ -23,7 +23,7 @@ class ICollector
         /**
         ** Interface method for client code to call collect
         **/
-        virtual void collect(std::string scheme, std::string host, MessageReaderSPtr req, Marvin::MessageBaseSPtr resp) = 0;
+        virtual void collect(std::string scheme, std::string host, MessageBase::SPtr req, Marvin::MessageBase::SPtr resp) = 0;
     
     private:
 };

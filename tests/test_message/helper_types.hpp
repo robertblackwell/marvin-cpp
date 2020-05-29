@@ -11,7 +11,7 @@
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/http/parser.hpp>
-#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 
 namespace Marvin{
 namespace Tests{
@@ -25,7 +25,7 @@ using InputData = std::vector<char*>;
  *  MsgList is a vector of parsed messages that is the result of running 
  *  InputData through a parser.
  */
-using MsgList = std::vector<Marvin::MessageBase*>;
+using MsgList = std::vector<Marvin::MessageBase::SPtr>;
 /**
  * A VerifyFunction is a callable that examines a MsgList to
  * check that is gives the expected result;
@@ -135,8 +135,8 @@ struct WrappedParserTest
         using namespace Marvin;
         
         boost::asio::streambuf streambuffer(2000);
-        Marvin::MessageBase* message_ptr = new Marvin::MessageBase();
-        m_parser.begin(message_ptr);
+        Marvin::MessageBase::SPtr message_sptr = std::make_shared<MessageBase>();
+        m_parser.begin(message_sptr);
         int bytes_read;
         while(true) {
             bytes_read = m_data_source.read_data(streambuffer);
@@ -151,7 +151,8 @@ struct WrappedParserTest
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         m_messages.push_back((m_parser.current_message()));
-                        m_parser.begin(new Marvin::MessageBase());
+                        message_sptr = std::make_shared<MessageBase>();
+                        m_parser.begin(message_sptr);
                     break;
                 }
                 break;
@@ -178,12 +179,12 @@ struct WrappedParserTest
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         /// save the just parsed message
-                        m_messages.push_back(message_ptr);
+                        m_messages.push_back(message_sptr);
                         /// get ready for the next one
                         /// notice we keep processing the same buffer even with a 
                         /// new message
-                        message_ptr = new MessageBase();
-                        m_parser.begin(message_ptr);
+                        message_sptr = std::make_shared<MessageBase>();
+                        m_parser.begin(message_sptr);
                     break;
                 }
                 auto z = streambuffer.data().data();
@@ -202,7 +203,7 @@ struct WrappedParserTest
  */
 struct WrappedReaderTest
 {
-    MessageReader           m_rdr;
+    MessageReaderV2         m_rdr;
     DataSource&             m_data_source;
     VerifyFunctionType      m_verify_func;
     MsgList                 m_messages;
@@ -216,18 +217,18 @@ struct WrappedReaderTest
     }
     void read_one() 
     {
-        m_rdr.async_read_message([this](ErrorType err)
-                                 {
-                                     if (err) {
-                                         std::cout << "error: " << err.message() << std::endl;
-                                         m_verify_func(m_messages);
-                                         return;
-                                     } else {
-                                         MessageBase *msg_ptr = new MessageBase(std::move(m_rdr));
-                                         m_messages.push_back(msg_ptr);
-                                         next_one();
-                                     }
-                                 });
+        m_rdr.async_read_message ([this] (ErrorType err)
+        {
+            if (err) {
+                std::cout << "error: " << err.message () << std::endl;
+                m_verify_func (m_messages);
+                return;
+            } else {
+                MessageBase::SPtr msg_sptr = m_rdr.get_message_sptr();
+                m_messages.push_back (msg_sptr);
+                next_one ();
+            }
+        });
     }
     void next_one()
     {

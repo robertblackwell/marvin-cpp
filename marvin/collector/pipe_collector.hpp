@@ -11,7 +11,7 @@
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 #include <marvin/message/message_writer.hpp>
 #include <marvin/configure_trog.hpp>
 
@@ -54,8 +54,8 @@ class PipeCollector : public ICollector
         void collect(
             std::string scheme,
             std::string host,
-            MessageReaderSPtr req,
-            MessageBaseSPtr resp);
+            MessageBase::SPtr req,
+            MessageBase::SPtr resp);
     
     private:
         /**
@@ -66,8 +66,8 @@ class PipeCollector : public ICollector
         void posted_collect(
             std::string scheme,
             std::string host,
-            MessageReaderSPtr req,
-            Marvin::MessageBaseSPtr resp);
+            MessageBase::SPtr req,
+            MessageBase::SPtr resp);
 
         boost::asio::io_service::strand     m_my_strand;
         boost::asio::io_service&            m_io;

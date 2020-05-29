@@ -49,9 +49,10 @@ public:
     boost::uuids::uuid       m_uuid;
     boost::asio::io_service&            m_io;
     ISocketSPtr                         m_socket_sptr;
-    MessageWriterSPtr                   m_wrtr;
-    MessageReaderSPtr                   m_rdr;
-    MessageBaseSPtr                     m_msg;
+    MessageWriter::SPtr                 m_wrtr;
+    MessageReaderV2::SPtr               m_rdr;
+    MessageBase::SPtr                   m_request_sptr;
+    MessageBase::SPtr                   m_msg;
     std::string                         m_body;
     HandlerDoneCallbackType             m_done;
     ATimerSPtr                          m_timer_sptr;

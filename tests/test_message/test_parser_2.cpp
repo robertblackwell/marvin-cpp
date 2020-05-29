@@ -61,7 +61,7 @@ struct LineSource {
  */
 struct WrappedParserTest
 {
-    using MsgList = std::vector<Marvin::MessageBase*>;
+    using MsgList = std::vector<Marvin::MessageBase::SPtr>;
     using VerifyFunctionType = std::function<void(MsgList msg_list)>;
     
     Marvin::Parser&     m_parser;
@@ -77,8 +77,8 @@ struct WrappedParserTest
         using namespace Marvin;
         
         boost::asio::streambuf streambuffer(2000);
-        Marvin::MessageBase* message_ptr = new Marvin::MessageBase();
-        m_parser.begin(message_ptr);
+        Marvin::MessageBase::SPtr message_sptr = std::make_shared<Marvin::MessageBase>();
+        m_parser.begin(message_sptr);
         int bytes_read;
         while(true) {
             bytes_read = m_line_source.read_data(streambuffer);
@@ -108,12 +108,12 @@ struct WrappedParserTest
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         /// save the just parsed message
-                        m_messages.push_back(message_ptr);
+                        m_messages.push_back(message_sptr);
                         /// get ready for the next one
                         /// notice we keep processing the same buffer even with a 
                         /// new message
-                        message_ptr = new MessageBase();
-                        m_parser.begin(message_ptr);
+                        message_sptr = std::make_shared<Marvin::MessageBase>();
+                        m_parser.begin(message_sptr);
                     break;
                 }
                 auto z = streambuffer.data().data();
@@ -162,10 +162,10 @@ std::vector<char*>& test_eof_data()
     return lines;
 }
 
-void verify_result(std::vector<Marvin::MessageBase*> messages)
+void verify_result(std::vector<Marvin::MessageBase::SPtr> messages)
 {
     REQUIRE(messages.size() > 0);
-    Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+    Marvin::MessageBase::SPtr m0 = messages[0];
     Marvin::HeaderFields& h = m0->headers();
     REQUIRE(m0 != nullptr);
     CHECK(m0->version_major() == 1);
@@ -176,7 +176,7 @@ void verify_result(std::vector<Marvin::MessageBase*> messages)
     CHECK(h.at_key("PROXY-CONNECTION").get() == "keep-alive");
     auto b0 = m0->get_body_buffer_chain()->to_string();
     CHECK(m0->get_body()->to_string() == "1234567890");
-    Marvin::MessageBase* m1 = dynamic_cast<Marvin::MessageBase*>(messages[1]);
+    Marvin::MessageBase::SPtr m1 = messages[1];
     Marvin::HeaderFields& h2 = m1->headers();
     REQUIRE(m1 != nullptr);
     CHECK(m1->version_major() == 1);
@@ -188,9 +188,9 @@ void verify_result(std::vector<Marvin::MessageBase*> messages)
     auto b1 = m1->get_body_buffer_chain()->to_string();
     CHECK(m1->get_body()->to_string() == "ABCDEFGHIJK");
 }
-void verify_eof_test(std::vector<Marvin::MessageBase*> messages)
+void verify_eof_test(std::vector<Marvin::MessageBase::SPtr> messages)
 {
-    Marvin::MessageBase* m0 = dynamic_cast<Marvin::MessageBase*>(messages[0]);
+    Marvin::MessageBase::SPtr m0 = messages[0];
     Marvin::HeaderFields& h = m0->headers();
     CHECK(m0->version_major() == 1);
     CHECK(m0->version_minor() == 1);
@@ -253,12 +253,12 @@ TEST_CASE("two messages")
     {
         using namespace Marvin;
         Parser* parser_ptr = new Parser();
-        std::vector<Marvin::MessageBase*> messages;
+        std::vector<Marvin::MessageBase::SPtr> messages;
         
         boost::asio::streambuf streambuffer(2000);
         LineSource line_source(test_data());
-        Marvin::MessageBase* message_ptr = new Marvin::MessageBase();
-        parser_ptr->begin(message_ptr);
+        Marvin::MessageBase::SPtr message_sptr = std::make_shared<Marvin::MessageBase>();
+        parser_ptr->begin(message_sptr);
         int bytes_read;
         while(true) {
             bytes_read = line_source.read_data(streambuffer);
@@ -288,12 +288,12 @@ TEST_CASE("two messages")
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         /// save the just parsed message
-                        messages.push_back(message_ptr);
+                        messages.push_back(message_sptr);
                         /// get ready for the next one
                         /// notice we keep processing the same buffer even with a 
                         /// new message
-                        message_ptr = new MessageBase();
-                        parser_ptr->begin(message_ptr);
+                        message_sptr = std::make_shared<Marvin::MessageBase>();
+                        parser_ptr->begin(message_sptr);
                     break;
                 }
                 auto z = streambuffer.data().data();
@@ -307,10 +307,10 @@ TEST_CASE("two messages")
     SUBCASE("boost_buffers") 
     {
         Marvin::Parser* parser_ptr = new Marvin::Parser();
-        std::vector<Marvin::MessageBase*> messages;
+        std::vector<Marvin::MessageBase::SPtr> messages;
         
         boost::asio::streambuf streambuffer(2000);
-        parser_ptr->begin(new Marvin::MessageBase());
+        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
         std::vector<char*>& lines = test_data();
         for(int i = 0; lines[i] != NULL  ;i++)
             {
@@ -352,7 +352,7 @@ TEST_CASE("two messages")
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         messages.push_back((parser_ptr->current_message()));
-                        parser_ptr->begin(new Marvin::MessageBase());
+                        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
                     break;
                 }
             }
@@ -362,10 +362,10 @@ TEST_CASE("two messages")
     SUBCASE("boost_streambuf") 
     {
         Marvin::Parser* parser_ptr = new Marvin::Parser();
-        std::vector<Marvin::MessageBase*> messages;
+        std::vector<Marvin::MessageBase::SPtr> messages;
         
         boost::asio::streambuf streambuffer(2000);
-        parser_ptr->begin(new Marvin::MessageBase());
+        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
 
         std::vector<char*>& lines = test_data();
         for(int i = 0; lines[i] != NULL  ;i++)
@@ -407,7 +407,7 @@ TEST_CASE("two messages")
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         messages.push_back((parser_ptr->current_message()));
-                        parser_ptr->begin(new Marvin::MessageBase());
+                        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
                     break;
                 }
                 auto z = streambuffer.data().data();
@@ -421,10 +421,10 @@ TEST_CASE("two messages")
     SUBCASE("parsing header then body - boost::asio::streambuf") 
     {
         Marvin::Parser* parser_ptr = new Marvin::Parser();
-        std::vector<Marvin::MessageBase*> messages;
+        std::vector<Marvin::MessageBase::SPtr> messages;
         
         boost::asio::streambuf streambuffer(2000);
-        parser_ptr->begin(new Marvin::MessageBase());
+        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
 
         std::vector<char*>& lines = test_data();
         for(int i = 0; lines[i] != NULL  ;i++)
@@ -466,7 +466,7 @@ TEST_CASE("two messages")
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         messages.push_back((parser_ptr->current_message()));
-                        parser_ptr->begin(new Marvin::MessageBase());
+                        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
                     break;
                 }
             }
@@ -501,7 +501,7 @@ TEST_CASE("two messages")
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         messages.push_back((parser_ptr->current_message()));
-                        parser_ptr->begin(new Marvin::MessageBase());
+                        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
                     break;
                 }
             }
@@ -516,12 +516,12 @@ TEST_CASE("eof")
     {
         using namespace Marvin;
         Parser* parser_ptr = new Parser();
-        std::vector<Marvin::MessageBase*> messages;
+        std::vector<Marvin::MessageBase::SPtr> messages;
         
         boost::asio::streambuf streambuffer(2000);
         LineSource line_source(test_eof_data());
-        Marvin::MessageBase* message_ptr = new Marvin::MessageBase();
-        parser_ptr->begin(message_ptr);
+        Marvin::MessageBase::SPtr message_sptr = std::make_shared<Marvin::MessageBase>();
+        parser_ptr->begin(message_sptr);
         int bytes_read;
         while(true) {
             bytes_read = line_source.read_data(streambuffer);
@@ -537,7 +537,7 @@ TEST_CASE("eof")
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         messages.push_back((parser_ptr->current_message()));
-                        parser_ptr->begin(new Marvin::MessageBase());
+                        parser_ptr->begin(std::make_shared<Marvin::MessageBase>());
                     break;
                 }
                 break;
@@ -563,12 +563,12 @@ TEST_CASE("eof")
                     break;
                     case Marvin::Parser::ReturnCode::end_of_message:
                         /// save the just parsed message
-                        messages.push_back(message_ptr);
+                        messages.push_back(message_sptr);
                         /// get ready for the next one
                         /// notice we keep processing the same buffer even with a 
                         /// new message
-                        message_ptr = new MessageBase();
-                        parser_ptr->begin(message_ptr);
+                        message_sptr = std::make_shared<Marvin::MessageBase>();
+                        parser_ptr->begin(message_sptr);
                     break;
                 }
                 auto z = streambuffer.data().data();

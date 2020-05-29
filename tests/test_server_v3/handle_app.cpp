@@ -69,7 +69,7 @@ void AppHandler::handle(
 )
 {
     m_socket_sptr = socket_sptr;
-    m_rdr = std::make_shared<MessageReader>(socket_sptr);
+    m_rdr = std::make_shared<MessageReaderV2>(socket_sptr);
     m_wrtr = std::make_shared<MessageWriter>(socket_sptr);
     m_done_callback = done;
     // Adapterequest(m_socket_sptr, m_wrtr, m_rdr);
@@ -78,29 +78,30 @@ void AppHandler::handle(
 void AppHandler::p_internal_handle()
 {
     m_rdr->async_read_message([this](ErrorType err)
-                              {
-                                  if (err) {
-                                      p_on_read_error(err);
-                                  } else {
-                                      std::string path = m_rdr->target();
-                                      std::vector<std::string> bits;
-                                      boost::split(bits, path, [](char c) { return c == '/'; });
-                                      if (bits.size() < 2) {
-                                          bits[1] = "";
-                                      }
-                                      std::string path_01 = bits[1];
+    {
+        if (err) {
+            p_on_read_error (err);
+        } else {
+            m_request_sptr = m_rdr->get_message_sptr();
+            std::string path = m_request_sptr->target ();
+            std::vector<std::string> bits;
+            boost::split (bits, path, [] (char c) { return c == '/'; });
+            if (bits.size () < 2) {
+                bits[1] = "";
+            }
+            std::string path_01 = bits[1];
 
-                                      if (path_01 == "echo") {
-                                          p_handle_echo();
-                                      } else if (path_01 == "echosmart") {
-                                          p_handle_smart_echo();
-                                      } else if (path_01 == "delay") {
-                                          p_handle_delay(bits);
-                                      } else {
-                                          p_invalid_request();
-                                      }
-                                  }
-                              });
+            if (path_01 == "echo") {
+                p_handle_echo ();
+            } else if (path_01 == "echosmart") {
+                p_handle_smart_echo ();
+            } else if (path_01 == "delay") {
+                p_handle_delay (bits);
+            } else {
+                p_invalid_request ();
+            }
+        }
+    });
 }
 
 void AppHandler::p_on_completed()
@@ -112,7 +113,7 @@ void AppHandler::p_req_resp_cycle_complete()
 {
     bool keep_alive = false;
     /// @TODO - this is a hack
-    auto hopt = m_rdr->header(HeaderFields::Connection);
+    auto hopt = m_request_sptr->header(HeaderFields::Connection);
     if (hopt) {
         std::string conhdr = hopt.get();
         keep_alive = (conhdr == "Keep-Alive");

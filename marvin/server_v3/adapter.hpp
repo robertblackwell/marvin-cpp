@@ -34,9 +34,9 @@ public:
     boost::uuids::uuid       m_uuid;
     boost::asio::io_service&            m_io;
     ISocketSPtr                         m_socket_sptr;
-    MessageWriterSPtr                   m_wrtr;
-    MessageReaderSPtr                   m_rdr;
-    Marvin::MessageBaseSPtr       m_msg;
+    MessageWriter::SPtr                 m_wrtr;
+    MessageReaderV2::SPtr               m_rdr;
+    Marvin::MessageBaseSPtr             m_msg;
     std::string                         m_body;
     Marvin::HandlerDoneCallbackType     m_done;
     ATimerSPtr                          m_timer_sptr;

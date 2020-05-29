@@ -43,23 +43,14 @@ FullMessageReader::~FullMessageReader()
  */
 void FullMessageReader::async_read_message(MessageBaseSPtr message_sptr, FullMessageReader::DoneCallback cb)
 {
-    throw("not implemented yet");
-}
-void FullMessageReader::async_read_message(MessageBase& message_ref, FullMessageReader::DoneCallback cb)
-{
-    MessageBase* p = std::addressof(message_ref);
-    async_read_message(p, cb);
-}
-void FullMessageReader::async_read_message(MessageBase* message_ptr, FullMessageReader::DoneCallback cb)
-{
     m_read_cb = cb;
-    m_current_message_ptr =  message_ptr;
-    m_parser.begin(m_current_message_ptr);
+    m_current_message_sptr =  message_sptr;
+    m_parser.begin(m_current_message_sptr);
     if (m_streambuffer.data().size() > 0) {
         // there was already data in the streambuffer so parse it
         p_parse_some();
     } else {
-        m_parser.begin(m_current_message_ptr);
+        m_parser.begin(m_current_message_sptr);
         p_read_some();
     }
 }
@@ -68,7 +59,7 @@ void FullMessageReader::p_read_some()
     /**
      *
      */
-    std::size_t buf_size = recommended_buffer_size(*m_current_message_ptr, m_parser);
+    std::size_t buf_size = recommended_buffer_size(*m_current_message_sptr, m_parser);
     auto mutablebuffer = m_streambuffer.prepare(buf_size);
     m_read_sock_sptr->async_read(mutablebuffer, [buf_size, this](Marvin::ErrorType& err, std::size_t bytes_transfered)
     {

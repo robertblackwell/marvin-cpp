@@ -8,7 +8,7 @@
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/message/message_reader.hpp>
+#include <marvin/message/message_reader_v2.hpp>
 #include <marvin/message/message_writer.hpp>
 #include <marvin/collector/collector_interface.hpp>
 #include <marvin/collector/capture_filter.hpp>
@@ -67,12 +67,12 @@ public:
     void collect(
         std::string scheme,
         std::string host,
-        MessageReaderSPtr req,
+        MessageBase::SPtr req,
         MessageBaseSPtr resp);
     /**
      * Must be called on the io_service thread
      */
-    HostCaptures get_captures();
+    CapturedTraffic get_captures();
     /**
      * registers a lambda to be run on the io_service whenever there is an update
      * to captures
@@ -83,7 +83,7 @@ private:
     void posted_collect(
         std::string scheme,
         std::string host,
-        MessageReaderSPtr req,
+        MessageBase::SPtr req,
         MessageBaseSPtr resp);
 
     CapturedTraffic               m_captured_traffic;
