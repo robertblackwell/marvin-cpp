@@ -203,6 +203,7 @@ MessageBase& MessageBase::operator =(MessageBase&& other)
     m_trailers      = std::move(other.m_trailers);
     m_body_chain_sptr = other.m_body_chain_sptr;
     other.m_body_chain_sptr = makeBufferChainSPtr();
+    return *this;
 }
 
 MessageBase::~MessageBase(){}

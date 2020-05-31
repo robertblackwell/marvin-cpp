@@ -26,6 +26,7 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	collector/pipe_collector.hpp
 	collector/collector_interface.hpp
 	collector/capture_collector.hpp
+	collector/cout_collector.hpp
 	collector/capture_filter.hpp
 
 
@@ -95,8 +96,9 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 #	client/request_chunk.cpp
 	
 	collector/collector_base.cpp
-	collector/collector_interface.cpp
+#	collector/collector_interface.cpp
 	collector/pipe_collector.cpp
+	collector/cout_collector.cpp
 	collector/capture_collector.cpp
 
 	connection/half_tunnel.cpp     		
@@ -152,7 +154,6 @@ target_include_directories(marvin_library
 )
 
 target_precompile_headers(marvin_library PUBLIC
-	<marvin/configure_trog.hpp>
   	<marvin/boost_stuff.hpp>
 	<memory>
 	<stddef.h>

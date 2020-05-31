@@ -22,7 +22,6 @@
 #include <marvin/server_v3/tcp_server.hpp>
 #include <marvin/server_v3/request_handler_interface.hpp>
 
-using namespace Marvin;
 
 namespace {
 
@@ -31,6 +30,9 @@ bool is_number(const std::string &s) {
 }
 
 } // namespace anon
+
+namespace Marvin {
+namespace SimpleProxy {
 
 MessageBaseSPtr make_200_response(std::string body)
 {
@@ -58,40 +60,49 @@ MessageBaseSPtr make_response(int status_code, std::string status, std::string b
     msg->header(HeaderFields::ContentLength, std::to_string(body.length() ));
     return msg;
 }
+std::vector<std::string> split_path(std::string p)
+{
+    if (p[0] == '/') {
+        p = p.substr(1);
+    }
+    std::vector<std::string> bits;
+    boost::split(bits, p, [](char c){return c == '/';});
+    return bits;
+}
 CtlApp::CtlApp(boost::asio::io_service& io, MitmThread& mitm_thread_ref, CtlThread* ctl_thread_ptr)
 : m_io(io), m_mitm_thread_ref(mitm_thread_ref), m_ctl_thread_ptr(ctl_thread_ptr)
 {
     m_dispatch_table.add(std::regex("/stop"),[this](MessageBase::SPtr msg)
     {
         std::string path = msg->target();
+        if (path[0] == '/') {
+            path = path.substr(1);
+        }
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
-        if (bits.size() < 2) {
-            bits[1] = "";
-        }
         p_handle_stop(bits);
 
     });
-    m_dispatch_table.add(std::regex("/list.*"),[this](MessageBase::SPtr msg)
+    m_dispatch_table.add(std::regex("/filter.*"),[this](MessageBase::SPtr msg)
     {
         std::string path = msg->target();
+        if (path[0] == '/') {
+            path = path.substr(1);
+        }
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
-        if (bits.size() < 2) {
-            bits[1] = "";
-        }
-        p_handle_list_filters(bits);
+        p_handle_filter(bits);
 
     });
-    m_dispatch_table.add(std::regex("/echo"),[this](MessageBase::SPtr msg)
+    m_dispatch_table.add(std::regex("/bodies_.*"),[this](MessageBase::SPtr msg)
     {
         std::string path = msg->target();
+        if (path[0] == '/') {
+            path = path.substr(1);
+        }
         std::vector<std::string> bits;
         boost::split(bits, path, [](char c){return c == '/';});
-        if (bits.size() < 2) {
-            bits[1] = "";
-        }
-        p_handle_echo();
+        p_handle_bodies(bits);
 
     });
 }
@@ -238,20 +249,54 @@ void CtlApp::p_handle_stop(std::vector<std::string>& bits)
         }
     });    
 }
-void CtlApp::p_handle_list_filters(std::vector<std::string>& bits)
+
+void CtlApp::p_handle_filter(std::vector<std::string>& bits)
 {
     std::string body = "stop not yet implemented";
     std::ostringstream os;
-    std::vector<int>& ports = m_mitm_thread_ref.get_https_ports();
-    std::vector<std::string>& hosts = m_mitm_thread_ref.get_https_hosts();
-    os << "Https ports: " << std::endl;
-    for(int i = 0; i < ports.size(); i++) {
-        os << "port: " << ports[i] << std::endl; 
+    std::list<std::string> hosts = m_mitm_thread_ref.m_filter_sptr->get_filters();
+    std::vector<std::string> vec_regexs{};
+    for(auto& r: hosts) {
+        vec_regexs.push_back(r);
     }
-    os << "complete -------" << std::endl;
-    os << std::endl << "Https hosts: " << std::endl;
-    for(int i = 0; i < hosts.size(); i++) {
-        os << "host regex: " << hosts[i] << std::endl; 
+
+    if (bits[0] == "filter_list") {
+    } else if (bits[0] == "filter_remove") {
+        if (bits.size() > 1) {
+            std::string i_s = bits[1];
+            if (is_number(i_s)) {
+                int i = std::atoi(i_s.c_str());
+                if(i < vec_regexs.size()) {
+                    vec_regexs.erase(vec_regexs.begin() + i);
+                } else {
+                    os << "Index : " << i << " is too big." << std::endl;
+                }
+            } else {
+                os << "bad request " << bits[1] << " is not an index " << std::endl;
+            }
+        } else {
+            os << "list_remove requires a regex string as a parameter " << std::endl;
+        }
+    } else if (bits[0] == "filter_add") {
+        if (bits.size() > 1) {
+            std::string i_s = bits[1];
+            vec_regexs.push_back(i_s);
+        } else {
+            os << "list_add requires an index  parameter " << std::endl;
+        }
+    } else {
+        os << bits[0] << " is an invalid request" << std::endl;
+    }
+    std::list<std::string> hosts_2{};
+    for(std::string& r: vec_regexs) {
+        hosts_2.push_back(r);
+    }
+    m_mitm_thread_ref.m_filter_sptr->set_filters(hosts_2);
+
+    os << std::endl << "Host regexes: " << std::endl;
+    for(auto& rex: m_mitm_thread_ref.m_filter_sptr->get_filters()) {
+
+        os << "host regex: " << rex << std::endl;
     }
     os << "complete ------" << std::endl;
     body = os.str();
@@ -266,6 +311,35 @@ void CtlApp::p_handle_list_filters(std::vector<std::string>& bits)
         }
     });    
 }
+
+void CtlApp::p_handle_bodies(std::vector<std::string>& bits)
+{
+    std::string body = "body_onoff not yet implemented";
+    std::ostringstream os;
+    std::vector<int>& ports = m_mitm_thread_ref.get_https_ports();
+    std::vector<std::string>& hosts = m_mitm_thread_ref.get_https_hosts();
+    if (bits[0] == "bodies_on") {
+        m_mitm_thread_ref.m_filter_sptr->set_show_message_bodies(true);
+    } else if (bits[0] == "bodies_off") {
+        m_mitm_thread_ref.m_filter_sptr->set_show_message_bodies(false);
+    } else {
+    }
+    os << "Show message bodies: " << (int) m_mitm_thread_ref.m_filter_sptr->get_show_message_bodies() << std::endl;
+
+    os << "complete ------" << std::endl;
+    body = os.str();
+    MessageBaseSPtr response_msg = make_200_response(body);
+    auto s = response_msg->to_string();
+    m_wrtr->async_write(response_msg, body, [this](ErrorType& err)
+    {
+        if (err) {
+            p_on_write_error(err);
+        } else {
+            p_req_resp_cycle_complete();
+        }
+    });
+}
+
 void CtlApp::p_handle_smart_echo()
 {
     std::string body = "INVALID REQUEST";
@@ -309,3 +383,5 @@ void  CtlApp::p_handle_delay(std::vector<std::string>& bits)
         p_invalid_request();
     }
 }
+} // namespace SimpleProxy
+} // namespace Marvin

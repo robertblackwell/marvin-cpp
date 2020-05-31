@@ -35,19 +35,19 @@ std::vector<std::string> split_string(const std::string& s, char delimiter)
    return tokens;
 }
 
-std::string replace_substring_all(std::string target, std::string substr_to_match, std::string replacement)
-{
-    std::string result = boost::replace_all_copy(target , substr_to_match , replacement);
-    const std::string s = "*A";
-    const std::string t = "*A\n";
-
-    std::string::size_type n = 0;
-    while ( ( n = target.find( s, n ) ) != std::string::npos )
-    {
-        target.replace( n, s.size(), t );
-        n += t.size();
-    }
-}
+//std::string replace_substring_all(std::string target, std::string substr_to_match, std::string replacement)
+//{
+//    std::string result = boost::replace_all_copy(target , substr_to_match , replacement);
+//    const std::string s = "*A";
+//    const std::string t = "*A\n";
+//
+//    std::string::size_type n = 0;
+//    while ( ( n = target.find( s, n ) ) != std::string::npos )
+//    {
+//        target.replace( n, s.size(), t );
+//        n += t.size();
+//    }
+//}
 ///
 /// splits a string like "DNS:*.google.com, "DNS:something.google.com, ... " 
 ///into {"*.google.com", "somthing.google.com"}

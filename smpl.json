@@ -25,7 +25,7 @@
       "name": "uri-parser", "version": "xx"
     },
     { 
-      "name": "trog", "version": "v2.0.0"
+      "name": "trog", "version": "v3.0.0"
     },
     { 
       "name": "openssl", "version": "1.1.1f"

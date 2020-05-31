@@ -82,6 +82,7 @@ std::ostream &operator<< (std::ostream &os, HeaderFields& headers)
         auto p = headers.at_index(i);
         os << " " << p.key << ": " << p.value;
     }
+    return os;
 }
 
 std::string HeaderFields::str()
@@ -143,11 +144,13 @@ HeaderFields::HeaderFields(HeaderFields&& other) noexcept: m_fields_vector(std::
 HeaderFields& HeaderFields::operator =(HeaderFields const& other)
 {
     m_fields_vector = other.m_fields_vector;
+    return *this;
 }
 HeaderFields& HeaderFields::operator =(HeaderFields&& other)
 {
     m_fields_vector = other.m_fields_vector;
     other.m_fields_vector.clear();
+    return *this;
 }
 HeaderFields::HeaderFields(std::vector<std::pair<std::string, std::string>> initialValue)
 {
@@ -200,9 +203,8 @@ HeaderFields::Field HeaderFields::at_index(std::size_t index)
 {
     if (index >= m_fields_vector.size()) {
         throw HeaderFields::Exception("index is out of bounds accessing headers");
-    } else {
-        return m_fields_vector[index];
     }
+    return m_fields_vector[index];
 }
 boost::optional<std::string> HeaderFields::at_key(HeaderFields::FieldKeyArg k)
 {

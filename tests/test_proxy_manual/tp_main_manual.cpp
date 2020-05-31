@@ -11,7 +11,7 @@
 
 #include <marvin/server_v3/tcp_server.hpp>
 #include <marvin/collector/pipe_collector.hpp>
-#include <marvin/collector/collector_base.hpp>
+#include <marvin/collector/cout_collector.hpp>
 #include <marvin/server_v3/mitm_app.hpp>
 
 /**
@@ -50,11 +50,14 @@ int main( int argc, char* argv[] )
 //    MitmApp::configSet_HttpsHosts(re);
 
     TcpServer* server_ptr;
+    CaptureFilter::SPtr capture_filter_sptr;
+        std::vector<std::string> dummy{".*"};
+        capture_filter_sptr = std::make_shared<CaptureFilter>(dummy);
 
-    std::function<void(void*)> proxy_thread_func = [&server_ptr](void* param) {
-        server_ptr = new Marvin::TcpServer([](boost::asio::io_service& io) {
-            CollectorBaseSPtr cb_sptr = std::make_shared<CollectorBase>(io, std::cout);
-            MitmAppUPtr app_uptr = std::make_unique<MitmApp>(io, cb_sptr);
+        std::function<void(void*)> proxy_thread_func = [&server_ptr, capture_filter_sptr](void* param) {
+        server_ptr = new Marvin::TcpServer([capture_filter_sptr](boost::asio::io_service& io) {
+            CoutCollector::SPtr cb_sptr = std::make_shared<CoutCollector>(io, capture_filter_sptr);
+            MitmAppUPtr app_uptr = std::make_unique<MitmApp>(io, cb_sptr, capture_filter_sptr);
             return app_uptr;
         });
         server_ptr->listen(9992);

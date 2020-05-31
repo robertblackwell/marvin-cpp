@@ -8,34 +8,41 @@
 
 #include <marvin/server_v3/tcp_server.hpp>
 #include <marvin/server_v3/mitm_app.hpp>
-#include <marvin/collector/collector_base.hpp>
+#include <marvin/collector/capture_filter.hpp>
+#include <marvin/collector/cout_collector.hpp>
 namespace Marvin {
+namespace SimpleProxy {
 
-class MitmThread
+struct MitmThread
 {
     public:
+
+    std::unique_ptr<TcpServer>   m_server_uptr;
+    std::unique_ptr<std::thread> m_thread_uptr;
+    CaptureFilter::SPtr          m_filter_sptr;
+    CoutCollector::SPtr          m_collector_sptr;
+    bool                         m_show_message_bodies;
     MitmThread()
     {
 
     }
+
     MitmThread(
         long                proxy_port,
         std::string         marvin_home,
-        boost::optional<std::vector<std::string>> https_regex,
-        boost::optional<std::vector<long>> https_ports
-    )
+        CaptureFilter::SPtr filter_sptr
+    ): m_filter_sptr(filter_sptr)
     {
         long port = proxy_port;
 
-//        std::vector<std::string> re_strs{std::string("^ssllabs(.)*$")};
-//        std::vector<int> ports{443, 9443};
-//        MitmApp::configSet_HttpsPorts(ports);
-//        MitmApp::configSet_HttpsHosts(re_strs);
-
+        m_collector_sptr = nullptr;
         std::function<void(void*)> proxy_thread_func = [this, port](void* param) {
-            m_server_uptr = std::make_unique<Marvin::TcpServer>([](boost::asio::io_service& io) {
-                CollectorBaseSPtr cb_sptr = std::make_shared<CollectorBase>(io, std::cout);
-                MitmAppUPtr app_uptr = std::make_unique<MitmApp>(io, cb_sptr);
+
+            m_server_uptr = std::make_unique<Marvin::TcpServer>([this](boost::asio::io_service& io) {
+                if (m_collector_sptr == nullptr) {
+                    m_collector_sptr = std::make_shared<CoutCollector>(io, m_filter_sptr);
+                }
+                MitmAppUPtr app_uptr = std::make_unique<MitmApp>(io, m_collector_sptr, m_filter_sptr);
                 return app_uptr;
             });
             m_server_uptr->listen(port);
@@ -48,7 +55,8 @@ class MitmThread
 
     }
     
-    void post(std::function<void()> f) {
+    void post(std::function<void()> f)
+    {
 
     }
 
@@ -67,10 +75,9 @@ class MitmThread
         m_server_uptr->terminate();
     }
 
-    std::unique_ptr<TcpServer>   m_server_uptr;
-    std::unique_ptr<std::thread> m_thread_uptr;
 
 };
-}
+} // namespace SimpleProxy
+} // namespace Marvin
 
 #endif

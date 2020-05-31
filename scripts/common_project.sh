@@ -81,7 +81,7 @@ stage_include_dir=${stage_dir}/include
 stage_lib_dir=${stage_dir}/lib
 stage_src_dir=${stage_dir}/src
 
-vendor=./dontuse/directoru
+vendor=./dontuse/directory
 vendor_dir=${project_dir}/${project_vendor_dir_base_name}
 vendor_include_dir=${project_dir}/${project_vendor_include_dir_rel_path}
 vendor_lib_dir=${project_dir}/${project_vendor_lib_dir_rel_path}

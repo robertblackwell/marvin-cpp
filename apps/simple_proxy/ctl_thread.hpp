@@ -10,6 +10,7 @@
 #include "mitm_thread.hpp"
 
 namespace Marvin {
+namespace SimpleProxy {
 
 class CtlApp;
 
@@ -107,7 +108,8 @@ public:
     void p_internal_handle();
     void p_handle_echo();
     void p_handle_stop(std::vector<std::string>& bits);
-    void p_handle_list_filters(std::vector<std::string>& bits);
+    void p_handle_filter(std::vector<std::string>& bits);
+    void p_handle_bodies(std::vector<std::string>& bits);
     void p_handle_smart_echo();
     void p_handle_delay(std::vector<std::string>& bits);
     void p_invalid_request();
@@ -135,6 +137,6 @@ public:
 };
 
 
-}
-
+} // namespace SimpleProxy
+} // namespace Marvin
 #endif

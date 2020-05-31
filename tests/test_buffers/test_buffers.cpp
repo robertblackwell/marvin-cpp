@@ -1,15 +1,19 @@
 #include <iostream>
-
+#include <filesystem>
+#include <optional>
 // #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/configure_trog.hpp>
 
 using namespace Marvin;
 TEST_CASE("append")
 {
+    std::optional<int> opi = {};
+    opi = {44};
+    std::filesystem::path p{"../"};
+    auto p2 = std::filesystem::canonical(p);
     ContigBuffer::SPtr mbsptr = Marvin::makeContigBufferSPtr("thisisastring");
     BufferChain::SPtr bc_sptr = Marvin::makeBufferChainSPtr();
     bc_sptr->push_back(mbsptr);

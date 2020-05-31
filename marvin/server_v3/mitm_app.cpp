@@ -55,13 +55,14 @@ std::vector<std::string>& MitmApp::configGet_HttpsHosts()
 //{
 //    return s_https_ports;
 //}
-MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr): m_io(io)
+MitmApp::MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr, CaptureFilter::SPtr  filter_sptr): m_io(io)
 {
    TROG_INFO("constructor");
    TROG_TRACE_CTOR();
 //    m_https_hosts = s_https_hosts;
 //    m_https_ports = s_https_ports;
     m_collector_sptr = collector_sptr;
+    m_capture_filter_sptr = filter_sptr;
 }
 
 
@@ -122,7 +123,7 @@ void MitmApp::p_on_first_message()
     HttpMethod method = m_request_msg_sptr->method();
     auto sss = trace_message(*m_request_msg_sptr);
     // important logging point - if it breaks later in processing we need to be able to find out what was requested
-    TROG_TRACE3("UUID: ", m_uuid_str, "FD: ", m_socket_sptr->native_socket_fd(), "HDRS: ", trace_message(*m_rdr) );
+    TROG_TRACE3("UUID: ", m_uuid_str, "FD: ", m_socket_sptr->native_socket_fd(), "HDRS: ", trace_message(*m_request_msg_sptr) );
 
     if (method == HttpMethod::CONNECT) {
 
@@ -232,39 +233,11 @@ void MitmApp::p_log_error(std::string label, Marvin::ErrorType err)
  */
 ConnectAction MitmApp::p_determine_action(std::string host, std::string port)
 {
-//    return ConnectAction::MITM;
-    std::vector<std::string>  regex_strs = this->s_https_host_strings;
-    for( auto re_str: regex_strs) {
-        std::regex e{re_str};
-        if (std::regex_match(host, e)) {
-            return ConnectAction::MITM;
-        }
+
+    if (m_capture_filter_sptr->is_collectable(host)) {
+        return ConnectAction::MITM;
     }
     return ConnectAction::TUNNEL;
-//    std::vector<int>         ports  = this->m_https_ports;
-//    std::vector<std::string> mitm_hosts{
-//        "hackernoon.com",
-//        "www.youtube.com",
-//        "geeksforgeeks.org",
-//        "www.geeksforgeeks.org",
-//        "www.bankofamerica.com",
-//        "bankofamerica.com",
-//        "www.github.com",
-//        "github.com"
-//    };
-//    int index;
-//    bool found = false;
-//    for(index = 0; index < mitm_hosts.size(); index++){
-//        if (mitm_hosts[index] == host) {
-//            found = true;
-//            break;
-//        }
-//    }
-//    /// !!! this needs to be upgraded
-//    if ((std::stoi(port) == 443) && found) {
-//        return ConnectAction::MITM;
-//    }
-//    return ConnectAction::TUNNEL;
 }
 
 } // namespace Marvin

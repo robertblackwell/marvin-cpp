@@ -147,7 +147,9 @@ Parser::ReturnValue Parser::end()
             // MARVIN_THROW("dont think we should get here");
             return rv;
         }
+        return rv;
     }
+    return rv;
 }
 void Parser::append_eof()
 {

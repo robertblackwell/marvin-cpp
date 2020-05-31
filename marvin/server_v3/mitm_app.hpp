@@ -11,14 +11,13 @@
 #include <marvin/collector/collector_interface.hpp>
 #include <marvin/connection/connection.hpp>
 #include <marvin/connection/tunnel_handler.hpp>
-
-#include <marvin/configure_trog.hpp>
 #include<uri-parser/UriParser.hpp>
 #include <marvin/http/headers_v2.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/message/message_reader_v2.hpp>
 #include <marvin/server_v3/request_handler_interface.hpp>
 #include <marvin/collector/collector_interface.hpp>
+#include <marvin/collector/capture_filter.hpp>
 #include <marvin/server_v3/adapter.hpp>
 namespace Marvin {
 
@@ -70,7 +69,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         static std::vector<std::string>& configGet_HttpsHosts(); 
         static std::vector<int>& configGet_HttpsPorts(); 
     
-        MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr);
+        MitmApp(boost::asio::io_service& io, ICollectorSPtr collector_sptr, CaptureFilter::SPtr filter_sptr);
         ~MitmApp();
         
         void handle(
@@ -167,6 +166,7 @@ class MitmApp : public Marvin::RequestHandlerInterface
         std::string                         m_scheme;
         std::string                         m_host;
         std::string                         m_port;
+        CaptureFilter::SPtr                 m_capture_filter_sptr;
         // properties for upstream request/response
         // ISocketSPtr                         m_upstream_connection_sptr;
         // ClientUPtr                          m_upstream_client_uptr;

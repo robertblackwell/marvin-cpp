@@ -123,6 +123,8 @@ void MitmHttps::p_downstream_read_message()
               /* code */
           }
         #endif
+            MessageBaseSPtr x = m_downstream_rdr_sptr->get_message_sptr();
+            m_downstream_request_sptr = x;
             p_initiate_upstream_roundtrip();
         }
     });
@@ -203,7 +205,7 @@ void MitmHttps::p_roundtrip_upstream(
             m_mitm_app.p_on_upstream_roundtrip_error(ec);
             // TODO: how to handle error
         } else {
-           TROG_TRACE3("upstream response", trace_message(*(upstrmRdr.get())));
+           TROG_TRACE3("upstream response", trace_message(*(upstrm_resp.get())));
             m_downstream_response_sptr = std::make_shared<MessageBase>();
             m_upstream_response_body_sptr = upstrm_resp->get_body_buffer_chain();
             Helpers::make_downstream_response(m_downstream_response_sptr, upstrm_resp, ec);

@@ -11,8 +11,6 @@
 #include <marvin/http/message_base.hpp>
 #include <marvin/message/message_reader_v2.hpp>
 #include <marvin/message/message_writer.hpp>
-#include <marvin/configure_trog.hpp>
-
 #include <marvin/collector/collector_interface.hpp>
 
 namespace Marvin {
@@ -36,16 +34,25 @@ public:
     using SPtr = std::shared_ptr<CaptureFilter>;
     using Filters = std::list<std::string>;
 
-    CaptureFilter(Filters initial): m_filters(initial){}
+    CaptureFilter(Filters initial): m_filters(initial)
+    {
+        m_show_message_bodies = false;
+    }
     CaptureFilter(std::vector<std::string> strings)
     {
         for(std::string& s: strings) {
             m_filters.push_back(s);
         }
+        m_show_message_bodies = false;
     }
 
     CaptureFilter(CaptureFilter const&)   = delete;
     void operator=(CaptureFilter const&)  = delete;
+
+    bool is_collectable(std::string& host)
+    {
+        return is_collectable("", host, nullptr, nullptr);
+    }
 
     bool is_collectable(
         std::string scheme,
@@ -66,6 +73,14 @@ public:
     {
         return true;
     }
+    bool get_show_message_bodies()
+    {
+        return m_show_message_bodies;
+    }
+    void set_show_message_bodies(bool on_off)
+    {
+        m_show_message_bodies = on_off;
+    }
     Filters get_filters()
     {
         return m_filters;
@@ -76,6 +91,7 @@ public:
     }
 private:
     Filters                     m_filters;
+    bool                        m_show_message_bodies;
 };
 } // namespace
 #endif

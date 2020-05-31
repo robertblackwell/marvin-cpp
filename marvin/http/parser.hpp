@@ -6,7 +6,6 @@
 #include <iostream>
 #include<http-parser/http_parser.h>
 #include <marvin/http/message_base.hpp>
-#include <marvin/configure_trog.hpp>
 
 #define kHEADER_STATE_NOTHING 10
 #define kHEADER_STATE_FIELD   11
