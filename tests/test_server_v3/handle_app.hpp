@@ -7,7 +7,7 @@
 #include <string>
 #include <pthread.h>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <marvin/connection/connection.hpp>
 #include <marvin/http/uri_query.hpp>
 

@@ -15,7 +15,7 @@
 #include <json/json.hpp>
 #include <marvin/boost_stuff.hpp>
 
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <marvin/http/message_base.hpp>
 #include <uri-parser/UriParser.hpp>
 #include <CxxUrl/url.hpp>

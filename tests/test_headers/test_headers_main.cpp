@@ -11,7 +11,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 
 namespace Http {
     class HeadersIter;

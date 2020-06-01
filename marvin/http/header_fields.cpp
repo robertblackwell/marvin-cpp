@@ -2,7 +2,7 @@
 #define TROG_FILE_LEVEL TROG_LEVEL_WARN
 #include <marvin/configure_trog.hpp>
 
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 
 #include <set>
 #include <regex>

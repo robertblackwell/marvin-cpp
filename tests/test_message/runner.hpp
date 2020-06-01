@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <marvin/buffer/buffer.hpp>
 #include <marvin/message/message_reader_v2.hpp>
 #include "testcase.hpp"

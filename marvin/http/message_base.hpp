@@ -7,7 +7,7 @@
 #include <marvin/buffer/buffer.hpp>
 #include <http-parser/http_parser.h>
 #include <marvin/http/http_method.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 namespace Marvin {
 
 class MessageBase;

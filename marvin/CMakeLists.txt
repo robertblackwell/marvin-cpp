@@ -49,7 +49,7 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	helpers/helpers_fs.hpp
 	helpers/mitm.hpp
 	
-	http/headers_v2.hpp 
+	http/header_fields.hpp 
 	http/http_method.hpp 
 	http/message_base.hpp 
 	http/message_factory.hpp
@@ -115,7 +115,7 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	helpers/helpers_fs.cpp
 	helpers/mitm.cpp
 	
-	http/headers_v2.cpp 		
+	http/header_fields.cpp 		
 	http/http_method.cpp 		
 	http/message_base.cpp
 	http/message_factory.cpp 		

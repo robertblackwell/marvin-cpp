@@ -2,7 +2,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <marvin/http/message_base.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <marvin/http/message_factory.hpp>
 
 namespace Marvin {

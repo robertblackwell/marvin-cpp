@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cassert>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <marvin/error_handler/error_handler.hpp>
 
 

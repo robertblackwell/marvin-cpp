@@ -14,7 +14,7 @@
 #include <sstream>
 #include <regex>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <marvin/message/message_reader_v2.hpp>
 #include <marvin/http/uri.hpp>
 

@@ -6,7 +6,7 @@
 #include <string>
 #include <memory>
 #include <boost/asio/io_service.hpp>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <marvin/http/uri.hpp>
 #include <marvin/connection/socket_interface.hpp>
 #include <marvin/message/message_reader_v2.hpp>

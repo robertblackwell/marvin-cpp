@@ -13,7 +13,7 @@
 #include <string>                                       // for to_string
 #include <boost/asio/streambuf.hpp>                     // for streambuf
 #include <cert/error.hpp>                               // for MARVIN_THROW
-#include <marvin/http/headers_v2.hpp>                  // for Headers, Head...
+#include <marvin/http/header_fields.hpp>                  // for Headers, Head...
 #include <marvin/http/uri.hpp>                          // for Uri
 #include <marvin/message/message_writer.hpp>            // for MessageWriter
 

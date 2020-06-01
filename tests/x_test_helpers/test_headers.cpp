@@ -6,7 +6,7 @@
 //  Copyright © 2018 Blackwellapps. All rights reserved.
 //
 #include <doctest/doctest.h>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include "test_headers.hpp"
 
 struct kv_t {

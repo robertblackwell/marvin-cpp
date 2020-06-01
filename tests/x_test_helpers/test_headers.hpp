@@ -10,7 +10,7 @@
 #define test_json_hpp
 #include <string>
 #include <map>
-#include <marvin/http/headers_v2.hpp>
+#include <marvin/http/header_fields.hpp>
 #include <json/json.hpp>
 namespace test {
 namespace helpers {
