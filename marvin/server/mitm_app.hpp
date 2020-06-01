@@ -15,10 +15,10 @@
 #include <marvin/http/header_fields.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/message/message_reader_v2.hpp>
-#include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/server/request_handler_interface.hpp>
 #include <marvin/collector/collector_interface.hpp>
 #include <marvin/collector/capture_filter.hpp>
-#include <marvin/server_v3/adapter.hpp>
+#include <marvin/server/adapter.hpp>
 namespace Marvin {
 
 class MitmHttps;

@@ -2,7 +2,7 @@
 #define TROG_FILE_LEVEL TROG_LEVEL_WARN
 #include <marvin/configure_trog.hpp>
 
-#include <marvin/server_v3/tcp_server.hpp>
+#include <marvin/server/tcp_server.hpp>
 
 #include <thread>
 

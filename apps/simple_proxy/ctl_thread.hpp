@@ -6,7 +6,7 @@
 #include <thread>
 #include <boost/optional.hpp>
 
-#include <marvin/server_v3/tcp_server.hpp>
+#include <marvin/server/tcp_server.hpp>
 #include "mitm_thread.hpp"
 
 namespace Marvin {

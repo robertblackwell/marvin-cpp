@@ -12,9 +12,9 @@
 #include <marvin/error/marvin_error.hpp>
 #include <marvin/message/message_reader_v2.hpp>
 #include <marvin/message/message_writer.hpp>
-#include <marvin/server_v3/connection_handler.hpp>
-#include <marvin/server_v3/request_handler_interface.hpp>
-#include <marvin/server_v3/server_connection_manager.hpp>
+#include <marvin/server/connection_handler.hpp>
+#include <marvin/server/request_handler_interface.hpp>
+#include <marvin/server/server_connection_manager.hpp>
 
 namespace Marvin {
 /**

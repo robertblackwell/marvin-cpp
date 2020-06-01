@@ -2,7 +2,7 @@
 #define marvin_server_v3_mitm_tunnel_hpp
 
 #include <marvin/buffer/buffer.hpp>
-#include <marvin/server_v3/mitm_app.hpp>
+#include <marvin/server/mitm_app.hpp>
 
 namespace Marvin {
 /** 

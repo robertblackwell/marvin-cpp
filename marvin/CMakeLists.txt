@@ -62,16 +62,16 @@ set(MARVIN_LIBRARY_HEADER_FILES
 	message/message_reader_v2.hpp
 	message/message_writer.hpp
 
-	server_v3/adapter.hpp 
-	server_v3/connection_handler.hpp 
-	server_v3/tcp_server.hpp 
-	server_v3/request_handler_interface.hpp
-	server_v3/server_connection_manager.hpp 
-	server_v3/server_context.hpp
-	server_v3/mitm_app.hpp
-	server_v3/mitm_https.hpp
-	server_v3/mitm_http.hpp
-	server_v3/mitm_tunnel.hpp
+	server/adapter.hpp 
+	server/connection_handler.hpp 
+	server/tcp_server.hpp 
+	server/request_handler_interface.hpp
+	server/server_connection_manager.hpp 
+	server/server_context.hpp
+	server/mitm_app.hpp
+	server/mitm_https.hpp
+	server/mitm_http.hpp
+	server/mitm_tunnel.hpp
 
 	)
 
@@ -128,15 +128,15 @@ set(MARVIN_LIBRARY_SOURCE_FILES
 	message/message_reader_v2.cpp
 	message/message_writer.cpp
 
-	server_v3/connection_handler.cpp 
-	server_v3/tcp_server.cpp 
-	server_v3/request_handler_interface.cpp
-	server_v3/server_connection_manager.cpp 
-	server_v3/server_context.cpp
-	server_v3/mitm_app.cpp
-	server_v3/mitm_https.cpp
-	server_v3/mitm_http.cpp
-	server_v3/mitm_tunnel.cpp
+	server/connection_handler.cpp 
+	server/tcp_server.cpp 
+	server/request_handler_interface.cpp
+	server/server_connection_manager.cpp 
+	server/server_context.cpp
+	server/mitm_app.cpp
+	server/mitm_https.cpp
+	server/mitm_http.cpp
+	server/mitm_tunnel.cpp
 
 	)
 

@@ -2,15 +2,15 @@
 #define TROG_FILE_LEVEL TROG_LEVEL_WARN
 #include <marvin/configure_trog.hpp>
 #include <regex>
-#include <marvin/server_v3/mitm_app.hpp>
+#include <marvin/server/mitm_app.hpp>
 #include <vector>
 #include <marvin/http/message_factory.hpp>
 #include <marvin/http/message_base.hpp>
 #include <marvin/connection/socket_factory.hpp>
 #include <marvin/helpers/mitm.hpp>
-#include <marvin/server_v3/mitm_https.hpp>
-#include <marvin/server_v3/mitm_http.hpp>
-#include <marvin/server_v3/mitm_tunnel.hpp>
+#include <marvin/server/mitm_https.hpp>
+#include <marvin/server/mitm_http.hpp>
+#include <marvin/server/mitm_tunnel.hpp>
 
 namespace Marvin {
 

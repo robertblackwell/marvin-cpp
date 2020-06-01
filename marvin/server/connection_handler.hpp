@@ -7,8 +7,8 @@
 #include <marvin/boost_stuff.hpp>
 
 #include <marvin/connection/socket_interface.hpp>
-#include <marvin/server_v3/server_context.hpp>
-#include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/server/server_context.hpp>
+#include <marvin/server/request_handler_interface.hpp>
 
 namespace Marvin {
 

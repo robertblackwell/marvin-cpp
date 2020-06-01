@@ -14,9 +14,9 @@
 #include <doctest/doctest.h>
 
 #include <marvin/boost_stuff.hpp>
-#include <marvin/server_v3/adapter.hpp>
+#include <marvin/server/adapter.hpp>
 
-#include <marvin/server_v3/timer.hpp>
+#include <marvin/server/timer.hpp>
 #include "../handle_app.hpp"
 #include "../server_v3_runner.hpp"
 

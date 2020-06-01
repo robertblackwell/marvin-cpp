@@ -6,8 +6,8 @@
 #include <thread>
 #include <boost/optional.hpp>
 
-#include <marvin/server_v3/tcp_server.hpp>
-#include <marvin/server_v3/mitm_app.hpp>
+#include <marvin/server/tcp_server.hpp>
+#include <marvin/server/mitm_app.hpp>
 #include <marvin/collector/capture_filter.hpp>
 #include <marvin/collector/cout_collector.hpp>
 namespace Marvin {

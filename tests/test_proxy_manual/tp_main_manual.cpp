@@ -9,10 +9,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest/doctest.h>
 
-#include <marvin/server_v3/tcp_server.hpp>
+#include <marvin/server/tcp_server.hpp>
 #include <marvin/collector/pipe_collector.hpp>
 #include <marvin/collector/cout_collector.hpp>
-#include <marvin/server_v3/mitm_app.hpp>
+#include <marvin/server/mitm_app.hpp>
 
 /**
  * This is the simplest possible test of the http mitm proxy. To run it needs manual intervention.

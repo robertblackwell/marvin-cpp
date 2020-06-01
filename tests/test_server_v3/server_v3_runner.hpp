@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <thread>
 #include <marvin/boost_stuff.hpp>
-#include <marvin/server_v3/tcp_server.hpp>
+#include <marvin/server/tcp_server.hpp>
 #if SERVER_RUNNER_STATIC
 void startTestServer(long port=9991);
 void stopTestServer();

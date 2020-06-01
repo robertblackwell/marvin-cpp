@@ -7,7 +7,7 @@
 #include <boost/optional.hpp>
 #include <marvin/collector/capture_filter.hpp>
 #include <marvin/collector//capture_collector.hpp>
-#include <marvin/server_v3/tcp_server.hpp>
+#include <marvin/server/tcp_server.hpp>
 #include "mitm_thread.hpp"
 
 namespace Marvin {

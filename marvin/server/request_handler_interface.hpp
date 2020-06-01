@@ -8,7 +8,7 @@
 #include <marvin/boost_stuff.hpp>
 #include <marvin/message/message_reader_v2.hpp>
 #include <marvin/message/message_writer.hpp>
-#include <marvin/server_v3/server_context.hpp>
+#include <marvin/server/server_context.hpp>
 
 namespace Marvin {
 

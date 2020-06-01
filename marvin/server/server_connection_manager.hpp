@@ -5,7 +5,7 @@
 #include <set>
 #include <map>
 #include <marvin/error/marvin_error.hpp>
-#include <marvin/server_v3/connection_handler.hpp>
+#include <marvin/server/connection_handler.hpp>
 
 /**
 * \ingroup tcpserver

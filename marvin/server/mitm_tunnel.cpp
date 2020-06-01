@@ -2,7 +2,7 @@
 #define TROG_FILE_LEVEL TROG_LEVEL_WARN
 #include <marvin/configure_trog.hpp>
 
-#include <marvin/server_v3/mitm_tunnel.hpp>
+#include <marvin/server/mitm_tunnel.hpp>
 
 #include <openssl/ossl_typ.h>           // for X509_STORE
 #include <cert/cert_authority.hpp>      // for AuthoritySPtr

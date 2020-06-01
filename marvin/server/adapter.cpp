@@ -1,7 +1,7 @@
 #include <trog/loglevel.hpp>
 #define TROG_FILE_LEVEL TROG_LEVEL_WARN
 #include <marvin/configure_trog.hpp>
-#include <marvin/server_v3/adapter.hpp>
+#include <marvin/server/adapter.hpp>
 
 
 #include <iostream>
@@ -18,8 +18,8 @@
 #include<CxxUrl/url.hpp>
 #include <marvin/http/uri_query.hpp>
 
-#include <marvin/server_v3/http_server.hpp>
-#include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/server/http_server.hpp>
+#include <marvin/server/request_handler_interface.hpp>
 
 using namespace Marvin;
 using namespace Http;

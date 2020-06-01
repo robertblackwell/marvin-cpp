@@ -15,8 +15,8 @@
 #include<CxxUrl/url.hpp>
 #include <marvin/http/uri_query.hpp>
 
-#include <marvin/server_v3/tcp_server.hpp>
-#include <marvin/server_v3/request_handler_interface.hpp>
+#include <marvin/server/tcp_server.hpp>
+#include <marvin/server/request_handler_interface.hpp>
 
 using namespace Marvin;
 
